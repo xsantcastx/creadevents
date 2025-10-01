@@ -1,0 +1,50 @@
+.material-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 1.5rem;
+}
+
+.material-card {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  border: 1px solid transparent;
+  border-radius: 20px;
+  padding: 0;
+  background-color: #fff;
+  cursor: pointer;
+  overflow: hidden;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.material-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+}
+
+.material-card--activo {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(91, 74, 63, 0.15);
+}
+
+.material-card__thumb {
+  background-size: cover;
+  background-position: center;
+  height: 150px;
+}
+
+.material-card__body {
+  padding: 1.25rem;
+  text-align: left;
+}
+
+.material-card__body h4 {
+  margin: 0 0 0.5rem;
+  font-size: 1.1rem;
+}
+
+.material-card__body p {
+  margin: 0;
+  color: var(--color-muted);
+  font-size: 0.9rem;
+}

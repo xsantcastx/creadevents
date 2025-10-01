@@ -1,0 +1,9 @@
+<app-navbar (toggleCart)="alternarCarrito()"></app-navbar>
+
+<main>
+  <router-outlet></router-outlet>
+</main>
+
+<app-footer></app-footer>
+
+<app-cart-sidebar [visible]="carritoVisible()" (close)="cerrarCarrito()"></app-cart-sidebar>

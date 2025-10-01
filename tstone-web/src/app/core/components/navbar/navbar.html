@@ -1,0 +1,31 @@
+<nav class="navbar">
+  <div class="container navbar__content">
+    <a class="navbar__logo" routerLink="/" (click)="cerrarMenu()">The Stone</a>
+
+    <button class="navbar__toggle" type="button" (click)="alternarMenu()" aria-label="Abrir menu">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+
+    <ul class="navbar__links" [class.navbar__links--abierto]="menuAbierto()">
+      @for (enlace of enlaces; track enlace.ruta) {
+        <li>
+          <a
+            [routerLink]="enlace.ruta"
+            routerLinkActive="navbar__link--activo"
+            [routerLinkActiveOptions]="{ exact: enlace.exact ?? false }"
+            (click)="cerrarMenu()"
+          >
+            {{ enlace.etiqueta }}
+          </a>
+        </li>
+      }
+    </ul>
+
+    <button class="navbar__cart" type="button" (click)="activarCarrito()">
+      Carrito
+      <span class="navbar__cart-count">{{ totalItems() }}</span>
+    </button>
+  </div>
+</nav>

@@ -1,0 +1,64 @@
+<section id="contacto" class="contacto">
+  <div class="container contacto__grid">
+    <div class="contacto__info">
+      <app-section-title
+        titulo="Conversemos sobre tu proyecto"
+        subtitulo="Contacto"
+      ></app-section-title>
+      <p>
+        Nuestro equipo tecnico te acompanara en la seleccion de materiales, logistica y
+        documentacion necesaria para tu obra.
+      </p>
+      <ul>
+        <li>
+          <strong>Telefono:</strong>
+          <a href="tel:+34964000000">+34 964 000 000</a>
+        </li>
+        <li>
+          <strong>Correo:</strong>
+          <a href="mailto:info@thestone.com">info@thestone.com</a>
+        </li>
+        <li>
+          <strong>Direccion:</strong>
+          Poligono Industrial La Plana, Castellon
+        </li>
+      </ul>
+      <div class="contacto__mapa" aria-hidden="true">
+        <iframe
+          title="Ubicacion The Stone"
+          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3069.631339708531!2d-0.052!3d39.986!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xd6047b520000001%3A0x123456789abcdef!2sCastell%C3%B3n!5e0!3m2!1ses!2ses!4v1700000000000"
+          loading="lazy"
+          referrerpolicy="no-referrer-when-downgrade"
+        ></iframe>
+      </div>
+    </div>
+
+    <form class="contacto__form" [formGroup]="formulario" (ngSubmit)="enviar()">
+      <label>
+        Nombre y apellidos
+        <input type="text" formControlName="nombre" placeholder="Laura Martinez" />
+      </label>
+      <label>
+        Correo electronico
+        <input type="email" formControlName="email" placeholder="contacto@estudio.com" />
+      </label>
+      <label>
+        Telefono
+        <input type="tel" formControlName="telefono" placeholder="+34 600 000 000" />
+      </label>
+      <label>
+        Empresa / Estudio
+        <input type="text" formControlName="empresa" placeholder="Nombre de la empresa" />
+      </label>
+      <label class="contacto__full">
+        Cuentanos tu proyecto
+        <textarea formControlName="mensaje" rows="5" placeholder="Superficies, fechas, acabados preferidos..."></textarea>
+      </label>
+      <button type="submit">Enviar mensaje</button>
+
+      @if (enviado) {
+        <p class="contacto__exito">Gracias por escribirnos. Responderemos en menos de 24 horas laborables.</p>
+      }
+    </form>
+  </div>
+</section>

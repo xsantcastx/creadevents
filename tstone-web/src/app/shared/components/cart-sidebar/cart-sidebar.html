@@ -1,0 +1,70 @@
+<div class="cart" [class.cart--visible]="visible">
+  <div class="cart__overlay" (click)="cerrar()"></div>
+  <aside class="cart__panel">
+    <header class="cart__header">
+      <div>
+        <h3>Lista de deseos</h3>
+        <p>Selecciona cantidades y envia tu solicitud de presupuesto.</p>
+      </div>
+      <button type="button" (click)="cerrar()">x</button>
+    </header>
+
+    <section class="cart__body">
+      @if (enviado) {
+        <div class="cart__success">Hemos recibido tu solicitud. Te contactaremos muy pronto.</div>
+      }
+
+      @if (items$ | async; as items) {
+        @if (items.length) {
+          <div class="cart__items">
+            @for (item of items; track item.producto.id) {
+              <article class="cart__item">
+                <div class="cart__thumb" [style.background-image]="'url(' + item.producto.imagen + ')'"></div>
+                <div class="cart__info">
+                  <h4>{{ item.producto.nombre }}</h4>
+                  <p>{{ item.producto.material }} ? Calibre {{ item.producto.calibre }} mm</p>
+                  <p>Formatos: {{ item.producto.formatos.join(' - ') }}</p>
+                  <div class="cart__actions">
+                    <button type="button" (click)="cambiarCantidad(item, -1)">-</button>
+                    <span>{{ item.cantidad }}</span>
+                    <button type="button" (click)="cambiarCantidad(item, 1)">+</button>
+                    <button type="button" class="cart__remove" (click)="eliminar(item)">Eliminar</button>
+                  </div>
+                </div>
+              </article>
+            }
+          </div>
+
+          <form class="cart__form" [formGroup]="formulario" (ngSubmit)="enviar()">
+            <h4>Tus datos</h4>
+            <label>
+              Nombre y apellidos
+              <input type="text" formControlName="nombre" placeholder="Maria Garcia" />
+            </label>
+            <label>
+              Correo electronico
+              <input type="email" formControlName="email" placeholder="correo@empresa.com" />
+            </label>
+            <label>
+              Telefono
+              <input type="tel" formControlName="telefono" placeholder="+34 600 000 000" />
+            </label>
+            <label>
+              Empresa / Proyecto
+              <input type="text" formControlName="empresa" placeholder="Estudio o promotora" />
+            </label>
+            <label class="cart__full">
+              Mensaje
+              <textarea formControlName="mensaje" rows="4" placeholder="Cuentanos los m2 aproximados, plazos u otras especificaciones."></textarea>
+            </label>
+            <button type="submit" class="cart__submit">Enviar carrito</button>
+          </form>
+        } @else {
+          <div class="cart__empty">
+            <p>Aun no has anadido productos. Explora el catalogo y crea tu seleccion.</p>
+          </div>
+        }
+      }
+    </section>
+  </aside>
+</div>
