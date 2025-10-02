@@ -1,1 +1,87 @@
-/* You can add global styles to this file, and also import other style files */
+:root {
+  color-scheme: light;
+  background-color: var(--theme-background, #f9f9f7);
+  color: var(--theme-text, #2d3436);
+  font-size: 16px;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: "Inter", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+  line-height: 1.6;
+  background-color: var(--theme-background, #f9f9f7);
+  color: var(--theme-text, #2d3436);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+a {
+  color: inherit;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+}
+
+button {
+  font-family: inherit;
+}
+
+section {
+  padding: 5rem 0;
+}
+
+.container {
+  width: min(1100px, 92vw);
+  margin: 0 auto;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.85rem 1.75rem;
+  border-radius: 999px;
+  font-weight: 600;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+  text-decoration: none;
+}
+
+.btn-primary {
+  background: var(--theme-primary, #5e8a75);
+  color: #ffffff;
+  box-shadow: 0 10px 25px rgba(94, 138, 117, 0.15);
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 28px rgba(94, 138, 117, 0.2);
+}
+
+.btn-outline {
+  border-color: currentColor;
+  background: transparent;
+}
+
+.btn-outline:hover {
+  transform: translateY(-2px);
+}
+
+.text-muted {
+  color: rgba(34, 48, 45, 0.65);
+}
+
+.card {
+  background: var(--theme-surface, #f0f5f2);
+  border-radius: 24px;
+  padding: 2rem;
+  box-shadow: 0 20px 45px rgba(16, 25, 23, 0.08);
+}
