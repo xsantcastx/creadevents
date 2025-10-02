@@ -41,7 +41,7 @@ import { SeasonalThemeService } from '../../services/seasonal-theme.service';
               </p>
             </div>
             <div class="story-image">
-              <img src="/assets/fb_4888_8929514942_2_48x2_48.jpg" alt="Our beautiful event designs" loading="lazy">
+              <img src="/assets/logo1.jpg" alt="Our beautiful event designs" loading="lazy">
             </div>
           </div>
         </div>
@@ -107,7 +107,7 @@ import { SeasonalThemeService } from '../../services/seasonal-theme.service';
               <a routerLink="/services" class="btn btn-primary">View All Services</a>
             </div>
             <div class="overview-image">
-              <img src="/assets/ig_179_31_896964684.jpg" alt="Beautiful floral arrangements" loading="lazy">
+              <img src="/assets/logo3.jpg" alt="Beautiful floral arrangements" loading="lazy">
             </div>
           </div>
         </div>
@@ -168,7 +168,7 @@ import { SeasonalThemeService } from '../../services/seasonal-theme.service';
               </div>
             </div>
             <div class="location-image">
-              <img src="/assets/ig_1794579_87187429_.jpg" alt="Miami event planning" loading="lazy">
+              <img src="/assets/logo1.jpg" alt="Miami event planning" loading="lazy">
             </div>
           </div>
         </div>

@@ -2,15 +2,15 @@
 export const environment = {
   production: false,
   firebase: {
-    apiKey: "your-api-key",
-    authDomain: "your-project.firebaseapp.com",
-    projectId: "your-project-id",
-    storageBucket: "your-project.firebasestorage.app",
-    messagingSenderId: "your-sender-id",
-    appId: "your-app-id",
-    measurementId: "your-measurement-id"
+    apiKey: "AIzaSyAUz7FJezTXW-k4SxVKWPkxtPJ1h6s4xTQ",
+    authDomain: "creadevents-437a8.firebaseapp.com",
+    projectId: "creadevents-437a8",
+    storageBucket: "creadevents-437a8.firebasestorage.app",
+    messagingSenderId: "256034995785",
+    appId: "1:256034995785:web:813f895fa2a4754de0c998",
+    measurementId: "G-0R00HG63S1"
   },
   recaptcha: {
-    siteKey: "your-recaptcha-site-key"
+    siteKey: "6LcyJtwrAAAAAJKVjBVZUtWWNXVeVtHE6nC-XkqY"
   }
 };

@@ -2,6 +2,7 @@ import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink, RouterLinkActive, Router } from '@angular/router';
 import { SeasonalThemeService } from '../../services/seasonal-theme.service';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-navigation',
@@ -64,11 +65,38 @@ import { SeasonalThemeService } from '../../services/seasonal-theme.service';
                 Journal
               </a>
             </li>
+            <li class="nav-item">
+              <a routerLink="/search" routerLinkActive="active" (click)="closeMobileMenu()">
+                Search
+              </a>
+            </li>
             <li class="nav-item mobile-only">
               <a routerLink="/contact" routerLinkActive="active" (click)="closeMobileMenu()">
                 Contact
               </a>
             </li>
+            
+            <!-- Authentication Links -->
+            @if (authService.isAuthenticated()) {
+              @if (authService.canManageContent()) {
+                <li class="nav-item">
+                  <a routerLink="/admin" routerLinkActive="active" (click)="closeMobileMenu()">
+                    Admin Dashboard
+                  </a>
+                </li>
+              }
+              <li class="nav-item">
+                <button type="button" (click)="logout()" class="auth-link logout-btn">
+                  Logout ({{ authService.currentUser()?.email }})
+                </button>
+              </li>
+            } @else {
+              <li class="nav-item">
+                <a routerLink="/auth/login" routerLinkActive="active" (click)="closeMobileMenu()">
+                  Sign In
+                </a>
+              </li>
+            }
           </ul>
 
           <div class="nav-cta">
@@ -294,11 +322,47 @@ import { SeasonalThemeService } from '../../services/seasonal-theme.service';
         letter-spacing: 0.16em;
       }
     }
+
+    /* Authentication Styles */
+    .auth-link {
+      border: none;
+      background: transparent;
+      color: inherit;
+      font-family: inherit;
+      font-size: inherit;
+      cursor: pointer;
+      text-decoration: none;
+      padding: 0;
+      transition: color 0.3s ease;
+    }
+
+    .auth-link:hover {
+      color: var(--theme-primary, #7FB069);
+    }
+
+    .logout-btn {
+      display: block;
+      width: 100%;
+      text-align: left;
+      padding: 0.5rem 0;
+      font-size: 0.9rem;
+    }
+
+    @media (min-width: 769px) {
+      .logout-btn {
+        font-size: 0.85rem;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 200px;
+      }
+    }
   `]
 })
 export class NavigationComponent implements OnInit, OnDestroy {
   private seasonalThemeService = inject(SeasonalThemeService);
   private router = inject(Router);
+  protected authService = inject(AuthService);
 
   isMobileMenuOpen = false;
   isScrolled = false;
@@ -335,5 +399,14 @@ export class NavigationComponent implements OnInit, OnDestroy {
 
   closeMobileMenu(): void {
     this.isMobileMenuOpen = false;
+  }
+
+  async logout(): Promise<void> {
+    try {
+      await this.authService.signOut();
+      this.closeMobileMenu();
+    } catch (error) {
+      console.error('Error during logout:', error);
+    }
   }
 }

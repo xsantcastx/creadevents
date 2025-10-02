@@ -1,0 +1,153 @@
+{
+  "phase": "phase1-critical-launch",
+  "description": "Essential images for immediate website launch",
+  "totalImages": 18,
+  "estimatedUploadTime": "4 minutes",
+  "totalSizeMB": 17,
+  "images": [
+    {
+      "sourcePath": "C:\\Users\\xsanc\\Documents\\7.creadevents.com\\creadevents\\categorized_images\\boho\\2017-11-23_20-13-53_UTC_1.jpg",
+      "fileName": "2017-11-23_20-13-53_UTC_1.jpg",
+      "category": "boho",
+      "suggestedUse": "Portfolio - Bohemian Wedding Style",
+      "sizeKB": 1068,
+      "qualityScore": 90
+    },
+    {
+      "sourcePath": "C:\\Users\\xsanc\\Documents\\7.creadevents.com\\creadevents\\categorized_images\\boho\\2017-11-23_20-13-53_UTC_2.jpg",
+      "fileName": "2017-11-23_20-13-53_UTC_2.jpg",
+      "category": "boho",
+      "suggestedUse": "Portfolio - Bohemian Wedding Style",
+      "sizeKB": 952,
+      "qualityScore": 90
+    },
+    {
+      "sourcePath": "C:\\Users\\xsanc\\Documents\\7.creadevents.com\\creadevents\\categorized_images\\boho\\2018-07-17_20-58-57_UTC_1.jpg",
+      "fileName": "2018-07-17_20-58-57_UTC_1.jpg",
+      "category": "boho",
+      "suggestedUse": "Portfolio - Bohemian Wedding Style",
+      "sizeKB": 1043,
+      "qualityScore": 90
+    },
+    {
+      "sourcePath": "C:\\Users\\xsanc\\Documents\\7.creadevents.com\\creadevents\\categorized_images\\garden\\2021-01-12_23-54-09_UTC.jpg",
+      "fileName": "2021-01-12_23-54-09_UTC.jpg",
+      "category": "garden",
+      "suggestedUse": "Homepage Hero - Garden Collection Showcase",
+      "sizeKB": 806,
+      "qualityScore": 90
+    },
+    {
+      "sourcePath": "C:\\Users\\xsanc\\Documents\\7.creadevents.com\\creadevents\\categorized_images\\garden\\2022-08-30_15-31-27_UTC_1.jpg",
+      "fileName": "2022-08-30_15-31-27_UTC_1.jpg",
+      "category": "garden",
+      "suggestedUse": "Homepage Hero - Garden Collection Showcase",
+      "sizeKB": 814,
+      "qualityScore": 90
+    },
+    {
+      "sourcePath": "C:\\Users\\xsanc\\Documents\\7.creadevents.com\\creadevents\\categorized_images\\garden\\2022-08-30_15-31-27_UTC_2.jpg",
+      "fileName": "2022-08-30_15-31-27_UTC_2.jpg",
+      "category": "garden",
+      "suggestedUse": "Homepage Hero - Garden Collection Showcase",
+      "sizeKB": 789,
+      "qualityScore": 90
+    },
+    {
+      "sourcePath": "C:\\Users\\xsanc\\Documents\\7.creadevents.com\\creadevents\\categorized_images\\garden\\302339453_485288673415844_5471205593586189415_n.jpg",
+      "fileName": "302339453_485288673415844_5471205593586189415_n.jpg",
+      "category": "garden",
+      "suggestedUse": "Homepage Hero - Garden Collection Showcase",
+      "sizeKB": 814,
+      "qualityScore": 90
+    },
+    {
+      "sourcePath": "C:\\Users\\xsanc\\Documents\\7.creadevents.com\\creadevents\\categorized_images\\modern\\2017-11-10_01-05-44_UTC_4.jpg",
+      "fileName": "2017-11-10_01-05-44_UTC_4.jpg",
+      "category": "modern",
+      "suggestedUse": "Homepage Hero - Modern Design Portfolio",
+      "sizeKB": 1010,
+      "qualityScore": 90
+    },
+    {
+      "sourcePath": "C:\\Users\\xsanc\\Documents\\7.creadevents.com\\creadevents\\categorized_images\\modern\\2017-11-23_20-13-53_UTC_3.jpg",
+      "fileName": "2017-11-23_20-13-53_UTC_3.jpg",
+      "category": "modern",
+      "suggestedUse": "Homepage Hero - Modern Design Portfolio",
+      "sizeKB": 988,
+      "qualityScore": 90
+    },
+    {
+      "sourcePath": "C:\\Users\\xsanc\\Documents\\7.creadevents.com\\creadevents\\categorized_images\\modern\\2018-04-21_19-21-27_UTC_4.jpg",
+      "fileName": "2018-04-21_19-21-27_UTC_4.jpg",
+      "category": "modern",
+      "suggestedUse": "Homepage Hero - Modern Design Portfolio",
+      "sizeKB": 1485,
+      "qualityScore": 100
+    },
+    {
+      "sourcePath": "C:\\Users\\xsanc\\Documents\\7.creadevents.com\\creadevents\\categorized_images\\carnation\\2018-05-18_22-47-03_UTC_1.jpg",
+      "fileName": "2018-05-18_22-47-03_UTC_1.jpg",
+      "category": "carnation",
+      "suggestedUse": "Gallery - Carnation Collection",
+      "sizeKB": 1385,
+      "qualityScore": 90
+    },
+    {
+      "sourcePath": "C:\\Users\\xsanc\\Documents\\7.creadevents.com\\creadevents\\categorized_images\\hydrangea\\2017-11-10_01-05-44_UTC_3.jpg",
+      "fileName": "2017-11-10_01-05-44_UTC_3.jpg",
+      "category": "hydrangea",
+      "suggestedUse": "Services - Hydrangea Centerpieces",
+      "sizeKB": 888,
+      "qualityScore": 90
+    },
+    {
+      "sourcePath": "C:\\Users\\xsanc\\Documents\\7.creadevents.com\\creadevents\\categorized_images\\hydrangea\\2017-11-10_01-05-44_UTC_5.jpg",
+      "fileName": "2017-11-10_01-05-44_UTC_5.jpg",
+      "category": "hydrangea",
+      "suggestedUse": "Services - Hydrangea Centerpieces",
+      "sizeKB": 939,
+      "qualityScore": 90
+    },
+    {
+      "sourcePath": "C:\\Users\\xsanc\\Documents\\7.creadevents.com\\creadevents\\categorized_images\\hydrangea\\2017-12-17_19-01-05_UTC_1.jpg",
+      "fileName": "2017-12-17_19-01-05_UTC_1.jpg",
+      "category": "hydrangea",
+      "suggestedUse": "Services - Hydrangea Centerpieces",
+      "sizeKB": 945,
+      "qualityScore": 90
+    },
+    {
+      "sourcePath": "C:\\Users\\xsanc\\Documents\\7.creadevents.com\\creadevents\\categorized_images\\hydrangea\\2018-02-09_23-06-00_UTC_8.jpg",
+      "fileName": "2018-02-09_23-06-00_UTC_8.jpg",
+      "category": "hydrangea",
+      "suggestedUse": "Services - Hydrangea Centerpieces",
+      "sizeKB": 1096,
+      "qualityScore": 90
+    },
+    {
+      "sourcePath": "C:\\Users\\xsanc\\Documents\\7.creadevents.com\\creadevents\\categorized_images\\hydrangea\\2018-05-13_17-16-05_UTC_2.jpg",
+      "fileName": "2018-05-13_17-16-05_UTC_2.jpg",
+      "category": "hydrangea",
+      "suggestedUse": "Services - Hydrangea Centerpieces",
+      "sizeKB": 956,
+      "qualityScore": 90
+    },
+    {
+      "sourcePath": "C:\\Users\\xsanc\\Documents\\7.creadevents.com\\creadevents\\categorized_images\\hydrangea\\2024-02-01_00-56-08_UTC.jpg",
+      "fileName": "2024-02-01_00-56-08_UTC.jpg",
+      "category": "hydrangea",
+      "suggestedUse": "Services - Hydrangea Centerpieces",
+      "sizeKB": 806,
+      "qualityScore": 90
+    },
+    {
+      "sourcePath": "C:\\Users\\xsanc\\Documents\\7.creadevents.com\\creadevents\\categorized_images\\iris\\2017-12-29_03-20-48_UTC_1.jpg",
+      "fileName": "2017-12-29_03-20-48_UTC_1.jpg",
+      "category": "iris",
+      "suggestedUse": "Gallery - Iris Collection",
+      "sizeKB": 891,
+      "qualityScore": 90
+    }
+  ]
+}

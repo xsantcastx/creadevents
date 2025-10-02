@@ -1,0 +1,28 @@
+{
+  "total": 1828,
+  "selected": 120,
+  "phase1": 18,
+  "phase2": 27,
+  "phase3": 75,
+  "byCategory": {
+    "autumn": 9,
+    "boho": 3,
+    "carnation": 1,
+    "daisy": 3,
+    "garden": 4,
+    "hydrangea": 6,
+    "iris": 1,
+    "lily": 9,
+    "modern": 3,
+    "orchid": 4,
+    "peony": 2,
+    "romantic": 20,
+    "rose": 1,
+    "rustic": 16,
+    "spring": 18,
+    "sunflower": 2,
+    "tropical": 8,
+    "tulip": 5,
+    "winter": 5
+  }
+}

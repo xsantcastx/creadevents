@@ -4,15 +4,11 @@ import { Router } from '@angular/router';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { SeasonalThemeService } from '../../services/seasonal-theme.service';
 import { FirestoreService } from '../../services/firestore.service';
+import { StorageService } from '../../services/storage.service';
+import { AuthService, UserProfile } from '../../services/auth.service';
+import { AnalyticsService } from '../../services/analytics.service';
+import { FileUploadComponent } from '../../shared/file-upload/file-upload.component';
 import { BlogPost, Project, Service, Testimonial } from '../../models/data.models';
-
-interface AdminUser {
-  id: string;
-  email: string;
-  name: string;
-  role: 'admin' | 'editor';
-  lastLogin?: Date;
-}
 
 interface DashboardStats {
   totalProjects: number;
@@ -25,7 +21,7 @@ interface DashboardStats {
 
 @Component({
   selector: 'app-dashboard',
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, FileUploadComponent],
   template: `
     <div class="admin-dashboard">
       
@@ -37,71 +33,15 @@ interface DashboardStats {
             <span class="admin-label">Admin Dashboard</span>
           </div>
           <div class="user-actions">
-            <span class="welcome-text">Welcome, {{ currentUser()?.name || 'Admin' }}</span>
+            <span class="welcome-text">Welcome, {{ authService.currentUser()?.displayName || authService.currentUser()?.email || 'Admin' }}</span>
             <button (click)="logout()" class="btn btn-outline">Logout</button>
           </div>
         </div>
       </header>
 
-      <!-- Auth Screen -->
-      @if (!isAuthenticated()) {
-        <div class="auth-screen">
-          <div class="auth-container">
-            <div class="auth-card">
-              <h2>Admin Login</h2>
-              <form [formGroup]="loginForm" (ngSubmit)="login()">
-                <div class="form-group">
-                  <label for="email">Email Address</label>
-                  <input 
-                    id="email"
-                    type="email" 
-                    formControlName="email"
-                    placeholder="admin@creadevents.com">
-                  @if (loginForm.get('email')?.invalid && loginForm.get('email')?.touched) {
-                    <span class="error-message">Valid email is required</span>
-                  }
-                </div>
-                
-                <div class="form-group">
-                  <label for="password">Password</label>
-                  <input 
-                    id="password"
-                    type="password" 
-                    formControlName="password"
-                    placeholder="Enter your password">
-                  @if (loginForm.get('password')?.invalid && loginForm.get('password')?.touched) {
-                    <span class="error-message">Password is required</span>
-                  }
-                </div>
-
-                @if (loginError()) {
-                  <div class="error-alert">
-                    {{ loginError() }}
-                  </div>
-                }
-                
-                <button type="submit" class="btn btn-primary" [disabled]="loginForm.invalid || isLoggingIn()">
-                  @if (isLoggingIn()) {
-                    Logging in...
-                  } @else {
-                    Login
-                  }
-                </button>
-              </form>
-              
-              <div class="demo-credentials">
-                <p><strong>Demo Credentials:</strong></p>
-                <p>Email: admin@creadevents.com</p>
-                <p>Password: admin123</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      } @else {
-        
-        <!-- Main Dashboard -->
-        <main class="dashboard-main">
-          <div class="container">
+      <!-- Main Dashboard -->
+      <main class="dashboard-main">
+        <div class="container">
             
             <!-- Stats Overview -->
             <section class="stats-section">
@@ -177,6 +117,12 @@ interface DashboardStats {
                   <div class="action-icon">✍️</div>
                   <h3>Write Blog Post</h3>
                   <p>Share insights and tips</p>
+                </button>
+                
+                <button (click)="navigateToAnalytics()" class="action-card">
+                  <div class="action-icon">📊</div>
+                  <h3>View Analytics</h3>
+                  <p>Monitor website performance</p>
                 </button>
                 
                 <button (click)="setActiveTab('seasonal')" class="action-card">
@@ -505,11 +451,506 @@ interface DashboardStats {
                     </div>
                   </div>
                 }
+
+                <!-- Overview Tab -->
+                @if (activeTab() === 'overview') {
+                  <div class="tab-panel">
+                    <div class="overview-grid">
+                      <div class="quick-stats">
+                        <h3>Quick Stats</h3>
+                        <div class="stats-cards">
+                          <div class="stat-card">
+                            <div class="stat-number">{{ dashboardStats().totalProjects }}</div>
+                            <div class="stat-label">Projects</div>
+                            <div class="stat-change">+2 this month</div>
+                          </div>
+                          <div class="stat-card">
+                            <div class="stat-number">{{ dashboardStats().totalServices }}</div>
+                            <div class="stat-label">Services</div>
+                            <div class="stat-change">Active</div>
+                          </div>
+                          <div class="stat-card">
+                            <div class="stat-number">{{ dashboardStats().recentInquiries }}</div>
+                            <div class="stat-label">New Inquiries</div>
+                            <div class="stat-change">This week</div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="recent-activity">
+                        <h3>Recent Activity</h3>
+                        <div class="activity-list">
+                          <div class="activity-item">
+                            <div class="activity-icon">📁</div>
+                            <div class="activity-content">
+                              <div class="activity-title">New project added</div>
+                              <div class="activity-time">2 hours ago</div>
+                            </div>
+                          </div>
+                          <div class="activity-item">
+                            <div class="activity-icon">📧</div>
+                            <div class="activity-content">
+                              <div class="activity-title">Contact form submission</div>
+                              <div class="activity-time">4 hours ago</div>
+                            </div>
+                          </div>
+                          <div class="activity-item">
+                            <div class="activity-icon">📝</div>
+                            <div class="activity-content">
+                              <div class="activity-title">Blog post published</div>
+                              <div class="activity-time">1 day ago</div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                }
+
+                <!-- Testimonials Tab -->
+                @if (activeTab() === 'testimonials') {
+                  <div class="tab-panel">
+                    <div class="panel-header">
+                      <h3>Testimonials Management</h3>
+                      <button (click)="showTestimonialForm = !showTestimonialForm" class="btn btn-primary">
+                        {{ showTestimonialForm ? 'Cancel' : 'Add New Testimonial' }}
+                      </button>
+                    </div>
+
+                    @if (showTestimonialForm) {
+                      <div class="form-container">
+                        <form [formGroup]="testimonialForm" (ngSubmit)="saveTestimonial()">
+                          <div class="form-row">
+                            <div class="form-group">
+                              <label for="testimonialAuthor">Client Name</label>
+                              <input id="testimonialAuthor" type="text" formControlName="author" placeholder="Maria Rodriguez">
+                            </div>
+                            
+                            <div class="form-group">
+                              <label for="testimonialEvent">Event Type</label>
+                              <input id="testimonialEvent" type="text" formControlName="event" placeholder="Wedding Reception">
+                            </div>
+                          </div>
+                          
+                          <div class="form-group">
+                            <label for="testimonialQuote">Testimonial Quote</label>
+                            <textarea id="testimonialQuote" formControlName="quote" rows="4" 
+                              placeholder="Share their amazing experience..."></textarea>
+                          </div>
+                          
+                          <div class="form-row">
+                            <div class="form-group">
+                              <label for="testimonialRating">Rating (1-5)</label>
+                              <select id="testimonialRating" formControlName="rating">
+                                <option value="5">⭐⭐⭐⭐⭐ (5 Stars)</option>
+                                <option value="4">⭐⭐⭐⭐ (4 Stars)</option>
+                                <option value="3">⭐⭐⭐ (3 Stars)</option>
+                                <option value="2">⭐⭐ (2 Stars)</option>
+                                <option value="1">⭐ (1 Star)</option>
+                              </select>
+                            </div>
+                            
+                            <div class="form-group">
+                              <label>
+                                <input type="checkbox" formControlName="featured">
+                                Featured Testimonial
+                              </label>
+                            </div>
+                          </div>
+                          
+                          <div class="form-actions">
+                            <button type="submit" class="btn btn-primary" [disabled]="testimonialForm.invalid">
+                              Save Testimonial
+                            </button>
+                            <button type="button" (click)="resetTestimonialForm()" class="btn btn-outline">
+                              Reset Form
+                            </button>
+                          </div>
+                        </form>
+                      </div>
+                    }
+
+                    <div class="data-table">
+                      <table>
+                        <thead>
+                          <tr>
+                            <th>Client</th>
+                            <th>Event</th>
+                            <th>Rating</th>
+                            <th>Featured</th>
+                            <th>Actions</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          @for (testimonial of testimonials(); track testimonial.id) {
+                            <tr>
+                              <td>{{ testimonial.author }}</td>
+                              <td>{{ testimonial.event || 'N/A' }}</td>
+                              <td>
+                                <div class="rating-display">
+                                  @for (star of getStars(testimonial.rating || 5); track star) {
+                                    <span>⭐</span>
+                                  }
+                                </div>
+                              </td>
+                              <td>
+                                <span class="status-badge" [class.featured]="testimonial.featured">
+                                  {{ testimonial.featured ? 'Featured' : 'Regular' }}
+                                </span>
+                              </td>
+                              <td>
+                                <div class="action-buttons">
+                                  <button (click)="editTestimonial(testimonial)" class="btn-small btn-outline">Edit</button>
+                                  <button (click)="deleteTestimonial(testimonial.id!)" class="btn-small btn-danger">Delete</button>
+                                </div>
+                              </td>
+                            </tr>
+                          }
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                }
+
+                <!-- Inquiries Tab -->
+                @if (activeTab() === 'inquiries') {
+                  <div class="tab-panel">
+                    <div class="panel-header">
+                      <h3>Customer Inquiries</h3>
+                      <div class="inquiry-filters">
+                        <select (change)="filterInquiries($event)">
+                          <option value="all">All Inquiries</option>
+                          <option value="new">New</option>
+                          <option value="responded">Responded</option>
+                          <option value="archived">Archived</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    <div class="inquiries-list">
+                      @for (inquiry of filteredInquiries(); track inquiry.id) {
+                        <div class="inquiry-card" [class.unread]="!inquiry.responded">
+                          <div class="inquiry-header">
+                            <div class="client-info">
+                              <h4>{{ inquiry.fullName }}</h4>
+                              <p>{{ inquiry.email }} • {{ inquiry.phone }}</p>
+                            </div>
+                            <div class="inquiry-meta">
+                              <div class="inquiry-date">{{ formatDate(inquiry.createdAt!) }}</div>
+                              <div class="inquiry-status" [class.responded]="inquiry.responded">
+                                {{ inquiry.responded ? 'Responded' : 'New' }}
+                              </div>
+                            </div>
+                          </div>
+                          
+                          <div class="inquiry-details">
+                            <div class="event-info">
+                              <strong>Event:</strong> {{ inquiry.eventDate }} • {{ inquiry.guestCount }} guests
+                              <br>
+                              <strong>Budget:</strong> {{ inquiry.budgetRange }}
+                              <br>
+                              <strong>Venue:</strong> {{ inquiry.venue }}, {{ inquiry.city }}
+                            </div>
+                            
+                            @if (inquiry.notes) {
+                              <div class="inquiry-notes">
+                                <strong>Notes:</strong> {{ inquiry.notes }}
+                              </div>
+                            }
+                          </div>
+                          
+                          <div class="inquiry-actions">
+                            <button (click)="respondToInquiry(inquiry)" class="btn-small btn-primary">
+                              {{ inquiry.responded ? 'Update Response' : 'Respond' }}
+                            </button>
+                            <button (click)="archiveInquiry(inquiry)" class="btn-small btn-outline">Archive</button>
+                            <button (click)="deleteInquiry(inquiry.id!)" class="btn-small btn-danger">Delete</button>
+                          </div>
+                        </div>
+                      }
+                    </div>
+                  </div>
+                }
+
+                <!-- File Manager Tab -->
+                @if (activeTab() === 'files') {
+                  <div class="tab-panel">
+                    <div class="panel-header">
+                      <h3>File Manager</h3>
+                      <div class="file-actions">
+                        <button (click)="refreshFileList()" class="btn btn-outline">Refresh</button>
+                        <button (click)="showUploadModal = !showUploadModal" class="btn btn-primary">
+                          {{ showUploadModal ? 'Hide Upload' : 'Upload Files' }}
+                        </button>
+                      </div>
+                    </div>
+
+                    @if (showUploadModal) {
+                      <div class="upload-section">
+                        <app-file-upload
+                          title="Upload New Files"
+                          description="Upload images for projects, blog posts, and other content"
+                          [multiple]="true"
+                          category="general"
+                          (filesUploaded)="onFilesUploaded($event)"
+                          (uploadError)="onUploadError($event)">
+                        </app-file-upload>
+                      </div>
+                    }
+
+                    <div class="file-browser">
+                      <div class="file-categories">
+                        <button 
+                          *ngFor="let category of fileCategories" 
+                          (click)="setFileCategory(category)"
+                          [class.active]="selectedFileCategory() === category"
+                          class="category-btn">
+                          {{ category | titlecase }}
+                        </button>
+                      </div>
+
+                      @if (isLoadingFiles()) {
+                        <div class="loading-files">
+                          <p>Loading files...</p>
+                        </div>
+                      } @else {
+                        <div class="files-grid">
+                          @for (file of filteredFiles(); track file.fullPath) {
+                            <div class="file-item">
+                              @if (isImageFile(file.name)) {
+                                <div class="file-preview">
+                                  <img [src]="file.url" [alt]="file.name" loading="lazy">
+                                </div>
+                              } @else {
+                                <div class="file-icon">📄</div>
+                              }
+                              
+                              <div class="file-info">
+                                <div class="file-name">{{ file.name }}</div>
+                                <div class="file-size">{{ formatFileSize(file.size) }}</div>
+                                <div class="file-date">{{ formatFileDate(file.timeCreated) }}</div>
+                              </div>
+                              
+                              <div class="file-actions">
+                                <button (click)="copyFileUrl(file.url)" class="btn-small btn-outline">Copy URL</button>
+                                <button (click)="deleteFile(file)" class="btn-small btn-danger">Delete</button>
+                              </div>
+                            </div>
+                          }
+                        </div>
+                      }
+                    </div>
+                  </div>
+                }
+
+                <!-- User Management Tab -->
+                @if (activeTab() === 'users') {
+                  <div class="tab-panel">
+                    <div class="panel-header">
+                      <h3>User Management</h3>
+                      <div class="user-actions">
+                        <button (click)="loadUsers()" class="btn btn-outline" [disabled]="isLoadingUsers()">
+                          {{ isLoadingUsers() ? 'Loading...' : 'Refresh Users' }}
+                        </button>
+                      </div>
+                    </div>
+
+                    @if (isLoadingUsers()) {
+                      <div class="loading-users">
+                        <p>Loading users...</p>
+                      </div>
+                    } @else {
+                      <div class="users-table">
+                        <div class="table-container">
+                          <table>
+                            <thead>
+                              <tr>
+                                <th>User</th>
+                                <th>Email</th>
+                                <th>Role</th>
+                                <th>Status</th>
+                                <th>Last Login</th>
+                                <th>Created</th>
+                                <th>Actions</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              @for (user of allUsers(); track user.uid) {
+                                <tr>
+                                  <td>
+                                    <div class="user-info">
+                                      @if (user.photoURL) {
+                                        <img [src]="user.photoURL" [alt]="user.displayName" class="user-avatar">
+                                      } @else {
+                                        <div class="user-avatar-placeholder">
+                                          {{ (user.displayName || user.email)[0].toUpperCase() }}
+                                        </div>
+                                      }
+                                      <div class="user-details">
+                                        <div class="user-name">{{ user.displayName || 'No name' }}</div>
+                                        <div class="user-id">ID: {{ user.uid.substring(0, 8) }}...</div>
+                                      </div>
+                                    </div>
+                                  </td>
+                                  <td>{{ user.email }}</td>
+                                  <td>
+                                    <span class="role-badge" [class]="getUserRoleBadgeClass(user.role)">
+                                      {{ user.role }}
+                                    </span>
+                                  </td>
+                                  <td>
+                                    <span class="status-badge" [class.active]="user.isActive">
+                                      {{ user.isActive ? 'Active' : 'Inactive' }}
+                                    </span>
+                                  </td>
+                                  <td>{{ formatLastLogin(user.lastLoginAt) }}</td>
+                                  <td>{{ user.createdAt.toLocaleDateString() }}</td>
+                                  <td>
+                                    <div class="user-actions-cell">
+                                      <select 
+                                        [value]="user.role" 
+                                        (change)="updateUserRole(user, $any($event.target).value)"
+                                        class="role-select">
+                                        <option value="user">User</option>
+                                        <option value="editor">Editor</option>
+                                        <option value="admin">Admin</option>
+                                      </select>
+                                      <button 
+                                        (click)="toggleUserStatus(user)" 
+                                        class="btn-small"
+                                        [class.btn-danger]="user.isActive"
+                                        [class.btn-success]="!user.isActive">
+                                        {{ user.isActive ? 'Deactivate' : 'Activate' }}
+                                      </button>
+                                    </div>
+                                  </td>
+                                </tr>
+                              }
+                              @empty {
+                                <tr>
+                                  <td colspan="7" class="empty-state">
+                                    <p>No users found. Users will appear here after they register.</p>
+                                  </td>
+                                </tr>
+                              }
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+
+                      <div class="user-permissions-info">
+                        <h4>Permission Levels</h4>
+                        <div class="permissions-grid">
+                          <div class="permission-card">
+                            <h5>👑 Admin</h5>
+                            <ul>
+                              <li>✅ Full content management</li>
+                              <li>✅ User management</li>
+                              <li>✅ Analytics & reporting</li>
+                              <li>✅ File management</li>
+                              <li>✅ Seasonal themes</li>
+                              <li>✅ Data export</li>
+                            </ul>
+                          </div>
+                          <div class="permission-card">
+                            <h5>✏️ Editor</h5>
+                            <ul>
+                              <li>✅ Content management</li>
+                              <li>👁️ View users only</li>
+                              <li>✅ View analytics</li>
+                              <li>✅ Upload files</li>
+                              <li>❌ Seasonal themes</li>
+                              <li>❌ Data export</li>
+                            </ul>
+                          </div>
+                          <div class="permission-card">
+                            <h5>👤 User</h5>
+                            <ul>
+                              <li>❌ No content management</li>
+                              <li>❌ No user access</li>
+                              <li>❌ No analytics</li>
+                              <li>❌ No file upload</li>
+                              <li>❌ No admin features</li>
+                              <li>👁️ Public content only</li>
+                            </ul>
+                          </div>
+                        </div>
+                      </div>
+                    }
+                  </div>
+                }
+
+                <!-- Analytics Tab -->
+                @if (activeTab() === 'analytics') {
+                  <div class="tab-panel">
+                    <div class="panel-header">
+                      <h3>Website Analytics</h3>
+                      <div class="analytics-period">
+                        <select (change)="setAnalyticsPeriod($event)">
+                          <option value="7">Last 7 days</option>
+                          <option value="30">Last 30 days</option>
+                          <option value="90">Last 3 months</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    <div class="analytics-grid">
+                      <div class="analytics-card">
+                        <h4>Page Views</h4>
+                        <div class="metric-value">{{ analyticsData().pageViews || 'N/A' }}</div>
+                        <div class="metric-change positive">+12% vs last period</div>
+                      </div>
+                      
+                      <div class="analytics-card">
+                        <h4>Unique Visitors</h4>
+                        <div class="metric-value">{{ analyticsData().uniqueVisitors || 'N/A' }}</div>
+                        <div class="metric-change positive">+8% vs last period</div>
+                      </div>
+                      
+                      <div class="analytics-card">
+                        <h4>Contact Form Submissions</h4>
+                        <div class="metric-value">{{ analyticsData().contactSubmissions || dashboardStats().recentInquiries }}</div>
+                        <div class="metric-change positive">+25% vs last period</div>
+                      </div>
+                      
+                      <div class="analytics-card">
+                        <h4>Avg. Session Duration</h4>
+                        <div class="metric-value">{{ analyticsData().avgSessionDuration || '2m 45s' }}</div>
+                        <div class="metric-change negative">-5% vs last period</div>
+                      </div>
+                    </div>
+
+                    <div class="popular-pages">
+                      <h4>Most Popular Pages</h4>
+                      <div class="pages-list">
+                        <div class="page-item">
+                          <span class="page-path">/services</span>
+                          <span class="page-views">1,234 views</span>
+                        </div>
+                        <div class="page-item">
+                          <span class="page-path">/portfolio</span>
+                          <span class="page-views">987 views</span>
+                        </div>
+                        <div class="page-item">
+                          <span class="page-path">/contact</span>
+                          <span class="page-views">756 views</span>
+                        </div>
+                        <div class="page-item">
+                          <span class="page-path">/blog</span>
+                          <span class="page-views">543 views</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="analytics-note">
+                      <p><strong>Note:</strong> Connect Google Analytics for detailed insights. Analytics data is currently simulated for demo purposes.</p>
+                    </div>
+                  </div>
+                }
               </div>
             </section>
           </div>
         </main>
-      }
     </div>
   `,
   styles: [`
@@ -767,41 +1208,6 @@ interface DashboardStats {
       margin-bottom: 2rem;
     }
 
-    .form-row {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 1rem;
-    }
-
-    .form-group {
-      margin-bottom: 1.5rem;
-    }
-
-    .form-group label {
-      display: block;
-      margin-bottom: 0.5rem;
-      color: var(--theme-text, #2D3436);
-      font-weight: 500;
-    }
-
-    .form-group input,
-    .form-group textarea,
-    .form-group select {
-      width: 100%;
-      padding: 0.75rem;
-      border: 2px solid #E9ECEF;
-      border-radius: 6px;
-      font-size: 1rem;
-      transition: border-color 0.2s ease;
-    }
-
-    .form-group input:focus,
-    .form-group textarea:focus,
-    .form-group select:focus {
-      outline: none;
-      border-color: var(--theme-primary, #7FB069);
-    }
-
     .checkbox-group {
       display: flex;
       align-items: center;
@@ -818,82 +1224,7 @@ interface DashboardStats {
       width: auto;
     }
 
-    .form-actions {
-      display: flex;
-      gap: 1rem;
-      margin-top: 2rem;
-    }
-
-    .error-message {
-      color: #DC3545;
-      font-size: 0.875rem;
-      margin-top: 0.25rem;
-      display: block;
-    }
-
-    .error-alert {
-      background: #F8D7DA;
-      color: #721C24;
-      padding: 0.75rem;
-      border-radius: 6px;
-      margin-bottom: 1rem;
-    }
-
-    /* Buttons */
-    .btn {
-      padding: 0.75rem 1.5rem;
-      border-radius: 6px;
-      font-weight: 500;
-      text-decoration: none;
-      border: 2px solid transparent;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      display: inline-block;
-      text-align: center;
-    }
-
-    .btn-primary {
-      background: var(--theme-primary, #7FB069);
-      color: white;
-      border-color: var(--theme-primary, #7FB069);
-    }
-
-    .btn-primary:hover:not(:disabled) {
-      background: var(--theme-primary-dark, #6A9B56);
-      border-color: var(--theme-primary-dark, #6A9B56);
-    }
-
-    .btn-primary:disabled {
-      opacity: 0.6;
-      cursor: not-allowed;
-    }
-
-    .btn-outline {
-      background: transparent;
-      color: var(--theme-primary, #7FB069);
-      border-color: var(--theme-primary, #7FB069);
-    }
-
-    .btn-outline:hover {
-      background: var(--theme-primary, #7FB069);
-      color: white;
-    }
-
-    .btn-small {
-      padding: 0.5rem 1rem;
-      font-size: 0.875rem;
-    }
-
-    .btn-danger {
-      background: #DC3545;
-      color: white;
-      border-color: #DC3545;
-    }
-
-    .btn-danger:hover {
-      background: #C82333;
-      border-color: #C82333;
-    }
+    /* Buttons - using shared styles */
 
     /* Data Tables */
     .data-table {
@@ -922,23 +1253,6 @@ interface DashboardStats {
 
     .data-table tbody tr:hover {
       background: white;
-    }
-
-    .status-badge {
-      padding: 0.25rem 0.75rem;
-      border-radius: 20px;
-      font-size: 0.8rem;
-      font-weight: 500;
-    }
-
-    .status-badge.published {
-      background: #D4EDDA;
-      color: #155724;
-    }
-
-    .action-buttons {
-      display: flex;
-      gap: 0.5rem;
     }
 
     /* Services Grid */
@@ -1091,7 +1405,7 @@ interface DashboardStats {
       text-shadow: 0 1px 2px rgba(0,0,0,0.3);
     }
 
-    /* Mobile Responsive */
+    /* Admin-specific mobile styles */
     @media (max-width: 768px) {
       .header-content {
         flex-direction: column;
@@ -1111,10 +1425,6 @@ interface DashboardStats {
       .tab-btn {
         flex: 1;
         min-width: 150px;
-      }
-
-      .form-row {
-        grid-template-columns: 1fr;
       }
 
       .panel-header {
@@ -1141,6 +1451,654 @@ interface DashboardStats {
         justify-content: center;
       }
     }
+
+    /* Overview Tab Styles */
+    .overview-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+      margin-bottom: 2rem;
+    }
+
+    .quick-stats .stats-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    .stat-card {
+      background: white;
+      padding: 1.5rem;
+      border-radius: 12px;
+      text-align: center;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .stat-number {
+      font-size: 2rem;
+      font-weight: bold;
+      color: var(--theme-primary, #7FB069);
+    }
+
+    .stat-label {
+      color: var(--theme-text-secondary, #636E72);
+      margin-top: 0.5rem;
+    }
+
+    .stat-change {
+      font-size: 0.85rem;
+      color: #28A745;
+      margin-top: 0.25rem;
+    }
+
+    .recent-activity {
+      background: white;
+      padding: 1.5rem;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .activity-list {
+      margin-top: 1rem;
+    }
+
+    .activity-item {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 1rem 0;
+      border-bottom: 1px solid #F1F3F4;
+    }
+
+    .activity-item:last-child {
+      border-bottom: none;
+    }
+
+    .activity-icon {
+      font-size: 1.5rem;
+    }
+
+    .activity-title {
+      font-weight: 500;
+      color: var(--theme-text, #2D3436);
+    }
+
+    .activity-time {
+      font-size: 0.85rem;
+      color: var(--theme-text-secondary, #636E72);
+    }
+
+    /* Inquiries Tab Styles */
+    .inquiry-filters {
+      display: flex;
+      gap: 1rem;
+    }
+
+    .inquiry-filters select {
+      padding: 0.5rem;
+      border: 1px solid #DDD;
+      border-radius: 6px;
+      background: white;
+    }
+
+    .inquiries-list {
+      margin-top: 1.5rem;
+    }
+
+    .inquiry-card {
+      background: white;
+      border: 1px solid #E9ECEF;
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin-bottom: 1rem;
+      transition: all 0.3s ease;
+    }
+
+    .inquiry-card.unread {
+      border-left: 4px solid var(--theme-primary, #7FB069);
+      background: #F8FFF9;
+    }
+
+    .inquiry-card:hover {
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    .inquiry-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 1rem;
+    }
+
+    .client-info h4 {
+      margin: 0 0 0.25rem 0;
+      color: var(--theme-text, #2D3436);
+    }
+
+    .client-info p {
+      margin: 0;
+      color: var(--theme-text-secondary, #636E72);
+      font-size: 0.9rem;
+    }
+
+    .inquiry-meta {
+      text-align: right;
+    }
+
+    .inquiry-date {
+      font-size: 0.85rem;
+      color: var(--theme-text-secondary, #636E72);
+    }
+
+    .inquiry-status {
+      padding: 0.25rem 0.75rem;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 500;
+      margin-top: 0.5rem;
+      background: #FEF3C7;
+      color: #92400E;
+    }
+
+    .inquiry-status.responded {
+      background: #D1FAE5;
+      color: #065F46;
+    }
+
+    .inquiry-details {
+      margin-bottom: 1rem;
+      line-height: 1.6;
+    }
+
+    .event-info {
+      background: #F8F9FA;
+      padding: 1rem;
+      border-radius: 8px;
+      margin-bottom: 0.5rem;
+    }
+
+    .inquiry-notes {
+      font-style: italic;
+      color: var(--theme-text-secondary, #636E72);
+    }
+
+    .inquiry-actions {
+      display: flex;
+      gap: 0.75rem;
+      margin-top: 1rem;
+    }
+
+    /* File Manager Tab Styles */
+    .file-actions {
+      display: flex;
+      gap: 1rem;
+    }
+
+    .upload-section {
+      margin: 1.5rem 0;
+      padding: 1.5rem;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .file-browser {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      overflow: hidden;
+    }
+
+    .file-categories {
+      display: flex;
+      background: #F8F9FA;
+      border-bottom: 1px solid #E9ECEF;
+    }
+
+    .category-btn {
+      padding: 1rem 1.5rem;
+      border: none;
+      background: transparent;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .category-btn.active {
+      background: var(--theme-primary, #7FB069);
+      color: white;
+    }
+
+    .category-btn:hover {
+      background: rgba(127, 176, 105, 0.1);
+    }
+
+    .loading-files {
+      padding: 3rem;
+      text-align: center;
+      color: var(--theme-text-secondary, #636E72);
+    }
+
+    .files-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 1rem;
+      padding: 1.5rem;
+    }
+
+    .file-item {
+      border: 1px solid #E9ECEF;
+      border-radius: 8px;
+      overflow: hidden;
+      transition: all 0.3s ease;
+    }
+
+    .file-item:hover {
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    .file-preview {
+      height: 150px;
+      overflow: hidden;
+      background: #F8F9FA;
+    }
+
+    .file-preview img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .file-icon {
+      height: 150px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 3rem;
+      background: #F8F9FA;
+    }
+
+    .file-info {
+      padding: 1rem;
+    }
+
+    .file-name {
+      font-weight: 500;
+      margin-bottom: 0.5rem;
+      color: var(--theme-text, #2D3436);
+      word-break: break-word;
+    }
+
+    .file-size, .file-date {
+      font-size: 0.85rem;
+      color: var(--theme-text-secondary, #636E72);
+      margin-bottom: 0.25rem;
+    }
+
+    .file-actions {
+      padding: 0 1rem 1rem;
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    /* Analytics Tab Styles */
+    .analytics-period {
+      display: flex;
+      gap: 1rem;
+    }
+
+    .analytics-period select {
+      padding: 0.5rem;
+      border: 1px solid #DDD;
+      border-radius: 6px;
+      background: white;
+    }
+
+    .analytics-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+      margin: 1.5rem 0;
+    }
+
+    .analytics-card {
+      background: white;
+      padding: 1.5rem;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+
+    .analytics-card h4 {
+      margin: 0 0 1rem 0;
+      color: var(--theme-text-secondary, #636E72);
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .metric-value {
+      font-size: 2.5rem;
+      font-weight: bold;
+      color: var(--theme-primary, #7FB069);
+      margin-bottom: 0.5rem;
+    }
+
+    .metric-change {
+      font-size: 0.85rem;
+      font-weight: 500;
+    }
+
+    .metric-change.positive {
+      color: #28A745;
+    }
+
+    .metric-change.negative {
+      color: #DC3545;
+    }
+
+    .popular-pages {
+      background: white;
+      padding: 1.5rem;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      margin-top: 1.5rem;
+    }
+
+    .popular-pages h4 {
+      margin: 0 0 1rem 0;
+      color: var(--theme-text, #2D3436);
+    }
+
+    .pages-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .page-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.75rem;
+      background: #F8F9FA;
+      border-radius: 8px;
+    }
+
+    .page-path {
+      font-family: monospace;
+      color: var(--theme-text, #2D3436);
+      font-weight: 500;
+    }
+
+    .page-views {
+      color: var(--theme-text-secondary, #636E72);
+      font-size: 0.9rem;
+    }
+
+    .analytics-note {
+      background: #FEF3C7;
+      border: 1px solid #FCD34D;
+      border-radius: 8px;
+      padding: 1rem;
+      margin-top: 1.5rem;
+    }
+
+    .analytics-note p {
+      margin: 0;
+      color: #92400E;
+    }
+
+    /* Rating Display */
+    .rating-display {
+      display: flex;
+      gap: 0.1rem;
+    }
+
+    .status-badge {
+      padding: 0.25rem 0.75rem;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 500;
+      background: #E5E7EB;
+      color: #6B7280;
+    }
+
+    .status-badge.featured {
+      background: #FCD34D;
+      color: #92400E;
+    }
+
+    /* User Management Styles */
+    .user-actions {
+      display: flex;
+      gap: 1rem;
+    }
+
+    .loading-users {
+      padding: 3rem;
+      text-align: center;
+      color: var(--theme-text-secondary, #636E72);
+    }
+
+    .users-table {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      overflow: hidden;
+      margin-bottom: 2rem;
+    }
+
+    .table-container {
+      overflow-x: auto;
+    }
+
+    .users-table table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .users-table th,
+    .users-table td {
+      padding: 1rem;
+      text-align: left;
+      border-bottom: 1px solid #E9ECEF;
+    }
+
+    .users-table th {
+      background: var(--theme-primary, #7FB069);
+      color: white;
+      font-weight: 600;
+      position: sticky;
+      top: 0;
+    }
+
+    .users-table tbody tr:hover {
+      background: #F8F9FA;
+    }
+
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .user-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+
+    .user-avatar-placeholder {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: var(--theme-primary, #7FB069);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      font-size: 1.1rem;
+    }
+
+    .user-details {
+      min-width: 0;
+    }
+
+    .user-name {
+      font-weight: 500;
+      color: var(--theme-text, #2D3436);
+    }
+
+    .user-id {
+      font-size: 0.8rem;
+      color: var(--theme-text-secondary, #636E72);
+      font-family: monospace;
+    }
+
+    .role-badge {
+      padding: 0.25rem 0.75rem;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .role-badge.role-admin {
+      background: #DC3545;
+      color: white;
+    }
+
+    .role-badge.role-editor {
+      background: #FFC107;
+      color: #212529;
+    }
+
+    .role-badge.role-user {
+      background: #6C757D;
+      color: white;
+    }
+
+    .status-badge.active {
+      background: #28A745;
+      color: white;
+    }
+
+    .user-actions-cell {
+      display: flex;
+      gap: 0.5rem;
+      align-items: center;
+    }
+
+    .role-select {
+      padding: 0.25rem 0.5rem;
+      border: 1px solid #DDD;
+      border-radius: 4px;
+      font-size: 0.85rem;
+      background: white;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 3rem;
+      color: var(--theme-text-secondary, #636E72);
+    }
+
+    .user-permissions-info {
+      background: white;
+      padding: 1.5rem;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .user-permissions-info h4 {
+      margin: 0 0 1rem 0;
+      color: var(--theme-text, #2D3436);
+    }
+
+    .permissions-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1rem;
+    }
+
+    .permission-card {
+      background: #F8F9FA;
+      padding: 1rem;
+      border-radius: 8px;
+      border: 1px solid #E9ECEF;
+    }
+
+    .permission-card h5 {
+      margin: 0 0 0.75rem 0;
+      color: var(--theme-text, #2D3436);
+      font-size: 0.9rem;
+    }
+
+    .permission-card ul {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .permission-card li {
+      padding: 0.25rem 0;
+      font-size: 0.85rem;
+      color: var(--theme-text-secondary, #636E72);
+    }
+
+    /* Responsive for new tabs */
+    @media (max-width: 768px) {
+      .overview-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .inquiry-header {
+        flex-direction: column;
+        gap: 1rem;
+      }
+
+      .inquiry-meta {
+        text-align: left;
+      }
+
+      .files-grid {
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      }
+
+      .analytics-grid {
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      }
+
+      .inquiry-actions, .file-actions, .analytics-period {
+        flex-wrap: wrap;
+      }
+
+      .user-actions-cell {
+        flex-direction: column;
+        gap: 0.25rem;
+        align-items: stretch;
+      }
+
+      .permissions-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .users-table th,
+      .users-table td {
+        padding: 0.5rem;
+        font-size: 0.85rem;
+      }
+
+      .user-info {
+        flex-direction: column;
+        text-align: center;
+        gap: 0.5rem;
+      }
+    }
   `]
 })
 export class DashboardComponent implements OnInit {
@@ -1148,30 +2106,39 @@ export class DashboardComponent implements OnInit {
   private router = inject(Router);
   private seasonalThemeService = inject(SeasonalThemeService);
   private firestoreService = inject(FirestoreService);
-
-  // Authentication state
-  isAuthenticated = signal(false);
-  currentUser = signal<AdminUser | null>(null);
-  isLoggingIn = signal(false);
-  loginError = signal<string | null>(null);
+  private storageService = inject(StorageService);
+  private analyticsService = inject(AnalyticsService);
+  protected authService = inject(AuthService);
 
   // Forms
-  loginForm: FormGroup;
   projectForm: FormGroup;
   serviceForm: FormGroup;
   blogForm: FormGroup;
+  testimonialForm: FormGroup;
 
   // UI state
-  activeTab = signal('projects');
+  activeTab = signal('overview');
+  
+  // File upload properties
+  selectedFiles: FileList | null = null;
+  uploadProgress = signal(0);
+  isUploading = signal(false);
+  uploadedImageUrls = signal<string[]>([]);
+  uploadError = signal<string | null>(null);
   showProjectForm = false;
   showServiceForm = false;
   showBlogForm = false;
+  showTestimonialForm = false;
+  showUploadModal = false;
 
   // Data
   projects = signal<Project[]>([]);
   services = signal<Service[]>([]);
   blogPosts = signal<BlogPost[]>([]);
   testimonials = signal<Testimonial[]>([]);
+  allUsers = signal<UserProfile[]>([]);
+  isLoadingUsers = signal(false);
+  selectedUser = signal<UserProfile | null>(null);
 
   // Dashboard stats
   dashboardStats = computed(() => ({
@@ -1183,22 +2150,85 @@ export class DashboardComponent implements OnInit {
     monthlyViews: 8450
   }));
 
+  // File management
+  isLoadingFiles = signal(false);
+  uploadedFiles = signal<any[]>([]);
+  selectedFileCategory = signal('all');
+  fileCategories = ['all', 'projects', 'blog', 'general'];
+  
+  // Inquiries management
+  inquiries = signal<any[]>([
+    {
+      id: '1',
+      fullName: 'Maria Rodriguez',
+      email: 'maria@example.com',
+      phone: '555-0123',
+      eventDate: '2024-06-15',
+      guestCount: 100,
+      budgetRange: '$5,000 - $10,000',
+      venue: 'Garden Paradise',
+      city: 'Miami',
+      notes: 'Looking for elegant outdoor wedding setup',
+      createdAt: new Date('2024-01-15'),
+      responded: false
+    },
+    {
+      id: '2',
+      fullName: 'John Smith',
+      email: 'john@example.com',
+      phone: '555-0456',
+      eventDate: '2024-07-20',
+      guestCount: 75,
+      budgetRange: '$3,000 - $5,000',
+      venue: 'City Hall',
+      city: 'Tampa',
+      notes: 'Corporate event with professional catering',
+      createdAt: new Date('2024-01-10'),
+      responded: true
+    }
+  ]);
+  
+  inquiryFilter = signal('all');
+  
+  filteredInquiries = computed(() => {
+    const filter = this.inquiryFilter();
+    if (filter === 'all') return this.inquiries();
+    if (filter === 'new') return this.inquiries().filter(i => !i.responded);
+    if (filter === 'responded') return this.inquiries().filter(i => i.responded);
+    return this.inquiries();
+  });
+
+  // Analytics
+  analyticsData = signal({
+    pageViews: 12450,
+    uniqueVisitors: 8320,
+    contactSubmissions: 24,
+    avgSessionDuration: '2m 45s'
+  });
+
+  filteredFiles = computed(() => {
+    const category = this.selectedFileCategory();
+    if (category === 'all') return this.uploadedFiles();
+    return this.uploadedFiles().filter(file => file.category === category);
+  });
+
   // Tab configuration
   tabs = [
+    { id: 'overview', label: 'Overview' },
     { id: 'projects', label: 'Projects' },
     { id: 'services', label: 'Services' },
     { id: 'blog', label: 'Blog Posts' },
+    { id: 'testimonials', label: 'Testimonials' },
+    { id: 'inquiries', label: 'Inquiries' },
+    { id: 'users', label: 'User Management' },
+    { id: 'files', label: 'File Manager' },
+    { id: 'analytics', label: 'Analytics' },
     { id: 'seasonal', label: 'Seasonal Themes' }
   ];
 
   seasons = ['spring', 'summer', 'fall', 'winter'];
 
   constructor() {
-    this.loginForm = this.fb.group({
-      email: ['', [Validators.required, Validators.email]],
-      password: ['', Validators.required]
-    });
-
     this.projectForm = this.fb.group({
       title: ['', Validators.required],
       slug: ['', Validators.required],
@@ -1224,44 +2254,90 @@ export class DashboardComponent implements OnInit {
       coverImage: ['', Validators.required],
       featured: [false]
     });
+
+    this.testimonialForm = this.fb.group({
+      author: ['', Validators.required],
+      event: [''],
+      quote: ['', Validators.required],
+      rating: [5, [Validators.required, Validators.min(1), Validators.max(5)]],
+      featured: [false]
+    });
   }
 
   ngOnInit(): void {
     this.loadSampleData();
+    this.loadTestimonials();
+    this.loadUsers();
+  }
+
+  // User Management methods
+  async loadUsers(): Promise<void> {
+    if (!this.authService.canManageUsers()) {
+      return;
+    }
+    
+    this.isLoadingUsers.set(true);
+    try {
+      const users = await this.authService.getAllUsers();
+      this.allUsers.set(users);
+    } catch (error) {
+      console.error('Error loading users:', error);
+    } finally {
+      this.isLoadingUsers.set(false);
+    }
+  }
+
+  async updateUserRole(user: UserProfile, newRole: 'admin' | 'editor' | 'user'): Promise<void> {
+    if (!this.authService.canManageUsers()) {
+      alert('You do not have permission to manage users');
+      return;
+    }
+
+    try {
+      await this.authService.updateUserRole(user.uid, newRole);
+      await this.loadUsers(); // Refresh the list
+      alert(`Successfully updated ${user.displayName || user.email} to ${newRole}`);
+    } catch (error) {
+      console.error('Error updating user role:', error);
+      alert('Failed to update user role. Please try again.');
+    }
+  }
+
+  async toggleUserStatus(user: UserProfile): Promise<void> {
+    // Implementation would go here for activating/deactivating users
+    console.log('Toggle user status for:', user.email);
+  }
+
+  getUserRoleBadgeClass(role: string): string {
+    switch (role) {
+      case 'admin': return 'role-admin';
+      case 'editor': return 'role-editor';
+      default: return 'role-user';
+    }
+  }
+
+  formatLastLogin(date: Date): string {
+    const now = new Date();
+    const diffInHours = Math.floor((now.getTime() - date.getTime()) / (1000 * 60 * 60));
+    
+    if (diffInHours < 1) return 'Just now';
+    if (diffInHours < 24) return `${diffInHours} hour(s) ago`;
+    if (diffInHours < 168) return `${Math.floor(diffInHours / 24)} day(s) ago`;
+    return date.toLocaleDateString();
   }
 
   // Authentication methods
-  login(): void {
-    if (this.loginForm.invalid) return;
-
-    this.isLoggingIn.set(true);
-    this.loginError.set(null);
-
-    const { email, password } = this.loginForm.value;
-
-    // Demo authentication
-    setTimeout(() => {
-      if (email === 'admin@creadevents.com' && password === 'admin123') {
-        this.isAuthenticated.set(true);
-        this.currentUser.set({
-          id: '1',
-          email: 'admin@creadevents.com',
-          name: 'Admin User',
-          role: 'admin',
-          lastLogin: new Date()
-        });
-        this.seasonalThemeService.applyThemeToDocument();
-      } else {
-        this.loginError.set('Invalid email or password. Please use the demo credentials.');
-      }
-      this.isLoggingIn.set(false);
-    }, 1000);
+  async logout(): Promise<void> {
+    try {
+      await this.authService.signOut();
+    } catch (error) {
+      console.error('Error during logout:', error);
+    }
   }
 
-  logout(): void {
-    this.isAuthenticated.set(false);
-    this.currentUser.set(null);
-    this.loginForm.reset();
+  // Navigation methods
+  navigateToAnalytics(): void {
+    this.router.navigate(['/admin/analytics']);
   }
 
   // Navigation methods
@@ -1482,9 +2558,9 @@ export class DashboardComponent implements OnInit {
         location: 'Miami Beach, FL',
         date: new Date('2024-04-15'),
         eventDate: new Date('2024-04-15'),
-        heroImage: '/assets/fb_4888_8929514942_2_48x2_48.jpg',
-        gallery: ['/assets/fb_4888_8929514942_2_48x2_48.jpg'],
-        imageUrls: ['/assets/fb_4888_8929514942_2_48x2_48.jpg'],
+        heroImage: '/assets/logo1.jpg',
+        gallery: ['/assets/logo1.jpg'],
+        imageUrls: ['/assets/logo1.jpg'],
         category: 'wedding',
         featured: true,
         createdAt: new Date('2024-03-01'),
@@ -1529,5 +2605,162 @@ export class DashboardComponent implements OnInit {
         updatedAt: new Date('2024-02-15')
       }
     ]);
+  }
+
+  // Testimonial management methods
+  saveTestimonial(): void {
+    if (this.testimonialForm.valid) {
+      const testimonialData = this.testimonialForm.value;
+      const testimonial: Testimonial = {
+        ...testimonialData,
+        id: Date.now().toString(),
+        createdAt: new Date(),
+        updatedAt: new Date()
+      };
+
+      this.firestoreService.addTestimonial(testimonial).subscribe({
+        next: () => {
+          this.loadTestimonials();
+          this.resetTestimonialForm();
+          this.showTestimonialForm = false;
+        },
+        error: (error) => console.error('Error saving testimonial:', error)
+      });
+    }
+  }
+
+  resetTestimonialForm(): void {
+    this.testimonialForm.reset({
+      author: '',
+      event: '',
+      quote: '',
+      rating: 5,
+      featured: false
+    });
+  }
+
+  editTestimonial(testimonial: Testimonial): void {
+    this.testimonialForm.patchValue({
+      author: testimonial.author,
+      event: testimonial.event || '',
+      quote: testimonial.quote,
+      rating: testimonial.rating || 5,
+      featured: testimonial.featured || false
+    });
+    this.showTestimonialForm = true;
+  }
+
+  deleteTestimonial(id: string): void {
+    if (confirm('Are you sure you want to delete this testimonial?')) {
+      this.firestoreService.deleteTestimonial(id).subscribe({
+        next: () => this.loadTestimonials(),
+        error: (error) => console.error('Error deleting testimonial:', error)
+      });
+    }
+  }
+
+  getStars(rating: number): number[] {
+    return Array(rating).fill(0);
+  }
+
+  // Load testimonials from Firestore
+  private loadTestimonials(): void {
+    this.firestoreService.getTestimonials().subscribe({
+      next: (testimonials) => this.testimonials.set(testimonials),
+      error: (error) => console.error('Error loading testimonials:', error)
+    });
+  }
+
+  // Inquiries management methods
+  filterInquiries(event: any): void {
+    this.inquiryFilter.set(event.target.value);
+  }
+
+  respondToInquiry(inquiry: any): void {
+    // In a real app, this would open a response modal or navigate to a detailed view
+    inquiry.responded = true;
+    console.log('Responding to inquiry:', inquiry);
+  }
+
+  archiveInquiry(inquiry: any): void {
+    inquiry.archived = true;
+    console.log('Archived inquiry:', inquiry);
+  }
+
+  deleteInquiry(id: string): void {
+    if (confirm('Are you sure you want to delete this inquiry?')) {
+      const inquiries = this.inquiries().filter(i => i.id !== id);
+      this.inquiries.set(inquiries);
+    }
+  }
+
+  // File management methods
+  refreshFileList(): void {
+    this.isLoadingFiles.set(true);
+    this.storageService.listFiles().then((files) => {
+      this.uploadedFiles.set(files);
+      this.isLoadingFiles.set(false);
+    }).catch((error) => {
+      console.error('Error loading files:', error);
+      this.isLoadingFiles.set(false);
+    });
+  }
+
+  setFileCategory(category: string): void {
+    this.selectedFileCategory.set(category);
+  }
+
+  onFilesUploaded(files: any[]): void {
+    console.log('Files uploaded:', files);
+    this.refreshFileList();
+    this.showUploadModal = false;
+  }
+
+  onUploadError(error: string): void {
+    console.error('Upload error:', error);
+  }
+
+  isImageFile(fileName: string): boolean {
+    const imageExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.webp'];
+    return imageExtensions.some(ext => fileName.toLowerCase().endsWith(ext));
+  }
+
+  formatFileSize(bytes: number): string {
+    if (bytes === 0) return '0 Bytes';
+    const k = 1024;
+    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+  }
+
+  formatFileDate(timeCreated: string): string {
+    return this.formatDate(new Date(timeCreated));
+  }
+
+  copyFileUrl(url: string): void {
+    navigator.clipboard.writeText(url).then(() => {
+      console.log('URL copied to clipboard');
+    });
+  }
+
+  deleteFile(file: any): void {
+    if (confirm('Are you sure you want to delete this file?')) {
+      this.storageService.deleteFile(file.fullPath).subscribe({
+        next: () => {
+          console.log('File deleted successfully');
+          this.refreshFileList();
+        },
+        error: (error: any) => {
+          console.error('Error deleting file:', error);
+        }
+      });
+    }
+  }
+
+  // Analytics methods
+  setAnalyticsPeriod(event: any): void {
+    const period = event.target.value;
+    console.log('Analytics period changed to:', period);
+    // In a real app, this would fetch new analytics data
   }
 }

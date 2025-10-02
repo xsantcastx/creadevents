@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CreaDEvents Database Setup</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .step {
+            background: #f8f9fa;
+            padding: 20px;
+            margin: 20px 0;
+            border-left: 4px solid #007bff;
+            border-radius: 5px;
+        }
+        .success {
+            background: #d4edda;
+            border-left-color: #28a745;
+            color: #155724;
+        }
+        .error {
+            background: #f8d7da;
+            border-left-color: #dc3545;
+            color: #721c24;
+        }
+        .warning {
+            background: #fff3cd;
+            border-left-color: #ffc107;
+            color: #856404;
+        }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        button:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+        }
+        .code {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            padding: 10px;
+            font-family: monospace;
+            font-size: 14px;
+            margin: 10px 0;
+        }
+        #output {
+            background: #000;
+            color: #00ff00;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: monospace;
+            font-size: 14px;
+            min-height: 100px;
+            margin: 10px 0;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔥 CreaDEvents Database Setup</h1>
+        
+        <div class="step warning">
+            <h3>⚠️ Prerequisites</h3>
+            <p><strong>Before using this tool:</strong></p>
+            <ol>
+                <li>Go to <a href="https://console.firebase.google.com" target="_blank">Firebase Console</a></li>
+                <li>Select your CreaDEvents project</li>
+                <li>Navigate to <strong>Firestore Database</strong> → <strong>Create database</strong></li>
+                <li>Choose <strong>"Start in production mode"</strong> for production setup</li>
+                <li>Select your preferred location</li>
+                <li>Click <strong>"Done"</strong></li>
+                <li><strong>🔑 IMPORTANT:</strong> <a href="http://localhost:56170" target="_blank">Login to your app first!</a></li>
+            </ol>
+            <p>✅ <strong>After creating the database and logging in, come back here!</strong></p>
+        </div>
+
+        <div class="step">
+            <h3>🔧 Environment Configuration</h3>
+            <p>Choose your environment:</p>
+            <button onclick="switchToProduction()">Use Production Config</button>
+            <button onclick="switchToDevelopment()">Use Development Config</button>
+            <div id="currentEnv" style="margin-top: 10px; font-weight: bold;">Current: Production</div>
+        </div>
+
+        <div class="step">
+            <h3>🌱 Step 1: Seed Database</h3>
+            <p>This will create sample projects, services, testimonials, and blog posts.</p>
+            <button onclick="seedDatabase()">Seed Database with Sample Data</button>
+        </div>
+
+        <div class="step">
+            <h3>👑 Step 2: Create Admin User</h3>
+            <p>First, make sure you're logged into your app, then click this button.</p>
+            <button onclick="createAdminUser()">Make Me Admin</button>
+        </div>
+
+        <div class="step">
+            <h3>📊 Step 3: Verify Setup</h3>
+            <button onclick="verifySetup()">Check Database & Permissions</button>
+        </div>
+
+        <div id="output"></div>
+    </div>
+
+    <!-- Load Firebase from your app -->
+    <script type="module">
+        // Import Firebase from your Angular app
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+        import { getFirestore, collection, addDoc, doc, setDoc, getDocs } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+        import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+
+        // Firebase configurations
+        const developmentConfig = {
+            apiKey: "AIzaSyAUz7FJezTXW-k4SxVKWPkxtPJ1h6s4xTQ",
+            authDomain: "creadevents-437a8.firebaseapp.com",
+            projectId: "creadevents-437a8",
+            storageBucket: "creadevents-437a8.firebasestorage.app",
+            messagingSenderId: "256034995785",
+            appId: "1:256034995785:web:813f895fa2a4754de0c998",
+            measurementId: "G-0R00HG63S1"
+        };
+
+        // Using same project for production (common for smaller projects)
+        const productionConfig = {
+            apiKey: "AIzaSyAUz7FJezTXW-k4SxVKWPkxtPJ1h6s4xTQ",
+            authDomain: "creadevents-437a8.firebaseapp.com",
+            projectId: "creadevents-437a8",
+            storageBucket: "creadevents-437a8.firebasestorage.app",
+            messagingSenderId: "256034995785",
+            appId: "1:256034995785:web:813f895fa2a4754de0c998",
+            measurementId: "G-0R00HG63S1"
+        };
+
+        // Start with production config since that's what you want
+        let currentConfig = productionConfig;
+        let currentEnvironment = 'production';
+
+        // Initialize Firebase
+        let app = initializeApp(currentConfig);
+        let db = getFirestore(app);
+        let auth = getAuth(app);
+
+        // Make functions available globally
+        window.db = db;
+        window.auth = auth;
+        window.collection = collection;
+        window.addDoc = addDoc;
+        window.doc = doc;
+        window.setDoc = setDoc;
+        window.getDocs = getDocs;
+
+        function log(message, type = 'info') {
+            const output = document.getElementById('output');
+            const timestamp = new Date().toLocaleTimeString();
+            const color = type === 'error' ? '#ff6b6b' : type === 'success' ? '#51cf66' : '#00ff00';
+            output.innerHTML += `<div style="color: ${color}">[${timestamp}] ${message}</div>`;
+            output.scrollTop = output.scrollHeight;
+        }
+
+        window.log = log;
+
+        // Environment switching functions
+        window.switchToProduction = function() {
+            currentConfig = productionConfig;
+            currentEnvironment = 'production';
+            
+            // Reinitialize Firebase
+            app = initializeApp(currentConfig);
+            db = getFirestore(app);
+            auth = getAuth(app);
+            
+            window.db = db;
+            window.auth = auth;
+            
+            document.getElementById('currentEnv').textContent = 'Current: Production';
+            log('🔄 Switched to Production environment', 'success');
+        };
+
+        window.switchToDevelopment = function() {
+            currentConfig = developmentConfig;
+            currentEnvironment = 'development';
+            
+            // Reinitialize Firebase
+            app = initializeApp(currentConfig);
+            db = getFirestore(app);
+            auth = getAuth(app);
+            
+            window.db = db;
+            window.auth = auth;
+            
+            document.getElementById('currentEnv').textContent = 'Current: Development';
+            log('🔄 Switched to Development environment', 'success');
+        };
+
+        // Check auth state - try to connect to Angular app's Firebase first
+        let firebaseFromAngular = null;
+        
+        // Try to get Firebase from your Angular app (if running on same domain)
+        try {
+            // Check if we can access the parent window's Firebase
+            if (window.parent && window.parent !== window) {
+                firebaseFromAngular = window.parent.firebase;
+            }
+            // Or check for global Firebase
+            if (!firebaseFromAngular && window.firebase) {
+                firebaseFromAngular = window.firebase;
+            }
+        } catch (e) {
+            // Cross-origin or access issues - we'll use our own Firebase
+        }
+
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                log(`✅ Logged in as: ${user.email}`, 'success');
+                log(`🔑 User ID: ${user.uid}`, 'info');
+            } else {
+                log('❌ Not logged in. Please log into your app first.', 'error');
+                log('💡 Make sure to login at: http://localhost:56170/auth/login', 'warning');
+            }
+        });
+
+        window.seedDatabase = async function() {
+            log('🌱 Starting database seeding...');
+            
+            try {
+                // Sample Projects
+                log('📁 Creating sample projects...');
+                const projects = [
+                    {
+                        title: "Elegant Spring Wedding",
+                        slug: "elegant-spring-wedding",
+                        eventType: "wedding",
+                        season: ["spring"],
+                        palette: ["#FFB6C1", "#98FB98", "#F0F8FF"],
+                        location: "Miami, FL",
+                        date: new Date("2024-04-15"),
+                        heroImage: "/assets/wedding-spring.jpg",
+                        gallery: ["/assets/wedding-spring-1.jpg", "/assets/wedding-spring-2.jpg"],
+                        description: "A beautiful spring wedding with soft pastels and garden florals.",
+                        client: "Sarah & Michael",
+                        featured: true,
+                        createdAt: new Date(),
+                        updatedAt: new Date()
+                    },
+                    {
+                        title: "Corporate Summer Event",
+                        slug: "corporate-summer-event",
+                        eventType: "corporate",
+                        season: ["summer"],
+                        palette: ["#4169E1", "#FFD700", "#FFFFFF"],
+                        location: "Orlando, FL",
+                        date: new Date("2024-07-20"),
+                        heroImage: "/assets/corporate-summer.jpg",
+                        gallery: ["/assets/corporate-1.jpg", "/assets/corporate-2.jpg"],
+                        description: "Professional corporate event with modern blue and gold theme.",
+                        client: "TechCorp Inc",
+                        featured: false,
+                        createdAt: new Date(),
+                        updatedAt: new Date()
+                    }
+                ];
+
+                for (const project of projects) {
+                    await addDoc(collection(db, 'projects'), project);
+                }
+                log('✅ Created 2 sample projects', 'success');
+
+                // Sample Services
+                log('⚙️ Creating sample services...');
+                const services = [
+                    {
+                        title: "Wedding Florals",
+                        slug: "wedding-florals",
+                        summary: "Complete floral design for your special day",
+                        description: "From bridal bouquets to ceremony arrangements and reception centerpieces.",
+                        price: "Starting at $500",
+                        inclusions: ["Bridal bouquet", "Ceremony arrangements", "Reception centerpieces", "Consultation"],
+                        minBudget: 500,
+                        images: ["/assets/service-wedding.jpg"],
+                        category: "wedding",
+                        featured: true,
+                        active: true,
+                        createdAt: new Date(),
+                        updatedAt: new Date()
+                    },
+                    {
+                        title: "Corporate Events",
+                        slug: "corporate-events",
+                        summary: "Professional event planning and floral design",
+                        description: "Elegant arrangements for corporate meetings, conferences, and celebrations.",
+                        price: "Starting at $300",
+                        inclusions: ["Event consultation", "Floral arrangements", "Setup", "Cleanup"],
+                        minBudget: 300,
+                        images: ["/assets/service-corporate.jpg"],
+                        category: "corporate",
+                        featured: true,
+                        active: true,
+                        createdAt: new Date(),
+                        updatedAt: new Date()
+                    }
+                ];
+
+                for (const service of services) {
+                    await addDoc(collection(db, 'services'), service);
+                }
+                log('✅ Created 2 sample services', 'success');
+
+                // Sample Testimonials
+                log('💬 Creating sample testimonials...');
+                const testimonials = [
+                    {
+                        author: "Maria Rodriguez",
+                        role: "Bride",
+                        event: "Spring Wedding",
+                        quote: "CreaDEvents made our wedding absolutely magical! The floral arrangements were breathtaking and exceeded all our expectations.",
+                        rating: 5,
+                        date: new Date("2024-04-20"),
+                        featured: true,
+                        createdAt: new Date()
+                    },
+                    {
+                        author: "David Chen",
+                        role: "Event Manager",
+                        event: "Corporate Conference",
+                        quote: "Professional, reliable, and creative. They transformed our corporate event into something truly special.",
+                        rating: 5,
+                        date: new Date("2024-07-25"),
+                        featured: true,
+                        createdAt: new Date()
+                    }
+                ];
+
+                for (const testimonial of testimonials) {
+                    await addDoc(collection(db, 'testimonials'), testimonial);
+                }
+                log('✅ Created 2 sample testimonials', 'success');
+
+                log('🎉 Database seeded successfully!', 'success');
+                
+            } catch (error) {
+                log(`❌ Error seeding database: ${error.message}`, 'error');
+            }
+        };
+
+        window.createAdminUser = async function() {
+            const user = auth.currentUser;
+            
+            if (!user) {
+                log('❌ Please log into your app first', 'error');
+                return;
+            }
+
+            log(`👤 Creating admin profile for: ${user.email}`);
+
+            try {
+                await setDoc(doc(db, 'users', user.uid), {
+                    uid: user.uid,
+                    email: user.email,
+                    displayName: user.displayName || 'Admin User',
+                    photoURL: user.photoURL || null,
+                    role: 'admin',
+                    permissions: {
+                        canManageContent: true,
+                        canManageUsers: true,
+                        canViewAnalytics: true,
+                        canUploadFiles: true
+                    },
+                    isActive: true,
+                    createdAt: new Date(),
+                    lastLoginAt: new Date()
+                });
+
+                log('✅ Admin user created successfully!', 'success');
+                log('🔄 Please refresh your app to see admin features', 'success');
+                
+            } catch (error) {
+                log(`❌ Error creating admin user: ${error.message}`, 'error');
+            }
+        };
+
+        window.verifySetup = async function() {
+            log('🔍 Verifying database setup...');
+            
+            try {
+                // Check collections
+                const collections = ['projects', 'services', 'testimonials', 'users'];
+                
+                for (const collectionName of collections) {
+                    const querySnapshot = await getDocs(collection(db, collectionName));
+                    log(`📊 ${collectionName}: ${querySnapshot.size} documents`, 'success');
+                }
+                
+                // Check current user
+                const user = auth.currentUser;
+                if (user) {
+                    log(`👤 Current user: ${user.email}`, 'success');
+                    
+                    // Check if user has admin profile
+                    const userDoc = await getDocs(collection(db, 'users'));
+                    const adminFound = userDoc.docs.some(doc => 
+                        doc.data().uid === user.uid && doc.data().role === 'admin'
+                    );
+                    
+                    if (adminFound) {
+                        log('✅ Admin profile found!', 'success');
+                    } else {
+                        log('❌ No admin profile found. Please create admin user.', 'error');
+                    }
+                } else {
+                    log('❌ No user logged in', 'error');
+                }
+                
+            } catch (error) {
+                log(`❌ Error verifying setup: ${error.message}`, 'error');
+            }
+        };
+
+        log('🔥 CreaDEvents Database Setup Tool Ready');
+        log(`📝 Current environment: ${currentEnvironment}`);
+        log('📝 Make sure you have created Firestore database first!');
+    </script>
+</body>
+</html>

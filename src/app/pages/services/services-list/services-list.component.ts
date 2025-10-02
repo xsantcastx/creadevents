@@ -1,19 +1,10 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
+import { Observable, map } from 'rxjs';
 import { SeasonalThemeService } from '../../../services/seasonal-theme.service';
-
-interface Service {
-  id: string;
-  title: string;
-  description: string;
-  fullDescription: string;
-  features: string[];
-  price: string;
-  image: string;
-  category: 'events' | 'floral' | 'seasonal';
-  popular: boolean;
-}
+import { FirestoreService } from '../../../services/firestore.service';
+import { Service } from '../../../models/data.models';
 
 @Component({
   selector: 'app-services-list',
@@ -29,97 +20,77 @@ interface Service {
             Creating unforgettable moments with personalized attention to detail.
           </p>
         </div>
+        
+        <!-- Service Categories Filter -->
+        <div class="category-filters">
+          <button 
+            class="filter-btn"
+            [class.active]="selectedCategory === 'all'"
+            (click)="filterServices('all')">
+            All Services
+          </button>
+          <button 
+            class="filter-btn"
+            [class.active]="selectedCategory === 'events'"
+            (click)="filterServices('events')">
+            Events
+          </button>
+          <button 
+            class="filter-btn"
+            [class.active]="selectedCategory === 'florals'"
+            (click)="filterServices('florals')">
+            Florals
+          </button>
+        </div>
       </section>
 
       <!-- Services Grid -->
       <section class="services-section">
         <div class="container">
-          <div class="section-header">
-            <h2>What We Offer</h2>
-            <p>From intimate gatherings to grand celebrations, we bring your vision to life</p>
-          </div>
-
-          <!-- Filter Tabs -->
-          <div class="filter-tabs">
-            <button 
-              class="filter-tab" 
-              [class.active]="selectedCategory === 'all'"
-              (click)="filterServices('all')">
-              All Services
-            </button>
-            <button 
-              class="filter-tab" 
-              [class.active]="selectedCategory === 'events'"
-              (click)="filterServices('events')">
-              Event Planning
-            </button>
-            <button 
-              class="filter-tab" 
-              [class.active]="selectedCategory === 'floral'"
-              (click)="filterServices('floral')">
-              Floral Design
-            </button>
-            <button 
-              class="filter-tab" 
-              [class.active]="selectedCategory === 'seasonal'"
-              (click)="filterServices('seasonal')">
-              Seasonal Decor
-            </button>
-          </div>
-
-          <!-- Services Grid -->
           <div class="services-grid">
-            <div 
-              *ngFor="let service of filteredServices" 
-              class="service-card"
-              [class.popular]="service.popular">
-              
-              <div class="service-image">
-                <img [src]="service.image" [alt]="service.title" loading="lazy">
-                <div class="popular-badge" *ngIf="service.popular">Most Popular</div>
-              </div>
-              
-              <div class="service-content">
-                <h3 class="service-title">{{ service.title }}</h3>
-                <p class="service-description">{{ service.description }}</p>
-                
-                <div class="service-features">
-                  <div class="feature" *ngFor="let feature of service.features.slice(0, 3)">
-                    <i class="check-icon">✓</i>
-                    {{ feature }}
-                  </div>
+            @for (service of filteredServices$ | async; track service.id) {
+              <div class="service-card card" [class.featured]="service.featured">
+                @if (service.featured) {
+                  <div class="featured-badge">Most Popular</div>
+                }
+                <div class="service-image">
+                  <img [src]="service.images[0] || '/assets/logo1.jpg'" [alt]="service.title" loading="lazy">
                 </div>
-                
-                <div class="service-footer">
-                  <div class="service-price">{{ service.price }}</div>
-                  <div class="service-actions">
-                    <a 
-                      [routerLink]="['/services', service.id]" 
-                      class="btn btn-outline">
-                      Learn More
-                    </a>
-                    <a 
-                      routerLink="/contact" 
-                      class="btn btn-primary">
-                      Get Quote
-                    </a>
+                <div class="service-content">
+                  <h3 class="service-title">{{ service.title }}</h3>
+                  <p class="service-description">{{ service.summary || service.description }}</p>
+                  <div class="service-features">
+                    @for (feature of service.inclusions.slice(0, 3); track feature) {
+                      <div class="feature">
+                        <i class="check-icon">✓</i>
+                        {{ feature }}
+                      </div>
+                    }
+                  </div>
+                  <div class="service-footer">
+                    <div class="service-price">{{ formatBudget(service.minBudget) }}</div>
+                    <a [routerLink]="['/services', service.slug]" class="btn btn-outline">Learn More</a>
                   </div>
                 </div>
               </div>
-            </div>
+            } @empty {
+              <div class="no-services">
+                <p>Loading services...</p>
+              </div>
+            }
           </div>
         </div>
       </section>
 
-      <!-- Call to Action -->
+      <!-- CTA Section -->
       <section class="cta-section">
         <div class="container">
           <div class="cta-content">
-            <h2>Ready to Start Planning?</h2>
-            <p>Contact us today for a free consultation and let's create something beautiful together.</p>
+            <h2>Ready to Plan Your Event?</h2>
+            <p>Let's discuss your vision and create something beautiful together.</p>
             <div class="cta-actions">
-              <a href="tel:7863562958" class="btn btn-primary">Call (786) 356-2958</a>
-              <a routerLink="/contact" class="btn btn-outline">Request Consultation</a>
+              <a routerLink="/contact" class="btn btn-primary">Get Started</a>
+              <a routerLink="/portfolio" class="btn btn-outline">View Our Work</a>
             </div>
           </div>
         </div>
@@ -129,127 +100,106 @@ interface Service {
   styles: [`
     .services-page {
       min-height: 100vh;
-      padding-top: 70px;
     }
 
     .hero-section {
-      background: linear-gradient(
-        135deg,
-        var(--theme-primary, #7FB069) 0%,
-        var(--theme-secondary, #F7E9E3) 100%
-      );
-      padding: 4rem 0;
+      background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+      padding: 6rem 1.5rem 4rem;
       text-align: center;
-      color: white;
     }
 
     .hero-content {
       max-width: 800px;
-      margin: 0 auto;
-      padding: 0 2rem;
+      margin: 0 auto 3rem;
     }
 
     .hero-title {
-      font-size: 3rem;
+      font-size: 3.5rem;
       font-weight: 700;
-      margin-bottom: 1rem;
-      text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+      color: #212529;
+      margin-bottom: 1.5rem;
+      line-height: 1.2;
     }
 
     .hero-subtitle {
-      font-size: 1.2rem;
+      font-size: 1.25rem;
+      color: #6c757d;
       line-height: 1.6;
-      opacity: 0.95;
+      margin-bottom: 2rem;
     }
 
-    .services-section {
-      padding: 4rem 0;
-    }
-
-    .container {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 0 2rem;
-    }
-
-    .section-header {
-      text-align: center;
-      margin-bottom: 3rem;
-    }
-
-    .section-header h2 {
-      font-size: 2.5rem;
-      color: var(--theme-text, #2D3436);
-      margin-bottom: 1rem;
-    }
-
-    .section-header p {
-      font-size: 1.1rem;
-      color: var(--theme-text-secondary, #636E72);
-      max-width: 600px;
-      margin: 0 auto;
-    }
-
-    .filter-tabs {
+    .category-filters {
       display: flex;
-      justify-content: center;
       gap: 1rem;
-      margin-bottom: 3rem;
+      justify-content: center;
       flex-wrap: wrap;
     }
 
-    .filter-tab {
+    .filter-btn {
       padding: 0.75rem 1.5rem;
-      border: 2px solid var(--theme-primary, #7FB069);
-      background: transparent;
-      color: var(--theme-primary, #7FB069);
-      border-radius: 25px;
-      cursor: pointer;
+      border: 2px solid #dee2e6;
+      background: white;
+      color: #495057;
+      border-radius: 30px;
       font-weight: 500;
+      cursor: pointer;
       transition: all 0.3s ease;
     }
 
-    .filter-tab:hover,
-    .filter-tab.active {
-      background: var(--theme-primary, #7FB069);
+    .filter-btn:hover,
+    .filter-btn.active {
+      border-color: var(--primary-color, #007bff);
+      background: var(--primary-color, #007bff);
       color: white;
+    }
+
+    .services-section {
+      padding: 4rem 1.5rem;
     }
 
     .services-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
       gap: 2rem;
-      margin-bottom: 4rem;
+      max-width: 1200px;
+      margin: 0 auto;
     }
 
     .service-card {
-      background: white;
-      border-radius: 15px;
-      overflow: hidden;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
       position: relative;
+      border: 1px solid #e9ecef;
+      border-radius: 12px;
+      overflow: hidden;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      background: white;
     }
 
     .service-card:hover {
       transform: translateY(-5px);
-      box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
     }
 
-    .service-card.popular::before {
-      content: '';
+    .service-card.featured {
+      border-color: var(--primary-color, #007bff);
+      box-shadow: 0 5px 20px rgba(0, 123, 255, 0.1);
+    }
+
+    .featured-badge {
       position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 4px;
-      background: linear-gradient(45deg, var(--theme-accent, #FFEAA7), var(--theme-primary, #7FB069));
+      top: 1rem;
+      right: 1rem;
+      background: var(--primary-color, #007bff);
+      color: white;
+      padding: 0.5rem 1rem;
+      border-radius: 20px;
+      font-size: 0.875rem;
+      font-weight: 600;
+      z-index: 2;
     }
 
     .service-image {
-      height: 200px;
+      height: 250px;
       overflow: hidden;
-      position: relative;
     }
 
     .service-image img {
@@ -263,18 +213,6 @@ interface Service {
       transform: scale(1.05);
     }
 
-    .popular-badge {
-      position: absolute;
-      top: 1rem;
-      right: 1rem;
-      background: var(--theme-accent, #FFEAA7);
-      color: var(--theme-text, #2D3436);
-      padding: 0.5rem 1rem;
-      border-radius: 20px;
-      font-size: 0.8rem;
-      font-weight: 600;
-    }
-
     .service-content {
       padding: 1.5rem;
     }
@@ -282,14 +220,14 @@ interface Service {
     .service-title {
       font-size: 1.5rem;
       font-weight: 600;
-      color: var(--theme-text, #2D3436);
-      margin-bottom: 0.5rem;
+      margin-bottom: 1rem;
+      color: #212529;
     }
 
     .service-description {
-      color: var(--theme-text-secondary, #636E72);
+      color: #6c757d;
       line-height: 1.6;
-      margin-bottom: 1rem;
+      margin-bottom: 1.5rem;
     }
 
     .service-features {
@@ -302,10 +240,11 @@ interface Service {
       gap: 0.5rem;
       margin-bottom: 0.5rem;
       font-size: 0.9rem;
+      color: #495057;
     }
 
     .check-icon {
-      color: var(--theme-primary, #7FB069);
+      color: var(--success-color, #28a745);
       font-weight: bold;
     }
 
@@ -313,91 +252,102 @@ interface Service {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      flex-wrap: wrap;
-      gap: 1rem;
+      padding-top: 1rem;
+      border-top: 1px solid #e9ecef;
     }
 
     .service-price {
       font-size: 1.1rem;
       font-weight: 600;
-      color: var(--theme-primary, #7FB069);
-    }
-
-    .service-actions {
-      display: flex;
-      gap: 0.5rem;
+      color: var(--primary-color, #007bff);
     }
 
     .btn {
-      padding: 0.6rem 1.2rem;
-      border-radius: 5px;
+      padding: 0.75rem 1.5rem;
+      border-radius: 6px;
       text-decoration: none;
       font-weight: 500;
-      text-align: center;
       transition: all 0.3s ease;
       border: 2px solid transparent;
-      font-size: 0.9rem;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
     }
 
     .btn-primary {
-      background: var(--theme-primary, #7FB069);
+      background: var(--primary-color, #007bff);
       color: white;
-      border-color: var(--theme-primary, #7FB069);
     }
 
     .btn-primary:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      background: var(--primary-dark, #0056b3);
     }
 
     .btn-outline {
+      border-color: var(--primary-color, #007bff);
+      color: var(--primary-color, #007bff);
       background: transparent;
-      color: var(--theme-primary, #7FB069);
-      border-color: var(--theme-primary, #7FB069);
     }
 
     .btn-outline:hover {
-      background: var(--theme-primary, #7FB069);
+      background: var(--primary-color, #007bff);
       color: white;
     }
 
     .cta-section {
-      background: var(--theme-secondary, #F7E9E3);
-      padding: 4rem 0;
+      background: var(--primary-color, #007bff);
+      color: white;
+      padding: 4rem 1.5rem;
       text-align: center;
     }
 
     .cta-content h2 {
       font-size: 2.5rem;
-      color: var(--theme-text, #2D3436);
       margin-bottom: 1rem;
     }
 
     .cta-content p {
-      font-size: 1.1rem;
-      color: var(--theme-text-secondary, #636E72);
+      font-size: 1.25rem;
       margin-bottom: 2rem;
-      max-width: 600px;
-      margin-left: auto;
-      margin-right: auto;
+      opacity: 0.9;
     }
 
     .cta-actions {
       display: flex;
-      justify-content: center;
       gap: 1rem;
+      justify-content: center;
       flex-wrap: wrap;
     }
 
-    .cta-actions .btn {
-      padding: 1rem 2rem;
-      font-size: 1rem;
+    .cta-actions .btn-primary {
+      background: white;
+      color: var(--primary-color, #007bff);
     }
 
-    /* Mobile Responsive */
+    .cta-actions .btn-primary:hover {
+      background: #f8f9fa;
+    }
+
+    .cta-actions .btn-outline {
+      border-color: white;
+      color: white;
+    }
+
+    .cta-actions .btn-outline:hover {
+      background: white;
+      color: var(--primary-color, #007bff);
+    }
+
+    .no-services {
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: 3rem;
+      color: #6c757d;
+    }
+
     @media (max-width: 768px) {
       .hero-title {
-        font-size: 2rem;
+        font-size: 2.5rem;
       }
 
       .services-grid {
@@ -407,168 +357,46 @@ interface Service {
 
       .service-footer {
         flex-direction: column;
+        gap: 1rem;
         align-items: stretch;
-      }
-
-      .service-actions {
-        justify-content: space-between;
-      }
-
-      .btn {
-        flex: 1;
-        text-align: center;
-      }
-
-      .filter-tabs {
-        justify-content: stretch;
-      }
-
-      .filter-tab {
-        flex: 1;
-        text-align: center;
       }
 
       .cta-actions {
         flex-direction: column;
         align-items: center;
       }
-
-      .cta-actions .btn {
-        width: 100%;
-        max-width: 300px;
-      }
     }
   `]
 })
 export class ServicesListComponent implements OnInit {
   private seasonalThemeService = inject(SeasonalThemeService);
+  private firestoreService = inject(FirestoreService);
   
-  selectedCategory: string = 'all';
-  
-  services: Service[] = [
-    {
-      id: 'wedding-planning',
-      title: 'Wedding Planning & Design',
-      description: 'Complete wedding planning from intimate ceremonies to grand celebrations. We handle every detail to make your special day perfect.',
-      fullDescription: 'Our comprehensive wedding planning service includes venue selection, vendor coordination, timeline management, and day-of coordination. We work closely with you to bring your dream wedding to life.',
-      features: [
-        'Complete wedding planning & coordination',
-        'Venue selection & vendor management',
-        'Custom floral arrangements & centerpieces',
-        'Timeline planning & day-of coordination',
-        'Reception setup & breakdown',
-        'Emergency support & backup plans'
-      ],
-      price: 'Starting at $2,500',
-      image: '/assets/fb_4888_8929514942_2_48x2_48.jpg',
-      category: 'events',
-      popular: true
-    },
-    {
-      id: 'corporate-events',
-      title: 'Corporate Event Planning',
-      description: 'Professional corporate events that impress clients and inspire teams. From conferences to holiday parties.',
-      fullDescription: 'We specialize in creating memorable corporate events that reflect your company\'s brand and values. Our team handles logistics, catering coordination, and ensures seamless execution.',
-      features: [
-        'Conference & meeting planning',
-        'Corporate holiday parties',
-        'Product launch events',
-        'Team building activities',
-        'Professional decor & branding',
-        'Audio/visual coordination'
-      ],
-      price: 'Starting at $1,500',
-      image: '/assets/ig_17883536292_1336_.jpg',
-      category: 'events',
-      popular: false
-    },
-    {
-      id: 'floral-arrangements',
-      title: 'Custom Floral Arrangements',
-      description: 'Beautiful, fresh floral designs for any occasion. From bridal bouquets to corporate displays.',
-      fullDescription: 'Our expert floral designers create stunning arrangements using the freshest flowers. We work with your color palette and style preferences to create unique pieces.',
-      features: [
-        'Bridal bouquets & boutonnieres',
-        'Centerpieces & table arrangements',
-        'Ceremony arches & backdrops',
-        'Corporate floral displays',
-        'Seasonal flower selections',
-        'Delivery & setup included'
-      ],
-      price: 'Starting at $75',
-      image: '/assets/ig_179_31_896964684.jpg',
-      category: 'floral',
-      popular: true
-    },
-    {
-      id: 'christmas-decor',
-      title: 'Christmas & Holiday Decorating',
-      description: 'Transform your space into a winter wonderland with our professional Christmas decorating services.',
-      fullDescription: 'Our holiday decorating service brings the magic of Christmas to your home or business. We provide everything from tree decorating to complete venue transformation.',
-      features: [
-        'Christmas tree decorating',
-        'Indoor & outdoor lighting',
-        'Garland & wreath installation',
-        'Table & mantle styling',
-        'Commercial holiday displays',
-        'Post-holiday cleanup service'
-      ],
-      price: 'Starting at $300',
-      image: '/assets/WhatsApp%2_Image%2_2_24-12-19%2_at%2_13.18.18_f31e159.jpg',
-      category: 'seasonal',
-      popular: false
-    },
-    {
-      id: 'party-planning',
-      title: 'Birthday & Anniversary Parties',
-      description: 'Celebrate life\'s special moments with custom party planning that creates lasting memories.',
-      fullDescription: 'From intimate family gatherings to large milestone celebrations, we create personalized parties that reflect the guest of honor\'s personality and style.',
-      features: [
-        'Theme development & styling',
-        'Venue decoration & setup',
-        'Custom balloon arrangements',
-        'Table settings & linens',
-        'Entertainment coordination',
-        'Photography area setup'
-      ],
-      price: 'Starting at $800',
-      image: '/assets/ig_1794579_87187429_.jpg',
-      category: 'events',
-      popular: false
-    },
-    {
-      id: 'seasonal-decor',
-      title: 'Seasonal Home Decorating',
-      description: 'Refresh your space throughout the year with our seasonal decorating services for every occasion.',
-      fullDescription: 'Keep your home beautifully decorated year-round with our seasonal decorating service. We update your decor to match the changing seasons and holidays.',
-      features: [
-        'Spring & summer refreshes',
-        'Fall & autumn styling',
-        'Holiday decorating services',
-        'Seasonal floral arrangements',
-        'Color palette updates',
-        'Storage & organization'
-      ],
-      price: 'Starting at $200',
-      image: '/assets/ig_179796_2185894789.jpg',
-      category: 'seasonal',
-      popular: false
-    }
-  ];
-
-  filteredServices: Service[] = [];
+  services$!: Observable<Service[]>;
+  filteredServices$!: Observable<Service[]>;
+  selectedCategory = 'all';
 
   ngOnInit(): void {
     this.seasonalThemeService.applyThemeToDocument();
-    this.filteredServices = this.services;
+    this.services$ = this.firestoreService.getServices();
+    this.filteredServices$ = this.services$;
   }
 
   filterServices(category: string): void {
     this.selectedCategory = category;
     if (category === 'all') {
-      this.filteredServices = this.services;
+      this.filteredServices$ = this.services$;
     } else {
-      this.filteredServices = this.services.filter(service => service.category === category);
+      this.filteredServices$ = this.services$.pipe(
+        map((services: Service[]) => services.filter((service: Service) => service.category === category))
+      );
     }
+  }
+
+  formatBudget(minBudget: number): string {
+    if (minBudget >= 1000) {
+      return `Starting at $${(minBudget / 1000).toFixed(1)}k`;
+    }
+    return `Starting at $${minBudget}`;
   }
 }

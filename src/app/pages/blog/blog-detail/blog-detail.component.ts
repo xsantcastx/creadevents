@@ -89,7 +89,7 @@ import { BlogPost } from '../../../models/data.models';
                 <!-- Author Info -->
                 <div class="author-card">
                   <div class="author-avatar">
-                    <img src="/assets/fb_4888_8929514942_2_48x2_48.jpg" alt="Creation Design & Events Team" loading="lazy">
+                    <img src="/assets/logo1.jpg" alt="Creation Design & Events Team" loading="lazy">
                   </div>
                   <div class="author-info">
                     <h4>Creation Design & Events</h4>
@@ -681,7 +681,7 @@ export class BlogDetailComponent implements OnInit {
       slug: 'spring-wedding-trends-2024',
       excerpt: 'Discover the hottest spring wedding trends for 2024, from garden-inspired florals to sustainable decorations that will make your celebration unforgettable.',
       body: 'Spring weddings are experiencing a renaissance of natural beauty and sustainable practices. This season, couples are embracing garden-inspired aesthetics with wild, organic arrangements that seem to have been picked straight from an English cottage garden.\n\nThe trend towards sustainability is reshaping how we think about wedding florals. Couples are choosing locally-sourced blooms, potted plants that guests can take home, and arrangements that can be repurposed after the ceremony. This not only reduces environmental impact but often creates more meaningful, personal touches.\n\nColor palettes are softer and more nuanced than ever before. Gone are the stark contrasts of previous years, replaced by gentle gradients of blush, sage, and cream. These understated combinations create an atmosphere of refined elegance that photographs beautifully in natural light.\n\nTexture plays a crucial role in modern spring arrangements. We\'re seeing combinations of delicate flowers with unexpected elements like wheat grass, eucalyptus, and even herbs like rosemary and lavender that add both visual interest and wonderful fragrance.\n\nVenue choices are also evolving, with many couples opting for garden settings, greenhouses, and outdoor spaces that complement rather than compete with their floral designs. The key is creating harmony between the natural environment and your carefully curated arrangements.',
-      coverImage: '/assets/fb_4888_8929514942_2_48x2_48.jpg',
+      coverImage: '/assets/logo1.jpg',
       tags: ['trends', 'seasonal'],
       featured: true,
       createdAt: new Date('2024-02-15'),
@@ -693,7 +693,7 @@ export class BlogDetailComponent implements OnInit {
       slug: 'venue-spotlight-miami-beach-weddings',
       excerpt: 'Take a behind-the-scenes look at why Miami Beach continues to be one of the most sought-after wedding destinations, and how to make the most of its natural beauty.',
       body: 'Miami Beach offers an unparalleled backdrop for weddings, with its pristine white sands, crystal-clear waters, and Art Deco architecture. When planning a beach wedding, the key is to work with the natural beauty rather than against it.\n\nThe golden hour lighting on Miami Beach is legendary among photographers, creating a warm, romantic glow that makes every moment feel magical. This natural lighting means your floral arrangements should complement rather than compete with the stunning natural backdrop.\n\nWind is always a consideration for beach ceremonies. We recommend sturdy arrangements with low profiles and flowers that can withstand gentle breezes. Tropical blooms like birds of paradise and orchids are not only appropriate for the setting but also naturally resilient.\n\nColor choices should reflect the oceanic setting. Coral, turquoise, and sandy beige create a cohesive palette that feels authentic to the location. White arrangements pop beautifully against the blue sky and ocean backdrop.',
-      coverImage: '/assets/ig_18_44253247569932.jpg',
+      coverImage: '/assets/logo4.jpg',
       tags: ['venue-spotlight'],
       featured: false,
       createdAt: new Date('2024-02-10'),
@@ -705,13 +705,15 @@ export class BlogDetailComponent implements OnInit {
       slug: 'behind-scenes-winter-wonderland',
       excerpt: 'Go behind the scenes of our recent winter wonderland event and discover the creative process, challenges, and magical moments that brought this vision to life.',
       body: 'Creating a winter wonderland in Miami\'s tropical climate requires creativity, planning, and a touch of magic. Our recent holiday event challenged us to transform a warm-weather venue into a snowy paradise.\n\nThe project began with extensive mood boarding and color palette development. We chose a sophisticated combination of silver, white, and deep forest green to create depth and elegance. The challenge was creating \'snow\' effects that would look authentic under Miami\'s bright lights.\n\nWe used a combination of white florals, silver branches, and specialized lighting to create the illusion of a winter landscape. Strings of white lights mimicked falling snow, while white orchids and silver-painted branches created the feeling of frost-covered trees.\n\nThe most challenging aspect was temperature control. Many winter flowers don\'t thrive in Miami\'s heat, so we had to carefully time deliveries and installations to ensure everything looked perfect for the event.',
-      coverImage: '/assets/WhatsApp%2_Image%2_2_24-12-19%2_at%2_13.18.18_f31e159.jpg',
+      coverImage: '/assets/logo3.jpg',
       tags: ['behind-scenes', 'seasonal'],
       featured: false,
       createdAt: new Date('2024-01-20'),
       updatedAt: new Date('2024-01-20')
     }
   ];
+
+  allPosts: BlogPost[] = [];
 
   ngOnInit(): void {
     this.seasonalThemeService.applyThemeToDocument();
@@ -725,18 +727,21 @@ export class BlogDetailComponent implements OnInit {
       return;
     }
 
-    // In real application, would load from Firestore
-    const foundPost = this.samplePosts.find(p => p.slug === slug);
-    if (foundPost) {
-      this.blogPost.set(foundPost);
-      this.loadRelatedPosts(foundPost);
-      this.loadNextPost(foundPost);
-    }
-    this.loading.set(false);
+    this.firestoreService.getBlogPosts().subscribe(posts => {
+      this.allPosts = posts;
+      const foundPost = posts.find(p => p.slug === slug);
+      
+      if (foundPost) {
+        this.blogPost.set(foundPost);
+        this.loadRelatedPosts(foundPost);
+        this.loadNextPost(foundPost);
+      }
+      this.loading.set(false);
+    });
   }
 
   private loadRelatedPosts(currentPost: BlogPost): void {
-    const related = this.samplePosts
+    const related = this.allPosts
       .filter(p => p.id !== currentPost.id && 
                p.tags.some(tag => currentPost.tags.includes(tag)))
       .slice(0, 3);
@@ -744,9 +749,9 @@ export class BlogDetailComponent implements OnInit {
   }
 
   private loadNextPost(currentPost: BlogPost): void {
-    const currentIndex = this.samplePosts.findIndex(p => p.id === currentPost.id);
-    if (currentIndex >= 0 && currentIndex < this.samplePosts.length - 1) {
-      this.nextPost.set(this.samplePosts[currentIndex + 1]);
+    const currentIndex = this.allPosts.findIndex(p => p.id === currentPost.id);
+    if (currentIndex >= 0 && currentIndex < this.allPosts.length - 1) {
+      this.nextPost.set(this.allPosts[currentIndex + 1]);
     }
   }
 

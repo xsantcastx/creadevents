@@ -555,7 +555,7 @@ export class ServiceDetailComponent implements OnInit {
         'Guest accommodation assistance'
       ],
       price: 'Starting at $2,500',
-      image: '/assets/fb_4888_8929514942_2_48x2_48.jpg',
+      image: '/assets/logo1.jpg',
       category: 'events',
       popular: true,
       process: [
@@ -583,7 +583,7 @@ export class ServiceDetailComponent implements OnInit {
         'Registration & check-in services'
       ],
       price: 'Starting at $1,500',
-      image: '/assets/ig_17883536292_1336_.jpg',
+      image: '/assets/logo2.jpg',
       category: 'events',
       popular: false,
       process: [
@@ -611,7 +611,7 @@ export class ServiceDetailComponent implements OnInit {
         'Custom color matching'
       ],
       price: 'Starting at $75',
-      image: '/assets/ig_179_31_896964684.jpg',
+      image: '/assets/logo3.jpg',
       category: 'floral',
       popular: true,
       process: [
@@ -639,7 +639,7 @@ export class ServiceDetailComponent implements OnInit {
         'Storage and organization'
       ],
       price: 'Starting at $300',
-      image: '/assets/WhatsApp%2_Image%2_2_24-12-19%2_at%2_13.18.18_f31e159.jpg',
+      image: '/assets/logo3.jpg',
       category: 'seasonal',
       popular: false,
       process: [
@@ -667,7 +667,7 @@ export class ServiceDetailComponent implements OnInit {
         'Party favor coordination'
       ],
       price: 'Starting at $800',
-      image: '/assets/ig_1794579_87187429_.jpg',
+      image: '/assets/logo1.jpg',
       category: 'events',
       popular: false,
       process: [
@@ -695,7 +695,7 @@ export class ServiceDetailComponent implements OnInit {
         'Custom seasonal themes'
       ],
       price: 'Starting at $200',
-      image: '/assets/ig_179796_2185894789.jpg',
+      image: '/assets/logo2.jpg',
       category: 'seasonal',
       popular: false,
       process: [

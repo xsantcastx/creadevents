@@ -1,0 +1,99 @@
+
+🎯 CREADEVENTS PHASE 1 UPLOAD INSTRUCTIONS
+===========================================
+
+OVERVIEW:
+- Total Images: 18
+- Categories: 6
+- Purpose: Critical launch images for immediate website impact
+
+BEFORE YOU START:
+1. Update Firebase Storage Rules:
+   - Go to Firebase Console -> Storage -> Rules
+   - Copy the rules from firebase-storage-rules.rules
+   - Deploy the new rules
+
+2. Start Your Website:
+   - Run: npm run start
+   - Website will be available at http://localhost:4200
+
+UPLOAD PROCESS:
+1. Navigate to: http://localhost:4200/admin/images
+2. Login with your admin credentials
+3. Upload images category by category:
+
+
+   📁 BOHO CATEGORY (3 images):
+   - Select category: "boho"
+   - Upload images from: upload-ready/boho/
+   - Suggested uses:
+     • 2017-11-23_20-13-53_UTC_1.jpg → Portfolio - Bohemian Wedding Style
+     • 2017-11-23_20-13-53_UTC_2.jpg → Portfolio - Bohemian Wedding Style
+     • 2018-07-17_20-58-57_UTC_1.jpg → Portfolio - Bohemian Wedding Style
+
+
+   📁 GARDEN CATEGORY (4 images):
+   - Select category: "garden"
+   - Upload images from: upload-ready/garden/
+   - Suggested uses:
+     • 2021-01-12_23-54-09_UTC.jpg → Homepage Hero - Garden Collection Showcase
+     • 2022-08-30_15-31-27_UTC_1.jpg → Homepage Hero - Garden Collection Showcase
+     • 2022-08-30_15-31-27_UTC_2.jpg → Homepage Hero - Garden Collection Showcase
+     • 302339453_485288673415844_5471205593586189415_n.jpg → Homepage Hero - Garden Collection Showcase
+
+
+   📁 MODERN CATEGORY (3 images):
+   - Select category: "modern"
+   - Upload images from: upload-ready/modern/
+   - Suggested uses:
+     • 2017-11-10_01-05-44_UTC_4.jpg → Homepage Hero - Modern Design Portfolio
+     • 2017-11-23_20-13-53_UTC_3.jpg → Homepage Hero - Modern Design Portfolio
+     • 2018-04-21_19-21-27_UTC_4.jpg → Homepage Hero - Modern Design Portfolio
+
+
+   📁 CARNATION CATEGORY (1 images):
+   - Select category: "carnation"
+   - Upload images from: upload-ready/carnation/
+   - Suggested uses:
+     • 2018-05-18_22-47-03_UTC_1.jpg → Gallery - Carnation Collection
+
+
+   📁 HYDRANGEA CATEGORY (6 images):
+   - Select category: "hydrangea"
+   - Upload images from: upload-ready/hydrangea/
+   - Suggested uses:
+     • 2017-11-10_01-05-44_UTC_3.jpg → Services - Hydrangea Centerpieces
+     • 2017-11-10_01-05-44_UTC_5.jpg → Services - Hydrangea Centerpieces
+     • 2017-12-17_19-01-05_UTC_1.jpg → Services - Hydrangea Centerpieces
+     • 2018-02-09_23-06-00_UTC_8.jpg → Services - Hydrangea Centerpieces
+     • 2018-05-13_17-16-05_UTC_2.jpg → Services - Hydrangea Centerpieces
+     • 2024-02-01_00-56-08_UTC.jpg → Services - Hydrangea Centerpieces
+
+
+   📁 IRIS CATEGORY (1 images):
+   - Select category: "iris"
+   - Upload images from: upload-ready/iris/
+   - Suggested uses:
+     • 2017-12-29_03-20-48_UTC_1.jpg → Gallery - Iris Collection
+
+
+VERIFICATION:
+After uploading each category:
+1. Check the gallery: http://localhost:4200/portfolio/gallery
+2. Filter by category to see your new images
+3. Verify images display correctly
+
+TROUBLESHOOTING:
+- If uploads fail: Check Firebase Storage rules
+- If images don't appear: Check browser console for errors
+- If gallery is empty: Verify Firestore connection
+
+SUCCESS INDICATORS:
+✅ All 18 images uploaded without errors
+✅ Gallery displays images in correct categories
+✅ Admin interface shows upload statistics
+✅ Homepage can use hero images
+
+Next: Ready for Phase 2 (Portfolio Expansion) - 35 more images!
+
+Questions? Check the image-checklist.json for detailed information.
