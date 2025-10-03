@@ -26,7 +26,8 @@ import {
   QueryDocumentSnapshot,
   Firestore 
 } from 'firebase/firestore';
-import { Observable, from, BehaviorSubject } from 'rxjs';\nimport { environment } from '../../environments/environment';
+import { Observable, from, BehaviorSubject } from 'rxjs';
+import { environment } from '../../environments/environment';
 
 // Direct Firebase configuration
 const firebaseConfig = {
