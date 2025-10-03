@@ -3,14 +3,16 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ImageStorageService, GalleryImage } from '../../../services/image-storage.service';
 import { SeasonalThemeService } from '../../../services/seasonal-theme.service';
+import { SlotImgComponent } from '../../../shared/slot-img/slot-img.component';
 
 @Component({
   selector: 'app-gallery',
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, SlotImgComponent],
   template: `
     <div class="gallery-container">
       <!-- Hero Section -->
       <section class="gallery-hero">
+        <slot-img key="portfolio.header" altDefault="Portfolio header" class="hero-background" />
         <div class="hero-content">
           <h1>Our Gallery</h1>
           <p>Discover our collection of {{ totalImages() }} beautiful moments across {{ totalCategories() }} categories</p>
@@ -222,7 +224,7 @@ import { SeasonalThemeService } from '../../../services/seasonal-theme.service';
             
             <div class="detail-row">
               <span class="label">File Size:</span>
-              <span class="value">              <span>{{ formatFileSize(selectedImage()?.metadata?.size || 0) }}</span></span>
+              <span class="value">{{ formatFileSize(selectedImage()?.metadata?.size || 0) }}</span>
             </div>
             
             <div class="detail-row" *ngIf="selectedImage()?.featured">
@@ -999,7 +1001,12 @@ export class GalleryComponent implements OnInit {
 
   formatDate(date: Date | undefined): string {
     if (!date) return 'Unknown';
-    return new Date(date).toLocaleDateString();
+    try {
+      const dateObj = date instanceof Date ? date : new Date(date);
+      return dateObj.toLocaleDateString();
+    } catch {
+      return 'Unknown';
+    }
   }
 
   formatFileSize(bytes: number): string {

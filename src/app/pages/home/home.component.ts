@@ -4,11 +4,12 @@ import { RouterLink } from '@angular/router';
 import { Observable, map } from 'rxjs';
 import { SeasonalThemeService } from '../../services/seasonal-theme.service';
 import { FirestoreService } from '../../services/firestore.service';
+import { SlotImgComponent } from '../../shared/slot-img/slot-img.component';
 import { Project, Service, Testimonial } from '../../models/data.models';
 
 @Component({
   selector: 'app-home',
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, RouterLink, SlotImgComponent],
   template: `
     <div class="home">
       <!-- Hero Section -->
@@ -47,6 +48,13 @@ import { Project, Service, Testimonial } from '../../models/data.models';
               </div>
             </div>
           }
+        </div>
+      </section>
+
+      <!-- Home Header Slot Demo -->
+      <section class="slot-demo">
+        <div class="container">
+          <slot-img key="home.header" altDefault="Home header image" class="demo-image" />
         </div>
       </section>
 
@@ -638,6 +646,22 @@ import { Project, Service, Testimonial } from '../../models/data.models';
       flex-wrap: wrap;
       gap: 0.75rem;
       justify-content: center;
+    }
+
+    .slot-demo {
+      padding: 3rem 0;
+      background: rgba(240, 245, 242, 0.3);
+    }
+
+    .demo-image {
+      width: 100%;
+      max-width: 600px;
+      height: 300px;
+      object-fit: cover;
+      border-radius: 12px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+      margin: 0 auto;
+      display: block;
     }
 
     @media (max-width: 768px) {

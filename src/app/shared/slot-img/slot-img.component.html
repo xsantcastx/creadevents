@@ -1,0 +1,142 @@
+<div class="slot-wrap" [class.admin]="admin.canEdit()">
+  <!-- Loading state -->
+  @if (loading()) {
+    <div class="loading-state" [class]="class">
+      <div class="shimmer"></div>
+      <div class="loading-text">
+        <div class="loading-icon">📸</div>
+        <span>Loading image...</span>
+      </div>
+    </div>
+  }
+
+  <!-- Render image or placeholder -->
+  @if (!loading() && slot()?.url) {
+    <img [src]="slot()!.url" [alt]="slot()?.alt || altDefault" [class]="class" />
+  } @else if (!loading()) {
+    <div class="ph" [class]="class">
+      <div class="placeholder-content">
+        <div class="placeholder-icon">🖼️</div>
+        <div class="placeholder-text">
+          <strong>{{ key }}</strong>
+          <span>No image assigned</span>
+        </div>
+      </div>
+    </div>
+  }
+
+  <!-- Enhanced inline overlay -->
+  @if (admin.canEdit() && !loading()) {
+    <div class="overlay">
+      <div class="overlay-header">
+        <div class="slot-info">
+          <span class="slot-key">{{ key }}</span>
+          @if (slot()?.url) {
+            <span class="slot-status">✓ Assigned</span>
+          } @else {
+            <span class="slot-status empty">⚪ Empty</span>
+          }
+        </div>
+        
+        <div class="action-buttons">
+          @if (!pickerOpen()) {
+            <button 
+              class="btn btn--primary" 
+              (click)="openPicker()"
+              [disabled]="cms.loading()">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/>
+                <circle cx="12" cy="13" r="3"/>
+              </svg>
+              {{ slot()?.url ? 'Change' : 'Select' }}
+            </button>
+          }
+          
+          @if (slot()?.url && !pickerOpen()) {
+            <button 
+              class="btn btn--danger" 
+              (click)="clear()"
+              [disabled]="cms.loading()"
+              title="Remove image">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="3,6 5,6 21,6"/>
+                <path d="M19,6v14a2,2,0,0,1-2,2H7a2,2,0,0,1-2-2V6m3,0V4a2,2,0,0,1,2-2h4a2,2,0,0,1,2,2V6"/>
+              </svg>
+            </button>
+          }
+          
+          @if (pickerOpen()) {
+            <button 
+              class="btn btn--ghost" 
+              (click)="pickerOpen.set(false)">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="18" y1="6" x2="6" y2="18"/>
+                <line x1="6" y1="6" x2="18" y2="18"/>
+              </svg>
+              Close
+            </button>
+          }
+        </div>
+      </div>
+
+      <!-- Enhanced picker panel -->
+      @if (pickerOpen()) {
+        <div class="picker-panel">
+          <!-- Search bar -->
+          <div class="search-bar">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="11" cy="11" r="8"/>
+              <path d="m21 21-4.35-4.35"/>
+            </svg>
+            <input 
+              type="text" 
+              placeholder="Search images..." 
+              (input)="onSearchInput($event)"
+              class="search-input" />
+          </div>
+
+          <!-- Image grid -->
+          @if (!pickerLoading()) {
+            <div class="image-grid">
+              @for (img of pickerFiltered; track trackImage($index, img)) {
+                <button 
+                  class="image-tile" 
+                  (click)="assign(img)"
+                  [disabled]="cms.loading()">
+                  <div class="image-container">
+                    <img [src]="img.url" [alt]="img.name" loading="lazy" />
+                    <div class="image-overlay">
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="20,6 9,17 4,12"/>
+                      </svg>
+                    </div>
+                  </div>
+                  <div class="image-info">
+                    <span class="image-name" [title]="img.name">{{ img.name }}</span>
+                    @if (img.section) {
+                      <span class="image-meta">{{ img.section }}</span>
+                    }
+                  </div>
+                </button>
+              }
+              
+              @if (pickerFiltered.length === 0) {
+                <div class="empty-state">
+                  <div class="empty-icon">🔍</div>
+                  <span>No images found</span>
+                  <small>Try adjusting your search</small>
+                </div>
+              }
+            </div>
+          } @else {
+            <div class="loading-grid">
+              @for (i of [1,2,3,4,5,6]; track i) {
+                <div class="grid-shimmer"></div>
+              }
+            </div>
+          }
+        </div>
+      }
+    </div>
+  }
+</div>

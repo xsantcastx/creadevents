@@ -1,0 +1,81 @@
+<div class="wrap">
+  <header class="bar">
+    <div class="left">
+      <label>Section</label>
+      <select [value]="section()" (change)="onSectionChange($any($event.target).value)">
+        <option *ngFor="let s of sections" [value]="s">{{ s | titlecase }}</option>
+      </select>
+      <small class="muted">Limit: {{ sectionLimits[section()] || '∞' }}</small>
+    </div>
+
+    <div class="right">
+      <input type="text" placeholder="Filter by filename…" (input)="filter.set($any($event.target).value)" />
+      <label class="upload-btn">
+        <input type="file" multiple accept="image/*" (change)="onChoose($any($event.target))" hidden />
+        Upload
+      </label>
+    </div>
+  </header>
+
+  <div class="dropzone" (dragover)="onDragOver($event)" (drop)="onDropFiles($event)">
+    <p>Drag & drop images here, or click <strong>Upload</strong></p>
+    <small class="muted">Stored at <code>public/{{ section() }}/</code> with metadata in <code>Firestore /images</code></small>
+  </div>
+
+  @if (queue().length) {
+    <div class="queue">
+      @for (q of queue(); track q.file.name) {
+        <div class="queue-item">
+          <span class="q-name">{{ q.file.name }}</span>
+          <progress [value]="q.progress" max="100">{{ q.progress }}%</progress>
+        </div>
+      }
+    </div>
+  }
+
+  <section
+    class="grid"
+    cdkDropList
+    [cdkDropListData]="images()"
+    (cdkDropListDropped)="drop($event)"
+  >
+    @for (img of filtered; track img.id; let i = $index) {
+      <article class="card" cdkDrag>
+        <div class="thumb" cdkDragHandle title="Drag to reorder">
+          <img [src]="img.url" [alt]="meta(img.id).alt || img.name" loading="lazy" />
+        </div>
+
+      <div class="meta">
+        <div class="name" title="{{img.name}}">{{ i+1 }}. {{ img.name }}</div>
+
+        <div class="fields">
+          <label>
+            <span>Alt</span>
+            <input
+              type="text"
+              [ngModel]="meta(img.id).alt"
+              (ngModelChange)="meta(img.id).alt = $event; markDirty(img.id)" />
+          </label>
+          <label>
+            <span>Caption</span>
+            <input
+              type="text"
+              [ngModel]="meta(img.id).caption"
+              (ngModelChange)="meta(img.id).caption = $event; markDirty(img.id)" />
+          </label>
+        </div>
+
+        <div class="actions">
+          <button type="button" (click)="copyToClipboard(img.url)">Copy URL</button>
+          <button type="button" (click)="saveMeta(img)" [disabled]="!meta(img.id).dirty">Save meta</button>
+          <button type="button" class="danger" (click)="remove(img)">Delete</button>
+        </div>
+      </div>
+      </article>
+    }
+  </section>
+
+  <footer class="hint">
+    <small>Drag cards to reorder. Click "Save meta" to persist alt/caption. Reuse URLs in your content.</small>
+  </footer>
+</div>

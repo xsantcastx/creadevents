@@ -4,15 +4,17 @@ import { RouterLink } from '@angular/router';
 import { Observable, map } from 'rxjs';
 import { SeasonalThemeService } from '../../../services/seasonal-theme.service';
 import { FirestoreService } from '../../../services/firestore.service';
+import { SlotImgComponent } from '../../../shared/slot-img/slot-img.component';
 import { Service } from '../../../models/data.models';
 
 @Component({
   selector: 'app-services-list',
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, RouterLink, SlotImgComponent],
   template: `
     <div class="services-page">
       <!-- Hero Section -->
       <section class="hero-section">
+        <slot-img key="services.header" altDefault="Services header" class="hero-background" />
         <div class="hero-content">
           <h1 class="hero-title">Our Services</h1>
           <p class="hero-subtitle">

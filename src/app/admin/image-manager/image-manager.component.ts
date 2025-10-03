@@ -214,7 +214,7 @@ import { AuthService } from '../../services/auth.service';
               <div class="image-meta">
                 <span class="category">{{ image.category }}</span>
                 <span class="subcategory" *ngIf="image.subcategory">{{ image.subcategory }}</span>
-                <span class="size">{{ formatFileSize(image.metadata.size) }}</span>
+                <span class="size">{{ formatFileSize(image.metadata?.size || 0) }}</span>
               </div>
               <div class="image-tags">
                 <span class="tag" *ngFor="let tag of image.tags">{{ tag }}</span>
@@ -740,7 +740,7 @@ export class ImageManagerComponent implements OnInit {
     return categories.size;
   });
   totalSize = computed(() => 
-    this.allImages().reduce((sum, img) => sum + img.metadata.size, 0)
+    this.allImages().reduce((sum, img) => sum + (img.metadata?.size || 0), 0)
   );
   
   totalPages = computed(() => 
@@ -811,9 +811,7 @@ export class ImageManagerComponent implements OnInit {
     
     this.imageStorageService.uploadImages(
       this.selectedFiles,
-      this.selectedCategory,
-      this.selectedSubcategory || undefined,
-      tags
+      this.selectedCategory
     ).subscribe({
       next: (progress) => {
         this.uploadProgress.set(progress);

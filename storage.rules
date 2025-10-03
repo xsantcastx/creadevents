@@ -1,54 +1,16 @@
 rules_version = '2';
 service firebase.storage {
   match /b/{bucket}/o {
-    
-    // Public read access for all images
+
+    // Publicly readable images in /public/**
+    match /public/{allPaths=**} {
+      allow read;                       // anyone can view images
+      allow write: if request.auth != null;  // only signed-in users can upload/delete
+    }
+
+    // Everything else locked down by default
     match /{allPaths=**} {
-      allow read: if true;
-    }
-    
-    // Upload permissions for different directories
-    
-    // Project/Portfolio images - admin only
-    match /projects/{projectId}/{imageId} {
-      allow write: if isAdmin() && isImageFile();
-    }
-    
-    // Service images - admin only
-    match /services/{serviceId}/{imageId} {
-      allow write: if isAdmin() && isImageFile();
-    }
-    
-    // Blog post images - admin only
-    match /blog/{postId}/{imageId} {
-      allow write: if isAdmin() && isImageFile();
-    }
-    
-    // Testimonial photos - admin only
-    match /testimonials/{testimonialId}/{imageId} {
-      allow write: if isAdmin() && isImageFile();
-    }
-    
-    // General assets - admin only
-    match /assets/{imageId} {
-      allow write: if isAdmin() && isImageFile();
-    }
-    
-    // Inquiry inspiration files - allow during inquiry submission
-    match /inquiries/{inquiryId}/{fileId} {
-      allow write: if isImageFile() && resource.size < 5 * 1024 * 1024; // 5MB limit
-    }
-    
-    // Helper functions
-    function isAdmin() {
-      // For now, allow writes from any authenticated user
-      // TODO: Implement proper admin role checking
-      return request.auth != null;
-    }
-    
-    function isImageFile() {
-      return request.resource.contentType.matches('image/.*') ||
-             request.resource.contentType.matches('video/.*');
+      allow read, write: if false;
     }
   }
 }

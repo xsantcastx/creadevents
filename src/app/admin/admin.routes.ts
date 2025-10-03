@@ -16,8 +16,14 @@ export const adminRoutes: Routes = [
   },
   {
     path: 'images',
-    loadComponent: () => import('./image-manager/image-manager.component').then(m => m.ImageManagerComponent),
+    loadComponent: () => import('./images-dashboard/images-dashboard.component').then(m => m.ImagesDashboardComponent),
     canActivate: [adminGuard],
-    title: 'Image Manager - Creation Design & Events'
+    title: 'Images Dashboard - Creation Design & Events'
+  },
+  {
+    path: 'slots',
+    loadComponent: () => import('./slot-manager/slot-manager.component').then(m => m.SlotManagerComponent),
+    canActivate: [adminGuard],
+    title: 'Slot Manager - Creation Design & Events'
   }
 ];

@@ -91,6 +91,11 @@ export const routes: Routes = [
     title: 'Authentication - CreaDEvents'
   },
   {
+    path: 'debug/auth',
+    loadComponent: () => import('./debug/auth-debug.component').then(m => m.AuthDebugComponent),
+    title: 'Auth Debug - CreaDEvents'
+  },
+  {
     path: '**',
     loadComponent: () => import('./pages/not-found/not-found.component').then(m => m.NotFoundComponent),
     title: 'Page Not Found - CreaDEvents'

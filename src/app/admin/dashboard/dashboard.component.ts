@@ -131,6 +131,12 @@ interface DashboardStats {
                   <p>Upload and organize gallery images</p>
                 </button>
                 
+                <button (click)="navigateToSlotManager()" class="action-card">
+                  <div class="action-icon">🎯</div>
+                  <h3>Manage Slots</h3>
+                  <p>Assign images to page slots</p>
+                </button>
+                
                 <button (click)="setActiveTab('seasonal')" class="action-card">
                   <div class="action-icon">🎨</div>
                   <h3>Update Seasonal Theme</h3>
@@ -2348,6 +2354,10 @@ export class DashboardComponent implements OnInit {
 
   navigateToImageManager(): void {
     this.router.navigate(['/admin/images']);
+  }
+
+  navigateToSlotManager(): void {
+    this.router.navigate(['/admin/slots']);
   }
 
   // Navigation methods

@@ -2,14 +2,16 @@ import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { SeasonalThemeService } from '../../services/seasonal-theme.service';
+import { SlotImgComponent } from '../../shared/slot-img/slot-img.component';
 
 @Component({
   selector: 'app-about',
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, RouterLink, SlotImgComponent],
   template: `
     <div class="about-page">
       <!-- Hero Section -->
       <section class="hero-section">
+        <slot-img key="about.header" altDefault="About header" class="hero-background" />
         <div class="hero-content">
           <h1 class="hero-title">About Creation Design & Events</h1>
           <p class="hero-subtitle">
