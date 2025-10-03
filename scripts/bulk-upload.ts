@@ -4,9 +4,9 @@ import { getFirestore, collection, addDoc } from 'firebase/firestore';
 import * as fs from 'fs';
 import * as path from 'path';
 
-// Firebase configuration (replace with your actual config)
+// Firebase configuration - SECURITY: DO NOT commit real API keys!
 const firebaseConfig = {
-  apiKey: "AIzaSyAUz7FJezTXW-k4SxVKWPkxtPJ1h6s4xTQ",
+  apiKey: "YOUR_FIREBASE_API_KEY_HERE", // Replace with your actual API key
   authDomain: "creadevents-437a8.firebaseapp.com",
   projectId: "creadevents-437a8",
   storageBucket: "creadevents-437a8.firebasestorage.app",

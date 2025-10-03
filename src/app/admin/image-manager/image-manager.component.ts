@@ -1,6 +1,7 @@
 import { Component, signal, computed, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 import { ImageStorageService, GalleryImage, ImageUploadProgress, GalleryFilter } from '../../services/image-storage.service';
 import { AuthService } from '../../services/auth.service';
 
@@ -10,7 +11,12 @@ import { AuthService } from '../../services/auth.service';
   template: `
     <div class="image-manager">
       <div class="manager-header">
-        <h2>Image Gallery Manager</h2>
+        <div class="header-left">
+          <button type="button" (click)="navigateBack()" class="back-btn">
+            ← Back to Dashboard
+          </button>
+          <h2>Image Gallery Manager</h2>
+        </div>
         <div class="stats">
           <div class="stat-card">
             <span class="stat-number">{{ totalImages() }}</span>
@@ -300,6 +306,27 @@ import { AuthService } from '../../services/auth.service';
       justify-content: space-between;
       align-items: center;
       margin-bottom: 30px;
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .back-btn {
+      padding: 8px 16px;
+      background: #6c757d;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: background-color 0.2s ease;
+    }
+
+    .back-btn:hover {
+      background: #5a6268;
     }
 
     .stats {
@@ -680,6 +707,7 @@ import { AuthService } from '../../services/auth.service';
 export class ImageManagerComponent implements OnInit {
   protected imageStorageService = inject(ImageStorageService);
   protected authService = inject(AuthService);
+  private router = inject(Router);
 
   // Upload state
   selectedCategory = '';
@@ -727,6 +755,10 @@ export class ImageManagerComponent implements OnInit {
 
   ngOnInit() {
     this.loadImages();
+  }
+
+  navigateBack() {
+    this.router.navigate(['/admin']);
   }
 
   async loadImages() {

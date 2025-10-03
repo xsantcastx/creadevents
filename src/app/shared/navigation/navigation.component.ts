@@ -118,25 +118,28 @@ import { AuthService } from '../../services/auth.service';
       left: 0;
       right: 0;
       z-index: 1000;
-      background: rgba(252, 250, 248, 0.9);
-      backdrop-filter: blur(20px);
-      border-bottom: 1px solid rgba(34, 48, 45, 0.08);
-      transition: box-shadow 0.3s ease, background-color 0.3s ease;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
     .navbar.scrolled {
-      background: rgba(252, 250, 248, 0.96);
-      box-shadow: 0 18px 36px rgba(14, 20, 18, 0.08);
+      background: rgba(255, 255, 255, 0.98);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+      border-bottom: 1px solid rgba(0, 0, 0, 0.08);
     }
 
     .nav-container {
-      width: min(1100px, 92vw);
+      max-width: 1200px;
       margin: 0 auto;
-      height: 90px;
+      height: 72px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 2rem;
+      padding: 0 24px;
+      gap: 40px;
     }
 
     .brand {
@@ -145,45 +148,69 @@ import { AuthService } from '../../services/auth.service';
       display: flex;
       flex-direction: column;
       align-items: flex-start;
+      transition: transform 0.2s ease;
+    }
+
+    .brand:hover {
+      transform: translateY(-1px);
     }
 
     .brand-mark {
-      font-size: 1.35rem;
-      font-weight: 600;
-      letter-spacing: 0.04em;
-      color: var(--theme-text, #22302d);
+      font-size: 24px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: #1a202c;
+      line-height: 1.2;
     }
 
     .brand-subtitle {
-      font-size: 0.72rem;
-      letter-spacing: 0.2em;
+      font-size: 11px;
+      letter-spacing: 0.1em;
       text-transform: uppercase;
-      margin-top: 0.25rem;
-      color: rgba(34, 48, 45, 0.55);
+      margin-top: 2px;
+      color: #718096;
+      font-weight: 500;
     }
 
     .mobile-toggle {
       display: none;
       flex-direction: column;
-      gap: 0.35rem;
-      width: 42px;
-      height: 42px;
-      border-radius: 50%;
+      gap: 4px;
+      width: 40px;
+      height: 40px;
+      border-radius: 8px;
       align-items: center;
       justify-content: center;
-      border: 1px solid rgba(34, 48, 45, 0.12);
-      background: rgba(255, 255, 255, 0.7);
+      border: none;
+      background: transparent;
       cursor: pointer;
-      transition: transform 0.2s ease;
+      transition: all 0.2s ease;
+      padding: 8px;
+    }
+
+    .mobile-toggle:hover {
+      background: rgba(0, 0, 0, 0.05);
     }
 
     .mobile-toggle span {
       display: block;
-      width: 18px;
+      width: 20px;
       height: 2px;
-      background: var(--theme-text, #22302d);
-      border-radius: 999px;
-      transition: transform 0.3s ease, opacity 0.3s ease;
+      background: #2d3748;
+      border-radius: 1px;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .mobile-toggle[aria-expanded="true"] span:nth-child(1) {
+      transform: rotate(45deg) translate(6px, 6px);
+    }
+
+    .mobile-toggle[aria-expanded="true"] span:nth-child(2) {
+      opacity: 0;
+    }
+
+    .mobile-toggle[aria-expanded="true"] span:nth-child(3) {
+      transform: rotate(-45deg) translate(6px, -6px);
     }
 
     .nav-menu {
@@ -191,50 +218,45 @@ import { AuthService } from '../../services/auth.service';
       align-items: center;
       justify-content: space-between;
       flex: 1;
-      gap: 3rem;
+      gap: 40px;
     }
 
     .nav-links {
       display: flex;
       align-items: center;
-      gap: 1.75rem;
+      gap: 32px;
       list-style: none;
       margin: 0;
       padding: 0;
     }
 
-    .nav-item a {
+    .nav-item a,
+    .nav-item button {
       position: relative;
-      font-size: 0.95rem;
+      font-size: 15px;
       font-weight: 500;
-      color: rgba(34, 48, 45, 0.75);
+      color: #4a5568;
       text-decoration: none;
-      letter-spacing: 0.02em;
-      padding: 0.25rem 0;
-      transition: color 0.2s ease;
-    }
-
-    .nav-item a::after {
-      content: '';
-      position: absolute;
-      left: 0;
-      bottom: -6px;
-      width: 100%;
-      height: 2px;
-      background: var(--theme-primary, #5e8a75);
-      transform: scaleX(0);
-      transform-origin: left;
-      transition: transform 0.2s ease;
+      letter-spacing: -0.01em;
+      padding: 8px 12px;
+      border-radius: 6px;
+      transition: all 0.2s ease;
+      border: none;
+      background: transparent;
+      cursor: pointer;
+      font-family: inherit;
+      white-space: nowrap;
     }
 
     .nav-item a:hover,
-    .nav-item a.active {
-      color: var(--theme-text, #22302d);
+    .nav-item button:hover {
+      color: #2d3748;
+      background: rgba(0, 0, 0, 0.04);
     }
 
-    .nav-item a:hover::after,
-    .nav-item a.active::after {
-      transform: scaleX(1);
+    .nav-item a.active {
+      color: #2b6cb0;
+      background: rgba(43, 108, 176, 0.1);
     }
 
     .nav-item.mobile-only {
@@ -244,20 +266,51 @@ import { AuthService } from '../../services/auth.service';
     .nav-cta {
       display: flex;
       align-items: center;
-      gap: 1rem;
+      gap: 16px;
     }
 
     .cta-link {
-      font-size: 0.9rem;
+      font-size: 14px;
+      font-weight: 500;
       text-decoration: none;
-      color: rgba(34, 48, 45, 0.65);
-      transition: color 0.2s ease;
+      color: #718096;
+      padding: 8px 12px;
+      border-radius: 6px;
+      transition: all 0.2s ease;
+      white-space: nowrap;
     }
 
     .cta-link:hover {
-      color: var(--theme-text, #22302d);
+      color: #4a5568;
+      background: rgba(0, 0, 0, 0.04);
     }
 
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 10px 20px;
+      font-size: 14px;
+      font-weight: 600;
+      text-decoration: none;
+      border-radius: 8px;
+      transition: all 0.2s ease;
+      border: none;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+    }
+
+    /* Mobile Styles */
     @media (max-width: 960px) {
       .mobile-toggle {
         display: flex;
@@ -265,31 +318,41 @@ import { AuthService } from '../../services/auth.service';
 
       .nav-menu {
         position: fixed;
-        inset: 90px 0 0 0;
-        background: rgba(252, 250, 248, 0.97);
+        inset: 72px 0 0 0;
+        background: rgba(255, 255, 255, 0.98);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
         flex-direction: column;
-        align-items: flex-start;
-        padding: 2.5rem min(8vw, 2.5rem);
-        gap: 2.5rem;
-        transform: translateY(-4%);
-        opacity: 0;
-        pointer-events: none;
-        transition: opacity 0.3s ease;
+        align-items: stretch;
+        padding: 32px 24px;
+        gap: 32px;
+        transform: translateX(100%);
+        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        border-left: 1px solid rgba(0, 0, 0, 0.05);
       }
 
       .nav-menu.open {
-        opacity: 1;
-        pointer-events: auto;
+        transform: translateX(0);
       }
 
       .nav-links {
         flex-direction: column;
-        align-items: flex-start;
-        gap: 1.25rem;
+        align-items: stretch;
+        gap: 8px;
       }
 
-      .nav-item a {
-        font-size: 1.1rem;
+      .nav-item a,
+      .nav-item button {
+        font-size: 16px;
+        padding: 16px 0;
+        text-align: left;
+        border-radius: 0;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+      }
+
+      .nav-item:last-child a,
+      .nav-item:last-child button {
+        border-bottom: none;
       }
 
       .nav-item.mobile-only {
@@ -297,64 +360,81 @@ import { AuthService } from '../../services/auth.service';
       }
 
       .nav-cta {
-        width: 100%;
         flex-direction: column;
-        align-items: flex-start;
-        gap: 0.75rem;
+        align-items: stretch;
+        gap: 16px;
+        padding-top: 16px;
+        border-top: 1px solid rgba(0, 0, 0, 0.05);
       }
 
       .nav-cta .btn {
         width: 100%;
+        padding: 16px;
+        font-size: 16px;
+      }
+
+      .cta-link {
+        padding: 12px 0;
+        text-align: center;
       }
     }
 
     @media (max-width: 480px) {
       .nav-container {
-        height: 80px;
-        gap: 1rem;
+        height: 64px;
+        padding: 0 16px;
+        gap: 16px;
       }
 
       .brand-mark {
-        font-size: 1.1rem;
+        font-size: 20px;
       }
 
       .brand-subtitle {
-        letter-spacing: 0.16em;
+        font-size: 10px;
+        letter-spacing: 0.08em;
+      }
+
+      .nav-menu {
+        inset: 64px 0 0 0;
+        padding: 24px 16px;
       }
     }
 
     /* Authentication Styles */
-    .auth-link {
-      border: none;
-      background: transparent;
-      color: inherit;
-      font-family: inherit;
-      font-size: inherit;
-      cursor: pointer;
-      text-decoration: none;
-      padding: 0;
-      transition: color 0.3s ease;
-    }
-
-    .auth-link:hover {
-      color: var(--theme-primary, #7FB069);
-    }
-
     .logout-btn {
-      display: block;
-      width: 100%;
       text-align: left;
-      padding: 0.5rem 0;
-      font-size: 0.9rem;
+      max-width: 200px;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
-    @media (min-width: 769px) {
+    @media (max-width: 960px) {
       .logout-btn {
-        font-size: 0.85rem;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        max-width: 200px;
+        max-width: none;
+        overflow: visible;
+        text-overflow: clip;
+      }
+    }
+
+    /* Focus styles for accessibility */
+    .nav-item a:focus,
+    .nav-item button:focus,
+    .btn:focus,
+    .mobile-toggle:focus {
+      outline: 2px solid #667eea;
+      outline-offset: 2px;
+    }
+
+    /* Smooth scrolling body offset */
+    :host {
+      display: block;
+      margin-bottom: 72px;
+    }
+
+    @media (max-width: 480px) {
+      :host {
+        margin-bottom: 64px;
       }
     }
   `]

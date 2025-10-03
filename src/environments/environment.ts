@@ -1,8 +1,9 @@
 // Development environment configuration
+// DO NOT commit real API keys to version control!
 export const environment = {
   production: false,
   firebase: {
-    apiKey: "AIzaSyAUz7FJezTXW-k4SxVKWPkxtPJ1h6s4xTQ",
+    apiKey: "YOUR_FIREBASE_API_KEY_HERE", // Replace with your actual API key
     authDomain: "creadevents-437a8.firebaseapp.com",
     projectId: "creadevents-437a8",
     storageBucket: "creadevents-437a8.firebasestorage.app",

@@ -2,13 +2,14 @@ import { initializeApp } from 'firebase/app';
 import { getFirestore, collection, getDocs, doc, updateDoc } from 'firebase/firestore';
 
 // Firebase configuration
+// SECURITY: Replace with your actual Firebase config - DO NOT commit real API keys!
 const firebaseConfig = {
-  apiKey: "AIzaSyAzJ1gKtaOhL9Hl-QfVKIZPkdZ_mEJqE0k",
-  authDomain: "creadevents-30a7a.firebaseapp.com",
-  projectId: "creadevents-30a7a",
-  storageBucket: "creadevents-30a7a.firebasestorage.app",
-  messagingSenderId: "1040749998651",
-  appId: "1:1040749998651:web:2a8f1c7ae4c8d1b0e7f4a5"
+  apiKey: "YOUR_FIREBASE_API_KEY_HERE", // Replace with your actual API key
+  authDomain: "creadevents-437a8.firebaseapp.com",
+  projectId: "creadevents-437a8",
+  storageBucket: "creadevents-437a8.firebasestorage.app",
+  messagingSenderId: "256034995785",
+  appId: "1:256034995785:web:813f895fa2a4754de0c998"
 };
 
 /**

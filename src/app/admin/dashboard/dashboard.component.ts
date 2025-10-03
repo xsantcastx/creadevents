@@ -125,6 +125,12 @@ interface DashboardStats {
                   <p>Monitor website performance</p>
                 </button>
                 
+                <button (click)="navigateToImageManager()" class="action-card">
+                  <div class="action-icon">🖼️</div>
+                  <h3>Manage Images</h3>
+                  <p>Upload and organize gallery images</p>
+                </button>
+                
                 <button (click)="setActiveTab('seasonal')" class="action-card">
                   <div class="action-icon">🎨</div>
                   <h3>Update Seasonal Theme</h3>
@@ -2338,6 +2344,10 @@ export class DashboardComponent implements OnInit {
   // Navigation methods
   navigateToAnalytics(): void {
     this.router.navigate(['/admin/analytics']);
+  }
+
+  navigateToImageManager(): void {
+    this.router.navigate(['/admin/images']);
   }
 
   // Navigation methods
