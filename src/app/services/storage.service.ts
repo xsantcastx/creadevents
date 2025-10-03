@@ -15,6 +15,8 @@ import {
 import { Observable, from, Subject } from 'rxjs';
 import { environment } from '../../environments/environment';
 
+const firebaseConfig = environment.firebase;
+
 export interface UploadProgress {
   progress: number;
   state: 'running' | 'paused' | 'success' | 'canceled' | 'error';
@@ -36,7 +38,7 @@ export interface StorageFile {
 })
 export class StorageService {
   private storage: FirebaseStorage;
-  private app = initializeApp(environment.firebase);
+  private app = initializeApp(firebaseConfig);
 
   constructor() {
     this.storage = getStorage(this.app);
