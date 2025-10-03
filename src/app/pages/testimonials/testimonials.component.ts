@@ -654,7 +654,7 @@ export class TestimonialsComponent implements OnInit, OnDestroy {
       author: 'Maria & Carlos Rodriguez',
       event: 'Wedding Reception',
       quote: 'Creation Design & Events made our wedding absolutely magical! From the stunning floral arrangements to the perfect lighting, every detail was executed flawlessly. Our guests are still talking about how beautiful everything was.',
-      photo: '/assets/fb_4888_8929514942_2_48x2_48.jpg',
+      photo: '/assets/logo1.jpg',
       rating: 5,
       featured: true,
       createdAt: new Date()
@@ -665,7 +665,7 @@ export class TestimonialsComponent implements OnInit, OnDestroy {
       role: 'Event Coordinator',
       event: 'Corporate Gala',
       quote: 'Working with Creation Design & Events for our annual corporate gala was a dream. They understood our vision perfectly and delivered beyond our expectations. Professional, creative, and reliable.',
-      photo: '/assets/ig_17883536292_1336_.jpg',
+      photo: '/assets/logo2.jpg',
       rating: 5,
       featured: true,
       createdAt: new Date()
@@ -675,7 +675,7 @@ export class TestimonialsComponent implements OnInit, OnDestroy {
       author: 'Sofia & Miguel Torres',
       event: 'Garden Wedding',
       quote: 'Our outdoor wedding was transformed into a fairy tale garden. The team worked seamlessly with our venue and created the most romantic atmosphere. Thank you for making our special day perfect!',
-      photo: '/assets/ig_179_31_896964684.jpg',
+      photo: '/assets/logo3.jpg',
       rating: 5,
       featured: true,
       createdAt: new Date()
@@ -740,18 +740,10 @@ export class TestimonialsComponent implements OnInit, OnDestroy {
   }
 
   private loadTestimonials(): void {
-    // In a real application, this would load from Firestore
-    // For now, using sample data
-    this.allTestimonials.set(this.sampleTestimonials);
-    this.featuredTestimonials.set(this.sampleTestimonials.filter(t => t.featured));
-    
-    // Uncomment when Firestore is set up:
-    /*
     this.firestoreService.getTestimonials().subscribe(testimonials => {
       this.allTestimonials.set(testimonials);
       this.featuredTestimonials.set(testimonials.filter(t => t.featured));
     });
-    */
   }
 
   getStars(rating: number): number[] {

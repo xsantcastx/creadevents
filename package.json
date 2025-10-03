@@ -7,7 +7,8 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "serve:ssr:creadevents": "node dist/creadevents/server/server.mjs"
+    "serve:ssr:creadevents": "node dist/creadevents/server/server.mjs",
+    "seed-data": "node scripts/seed-data.js"
   },
   "prettier": {
     "printWidth": 100,
@@ -34,6 +35,7 @@
     "@angular/ssr": "^20.3.3",
     "express": "^5.1.0",
     "firebase": "^11.10.0",
+    "firebase-admin": "^13.5.0",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0"
   },
@@ -50,6 +52,7 @@
     "karma-coverage": "~2.2.0",
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.1.0",
+    "tsx": "^4.20.6",
     "typescript": "~5.9.2"
   }
 }

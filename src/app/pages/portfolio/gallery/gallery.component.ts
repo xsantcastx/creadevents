@@ -1,775 +1,1018 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, signal, computed, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router';
+import { FormsModule } from '@angular/forms';
+import { ImageStorageService, GalleryImage } from '../../../services/image-storage.service';
 import { SeasonalThemeService } from '../../../services/seasonal-theme.service';
-
-interface PortfolioItem {
-  id: string;
-  title: string;
-  description: string;
-  image: string;
-  category: 'weddings' | 'corporate' | 'floral' | 'seasonal' | 'parties';
-  featured: boolean;
-  date: string;
-  client?: string;
-}
 
 @Component({
   selector: 'app-gallery',
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, FormsModule],
   template: `
-    <div class="portfolio-page">
+    <div class="gallery-container">
       <!-- Hero Section -->
-      <section class="hero-section">
+      <section class="gallery-hero">
         <div class="hero-content">
-          <h1 class="hero-title">Our Portfolio</h1>
-          <p class="hero-subtitle">
-            Explore our collection of beautiful events, stunning floral arrangements, 
-            and memorable celebrations crafted with passion and precision.
-          </p>
+          <h1>Our Gallery</h1>
+          <p>Discover our collection of {{ totalImages() }} beautiful moments across {{ totalCategories() }} categories</p>
         </div>
       </section>
 
-      <!-- Portfolio Gallery -->
-      <section class="gallery-section">
-        <div class="container">
-          <!-- Filter Tabs -->
-          <div class="filter-tabs">
-            <button 
-              class="filter-tab" 
-              [class.active]="selectedCategory === 'all'"
-              (click)="filterPortfolio('all')">
-              All Projects
-            </button>
-            <button 
-              class="filter-tab" 
-              [class.active]="selectedCategory === 'weddings'"
-              (click)="filterPortfolio('weddings')">
-              Weddings
-            </button>
-            <button 
-              class="filter-tab" 
-              [class.active]="selectedCategory === 'corporate'"
-              (click)="filterPortfolio('corporate')">
-              Corporate Events
-            </button>
-            <button 
-              class="filter-tab" 
-              [class.active]="selectedCategory === 'floral'"
-              (click)="filterPortfolio('floral')">
-              Floral Designs
-            </button>
-            <button 
-              class="filter-tab" 
-              [class.active]="selectedCategory === 'seasonal'"
-              (click)="filterPortfolio('seasonal')">
-              Seasonal Decor
-            </button>
-            <button 
-              class="filter-tab" 
-              [class.active]="selectedCategory === 'parties'"
-              (click)="filterPortfolio('parties')">
-              Private Parties
-            </button>
+      <!-- Filter Controls -->
+      <div class="filter-controls">
+        <div class="search-box">
+          <input 
+            type="text" 
+            [(ngModel)]="searchTerm" 
+            (ngModelChange)="onSearchChange()"
+            placeholder="Search images by name, category, or tags..."
+            class="search-input">
+        </div>
+
+        <div class="category-filters">
+          <button 
+            type="button"
+            (click)="selectCategory('')" 
+            [class.active]="selectedCategory() === ''"
+            class="category-btn all-btn">
+            All Categories ({{ totalImages() }})
+          </button>
+          
+          <button 
+            type="button"
+            *ngFor="let stat of categoryStats()" 
+            (click)="selectCategory(stat.category)"
+            [class.active]="selectedCategory() === stat.category"
+            class="category-btn">
+            {{ formatCategoryName(stat.category) }} ({{ stat.count }})
+          </button>
+        </div>
+
+        <div class="view-options">
+          <div class="items-per-page">
+            <label>Show:</label>
+            <select [(ngModel)]="itemsPerPage" (ngModelChange)="onItemsPerPageChange()">
+              <option value="12">12</option>
+              <option value="24">24</option>
+              <option value="48">48</option>
+              <option value="96">96</option>
+            </select>
+            <span>per page</span>
           </div>
 
-          <!-- Portfolio Grid -->
-          <div class="portfolio-grid">
-            <div 
-              *ngFor="let item of filteredPortfolio; let i = index" 
-              class="portfolio-item"
-              [class.featured]="item.featured"
-              [class.large]="i % 5 === 0"
-              (click)="openLightbox(item, i)">
-              
-              <div class="portfolio-image">
-                <img [src]="item.image" [alt]="item.title" loading="lazy">
-                <div class="portfolio-overlay">
-                  <div class="portfolio-info">
-                    <div class="category-badge">{{ getCategoryLabel(item.category) }}</div>
-                    <h3 class="portfolio-title">{{ item.title }}</h3>
-                    <p class="portfolio-description">{{ item.description }}</p>
-                    <div class="portfolio-meta">
-                      <span class="date">{{ item.date }}</span>
-                      <span class="client" *ngIf="item.client">{{ item.client }}</span>
-                    </div>
-                  </div>
-                  <div class="view-button">
-                    <i class="view-icon">👁</i>
-                    View Details
-                  </div>
+          <div class="sort-options">
+            <label>Sort by:</label>
+            <select [(ngModel)]="sortBy" (ngModelChange)="onSortChange()">
+              <option value="newest">Newest First</option>
+              <option value="oldest">Oldest First</option>
+              <option value="name">Name A-Z</option>
+              <option value="category">Category</option>
+            </select>
+          </div>
+
+          <div class="featured-toggle">
+            <label>
+              <input 
+                type="checkbox" 
+                [(ngModel)]="showFeaturedOnly" 
+                (ngModelChange)="onFeaturedToggle()">
+              Featured Only
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <!-- Results Info -->
+      <div class="results-info" *ngIf="!loading()">
+        <p>
+          Showing {{ paginatedImages().length }} of {{ filteredImages().length }} images
+          <span *ngIf="selectedCategory()"> in "{{ formatCategoryName(selectedCategory()) }}"</span>
+          <span *ngIf="searchTerm"> matching "{{ searchTerm }}"</span>
+        </p>
+      </div>
+
+      <!-- Loading State -->
+      <div class="loading-container" *ngIf="loading()">
+        <div class="loading-spinner"></div>
+        <p>Loading gallery...</p>
+      </div>
+
+      <!-- Image Grid -->
+      <div class="image-grid" *ngIf="!loading() && paginatedImages().length > 0">
+        <div 
+          class="image-card" 
+          *ngFor="let image of paginatedImages(); trackBy: trackByImageId"
+          (click)="openImageModal(image)">
+          
+          <div class="image-container">
+            <img 
+              [src]="imageStorageService.getThumbnailUrl(image.storageUrl || image.downloadURL || '', 'medium')" 
+              [alt]="image.altText"
+              loading="lazy"
+              class="gallery-image">
+            
+            <div class="image-overlay">
+              <div class="image-info">
+                <h3 class="image-title">{{ image.originalName }}</h3>
+                <p class="image-category">{{ formatCategoryName(image.category) }}</p>
+                <div class="image-tags" *ngIf="image.tags.length > 0">
+                  <span class="tag" *ngFor="let tag of image.tags.slice(0, 3)">{{ tag }}</span>
+                  <span class="tag more" *ngIf="image.tags.length > 3">+{{ image.tags.length - 3 }}</span>
                 </div>
               </div>
-            </div>
-          </div>
-
-          <!-- Load More Button -->
-          <div class="load-more-container" *ngIf="hasMoreItems">
-            <button class="btn btn-outline" (click)="loadMoreItems()">
-              Load More Projects
-            </button>
-          </div>
-        </div>
-      </section>
-
-      <!-- Call to Action -->
-      <section class="cta-section">
-        <div class="container">
-          <div class="cta-content">
-            <h2>Ready to Create Something Beautiful?</h2>
-            <p>Let's bring your vision to life with our expert planning and design services.</p>
-            <div class="cta-actions">
-              <a href="tel:7863562958" class="btn btn-primary">Call (786) 356-2958</a>
-              <a routerLink="/contact" class="btn btn-outline">Start Your Project</a>
+              
+              <div class="image-actions">
+                <button type="button" class="action-btn view-btn" title="View Full Size">
+                  👁️
+                </button>
+                <span class="featured-badge" *ngIf="image.featured" title="Featured Image">⭐</span>
+              </div>
             </div>
           </div>
         </div>
-      </section>
+      </div>
+
+      <!-- Empty State -->
+      <div class="empty-state" *ngIf="!loading() && paginatedImages().length === 0">
+        <div class="empty-content">
+          <h3>No images found</h3>
+          <p *ngIf="searchTerm || selectedCategory() || showFeaturedOnly">
+            Try adjusting your filters or search terms.
+          </p>
+          <p *ngIf="!searchTerm && !selectedCategory() && !showFeaturedOnly">
+            The gallery is currently empty. Check back later for updates.
+          </p>
+          <button type="button" (click)="clearAllFilters()" class="clear-filters-btn">
+            Clear All Filters
+          </button>
+        </div>
+      </div>
+
+      <!-- Pagination -->
+      <div class="pagination" *ngIf="totalPages() > 1 && !loading()">
+        <button 
+          type="button"
+          (click)="goToPage(currentPage() - 1)" 
+          [disabled]="currentPage() === 1"
+          class="page-btn">
+          ← Previous
+        </button>
+
+        <div class="page-numbers">
+          <button 
+            type="button"
+            *ngFor="let page of getVisiblePages()" 
+            (click)="goToPage(page)"
+            [class.active]="page === currentPage()"
+            [class.ellipsis]="page === -1"
+            [disabled]="page === -1"
+            class="page-number">
+            {{ page === -1 ? '...' : page }}
+          </button>
+        </div>
+
+        <button 
+          type="button"
+          (click)="goToPage(currentPage() + 1)" 
+          [disabled]="currentPage() === totalPages()"
+          class="page-btn">
+          Next →
+        </button>
+      </div>
     </div>
 
-    <!-- Lightbox Modal -->
-    <div class="lightbox-overlay" *ngIf="lightboxOpen" (click)="closeLightbox()">
-      <div class="lightbox-container" (click)="$event.stopPropagation()">
-        <button class="lightbox-close" (click)="closeLightbox()">×</button>
+    <!-- Image Modal -->
+    <div class="image-modal" *ngIf="selectedImage()" (click)="closeImageModal()">
+      <div class="modal-backdrop"></div>
+      <div class="modal-content" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+          <h2>{{ selectedImage()?.originalName }}</h2>
+          <button type="button" (click)="closeImageModal()" class="close-btn">×</button>
+        </div>
         
-        <div class="lightbox-content" *ngIf="selectedItem">
-          <div class="lightbox-image">
-            <img [src]="selectedItem.image" [alt]="selectedItem.title">
+        <div class="modal-body">
+          <div class="modal-image-container">
+            <img 
+              [src]="selectedImage()?.storageUrl" 
+              [alt]="selectedImage()?.altText"
+              class="modal-image">
           </div>
           
-          <div class="lightbox-info">
-            <div class="category-badge">{{ getCategoryLabel(selectedItem.category) }}</div>
-            <h2>{{ selectedItem.title }}</h2>
-            <p>{{ selectedItem.description }}</p>
+          <div class="modal-details">
+            <div class="detail-row">
+              <span class="label">Category:</span>
+              <span class="value">{{ formatCategoryName(selectedImage()?.category || '') }}</span>
+            </div>
             
-            <div class="lightbox-meta">
-              <div class="meta-item">
-                <strong>Date:</strong> {{ selectedItem.date }}
-              </div>
-              <div class="meta-item" *ngIf="selectedItem.client">
-                <strong>Client:</strong> {{ selectedItem.client }}
-              </div>
-              <div class="meta-item">
-                <strong>Category:</strong> {{ getCategoryLabel(selectedItem.category) }}
+            <div class="detail-row" *ngIf="selectedImage()?.subcategory">
+              <span class="label">Subcategory:</span>
+              <span class="value">{{ selectedImage()?.subcategory }}</span>
+            </div>
+            
+            <div class="detail-row" *ngIf="selectedImage()?.tags && selectedImage()!.tags.length > 0">
+              <span class="label">Tags:</span>
+              <div class="tags-list">
+                <span class="tag" *ngFor="let tag of selectedImage()!.tags">{{ tag }}</span>
               </div>
             </div>
             
-            <div class="lightbox-actions">
-              <a routerLink="/contact" class="btn btn-primary">Inquire About Similar Project</a>
-              <a [routerLink]="['/services']" class="btn btn-outline">View Our Services</a>
+            <div class="detail-row">
+              <span class="label">Upload Date:</span>
+              <span class="value">{{ formatDate(selectedImage()?.uploadedAt) }}</span>
+            </div>
+            
+            <div class="detail-row">
+              <span class="label">File Size:</span>
+              <span class="value">              <span>{{ formatFileSize(selectedImage()?.metadata?.size || 0) }}</span></span>
+            </div>
+            
+            <div class="detail-row" *ngIf="selectedImage()?.featured">
+              <span class="featured-indicator">⭐ Featured Image</span>
             </div>
           </div>
         </div>
-        
-        <!-- Navigation Arrows -->
-        <button class="lightbox-nav prev" (click)="previousImage()" *ngIf="currentImageIndex > 0">‹</button>
-        <button class="lightbox-nav next" (click)="nextImage()" *ngIf="currentImageIndex < filteredPortfolio.length - 1">›</button>
+
+        <div class="modal-navigation" *ngIf="canNavigate()">
+          <button 
+            type="button"
+            (click)="navigateImage('prev')" 
+            [disabled]="!hasPreviousImage()"
+            class="nav-btn prev-btn">
+            ← Previous
+          </button>
+          
+          <span class="nav-info">
+            {{ getCurrentImageIndex() + 1 }} of {{ filteredImages().length }}
+          </span>
+          
+          <button 
+            type="button"
+            (click)="navigateImage('next')" 
+            [disabled]="!hasNextImage()"
+            class="nav-btn next-btn">
+            Next →
+          </button>
+        </div>
       </div>
     </div>
   `,
   styles: [`
-    .portfolio-page {
-      min-height: 100vh;
-      padding-top: 70px;
+    .gallery-container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 20px;
     }
 
-    .hero-section {
-      background: linear-gradient(
-        135deg,
-        var(--theme-primary, #7FB069) 0%,
-        var(--theme-secondary, #F7E9E3) 100%
-      );
-      padding: 4rem 0;
+    .gallery-hero {
       text-align: center;
+      padding: 60px 20px;
+      background: linear-gradient(135deg, var(--primary-color, #2c3e50) 0%, var(--secondary-color, #34495e) 100%);
       color: white;
+      border-radius: 12px;
+      margin-bottom: 40px;
     }
 
-    .hero-content {
-      max-width: 800px;
-      margin: 0 auto;
-      padding: 0 2rem;
-    }
-
-    .hero-title {
+    .hero-content h1 {
       font-size: 3rem;
-      font-weight: 700;
-      margin-bottom: 1rem;
-      text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+      margin-bottom: 15px;
+      font-weight: 300;
     }
 
-    .hero-subtitle {
+    .hero-content p {
       font-size: 1.2rem;
-      line-height: 1.6;
-      opacity: 0.95;
-    }
-
-    .gallery-section {
-      padding: 4rem 0;
-    }
-
-    .container {
-      max-width: 1200px;
+      opacity: 0.9;
+      max-width: 600px;
       margin: 0 auto;
-      padding: 0 2rem;
     }
 
-    .filter-tabs {
+    .filter-controls {
+      background: white;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+      margin-bottom: 30px;
+    }
+
+    .search-box {
+      margin-bottom: 25px;
+    }
+
+    .search-input {
+      width: 100%;
+      padding: 15px 20px;
+      border: 2px solid #e0e0e0;
+      border-radius: 25px;
+      font-size: 16px;
+      transition: border-color 0.3s ease;
+    }
+
+    .search-input:focus {
+      outline: none;
+      border-color: var(--primary-color, #2c3e50);
+    }
+
+    .category-filters {
       display: flex;
-      justify-content: center;
-      gap: 1rem;
-      margin-bottom: 3rem;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 25px;
+    }
+
+    .category-btn {
+      padding: 10px 20px;
+      border: 2px solid #e0e0e0;
+      background: white;
+      border-radius: 25px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    .category-btn:hover {
+      border-color: var(--primary-color, #2c3e50);
+      transform: translateY(-2px);
+    }
+
+    .category-btn.active {
+      background: var(--primary-color, #2c3e50);
+      color: white;
+      border-color: var(--primary-color, #2c3e50);
+    }
+
+    .all-btn.active {
+      background: var(--accent-color, #e74c3c);
+      border-color: var(--accent-color, #e74c3c);
+    }
+
+    .view-options {
+      display: flex;
+      gap: 30px;
+      align-items: center;
       flex-wrap: wrap;
     }
 
-    .filter-tab {
-      padding: 0.75rem 1.5rem;
-      border: 2px solid var(--theme-primary, #7FB069);
-      background: transparent;
-      color: var(--theme-primary, #7FB069);
-      border-radius: 25px;
-      cursor: pointer;
-      font-weight: 500;
-      transition: all 0.3s ease;
+    .view-options > div {
+      display: flex;
+      align-items: center;
+      gap: 8px;
     }
 
-    .filter-tab:hover,
-    .filter-tab.active {
-      background: var(--theme-primary, #7FB069);
-      color: white;
+    .view-options select {
+      padding: 8px 12px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
     }
 
-    .portfolio-grid {
+    .results-info {
+      margin-bottom: 20px;
+      color: #666;
+      font-size: 14px;
+    }
+
+    .loading-container {
+      text-align: center;
+      padding: 80px 20px;
+    }
+
+    .loading-spinner {
+      width: 50px;
+      height: 50px;
+      border: 4px solid #f3f3f3;
+      border-top: 4px solid var(--primary-color, #2c3e50);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 20px;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .image-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: 1.5rem;
-      margin-bottom: 4rem;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 25px;
+      margin-bottom: 40px;
     }
 
-    .portfolio-item {
-      position: relative;
-      border-radius: 15px;
-      overflow: hidden;
+    .image-card {
       cursor: pointer;
-      transition: transform 0.3s ease;
-      height: 250px;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+      transition: all 0.3s ease;
+      background: white;
     }
 
-    .portfolio-item.large {
-      grid-column: span 2;
-      height: 400px;
+    .image-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 12px 35px rgba(0,0,0,0.15);
     }
 
-    .portfolio-item.featured {
-      border: 3px solid var(--theme-accent, #FFEAA7);
-    }
-
-    .portfolio-item:hover {
-      transform: translateY(-5px);
-    }
-
-    .portfolio-image {
-      width: 100%;
-      height: 100%;
+    .image-container {
       position: relative;
+      aspect-ratio: 4/3;
       overflow: hidden;
     }
 
-    .portfolio-image img {
+    .gallery-image {
       width: 100%;
       height: 100%;
       object-fit: cover;
       transition: transform 0.3s ease;
     }
 
-    .portfolio-item:hover .portfolio-image img {
-      transform: scale(1.1);
+    .image-card:hover .gallery-image {
+      transform: scale(1.05);
     }
 
-    .portfolio-overlay {
+    .image-overlay {
       position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
+      inset: 0;
       background: linear-gradient(
-        45deg,
-        rgba(0,0,0,0.8) 0%,
-        rgba(0,0,0,0.4) 100%
+        to bottom,
+        transparent 0%,
+        transparent 40%,
+        rgba(0,0,0,0.7) 100%
       );
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      padding: 1.5rem;
-      color: white;
+      padding: 20px;
       opacity: 0;
       transition: opacity 0.3s ease;
     }
 
-    .portfolio-item:hover .portfolio-overlay {
+    .image-card:hover .image-overlay {
       opacity: 1;
     }
 
-    .category-badge {
-      background: var(--theme-accent, #FFEAA7);
-      color: var(--theme-text, #2D3436);
-      padding: 0.25rem 0.75rem;
-      border-radius: 15px;
-      font-size: 0.8rem;
-      font-weight: 600;
-      width: fit-content;
+    .image-info {
+      align-self: flex-end;
+      color: white;
+      text-align: center;
     }
 
-    .portfolio-title {
-      font-size: 1.3rem;
+    .image-title {
+      font-size: 16px;
       font-weight: 600;
-      margin: 0.5rem 0;
+      margin-bottom: 5px;
+      text-shadow: 0 1px 3px rgba(0,0,0,0.3);
     }
 
-    .portfolio-description {
-      font-size: 0.9rem;
-      line-height: 1.4;
+    .image-category {
+      font-size: 14px;
       opacity: 0.9;
+      margin-bottom: 8px;
     }
 
-    .portfolio-meta {
+    .image-tags {
       display: flex;
-      justify-content: space-between;
-      font-size: 0.8rem;
-      opacity: 0.8;
-      margin-top: 0.5rem;
-    }
-
-    .view-button {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      font-weight: 500;
-      font-size: 0.9rem;
-    }
-
-    .view-icon {
-      font-size: 1.2rem;
-    }
-
-    .load-more-container {
-      text-align: center;
-    }
-
-    .btn {
-      padding: 0.75rem 1.5rem;
-      border-radius: 5px;
-      text-decoration: none;
-      font-weight: 500;
-      text-align: center;
-      transition: all 0.3s ease;
-      border: 2px solid transparent;
-      display: inline-block;
-      cursor: pointer;
-      background: none;
-    }
-
-    .btn-primary {
-      background: var(--theme-primary, #7FB069);
-      color: white;
-      border-color: var(--theme-primary, #7FB069);
-    }
-
-    .btn-primary:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-    }
-
-    .btn-outline {
-      background: transparent;
-      color: var(--theme-primary, #7FB069);
-      border-color: var(--theme-primary, #7FB069);
-    }
-
-    .btn-outline:hover {
-      background: var(--theme-primary, #7FB069);
-      color: white;
-    }
-
-    .cta-section {
-      background: var(--theme-secondary, #F7E9E3);
-      padding: 4rem 0;
-      text-align: center;
-    }
-
-    .cta-content h2 {
-      font-size: 2.5rem;
-      color: var(--theme-text, #2D3436);
-      margin-bottom: 1rem;
-    }
-
-    .cta-content p {
-      font-size: 1.1rem;
-      color: var(--theme-text-secondary, #636E72);
-      margin-bottom: 2rem;
-      max-width: 600px;
-      margin-left: auto;
-      margin-right: auto;
-    }
-
-    .cta-actions {
-      display: flex;
-      justify-content: center;
-      gap: 1rem;
       flex-wrap: wrap;
-    }
-
-    .cta-actions .btn {
-      padding: 1rem 2rem;
-      font-size: 1rem;
-    }
-
-    /* Lightbox Styles */
-    .lightbox-overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: rgba(0,0,0,0.9);
-      z-index: 2000;
-      display: flex;
-      align-items: center;
+      gap: 4px;
       justify-content: center;
-      padding: 2rem;
     }
 
-    .lightbox-container {
-      position: relative;
-      max-width: 1000px;
-      width: 100%;
-      max-height: 90vh;
-      background: white;
-      border-radius: 15px;
-      overflow: hidden;
+    .tag {
+      background: rgba(255,255,255,0.2);
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-size: 11px;
+      backdrop-filter: blur(10px);
+    }
+
+    .tag.more {
+      background: rgba(255,255,255,0.3);
+      font-weight: 600;
+    }
+
+    .image-actions {
+      align-self: flex-start;
       display: flex;
-      flex-direction: column;
+      gap: 10px;
+      align-items: center;
     }
 
-    .lightbox-close {
-      position: absolute;
-      top: 1rem;
-      right: 1rem;
-      background: rgba(0,0,0,0.7);
-      color: white;
-      border: none;
+    .action-btn {
       width: 40px;
       height: 40px;
+      border: none;
       border-radius: 50%;
-      font-size: 1.5rem;
+      background: rgba(255,255,255,0.9);
       cursor: pointer;
-      z-index: 10;
-      transition: background 0.3s ease;
-    }
-
-    .lightbox-close:hover {
-      background: rgba(0,0,0,0.9);
-    }
-
-    .lightbox-content {
       display: flex;
-      height: 100%;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(10px);
     }
 
-    .lightbox-image {
-      flex: 2;
-      min-height: 400px;
+    .action-btn:hover {
+      background: white;
+      transform: scale(1.1);
     }
 
-    .lightbox-image img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-
-    .lightbox-info {
-      flex: 1;
-      padding: 2rem;
+    .featured-badge {
+      background: #ffc107;
+      color: white;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
       display: flex;
-      flex-direction: column;
-      gap: 1rem;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
     }
 
-    .lightbox-info h2 {
-      font-size: 1.8rem;
-      color: var(--theme-text, #2D3436);
-      margin: 0;
+    .empty-state {
+      text-align: center;
+      padding: 80px 20px;
     }
 
-    .lightbox-info p {
-      color: var(--theme-text-secondary, #636E72);
-      line-height: 1.6;
+    .empty-content h3 {
+      font-size: 24px;
+      margin-bottom: 15px;
+      color: #666;
     }
 
-    .lightbox-meta {
-      display: flex;
-      flex-direction: column;
-      gap: 0.5rem;
+    .empty-content p {
+      color: #888;
+      margin-bottom: 25px;
     }
 
-    .meta-item {
-      font-size: 0.9rem;
-    }
-
-    .lightbox-actions {
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
-      margin-top: auto;
-    }
-
-    .lightbox-nav {
-      position: absolute;
-      top: 50%;
-      transform: translateY(-50%);
-      background: rgba(0,0,0,0.7);
+    .clear-filters-btn {
+      padding: 12px 24px;
+      background: var(--primary-color, #2c3e50);
       color: white;
       border: none;
-      width: 50px;
-      height: 50px;
-      border-radius: 50%;
-      font-size: 1.5rem;
+      border-radius: 6px;
       cursor: pointer;
-      transition: background 0.3s ease;
+      font-size: 16px;
     }
 
-    .lightbox-nav:hover {
+    .pagination {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 15px;
+      margin-top: 40px;
+    }
+
+    .page-btn, .page-number {
+      padding: 10px 15px;
+      border: 1px solid #ddd;
+      background: white;
+      cursor: pointer;
+      border-radius: 6px;
+      transition: all 0.3s ease;
+    }
+
+    .page-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .page-number.active {
+      background: var(--primary-color, #2c3e50);
+      color: white;
+      border-color: var(--primary-color, #2c3e50);
+    }
+
+    .page-number.ellipsis {
+      border: none;
+      background: none;
+      cursor: default;
+    }
+
+    .image-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .modal-backdrop {
+      position: absolute;
+      inset: 0;
       background: rgba(0,0,0,0.9);
+      backdrop-filter: blur(10px);
     }
 
-    .lightbox-nav.prev {
-      left: 1rem;
+    .modal-content {
+      position: relative;
+      background: white;
+      border-radius: 12px;
+      max-width: 90vw;
+      max-height: 90vh;
+      overflow: auto;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
     }
 
-    .lightbox-nav.next {
-      right: 1rem;
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 30px;
+      border-bottom: 1px solid #eee;
     }
 
-    /* Mobile Responsive */
+    .modal-header h2 {
+      margin: 0;
+      font-size: 24px;
+      color: #333;
+    }
+
+    .close-btn {
+      background: none;
+      border: none;
+      font-size: 30px;
+      cursor: pointer;
+      color: #666;
+      line-height: 1;
+    }
+
+    .modal-body {
+      padding: 30px;
+    }
+
+    .modal-image-container {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .modal-image {
+      max-width: 100%;
+      max-height: 70vh;
+      object-fit: contain;
+      border-radius: 8px;
+    }
+
+    .modal-details {
+      display: grid;
+      gap: 15px;
+    }
+
+    .detail-row {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .detail-row .label {
+      font-weight: 600;
+      color: #666;
+      min-width: 120px;
+    }
+
+    .detail-row .value {
+      color: #333;
+    }
+
+    .tags-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .tags-list .tag {
+      background: #f0f0f0;
+      color: #333;
+      padding: 4px 12px;
+      border-radius: 15px;
+      font-size: 12px;
+    }
+
+    .featured-indicator {
+      color: #ffc107;
+      font-weight: 600;
+    }
+
+    .modal-navigation {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 30px;
+      border-top: 1px solid #eee;
+      background: #f8f9fa;
+    }
+
+    .nav-btn {
+      padding: 10px 20px;
+      border: 1px solid #ddd;
+      background: white;
+      cursor: pointer;
+      border-radius: 6px;
+      transition: all 0.3s ease;
+    }
+
+    .nav-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .nav-btn:hover:not(:disabled) {
+      background: var(--primary-color, #2c3e50);
+      color: white;
+      border-color: var(--primary-color, #2c3e50);
+    }
+
+    .nav-info {
+      font-size: 14px;
+      color: #666;
+    }
+
     @media (max-width: 768px) {
-      .hero-title {
+      .hero-content h1 {
         font-size: 2rem;
       }
 
-      .portfolio-grid {
-        grid-template-columns: 1fr;
+      .filter-controls {
+        padding: 20px;
       }
 
-      .portfolio-item.large {
-        grid-column: span 1;
-        height: 250px;
+      .category-filters {
+        justify-content: center;
       }
 
-      .filter-tabs {
-        justify-content: stretch;
-      }
-
-      .filter-tab {
-        flex: 1;
-        text-align: center;
-      }
-
-      .cta-actions {
+      .view-options {
         flex-direction: column;
-        align-items: center;
+        align-items: stretch;
+        gap: 15px;
       }
 
-      .cta-actions .btn {
-        width: 100%;
-        max-width: 300px;
+      .image-grid {
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 15px;
       }
 
-      .lightbox-content {
+      .modal-content {
+        margin: 10px;
+        max-width: calc(100vw - 20px);
+        max-height: calc(100vh - 20px);
+      }
+
+      .modal-header, .modal-body, .modal-navigation {
+        padding: 15px 20px;
+      }
+
+      .modal-navigation {
         flex-direction: column;
-      }
-
-      .lightbox-image {
-        min-height: 250px;
-      }
-
-      .lightbox-info {
-        padding: 1.5rem;
+        gap: 15px;
       }
     }
   `]
 })
 export class GalleryComponent implements OnInit {
+  protected imageStorageService = inject(ImageStorageService);
   private seasonalThemeService = inject(SeasonalThemeService);
-  
-  selectedCategory: string = 'all';
-  lightboxOpen: boolean = false;
-  selectedItem: PortfolioItem | null = null;
-  currentImageIndex: number = 0;
-  itemsPerPage: number = 12;
-  currentPage: number = 1;
-  
-  // Portfolio data using existing assets
-  portfolioItems: PortfolioItem[] = [
-    {
-      id: 'wedding-elegant-roses',
-      title: 'Elegant Rose Wedding',
-      description: 'A romantic wedding celebration featuring stunning rose arrangements and classic elegance.',
-      image: '/assets/fb_4888_8929514942_2_48x2_48.jpg',
-      category: 'weddings',
-      featured: true,
-      date: 'September 2024',
-      client: 'Maria & Carlos'
-    },
-    {
-      id: 'corporate-gala',
-      title: 'Annual Corporate Gala',
-      description: 'Sophisticated corporate event with professional floral displays and ambient lighting.',
-      image: '/assets/ig_17883536292_1336_.jpg',
-      category: 'corporate',
-      featured: false,
-      date: 'August 2024',
-      client: 'Tech Solutions Inc.'
-    },
-    {
-      id: 'spring-garden-arrangement',
-      title: 'Spring Garden Centerpiece',
-      description: 'Fresh spring florals with vibrant colors perfect for seasonal celebrations.',
-      image: '/assets/ig_179_31_896964684.jpg',
-      category: 'floral',
-      featured: true,
-      date: 'March 2024'
-    },
-    {
-      id: 'autumn-celebration',
-      title: 'Autumn Harvest Party',
-      description: 'Warm autumn colors and seasonal decorations for a cozy private celebration.',
-      image: '/assets/ig_1794579_87187429_.jpg',
-      category: 'parties',
-      featured: false,
-      date: 'October 2024',
-      client: 'The Johnson Family'
-    },
-    {
-      id: 'winter-wonderland',
-      title: 'Winter Wonderland Decor',
-      description: 'Magical winter decorations transforming spaces into enchanted wonderlands.',
-      image: '/assets/ig_179796_2185894789.jpg',
-      category: 'seasonal',
-      featured: false,
-      date: 'December 2023'
-    },
-    {
-      id: 'summer-outdoor-wedding',
-      title: 'Summer Garden Wedding',
-      description: 'Beautiful outdoor wedding with lush greenery and vibrant summer blooms.',
-      image: '/assets/ig_18_44253247569932.jpg',
-      category: 'weddings',
-      featured: true,
-      date: 'June 2024',
-      client: 'Sofia & Miguel'
-    },
-    {
-      id: 'christmas-home-decor',
-      title: 'Christmas Home Transformation',
-      description: 'Complete home Christmas decorating service with traditional holiday elegance.',
-      image: '/assets/WhatsApp%2_Image%2_2_24-12-19%2_at%2_13.18.18_f31e159.jpg',
-      category: 'seasonal',
-      featured: false,
-      date: 'December 2024'
-    },
-    {
-      id: 'birthday-celebration',
-      title: '50th Birthday Milestone',
-      description: 'Elegant milestone birthday celebration with sophisticated floral arrangements.',
-      image: '/assets/WhatsApp%2_Image%2_2_24-12-19%2_at%2_13.22._7_9d_df9a.jpg',
-      category: 'parties',
-      featured: false,
-      date: 'November 2024',
-      client: 'Elena Rodriguez'
-    },
-    {
-      id: 'holiday-corporate-party',
-      title: 'Corporate Holiday Party',
-      description: 'Festive corporate holiday celebration with professional seasonal decorations.',
-      image: '/assets/WhatsApp%2_Image%2_2_24-12-22%2_at%2_18.35.41_89e7bacf.jpg',
-      category: 'corporate',
-      featured: false,
-      date: 'December 2024',
-      client: 'Miami Business Group'
-    }
-  ];
 
-  filteredPortfolio: PortfolioItem[] = [];
-  displayedPortfolio: PortfolioItem[] = [];
+  // State
+  loading = signal(true);
+  allImages = signal<GalleryImage[]>([]);
+  filteredImages = signal<GalleryImage[]>([]);
+  selectedImage = signal<GalleryImage | null>(null);
+  
+  // Filters
+  selectedCategory = signal('');
+  searchTerm = '';
+  sortBy = 'newest';
+  itemsPerPage = 24;
+  showFeaturedOnly = false;
+  
+  // Pagination
+  currentPage = signal(1);
 
-  ngOnInit(): void {
+  // Computed properties
+  totalImages = computed(() => this.allImages().length);
+  
+  totalCategories = computed(() => {
+    const categories = new Set(this.allImages().map(img => img.category));
+    return categories.size;
+  });
+
+  categoryStats = computed(() => {
+    const stats = new Map<string, number>();
+    this.allImages().forEach(img => {
+      stats.set(img.category, (stats.get(img.category) || 0) + 1);
+    });
+    
+    return Array.from(stats.entries())
+      .map(([category, count]) => ({ category, count }))
+      .sort((a, b) => b.count - a.count);
+  });
+
+  totalPages = computed(() => 
+    Math.ceil(this.filteredImages().length / this.itemsPerPage)
+  );
+
+  paginatedImages = computed(() => {
+    const start = (this.currentPage() - 1) * this.itemsPerPage;
+    const end = start + this.itemsPerPage;
+    return this.filteredImages().slice(start, end);
+  });
+
+  ngOnInit() {
     this.seasonalThemeService.applyThemeToDocument();
-    this.filteredPortfolio = this.portfolioItems;
-    this.updateDisplayedItems();
+    this.loadImages();
   }
 
-  filterPortfolio(category: string): void {
-    this.selectedCategory = category;
-    this.currentPage = 1;
+  loadImages() {
+    this.loading.set(true);
     
-    if (category === 'all') {
-      this.filteredPortfolio = this.portfolioItems;
-    } else {
-      this.filteredPortfolio = this.portfolioItems.filter(item => item.category === category);
+    this.imageStorageService.getImages({}, 10000).subscribe({
+      next: (images: GalleryImage[]) => {
+        this.allImages.set(images);
+        this.applyFilters();
+        this.loading.set(false);
+      },
+      error: (error: any) => {
+        console.error('Error loading images:', error);
+        this.loading.set(false);
+      }
+    });
+  }
+
+  applyFilters() {
+    let filtered = [...this.allImages()];
+
+    // Category filter
+    if (this.selectedCategory()) {
+      filtered = filtered.filter(img => img.category === this.selectedCategory());
+    }
+
+    // Search filter
+    if (this.searchTerm.trim()) {
+      const term = this.searchTerm.toLowerCase();
+      filtered = filtered.filter(img => 
+        img.originalName?.toLowerCase().includes(term) ||
+        img.category.toLowerCase().includes(term) ||
+        img.subcategory?.toLowerCase().includes(term) ||
+        img.tags.some((tag: string) => tag.toLowerCase().includes(term))
+      );
+    }
+
+    // Featured filter
+    if (this.showFeaturedOnly) {
+      filtered = filtered.filter(img => img.featured);
+    }
+
+    // Sort
+    filtered = this.sortImages(filtered);
+
+    this.filteredImages.set(filtered);
+    this.currentPage.set(1); // Reset to first page
+  }
+
+  sortImages(images: GalleryImage[]): GalleryImage[] {
+    return images.sort((a, b) => {
+      switch (this.sortBy) {
+        case 'newest':
+          return new Date(b.uploadedAt || 0).getTime() - new Date(a.uploadedAt || 0).getTime();
+        case 'oldest':
+          return new Date(a.uploadedAt || 0).getTime() - new Date(b.uploadedAt || 0).getTime();
+        case 'name':
+          return (a.originalName || '').localeCompare(b.originalName || '');
+        case 'category':
+          return a.category.localeCompare(b.category);
+        default:
+          return 0;
+      }
+    });
+  }
+
+  // Event handlers
+  onSearchChange() {
+    this.applyFilters();
+  }
+
+  onSortChange() {
+    this.applyFilters();
+  }
+
+  onItemsPerPageChange() {
+    this.currentPage.set(1);
+  }
+
+  onFeaturedToggle() {
+    this.applyFilters();
+  }
+
+  selectCategory(category: string) {
+    this.selectedCategory.set(category);
+    this.applyFilters();
+  }
+
+  clearAllFilters() {
+    this.selectedCategory.set('');
+    this.searchTerm = '';
+    this.showFeaturedOnly = false;
+    this.sortBy = 'newest';
+    this.applyFilters();
+  }
+
+  // Pagination
+  goToPage(page: number) {
+    if (page >= 1 && page <= this.totalPages()) {
+      this.currentPage.set(page);
+    }
+  }
+
+  getVisiblePages(): number[] {
+    const total = this.totalPages();
+    const current = this.currentPage();
+    const delta = 2;
+    
+    if (total <= 7) {
+      return Array.from({ length: total }, (_, i) => i + 1);
     }
     
-    this.updateDisplayedItems();
+    const range: number[] = [];
+    const left = Math.max(1, current - delta);
+    const right = Math.min(total, current + delta);
+    
+    if (left > 1) {
+      range.push(1);
+      if (left > 2) range.push(-1); // ellipsis
+    }
+    
+    for (let i = left; i <= right; i++) {
+      range.push(i);
+    }
+    
+    if (right < total) {
+      if (right < total - 1) range.push(-1); // ellipsis
+      range.push(total);
+    }
+    
+    return range;
   }
 
-  updateDisplayedItems(): void {
-    const startIndex = 0;
-    const endIndex = this.currentPage * this.itemsPerPage;
-    this.displayedPortfolio = this.filteredPortfolio.slice(startIndex, endIndex);
+  // Modal functionality
+  openImageModal(image: GalleryImage) {
+    this.selectedImage.set(image);
   }
 
-  get hasMoreItems(): boolean {
-    return this.currentPage * this.itemsPerPage < this.filteredPortfolio.length;
+  closeImageModal() {
+    this.selectedImage.set(null);
   }
 
-  loadMoreItems(): void {
-    this.currentPage++;
-    this.updateDisplayedItems();
+  canNavigate(): boolean {
+    return this.filteredImages().length > 1;
   }
 
-  openLightbox(item: PortfolioItem, index: number): void {
-    this.selectedItem = item;
-    this.currentImageIndex = index;
-    this.lightboxOpen = true;
-    document.body.style.overflow = 'hidden';
+  getCurrentImageIndex(): number {
+    const current = this.selectedImage();
+    if (!current) return -1;
+    return this.filteredImages().findIndex(img => img.id === current.id);
   }
 
-  closeLightbox(): void {
-    this.lightboxOpen = false;
-    this.selectedItem = null;
-    document.body.style.overflow = 'auto';
+  hasPreviousImage(): boolean {
+    return this.getCurrentImageIndex() > 0;
   }
 
-  previousImage(): void {
-    if (this.currentImageIndex > 0) {
-      this.currentImageIndex--;
-      this.selectedItem = this.filteredPortfolio[this.currentImageIndex];
+  hasNextImage(): boolean {
+    const index = this.getCurrentImageIndex();
+    return index >= 0 && index < this.filteredImages().length - 1;
+  }
+
+  navigateImage(direction: 'prev' | 'next') {
+    const currentIndex = this.getCurrentImageIndex();
+    if (currentIndex === -1) return;
+    
+    const newIndex = direction === 'prev' ? currentIndex - 1 : currentIndex + 1;
+    const newImage = this.filteredImages()[newIndex];
+    
+    if (newImage) {
+      this.selectedImage.set(newImage);
     }
   }
 
-  nextImage(): void {
-    if (this.currentImageIndex < this.filteredPortfolio.length - 1) {
-      this.currentImageIndex++;
-      this.selectedItem = this.filteredPortfolio[this.currentImageIndex];
-    }
+  // Utility functions
+  formatCategoryName(category: string): string {
+    return category.charAt(0).toUpperCase() + category.slice(1);
   }
 
-  getCategoryLabel(category: string): string {
-    const labels: { [key: string]: string } = {
-      'weddings': 'Weddings',
-      'corporate': 'Corporate Events',
-      'floral': 'Floral Design',
-      'seasonal': 'Seasonal Decor',
-      'parties': 'Private Parties'
-    };
-    return labels[category] || category;
+  formatDate(date: Date | undefined): string {
+    if (!date) return 'Unknown';
+    return new Date(date).toLocaleDateString();
+  }
+
+  formatFileSize(bytes: number): string {
+    if (bytes === 0) return '0 Bytes';
+    
+    const k = 1024;
+    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+  }
+
+  trackByImageId(index: number, image: GalleryImage): string {
+    return image.id || `${image.fileName}_${index}`;
   }
 }

@@ -1,0 +1,76 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Allow read access to all collections for public website functionality
+    // Write access is restricted to authenticated admin users only
+    
+    // Services - public read, admin write
+    match /services/{serviceId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    
+    // Projects/Portfolio - public read, admin write
+    match /projects/{projectId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    
+    // Testimonials - public read, admin write
+    match /testimonials/{testimonialId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    
+    // Blog posts - public read of published posts, admin full access
+    match /posts/{postId} {
+      allow read: if resource.data.published == true || isAdmin();
+      allow write: if isAdmin();
+    }
+    
+    // Settings - public read, admin write
+    match /settings/{settingId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    
+    // Inquiries - allow create for contact forms, admin read/update
+    match /inquiries/{inquiryId} {
+      allow create: if isValidInquiry(resource.data);
+      allow read, update: if isAdmin();
+      allow delete: if false; // Never allow deletion for data integrity
+    }
+    
+    // Admin users collection - admin only
+    match /admin/{adminId} {
+      allow read, write: if isAdmin();
+    }
+    
+    // Helper functions
+    function isAdmin() {
+      // For now, allow writes from any authenticated user
+      // TODO: Implement proper admin role checking
+      return request.auth != null;
+    }
+    
+    function isValidInquiry(inquiry) {
+      // Validate required fields for inquiry submissions
+      return inquiry.keys().hasAll([
+        'fullName', 'email', 'phone', 'eventDate', 'venue', 
+        'city', 'guestCount', 'budgetRange', 'consentGiven'
+      ]) &&
+      inquiry.fullName is string &&
+      inquiry.email is string &&
+      inquiry.phone is string &&
+      inquiry.eventDate is timestamp &&
+      inquiry.venue is string &&
+      inquiry.city is string &&
+      inquiry.guestCount is number &&
+      inquiry.budgetRange is string &&
+      inquiry.consentGiven == true &&
+      inquiry.status == 'new' &&
+      inquiry.createdAt == request.time;
+    }
+  }
+}

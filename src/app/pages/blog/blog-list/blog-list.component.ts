@@ -609,7 +609,7 @@ export class BlogListComponent implements OnInit {
       slug: 'spring-wedding-trends-2024',
       excerpt: 'Discover the hottest spring wedding trends for 2024, from garden-inspired florals to sustainable decorations that will make your celebration unforgettable.',
       body: 'Spring weddings are experiencing a renaissance of natural beauty and sustainable practices. This season, couples are embracing garden-inspired aesthetics with wild, organic arrangements that seem to have been picked straight from an English cottage garden...',
-      coverImage: '/assets/fb_4888_8929514942_2_48x2_48.jpg',
+      coverImage: '/assets/logo1.jpg',
       tags: ['trends', 'seasonal'],
       featured: true,
       createdAt: new Date('2024-02-15'),
@@ -621,7 +621,7 @@ export class BlogListComponent implements OnInit {
       slug: 'venue-spotlight-miami-beach-weddings',
       excerpt: 'Take a behind-the-scenes look at why Miami Beach continues to be one of the most sought-after wedding destinations, and how to make the most of its natural beauty.',
       body: 'Miami Beach offers an unparalleled backdrop for weddings, with its pristine white sands, crystal-clear waters, and Art Deco architecture. When planning a beach wedding, the key is to work with the natural beauty rather than against it...',
-      coverImage: '/assets/ig_18_44253247569932.jpg',
+      coverImage: '/assets/logo4.jpg',
       tags: ['venue-spotlight'],
       featured: false,
       createdAt: new Date('2024-02-10'),
@@ -633,7 +633,7 @@ export class BlogListComponent implements OnInit {
       slug: 'behind-scenes-winter-wonderland',
       excerpt: 'Go behind the scenes of our recent winter wonderland event and discover the creative process, challenges, and magical moments that brought this vision to life.',
       body: 'Creating a winter wonderland in Miami\'s tropical climate requires creativity, planning, and a touch of magic. Our recent holiday event challenged us to transform a warm-weather venue into a snowy paradise...',
-      coverImage: '/assets/WhatsApp%2_Image%2_2_24-12-19%2_at%2_13.18.18_f31e159.jpg',
+      coverImage: '/assets/logo3.jpg',
       tags: ['behind-scenes', 'seasonal'],
       featured: false,
       createdAt: new Date('2024-01-20'),
@@ -645,7 +645,7 @@ export class BlogListComponent implements OnInit {
       slug: 'tips-choosing-perfect-wedding-flowers',
       excerpt: 'Expert advice on selecting flowers that complement your style, venue, and season while staying within budget.',
       body: 'Choosing wedding flowers can feel overwhelming with so many beautiful options available. Here are our top 10 tips to help you make the perfect choice for your special day...',
-      coverImage: '/assets/ig_179_31_896964684.jpg',
+      coverImage: '/assets/logo3.jpg',
       tags: ['tips'],
       featured: false,
       createdAt: new Date('2024-01-15'),
@@ -657,7 +657,7 @@ export class BlogListComponent implements OnInit {
       slug: 'corporate-event-florals-professional-statement',
       excerpt: 'Learn how the right floral arrangements can elevate your corporate events and create lasting impressions on clients and colleagues.',
       body: 'Corporate events require a different approach to floral design. The arrangements should be sophisticated, professional, and aligned with your brand image while still creating a welcoming atmosphere...',
-      coverImage: '/assets/ig_17883536292_1336_.jpg',
+      coverImage: '/assets/logo2.jpg',
       tags: ['tips'],
       featured: false,
       createdAt: new Date('2024-01-05'),
@@ -669,7 +669,7 @@ export class BlogListComponent implements OnInit {
       slug: 'autumn-color-palettes-seasonal-warmth',
       excerpt: 'Explore rich autumn color combinations that will bring warmth and sophistication to your fall celebrations.',
       body: 'Autumn offers some of the most beautiful color palettes in nature. From deep burgundies and warm oranges to golden yellows and rich browns, fall colors create an atmosphere of warmth and abundance...',
-      coverImage: '/assets/ig_1794579_87187429_.jpg',
+      coverImage: '/assets/logo1.jpg',
       tags: ['seasonal', 'trends'],
       featured: false,
       createdAt: new Date('2023-12-20'),
@@ -687,10 +687,11 @@ export class BlogListComponent implements OnInit {
   }
 
   private loadBlogPosts(): void {
-    // In real application, this would load from Firestore
-    this.allPosts.set(this.samplePosts);
-    this.featuredPost.set(this.samplePosts.find(post => post.featured) || null);
-    this.filterPosts('all');
+    this.firestoreService.getBlogPosts().subscribe(posts => {
+      this.allPosts.set(posts);
+      this.featuredPost.set(posts.find(post => post.featured) || null);
+      this.filterPosts('all');
+    });
   }
 
   filterPosts(category: string): void {

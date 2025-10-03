@@ -76,9 +76,19 @@ export const routes: Routes = [
     title: 'Contact & Inquiry - CreaDEvents'
   },
   {
+    path: 'search',
+    loadComponent: () => import('./pages/search/search.component').then(m => m.SearchComponent),
+    title: 'Search - CreaDEvents'
+  },
+  {
     path: 'admin',
     loadChildren: () => import('./admin/admin.routes').then(m => m.adminRoutes),
     title: 'Admin Dashboard - CreaDEvents'
+  },
+  {
+    path: 'auth',
+    loadChildren: () => import('./pages/auth/auth.routes').then(m => m.authRoutes),
+    title: 'Authentication - CreaDEvents'
   },
   {
     path: '**',

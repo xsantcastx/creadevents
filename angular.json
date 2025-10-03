@@ -22,7 +22,9 @@
               }
             ],
             "styles": [
-              "src/styles.css"
+              "src/styles.css",
+              "src/app/admin/shared-admin.css",
+              "src/app/shared/shared-components.css"
             ],
             "server": "src/main.server.ts",
             "outputMode": "server",
@@ -35,16 +37,35 @@
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "500kB",
-                  "maximumError": "1MB"
+                  "maximumWarning": "1.5MB",
+                  "maximumError": "2MB"
                 },
                 {
                   "type": "anyComponentStyle",
-                  "maximumWarning": "4kB",
-                  "maximumError": "8kB"
+                  "maximumWarning": "10kB",
+                  "maximumError": "15kB"
                 }
               ],
-              "outputHashing": "all"
+              "outputHashing": "all",
+              "optimization": {
+                "scripts": true,
+                "styles": {
+                  "minify": true,
+                  "inlineCritical": false
+                },
+                "fonts": true
+              },
+              "allowedCommonJsDependencies": [
+                "@grpc/grpc-js",
+                "@grpc/proto-loader",
+                "firebase/app",
+                "firebase/firestore",
+                "@firebase/firestore",
+                "@firebase/app"
+              ],
+              "extractLicenses": true,
+              "sourceMap": false,
+              "namedChunks": false
             },
             "development": {
               "optimization": false,

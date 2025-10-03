@@ -868,75 +868,7 @@ export class ProjectDetailComponent implements OnInit {
   lightboxOpen = signal(false);
   currentImageIndex = signal(0);
 
-  // Sample project data - in real app this would come from Firestore
-  sampleProjects: Project[] = [
-    {
-      id: '1',
-      title: 'Elegant Rose Wedding',
-      slug: 'elegant-rose-wedding',
-      eventType: 'wedding',
-      season: ['spring'],
-      palette: ['#F8BBD9', '#E8175D', '#474747', '#CC527A'],
-      location: 'Miami Beach, FL',
-      venue: 'The Ritz-Carlton South Beach',
-      date: new Date('2024-09-15'),
-      heroImage: '/assets/fb_4888_8929514942_2_48x2_48.jpg',
-      gallery: [
-        '/assets/fb_4888_8929514942_2_48x2_48.jpg',
-        '/assets/fb_4888_8929514942_2_48x2_48-16e8099d.jpg',
-        '/assets/fb_4888_8929514942_2_48x2_48-a997f88d.jpg',
-        '/assets/fb_4888_8929514942_2_48x2_48-e908245a.jpg',
-        '/assets/fb_4888_8929514942_2_48x2_48-f1e8b37c.jpg'
-      ],
-      description: 'A breathtaking wedding celebration featuring cascading rose arrangements, elegant table settings, and romantic lighting. Maria and Carlos\'s special day was transformed into a fairy tale with our signature romantic style.',
-      floralsUsed: ['Red Roses', 'White Roses', 'Baby\'s Breath', 'Eucalyptus', 'Peonies'],
-      testimonialRef: '1',
-      featured: true,
-      createdAt: new Date()
-    },
-    {
-      id: '2',
-      title: 'Corporate Annual Gala',
-      slug: 'corporate-annual-gala',
-      eventType: 'corporate',
-      season: ['summer'],
-      palette: ['#2C3E50', '#E74C3C', '#ECF0F1', '#95A5A6'],
-      location: 'Downtown Miami, FL',
-      venue: 'InterContinental Miami',
-      date: new Date('2024-08-20'),
-      heroImage: '/assets/ig_17883536292_1336_.jpg',
-      gallery: [
-        '/assets/ig_17883536292_1336_.jpg',
-        '/assets/ig_17883536292_1336_-abd882a8.jpg'
-      ],
-      description: 'A sophisticated corporate event featuring modern floral installations, ambient lighting, and professional table settings that impressed clients and colleagues alike.',
-      floralsUsed: ['White Orchids', 'Monstera Leaves', 'White Hydrangeas', 'Silver Dollar Eucalyptus'],
-      testimonialRef: '2',
-      featured: false,
-      createdAt: new Date()
-    },
-    {
-      id: '3',
-      title: 'Spring Garden Wedding',
-      slug: 'spring-garden-wedding',
-      eventType: 'wedding',
-      season: ['spring'],
-      palette: ['#7FB069', '#F7E9E3', '#E8175D', '#474747'],
-      location: 'Coral Gables, FL',
-      venue: 'Fairchild Tropical Botanic Garden',
-      date: new Date('2024-03-10'),
-      heroImage: '/assets/ig_179_31_896964684.jpg',
-      gallery: [
-        '/assets/ig_179_31_896964684.jpg',
-        '/assets/ig_179_31_896964684-14af2dab.jpg'
-      ],
-      description: 'A beautiful spring wedding surrounded by lush gardens, featuring fresh seasonal florals and natural beauty that perfectly complemented the outdoor setting.',
-      floralsUsed: ['Tulips', 'Daffodils', 'Cherry Blossoms', 'Ivy', 'Spring Greenery'],
-      testimonialRef: '3',
-      featured: true,
-      createdAt: new Date()
-    }
-  ];
+  allProjects: Project[] = [];
 
   ngOnInit(): void {
     this.seasonalThemeService.applyThemeToDocument();
@@ -950,53 +882,38 @@ export class ProjectDetailComponent implements OnInit {
       return;
     }
 
-    // In a real application, this would load from Firestore
-    // For now, using sample data
-    const foundProject = this.sampleProjects.find(p => p.slug === slug);
-    if (foundProject) {
-      this.project.set(foundProject);
-      this.loadTestimonial(foundProject.testimonialRef);
-      this.loadRelatedProjects(foundProject);
-    }
-    this.loading.set(false);
-
-    // Uncomment when Firestore is set up:
-    /*
-    this.firestoreService.getProject(slug).subscribe(project => {
-      this.project.set(project || null);
-      if (project?.testimonialRef) {
-        this.loadTestimonial(project.testimonialRef);
+    // Load all projects first to find by slug and get related projects
+    this.firestoreService.getProjects().subscribe(projects => {
+      this.allProjects = projects;
+      const foundProject = projects.find(p => p.slug === slug);
+      
+      if (foundProject) {
+        this.project.set(foundProject);
+        if (foundProject.testimonialRef) {
+          this.loadTestimonial(foundProject.testimonialRef);
+        }
+        this.loadRelatedProjects(foundProject);
       }
-      this.loadRelatedProjects(project);
       this.loading.set(false);
     });
-    */
   }
 
   private loadTestimonial(testimonialRef?: string): void {
     if (!testimonialRef) return;
 
-    // Sample testimonial - in real app would load from Firestore
-    const sampleTestimonial: Testimonial = {
-      id: testimonialRef,
-      author: 'Maria & Carlos Rodriguez',
-      role: 'Bride & Groom',
-      event: 'Wedding Reception',
-      quote: 'Creation Design & Events made our wedding absolutely magical! From the stunning floral arrangements to the perfect lighting, every detail was executed flawlessly. Our guests are still talking about how beautiful everything was.',
-      photo: '/assets/fb_4888_8929514942_2_48x2_48.jpg',
-      rating: 5,
-      featured: true,
-      createdAt: new Date()
-    };
-    
-    this.projectTestimonial.set(sampleTestimonial);
+    this.firestoreService.getTestimonials().subscribe(testimonials => {
+      const testimonial = testimonials.find(t => t.id === testimonialRef);
+      if (testimonial) {
+        this.projectTestimonial.set(testimonial);
+      }
+    });
   }
 
   private loadRelatedProjects(currentProject?: Project | null): void {
     if (!currentProject) return;
 
-    // Sample related projects - in real app would query Firestore
-    const related = this.sampleProjects
+    // Filter related projects from Firebase data
+    const related = this.allProjects
       .filter(p => p.id !== currentProject.id && p.eventType === currentProject.eventType)
       .slice(0, 3);
     
