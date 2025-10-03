@@ -60,9 +60,3 @@ jobs:
           firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_CREADEVENTS_437A8 }}
           channelId: live
           projectId: creadevents-437a8
-      - uses: FirebaseExtended/action-hosting-deploy@v0
-        with:
-          repoToken: ${{ secrets.GITHUB_TOKEN }}
-          firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_CREADEVENTS_437A8 }}
-          channelId: live
-          projectId: creadevents-437a8
