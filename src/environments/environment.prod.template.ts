@@ -1,17 +1,17 @@
 // Production environment configuration TEMPLATE
-// Copy this to environment.prod.ts and replace with your actual API keys
+// This file is safe to commit - real values injected at CI time
 export const environment = {
   production: true,
   firebase: {
-    apiKey: "YOUR_FIREBASE_API_KEY_HERE",
+    apiKey: "__FIREBASE_API_KEY__",
     authDomain: "creadevents-437a8.firebaseapp.com",
     projectId: "creadevents-437a8",
     storageBucket: "creadevents-437a8.firebasestorage.app",
     messagingSenderId: "256034995785",
-    appId: "YOUR_FIREBASE_APP_ID_HERE",
-    measurementId: "YOUR_MEASUREMENT_ID_HERE"
+    appId: "__FIREBASE_APP_ID__",
+    measurementId: "__FIREBASE_MEASUREMENT_ID__"
   },
   recaptcha: {
-    siteKey: "YOUR_RECAPTCHA_SITE_KEY_HERE"
+    siteKey: "__RECAPTCHA_SITE_KEY__"
   }
 };

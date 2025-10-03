@@ -25,6 +25,25 @@ jobs:
         with:
           node-version: 20
 
+      # 🔐 SECURE: Generate environment files from templates + secrets
+      - name: Generate environment.ts
+        run: |
+          mkdir -p src/environments
+          sed -e "s#__FIREBASE_API_KEY__#${{ secrets.FIREBASE_API_KEY }}#g" \
+              -e "s#__FIREBASE_APP_ID__#${{ secrets.FIREBASE_APP_ID }}#g" \
+              -e "s#__FIREBASE_MEASUREMENT_ID__#${{ secrets.FIREBASE_MEASUREMENT_ID }}#g" \
+              -e "s#__RECAPTCHA_SITE_KEY__#${{ secrets.RECAPTCHA_SITE_KEY }}#g" \
+              src/environments/environment.template.ts > src/environments/environment.ts
+              
+      - name: Generate environment.prod.ts
+        run: |
+          mkdir -p src/environments
+          sed -e "s#__FIREBASE_API_KEY__#${{ secrets.FIREBASE_API_KEY }}#g" \
+              -e "s#__FIREBASE_APP_ID__#${{ secrets.FIREBASE_APP_ID }}#g" \
+              -e "s#__FIREBASE_MEASUREMENT_ID__#${{ secrets.FIREBASE_MEASUREMENT_ID }}#g" \
+              -e "s#__RECAPTCHA_SITE_KEY__#${{ secrets.RECAPTCHA_SITE_KEY }}#g" \
+              src/environments/environment.prod.template.ts > src/environments/environment.prod.ts
+
       - name: Install deps
         run: npm ci
 

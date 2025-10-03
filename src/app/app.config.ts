@@ -9,17 +9,7 @@ import { provideAnalytics, getAnalytics, ScreenTrackingService, UserTrackingServ
 
 import { routes } from './app.routes';
 import { provideClientHydration, withEventReplay } from '@angular/platform-browser';
-
-// Direct Firebase configuration
-const firebaseConfig = {
-  apiKey: "AIzaSyAUz7FJezTXW-k4SxVKWPkxtPJ1h6s4xTQ",
-  authDomain: "creadevents-437a8.firebaseapp.com",
-  projectId: "creadevents-437a8",
-  storageBucket: "creadevents-437a8.firebasestorage.app",
-  messagingSenderId: "256034995785",
-  appId: "1:256034995785:web:a315f7b9fcbc4ebce0c998",
-  measurementId: "G-NV1R46RCLZ"
-};
+import { environment } from '../environments/environment';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -27,7 +17,7 @@ export const appConfig: ApplicationConfig = {
     provideZonelessChangeDetection(),
     provideRouter(routes), 
     provideClientHydration(withEventReplay()),
-    provideFirebaseApp(() => initializeApp(firebaseConfig)),
+    provideFirebaseApp(() => initializeApp(environment.firebase)),
     provideFirestore(() => getFirestore()),
     provideStorage(() => getStorage()),
     provideFunctions(() => getFunctions()),
