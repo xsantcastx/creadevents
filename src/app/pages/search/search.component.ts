@@ -61,10 +61,7 @@ export class SearchComponent implements OnInit, OnDestroy {
     this.currentSort() !== 'relevance'
   );
 
-  availableCategories = computed(() => {
-    // This would come from the search service based on current results
-    return [];
-  });
+  availableCategories = signal<string[]>([]);
 
   // Configuration
   contentTypes = [
@@ -75,10 +72,10 @@ export class SearchComponent implements OnInit, OnDestroy {
   ];
 
   sortOptions = [
-    { key: 'relevance', label: 'Relevance' },
-    { key: 'date', label: 'Date' },
-    { key: 'title', label: 'Title' },
-    { key: 'popularity', label: 'Popularity' }
+    { key: 'relevance', label: 'Relevance', value: 'relevance' },
+    { key: 'date', label: 'Date', value: 'date' },
+    { key: 'title', label: 'Title', value: 'title' },
+    { key: 'popularity', label: 'Popularity', value: 'popularity' }
   ];
 
   // Search form
@@ -199,7 +196,7 @@ export class SearchComponent implements OnInit, OnDestroy {
   }
 
   // Search operations
-  performSearch() {
+  async performSearch() {
     const query = this.currentQuery().trim();
     if (!query) return;
 
@@ -215,33 +212,27 @@ export class SearchComponent implements OnInit, OnDestroy {
     this.updateUrl();
 
     // Perform the search
-    const filters: SearchFilters = {
-      query,
-      types: this.selectedTypes(),
+    const filters = {
+      contentTypes: this.selectedTypes() as ('project' | 'service' | 'blog' | 'testimonial')[],
       categories: this.selectedCategories(),
-      sort: this.currentSort(),
-      page: this.currentPage(),
-      limit: this.resultsPerPage
+      sortBy: this.currentSort() as 'relevance' | 'date' | 'title',
+      sortOrder: 'desc' as const
     };
 
-    this.searchService.search(filters)
-      .pipe(takeUntil(this.destroy$))
-      .subscribe({
-        next: (results) => {
-          this.searchResults.set(results.items);
-          this.totalResults.set(results.total);
-          this.isLoading.set(false);
-          
-          // Update content type counts
-          this.updateContentTypeCounts(results.facets);
-        },
-        error: (error) => {
-          console.error('Search error:', error);
-          this.isLoading.set(false);
-          this.searchResults.set([]);
-          this.totalResults.set(0);
-        }
-      });
+    try {
+      const results = await this.searchService.search(query, filters);
+      this.searchResults.set(results);
+      this.totalResults.set(results.length);
+      this.isLoading.set(false);
+      
+      // Update content type counts
+      this.updateContentTypeCounts(results);
+    } catch (error) {
+      console.error('Search error:', error);
+      this.isLoading.set(false);
+      this.searchResults.set([]);
+      this.totalResults.set(0);
+    }
   }
 
   performSearchWithTerm(term: string) {
@@ -264,26 +255,22 @@ export class SearchComponent implements OnInit, OnDestroy {
   }
 
   // Suggestions
-  loadSuggestions(query: string) {
+  async loadSuggestions(query: string) {
     this.loadingSuggestions.set(true);
     
-    this.searchService.getSuggestions(query)
-      .pipe(takeUntil(this.destroy$))
-      .subscribe({
-        next: (suggestions) => {
-          this.searchSuggestions.set(suggestions);
-          this.showSuggestions.set(true);
-          this.loadingSuggestions.set(false);
-        },
-        error: () => {
-          this.loadingSuggestions.set(false);
-          this.searchSuggestions.set([]);
-        }
-      });
+    try {
+      const suggestions = await this.searchService.generateSuggestions(query);
+      this.searchSuggestions.set(suggestions);
+      this.showSuggestions.set(true);
+      this.loadingSuggestions.set(false);
+    } catch (error) {
+      this.loadingSuggestions.set(false);
+      this.searchSuggestions.set([]);
+    }
   }
 
   selectSuggestion(suggestion: SearchSuggestion) {
-    this.performSearchWithTerm(suggestion.title);
+    this.performSearchWithTerm(suggestion.text);
     this.showSuggestions.set(false);
   }
 
@@ -301,13 +288,16 @@ export class SearchComponent implements OnInit, OnDestroy {
     }
   }
 
-  toggleCategory(categoryId: string) {
+  toggleCategory(categoryId: string, event?: any) {
     const categories = this.selectedCategories();
-    if (categories.includes(categoryId)) {
-      this.selectedCategories.set(categories.filter(c => c !== categoryId));
-    } else {
+    const isChecked = event?.target?.checked;
+    
+    if (isChecked) {
       this.selectedCategories.set([...categories, categoryId]);
+    } else {
+      this.selectedCategories.set(categories.filter(c => c !== categoryId));
     }
+    
     this.currentPage.set(1);
     if (this.hasSearched()) {
       this.performSearch();
@@ -416,12 +406,17 @@ export class SearchComponent implements OnInit, OnDestroy {
     });
   }
 
-  private updateContentTypeCounts(facets: any) {
-    if (facets?.types) {
-      this.contentTypes.forEach(type => {
-        type.count = facets.types[type.key] || 0;
-      });
-    }
+  private updateContentTypeCounts(results: SearchResult[]) {
+    // Count results by type
+    const typeCounts = results.reduce((counts, result) => {
+      counts[result.type] = (counts[result.type] || 0) + 1;
+      return counts;
+    }, {} as Record<string, number>);
+
+    // Update content types with counts
+    this.contentTypes.forEach(type => {
+      type.count = typeCounts[type.key] || 0;
+    });
   }
 
   private loadRecentSearches() {
@@ -449,15 +444,57 @@ export class SearchComponent implements OnInit, OnDestroy {
   }
 
   private loadPopularSearches() {
-    this.searchService.getPopularSearches()
-      .pipe(takeUntil(this.destroy$))
-      .subscribe({
-        next: (popular) => {
-          this.popularSearches.set(popular);
-        },
-        error: (error) => {
-          console.error('Error loading popular searches:', error);
-        }
-      });
+    try {
+      // Get popular searches from service signal and map to expected format
+      const popularStrings = this.searchService.popularSearches();
+      const popularFormatted = popularStrings.map(term => ({ term, count: 0 }));
+      this.popularSearches.set(popularFormatted);
+    } catch (error) {
+      console.error('Error loading popular searches:', error);
+    }
+  }
+
+  // Utility methods for template
+  isSearching = computed(() => this.isLoading());
+  hasResults = computed(() => this.searchResults().length > 0);
+  resultCount = computed(() => this.searchResults().length);
+  
+  selectedFilters = computed(() => ({
+    contentTypes: this.selectedTypes(),
+    categories: this.selectedCategories(),
+    sortBy: this.currentSort()
+  }));
+
+  getTypeCount(typeKey: string): number {
+    const type = this.contentTypes.find(t => t.key === typeKey);
+    return type?.count || 0;
+  }
+
+  getTypeLabel(type: string): string {
+    const typeConfig = this.contentTypes.find(t => t.key === type);
+    return typeConfig?.label || type;
+  }
+
+  formatDate(date: Date | string | undefined): string {
+    if (!date) return '';
+    const dateObj = typeof date === 'string' ? new Date(date) : date;
+    return dateObj.toLocaleDateString('en-US', { 
+      year: 'numeric', 
+      month: 'short', 
+      day: 'numeric' 
+    });
+  }
+
+  updateSortBy(sortBy: string): void {
+    this.currentSort.set(sortBy);
+    this.performSearch();
+  }
+
+  clearFilters(): void {
+    this.clearAllFilters();
+  }
+
+  performSearchQuery(query: string): void {
+    this.performSearchWithTerm(query);
   }
 }

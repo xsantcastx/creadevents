@@ -139,7 +139,7 @@
             <div class="filter-group">
               <h4>Categories</h4>
               <div class="category-filters">
-                @for (category of availableCategories; track category) {
+                @for (category of availableCategories(); track category) {
                   <label class="checkbox-option">
                     <input
                       type="checkbox"
@@ -279,9 +279,9 @@
                       @for (search of popularSearches(); track search) {
                         <button
                           type="button"
-                          (click)="performSearchQuery(search)"
+                          (click)="performSearchQuery(search.term)"
                           class="popular-search-tag">
-                          {{ search }}
+                          {{ search.term }}
                         </button>
                       }
                     </div>
@@ -302,9 +302,9 @@
                       @for (search of popularSearches(); track search) {
                         <button
                           type="button"
-                          (click)="performSearchQuery(search)"
+                          (click)="performSearchQuery(search.term)"
                           class="popular-search-tag">
-                          {{ search }}
+                          {{ search.term }}
                         </button>
                       }
                     </div>

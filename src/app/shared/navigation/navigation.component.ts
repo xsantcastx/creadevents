@@ -48,8 +48,7 @@ export class NavigationComponent implements OnInit, OnDestroy {
   }
 
   logout(): void {
-    this.authService.logout();
+    this.authService.signOut();
     this.closeMobileMenu();
-    this.router.navigate(['/']);
   }
 }
