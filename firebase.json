@@ -19,6 +19,8 @@
         "destination": "/index.html"
       }
     ],
+    "appAssociation": "AUTO",
+    "cleanUrls": true,
     "headers": [
       {
         "source": "**/*.@(js|css)",
