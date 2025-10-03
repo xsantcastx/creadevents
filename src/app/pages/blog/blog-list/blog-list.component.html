@@ -1,0 +1,159 @@
+<div class="blog-page">
+  <!-- Hero Section -->
+  <section class="hero-section">
+    <div class="hero-content">
+      <h1 class="hero-title">Behind the Blooms</h1>
+      <p class="hero-subtitle">
+        Discover the inspiration, trends, and stories behind our most beautiful floral designs. 
+        From venue spotlights to seasonal guides, we're sharing our expertise with you.
+      </p>
+    </div>
+  </section>
+
+  <!-- Blog Content -->
+  <section class="blog-content">
+    <div class="container">
+      
+      <!-- Featured Post -->
+      @if (featuredPost()) {
+        <div class="featured-section">
+          <h2>Featured Post</h2>
+          <article class="featured-post">
+            <div class="featured-image">
+              <img [src]="featuredPost()!.coverImage" [alt]="featuredPost()!.title" loading="eager">
+              <div class="featured-overlay">
+                <div class="post-category">{{ getCategoryLabel(featuredPost()!.tags[0]) }}</div>
+              </div>
+            </div>
+            <div class="featured-content">
+              <div class="post-meta">
+                <span class="post-date">{{ formatDate(featuredPost()!.createdAt!) }}</span>
+                <span class="read-time">{{ getReadTime(featuredPost()!.body) }} min read</span>
+              </div>
+              <h3>
+                <a [routerLink]="['/blog', featuredPost()!.slug]">{{ featuredPost()!.title }}</a>
+              </h3>
+              <p class="post-excerpt">{{ featuredPost()!.excerpt }}</p>
+              <a [routerLink]="['/blog', featuredPost()!.slug]" class="read-more">Read More →</a>
+            </div>
+          </article>
+        </div>
+      }
+
+      <!-- Filter Tabs -->
+      <div class="filter-section">
+        <div class="filter-tabs">
+          <button 
+            class="filter-tab" 
+            [class.active]="selectedCategory() === 'all'"
+            (click)="filterPosts('all')">
+            All Posts
+          </button>
+          @for (category of categories; track category) {
+            <button 
+              class="filter-tab" 
+              [class.active]="selectedCategory() === category"
+              (click)="filterPosts(category)">
+              {{ getCategoryLabel(category) }}
+            </button>
+          }
+        </div>
+      </div>
+
+      <!-- Blog Grid -->
+      @if (filteredPosts().length > 0) {
+        <div class="blog-grid">
+          @for (post of paginatedPosts(); track post.id) {
+            <article class="blog-card">
+              <div class="card-image">
+                <img [src]="post.coverImage" [alt]="post.title" loading="lazy">
+                <div class="card-overlay">
+                  <div class="post-category">{{ getCategoryLabel(post.tags[0]) }}</div>
+                </div>
+              </div>
+              
+              <div class="card-content">
+                <div class="post-meta">
+                  <span class="post-date">{{ formatDate(post.createdAt!) }}</span>
+                  <span class="read-time">{{ getReadTime(post.body) }} min read</span>
+                </div>
+                
+                <h3>
+                  <a [routerLink]="['/blog', post.slug]">{{ post.title }}</a>
+                </h3>
+                
+                <p class="post-excerpt">{{ post.excerpt }}</p>
+                
+                <div class="post-tags">
+                  @for (tag of post.tags.slice(0, 3); track tag) {
+                    <span class="tag">{{ getCategoryLabel(tag) }}</span>
+                  }
+                </div>
+                
+                <a [routerLink]="['/blog', post.slug]" class="read-more">Read More →</a>
+              </div>
+            </article>
+          }
+        </div>
+
+        <!-- Pagination -->
+        @if (totalPages() > 1) {
+          <div class="pagination">
+            <button 
+              class="page-btn" 
+              [disabled]="currentPage() === 1"
+              (click)="goToPage(currentPage() - 1)">
+              ← Previous
+            </button>
+            
+            <div class="page-numbers">
+              @for (page of getPageNumbers(); track page) {
+                <button 
+                  class="page-number" 
+                  [class.active]="page === currentPage()"
+                  (click)="goToPage(page)">
+                  {{ page }}
+                </button>
+              }
+            </div>
+            
+            <button 
+              class="page-btn" 
+              [disabled]="currentPage() === totalPages()"
+              (click)="goToPage(currentPage() + 1)">
+              Next →
+            </button>
+          </div>
+        }
+        
+      } @else {
+        <div class="no-posts">
+          <div class="no-posts-content">
+            <h3>No posts found</h3>
+            <p>We haven't published any posts in this category yet. Check back soon for new content!</p>
+            <button (click)="filterPosts('all')" class="btn btn-primary">View All Posts</button>
+          </div>
+        </div>
+      }
+    </div>
+  </section>
+
+  <!-- Newsletter Signup -->
+  <section class="newsletter-section">
+    <div class="container">
+      <div class="newsletter-content">
+        <h2>Stay Inspired</h2>
+        <p>Subscribe to our newsletter for the latest floral trends, design tips, and exclusive behind-the-scenes content.</p>
+        <form class="newsletter-form" (submit)="subscribeNewsletter($event)">
+          <input 
+            type="email" 
+            placeholder="Enter your email address"
+            #emailInput
+            required>
+          <button type="submit" class="btn btn-primary">Subscribe</button>
+        </form>
+        <p class="newsletter-note">We respect your privacy. Unsubscribe at any time.</p>
+      </div>
+    </div>
+  </section>
+</div>

@@ -1,0 +1,264 @@
+<div class="home">
+  <!-- Hero Section -->
+  <section class="hero" [ngStyle]="getHeroStyles()">
+    <div class="hero-overlay"></div>
+    
+    <!-- Managed Hero Image -->
+    <div class="hero-background" *ngIf="getHeroImage()">
+      <img [src]="getHeroImage()" alt="Hero background" class="hero-bg-image">
+    </div>
+    
+    <div class="hero-inner container">
+      <div class="hero-copy">
+        <div class="season-pill">Now curating <span>{{ getSeason() | titlecase }}</span> celebrations</div>
+        <h1 class="hero-title">{{ getSeasonalCopy()?.hero || 'Artful floral experiences for every season' }}</h1>
+        <p class="hero-subtitle">
+          {{ getSeasonalCopy()?.tagline || 'Intentional designs, bespoke installations, and seamless experiences for weddings, brand events, and private celebrations.' }}
+        </p>
+        <div class="hero-actions">
+          <a routerLink="/contact" class="btn btn-primary">Plan Your Event</a>
+          <a routerLink="/portfolio" class="btn btn-outline">See Our Portfolio</a>
+        </div>
+        <div class="hero-meta">
+          <span>Signature weddings & celebrations</span>
+          <span>South Florida • Destination friendly</span>
+        </div>
+      </div>
+
+      @if (getSeasonalPalette(); as palette) {
+        <div class="hero-palette">
+          <div class="palette-card card">
+            <p class="palette-title">Palette Preview</p>
+            <div class="palette-swatches">
+              <span
+                class="swatch"
+                *ngFor="let color of palette | keyvalue"
+                [style.background-color]="color.value"
+                [attr.aria-label]="color.key"
+              ></span>
+            </div>
+            <p class="palette-season">{{ getSeason() | titlecase }} moodboard</p>
+          </div>
+        </div>
+      }
+    </div>
+  </section>
+
+  <!-- Client Logos Section -->
+  <section class="client-logos" *ngIf="hasClientLogos()">
+    <div class="container">
+      <div class="logos-grid">
+        <img *ngIf="getLogo('logo1')" [src]="getLogo('logo1')" alt="Client logo 1" class="client-logo">
+        <img *ngIf="getLogo('logo2')" [src]="getLogo('logo2')" alt="Client logo 2" class="client-logo">
+        <img *ngIf="getLogo('logo3')" [src]="getLogo('logo3')" alt="Client logo 3" class="client-logo">
+        <img *ngIf="getLogo('logo4')" [src]="getLogo('logo4')" alt="Client logo 4" class="client-logo">
+      </div>
+    </div>
+  </section>
+
+  <!-- Studio Highlights -->
+  <section class="studio-highlights">
+    <div class="container">
+      <div class="section-header">
+        <h2>Designing with intention</h2>
+        <p class="section-lead">
+          Every celebration begins with a story. We translate your memories, moodboards, and brand vision into immersive floral moments.
+        </p>
+      </div>
+      <div class="highlight-grid">
+        <article class="highlight-card card">
+          <span class="highlight-index">01</span>
+          <h3>Season-led art direction</h3>
+          <p>
+            Palette studies, textures, and florals curated to the time of year—grounded in sustainability and stem availability.
+          </p>
+        </article>
+        <article class="highlight-card card">
+          <span class="highlight-index">02</span>
+          <h3>Immersive guest journeys</h3>
+          <p>
+            From ceremony arches to cocktail vignettes, every space is choreographed to guide guests with delight.
+          </p>
+        </article>
+        <article class="highlight-card card">
+          <span class="highlight-index">03</span>
+          <h3>White-glove production</h3>
+          <p>
+            Dedicated design, production, and tear-down teams ensure your event feels effortless from load-in to last dance.
+          </p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- Services Overview -->
+  <section class="services-overview">
+    <div class="container">
+      <div class="section-header">
+        <h2>Signature services</h2>
+        <p class="section-lead">Curated offerings designed to support events from first concept to final stem.</p>
+      </div>
+
+      <!-- Managed Service Images -->
+      <div class="services-preview" *ngIf="hasServiceImages()">
+        <div class="services-images-grid">
+          <div class="service-image-card" *ngIf="getServiceImage('service1')">
+            <img [src]="getServiceImage('service1')" alt="Service 1" class="service-image">
+          </div>
+          <div class="service-image-card" *ngIf="getServiceImage('service2')">
+            <img [src]="getServiceImage('service2')" alt="Service 2" class="service-image">
+          </div>
+          <div class="service-image-card" *ngIf="getServiceImage('service3')">
+            <img [src]="getServiceImage('service3')" alt="Service 3" class="service-image">
+          </div>
+        </div>
+      </div>
+
+      @if (featuredServices$ | async; as services) {
+        <div class="services-grid">
+          @for (service of services; track service.id) {
+            <article class="service-card card">
+              <div class="service-top">
+                <span class="service-badge">{{ service.title }}</span>
+                <p class="service-summary">{{ service.summary }}</p>
+              </div>
+              <div class="service-inclusions">
+                @for (inclusion of service.inclusions.slice(0, 3); track $index) {
+                  <span class="service-chip">{{ inclusion }}</span>
+                }
+              </div>
+              <a [routerLink]="['/services', service.slug]" class="service-link">View details</a>
+            </article>
+          }
+        </div>
+      }
+
+      <div class="services-footer">
+        <a routerLink="/services" class="btn btn-outline">Explore all services</a>
+        <a routerLink="/contact" class="inline-link">Request a tailored proposal</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Featured Projects -->
+  <section class="featured-projects">
+    <div class="container">
+      <div class="section-header">
+        <h2>Recent floral stories</h2>
+        <p class="section-lead">A glimpse into the weddings, brand launches, and soirées we have recently dressed in blooms.</p>
+      </div>
+
+      <!-- Managed Portfolio Preview Images -->
+      <div class="portfolio-preview" *ngIf="hasPortfolioImages()">
+        <div class="portfolio-images-grid">
+          <div class="portfolio-image-card" *ngIf="getPortfolioImage('project1')">
+            <img [src]="getPortfolioImage('project1')" alt="Featured project 1" class="portfolio-image">
+          </div>
+          <div class="portfolio-image-card" *ngIf="getPortfolioImage('project2')">
+            <img [src]="getPortfolioImage('project2')" alt="Featured project 2" class="portfolio-image">
+          </div>
+          <div class="portfolio-image-card" *ngIf="getPortfolioImage('project3')">
+            <img [src]="getPortfolioImage('project3')" alt="Featured project 3" class="portfolio-image">
+          </div>
+        </div>
+      </div>
+
+      @if (featuredProjects$ | async; as projects) {
+        <div class="projects-grid">
+          @for (project of projects; track project.id) {
+            <a class="project-card" [routerLink]="['/portfolio', project.slug]">
+              <div class="project-media">
+                <img [src]="project.heroImage" [alt]="project.title" loading="lazy" />
+              </div>
+              <div class="project-content">
+                <p class="project-meta">{{ project.eventType }} • {{ project.location }}</p>
+                <h3>{{ project.title }}</h3>
+                <span class="project-link">View story</span>
+              </div>
+            </a>
+          }
+        </div>
+      } @else {
+        <p class="empty-state">We are styling our latest projects—check back soon.</p>
+      }
+    </div>
+  </section>
+
+  <!-- Process -->
+  <section class="process">
+    <div class="container">
+      <div class="section-header">
+        <h2>The studio approach</h2>
+        <p class="section-lead">A collaborative process that keeps you informed and inspired at every milestone.</p>
+      </div>
+      <div class="process-steps">
+        <article class="process-card">
+          <span class="step-number">01</span>
+          <h3>Discovery & visioning</h3>
+          <p>We begin with mood, logistics, and guest experience goals to outline a floral direction and budget.</p>
+        </article>
+        <article class="process-card">
+          <span class="step-number">02</span>
+          <h3>Design blueprint</h3>
+          <p>Custom concept decks, palettes, and spatial renderings ensure every arrangement feels intentional.</p>
+        </article>
+        <article class="process-card">
+          <span class="step-number">03</span>
+          <h3>Production & celebration</h3>
+          <p>Full-service installation, strike, and on-site styling so you can savor the celebration without worry.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- Testimonials -->
+  <section class="client-voices">
+    <div class="container">
+      <div class="section-header">
+        <h2>Client reflections</h2>
+        <p class="section-lead">Kind words from the couples and brands who invite us into their milestone moments.</p>
+      </div>
+
+      @if (featuredTestimonials$ | async; as testimonials) {
+        <div class="testimonial-grid">
+          @for (testimonial of testimonials.slice(0, 3); track testimonial.id) {
+            <article class="testimonial-card card">
+              <p class="testimonial-quote">"{{ testimonial.quote }}"</p>
+              <div class="testimonial-author">
+                <strong>{{ testimonial.author }}</strong>
+                @if (testimonial.event || testimonial.role) {
+                  <span>{{ testimonial.event || testimonial.role }}</span>
+                }
+              </div>
+            </article>
+          }
+        </div>
+      }
+
+      <div class="testimonial-footer">
+        <a routerLink="/testimonials" class="inline-link">Browse more stories</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta">
+    <div class="container">
+      <div class="cta-card card">
+        <!-- Managed CTA Image -->
+        <div class="cta-background" *ngIf="getCTAImage()">
+          <img [src]="getCTAImage()" alt="CTA background" class="cta-bg-image">
+        </div>
+        
+        <div class="cta-content">
+          <h2>Let's tailor your floral story</h2>
+          <p>Share your vision, venue, and date—we'll return with a seasonal proposal and curated moodboard.</p>
+          <div class="cta-actions">
+            <a routerLink="/contact" class="btn btn-primary">Start an inquiry</a>
+            <a [routerLink]="['/season', getSeason()]" class="btn btn-outline">Explore seasonal looks</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>

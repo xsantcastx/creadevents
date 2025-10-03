@@ -270,4 +270,59 @@ export class StorageService {
     const { maxWidth, quality } = settings[category];
     return this.uploadImage(file, path, maxWidth, quality);
   }
+
+  /**
+   * Get gallery URLs from Firebase Storage
+   * Perfect for dynamic galleries that change over time
+   */
+  async getGalleryUrls(folder = 'public/gallery'): Promise<string[]> {
+    try {
+      const result = await listAll(ref(this.storage, folder));
+      return Promise.all(result.items.map(item => getDownloadURL(item)));
+    } catch (error) {
+      console.error('Error fetching gallery URLs:', error);
+      return [];
+    }
+  }
+
+  /**
+   * Get gallery files with metadata
+   * Returns detailed information about each gallery image
+   */
+  async getGalleryFiles(folder = 'public/gallery'): Promise<StorageFile[]> {
+    try {
+      const result = await listAll(ref(this.storage, folder));
+      const files: StorageFile[] = [];
+      
+      for (const item of result.items) {
+        const downloadURL = await getDownloadURL(item);
+        const metadata = await getMetadata(item);
+        
+        files.push({
+          name: item.name,
+          url: downloadURL,
+          size: metadata.size || 0,
+          contentType: metadata.contentType || 'unknown',
+          timeCreated: metadata.timeCreated || '',
+          fullPath: item.fullPath
+        });
+      }
+
+      // Sort by upload time (newest first)
+      return files.sort((a, b) => new Date(b.timeCreated).getTime() - new Date(a.timeCreated).getTime());
+    } catch (error) {
+      console.error('Error fetching gallery files:', error);
+      return [];
+    }
+  }
+
+  /**
+   * Upload image to public gallery folder
+   * Use this for images that should be publicly accessible
+   */
+  uploadToGallery(file: File, subfolder = ''): Observable<{ progress: UploadProgress; downloadURL?: string }> {
+    const folderPath = subfolder ? `public/gallery/${subfolder}` : 'public/gallery';
+    const path = `${folderPath}/${Date.now()}_${file.name}`;
+    return this.uploadImage(file, path, 1920, 0.9); // High quality for gallery
+  }
 }

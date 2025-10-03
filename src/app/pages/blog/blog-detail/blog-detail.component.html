@@ -1,0 +1,169 @@
+<div class="blog-detail-page">
+  @if (blogPost()) {
+    <!-- Hero Section -->
+    <section class="hero-section">
+      <div class="hero-image">
+        <img [src]="blogPost()!.coverImage" [alt]="blogPost()!.title" loading="eager">
+        <div class="hero-overlay">
+          <div class="hero-content">
+            <div class="breadcrumb">
+              <a routerLink="/blog">Blog</a>
+              <span class="divider">›</span>
+              <span>{{ blogPost()!.title }}</span>
+            </div>
+            
+            <div class="post-meta">
+              <div class="category-tags">
+                @for (tag of blogPost()!.tags; track tag) {
+                  <span class="category-tag">{{ getCategoryLabel(tag) }}</span>
+                }
+              </div>
+              <div class="post-details">
+                <span class="post-date">{{ formatDate(blogPost()!.createdAt!) }}</span>
+                <span class="read-time">{{ getReadTime(blogPost()!.body) }} min read</span>
+              </div>
+            </div>
+            
+            <h1 class="hero-title">{{ blogPost()!.title }}</h1>
+            <p class="hero-subtitle">{{ blogPost()!.excerpt }}</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Article Content -->
+    <article class="article-content">
+      <div class="container">
+        <div class="content-wrapper">
+          
+          <!-- Main Content -->
+          <div class="main-content">
+            <div class="article-body" [innerHTML]="getFormattedContent(blogPost()!.body)"></div>
+            
+            <!-- Social Share -->
+            <div class="social-share">
+              <h4>Share this post</h4>
+              <div class="share-buttons">
+                <button (click)="sharePost('facebook')" class="share-btn facebook">
+                  📘 Facebook
+                </button>
+                <button (click)="sharePost('twitter')" class="share-btn twitter">
+                  🐦 Twitter
+                </button>
+                <button (click)="sharePost('linkedin')" class="share-btn linkedin">
+                  💼 LinkedIn
+                </button>
+                <button (click)="sharePost('email')" class="share-btn email">
+                  ✉️ Email
+                </button>
+              </div>
+            </div>
+
+            <!-- Tags -->
+            <div class="post-tags-section">
+              <h4>Tags</h4>
+              <div class="tags-list">
+                @for (tag of blogPost()!.tags; track tag) {
+                  <a [routerLink]="['/blog']" [queryParams]="{category: tag}" class="tag-link">
+                    {{ getCategoryLabel(tag) }}
+                  </a>
+                }
+              </div>
+            </div>
+          </div>
+
+          <!-- Sidebar -->
+          <aside class="sidebar">
+            
+            <!-- Author Info -->
+            <div class="author-card">
+              <div class="author-avatar">
+                <img src="/assets/logo1.jpg" alt="Creation Design & Events Team" loading="lazy">
+              </div>
+              <div class="author-info">
+                <h4>Creation Design & Events</h4>
+                <p>Our passionate team of floral designers and event planners brings over 15 years of experience creating unforgettable celebrations in Miami.</p>
+                <a routerLink="/about" class="author-link">Learn More About Us</a>
+              </div>
+            </div>
+
+            <!-- Related Posts -->
+            @if (relatedPosts().length > 0) {
+              <div class="related-posts">
+                <h4>Related Posts</h4>
+                <div class="related-list">
+                  @for (post of relatedPosts(); track post.id) {
+                    <a [routerLink]="['/blog', post.slug]" class="related-post">
+                      <div class="related-image">
+                        <img [src]="post.coverImage" [alt]="post.title" loading="lazy">
+                      </div>
+                      <div class="related-content">
+                        <h5>{{ post.title }}</h5>
+                        <span class="related-date">{{ formatDate(post.createdAt!) }}</span>
+                      </div>
+                    </a>
+                  }
+                </div>
+              </div>
+            }
+
+            <!-- Newsletter Signup -->
+            <div class="newsletter-card">
+              <h4>Stay Updated</h4>
+              <p>Get the latest floral trends and design tips delivered to your inbox.</p>
+              <form class="newsletter-form" (submit)="subscribeNewsletter($event)">
+                <input 
+                  type="email" 
+                  placeholder="Your email address"
+                  #emailInput
+                  required>
+                <button type="submit" class="btn btn-primary">Subscribe</button>
+              </form>
+            </div>
+
+            <!-- Contact CTA -->
+            <div class="contact-cta">
+              <h4>Inspired by this post?</h4>
+              <p>Let's discuss how we can bring these ideas to life for your next event.</p>
+              <div class="cta-actions">
+                <a href="tel:7863562958" class="btn btn-primary">Call Us</a>
+                <a routerLink="/contact" class="btn btn-outline">Get a Quote</a>
+              </div>
+            </div>
+          </aside>
+        </div>
+      </div>
+    </article>
+
+  } @else if (loading()) {
+    <div class="loading-state">
+      <div class="container">
+        <h1>Loading post...</h1>
+      </div>
+    </div>
+  } @else {
+    <div class="error-state">
+      <div class="container">
+        <h1>Post not found</h1>
+        <p>The blog post you're looking for doesn't exist or has been removed.</p>
+        <a routerLink="/blog" class="btn btn-primary">Back to Blog</a>
+      </div>
+    </div>
+  }
+
+  <!-- Navigation -->
+  <section class="post-navigation">
+    <div class="container">
+      <div class="nav-actions">
+        <a routerLink="/blog" class="btn btn-outline">
+          ← Back to Blog
+        </a>
+        @if (nextPost()) {
+          <a [routerLink]="['/blog', nextPost()!.slug]" class="btn btn-primary">
+            Next Post: {{ nextPost()!.title }} →
+          </a>
+        }
+      </div>
+    </div>
+  </section>
+</div>

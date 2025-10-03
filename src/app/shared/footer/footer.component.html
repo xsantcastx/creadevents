@@ -1,0 +1,83 @@
+<footer class="footer">
+  <div class="footer-container">
+    <div class="footer-content">
+      <!-- Company Info -->
+      <div class="footer-section">
+        <h3>CreaDEvents</h3>
+        <p>Professional floral design and event decorations for every special occasion.</p>
+        @if (settings$ | async; as settings) {
+          <div class="contact-info">
+            <p><strong>Email:</strong> {{ settings.contactEmail }}</p>
+            @if (settings.businessInfo && settings.businessInfo.phone) {
+              <p><strong>Phone:</strong> {{ settings.businessInfo.phone }}</p>
+            }
+            @if (settings.businessInfo && settings.businessInfo.address) {
+              <p><strong>Address:</strong> {{ settings.businessInfo.address }}</p>
+            }
+          </div>
+        }
+      </div>
+
+      <!-- Quick Links -->
+      <div class="footer-section">
+        <h4>Quick Links</h4>
+        <ul class="footer-links">
+          <li><a routerLink="/services">Services</a></li>
+          <li><a routerLink="/portfolio">Portfolio</a></li>
+          <li><a routerLink="/about">About Us</a></li>
+          <li><a routerLink="/testimonials">Testimonials</a></li>
+          <li><a routerLink="/contact">Contact</a></li>
+        </ul>
+      </div>
+
+      <!-- Seasonal Collections -->
+      <div class="footer-section">
+        <h4>Seasonal Collections</h4>
+        <ul class="footer-links">
+          <li><a routerLink="/season/spring">Spring</a></li>
+          <li><a routerLink="/season/summer">Summer</a></li>
+          <li><a routerLink="/season/autumn">Autumn</a></li>
+          <li><a routerLink="/season/winter">Winter</a></li>
+        </ul>
+      </div>
+
+      <!-- Social & Contact -->
+      <div class="footer-section">
+        <h4>Connect With Us</h4>
+        @if (settings$ | async; as settings) {
+          <div class="social-links">
+            @if (settings.socialLinks && settings.socialLinks.instagram) {
+              <a [href]="settings.socialLinks.instagram" target="_blank" rel="noopener" class="social-link">
+                <span class="social-icon">📷</span> Instagram
+              </a>
+            }
+            @if (settings.socialLinks && settings.socialLinks.whatsapp) {
+              <a [href]="settings.socialLinks.whatsapp" target="_blank" rel="noopener" class="social-link">
+                <span class="social-icon">💬</span> WhatsApp
+              </a>
+            }
+            @if (settings.socialLinks && settings.socialLinks.facebook) {
+              <a [href]="settings.socialLinks.facebook" target="_blank" rel="noopener" class="social-link">
+                <span class="social-icon">📘</span> Facebook
+              </a>
+            }
+            <a [href]="'mailto:' + settings.contactEmail" class="social-link">
+              <span class="social-icon">✉️</span> Email
+            </a>
+          </div>
+        }
+      </div>
+    </div>
+
+    <!-- Bottom Bar -->
+    <div class="footer-bottom">
+      <div class="footer-bottom-content">
+        <p>&copy; {{ currentYear }} CreaDEvents. All rights reserved.</p>
+        <div class="footer-legal">
+          <a href="/privacy" class="legal-link">Privacy Policy</a>
+          <a href="/terms" class="legal-link">Terms of Service</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>

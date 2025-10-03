@@ -1,60 +1,11 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-not-found',
   imports: [CommonModule],
-  template: `
-    <div class="not-found-container">
-      <div class="not-found-content">
-        <h1>404</h1>
-        <h2>Page Not Found</h2>
-        <p>The page you're looking for doesn't exist.</p>
-        <a href="/" class="btn btn-primary">Go Home</a>
-      </div>
-    </div>
-  `,
-  styles: [`
-    .not-found-container {
-      min-height: 80vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      padding: 2rem;
-    }
-
-    .not-found-content h1 {
-      font-size: 6rem;
-      color: var(--theme-primary, #7FB069);
-      margin: 0;
-    }
-
-    .not-found-content h2 {
-      font-size: 2rem;
-      margin: 1rem 0;
-      color: var(--theme-text, #2D3436);
-    }
-
-    .not-found-content p {
-      font-size: 1.1rem;
-      color: #666;
-      margin-bottom: 2rem;
-    }
-
-    .btn {
-      display: inline-block;
-      padding: 1rem 2rem;
-      background: var(--theme-primary, #7FB069);
-      color: white;
-      text-decoration: none;
-      border-radius: 5px;
-      transition: transform 0.3s ease;
-    }
-
-    .btn:hover {
-      transform: translateY(-2px);
-    }
-  `]
+  templateUrl: './not-found.component.html',
+  styleUrl: './not-found.component.css',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class NotFoundComponent {}

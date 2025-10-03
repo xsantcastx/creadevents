@@ -36,7 +36,7 @@ export class SeasonalThemeService {
   /**
    * Get the current season based on month
    */
-  private getCurrentSeason(): Season {
+  getCurrentSeason(): Season {
     const month = new Date().getMonth(); // 0-11
 
     if (month >= 2 && month <= 4) return 'spring';   // Mar-May

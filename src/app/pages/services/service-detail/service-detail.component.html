@@ -1,0 +1,121 @@
+<div class="service-detail-page" *ngIf="service">
+  <!-- Hero Section -->
+  <section class="hero-section">
+    <div class="hero-image">
+      <img [src]="service.image" [alt]="service.title">
+      <div class="hero-overlay"></div>
+    </div>
+    <div class="hero-content">
+      <div class="breadcrumb">
+        <a routerLink="/services">Services</a>
+        <span>></span>
+        <span>{{ service.title }}</span>
+      </div>
+      <h1 class="hero-title">{{ service.title }}</h1>
+      <p class="hero-subtitle">{{ service.description }}</p>
+      <div class="hero-actions">
+        <a href="tel:7863562958" class="btn btn-primary">Call (786) 356-2958</a>
+        <a routerLink="/contact" class="btn btn-outline">Get Free Quote</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Service Details -->
+  <section class="details-section">
+    <div class="container">
+      <div class="details-grid">
+        <!-- Main Content -->
+        <div class="main-content">
+          <div class="content-block">
+            <h2>About This Service</h2>
+            <p class="large-text">{{ service.fullDescription }}</p>
+          </div>
+
+          <div class="content-block" *ngIf="service.features.length > 0">
+            <h2>What's Included</h2>
+            <div class="features-grid">
+              <div class="feature-item" *ngFor="let feature of service.features">
+                <i class="check-icon">✓</i>
+                <span>{{ feature }}</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="content-block" *ngIf="service.process">
+            <h2>Our Process</h2>
+            <div class="process-steps">
+              <div class="step" *ngFor="let step of service.process; let i = index">
+                <div class="step-number">{{ i + 1 }}</div>
+                <div class="step-content">{{ step }}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sidebar -->
+        <div class="sidebar">
+          <div class="pricing-card">
+            <h3>Investment</h3>
+            <div class="price">{{ service.price }}</div>
+            <p class="price-note">Final pricing based on event scope and requirements</p>
+            <div class="cta-actions">
+              <a routerLink="/contact" class="btn btn-primary btn-full">Request Quote</a>
+              <a href="tel:7863562958" class="btn btn-outline btn-full">Call Now</a>
+            </div>
+          </div>
+
+          <div class="contact-card">
+            <h3>Ready to Get Started?</h3>
+            <p>Contact us today for a personalized consultation.</p>
+            <div class="contact-info">
+              <div class="contact-item">
+                <strong>Phone:</strong>
+                <a href="tel:7863562958">(786) 356-2958</a>
+              </div>
+              <div class="contact-item">
+                <strong>Email:</strong>
+                <a href="mailto:Carlos@creadevents.com">Carlos@creadevents.com</a>
+              </div>
+              <div class="contact-item">
+                <strong>Location:</strong>
+                <span>Miami, FL</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Related Services -->
+  <section class="related-section">
+    <div class="container">
+      <h2>Other Services You Might Like</h2>
+      <div class="related-grid">
+        <div 
+          *ngFor="let relatedService of relatedServices" 
+          class="related-card">
+          <div class="related-image">
+            <img [src]="relatedService.image" [alt]="relatedService.title">
+          </div>
+          <div class="related-content">
+            <h3>{{ relatedService.title }}</h3>
+            <p>{{ relatedService.description }}</p>
+            <a [routerLink]="['/services', relatedService.id]" class="btn btn-outline btn-small">
+              Learn More
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- Not Found -->
+<div class="not-found" *ngIf="!service && !loading">
+  <div class="container">
+    <h1>Service Not Found</h1>
+    <p>The service you're looking for doesn't exist.</p>
+    <a routerLink="/services" class="btn btn-primary">View All Services</a>
+  </div>
+</div>

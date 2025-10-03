@@ -1,0 +1,102 @@
+<nav class="navbar" [class.scrolled]="isScrolled">
+  <div class="nav-container">
+    <a routerLink="/" class="brand" (click)="closeMobileMenu()">
+      <span class="brand-mark">CreaDEvents</span>
+      <span class="brand-subtitle">Floral studio & event design</span>
+    </a>
+
+    <button
+      class="mobile-toggle"
+      type="button"
+      (click)="toggleMobileMenu()"
+      [attr.aria-expanded]="isMobileMenuOpen"
+      aria-controls="primary-navigation"
+      aria-label="Toggle navigation"
+    >
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+
+    <div class="nav-menu" [class.open]="isMobileMenuOpen" id="primary-navigation">
+      <ul class="nav-links">
+        <li class="nav-item">
+          <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" (click)="closeMobileMenu()">
+            Home
+          </a>
+        </li>
+        <li class="nav-item">
+          <a routerLink="/services" routerLinkActive="active" (click)="closeMobileMenu()">
+            Services
+          </a>
+        </li>
+        <li class="nav-item">
+          <a routerLink="/portfolio" routerLinkActive="active" (click)="closeMobileMenu()">
+            Portfolio
+          </a>
+        </li>
+        <li class="nav-item">
+          <a routerLink="/season/spring" routerLinkActive="active" (click)="closeMobileMenu()">
+            Seasonal Looks
+          </a>
+        </li>
+        <li class="nav-item">
+          <a routerLink="/testimonials" routerLinkActive="active" (click)="closeMobileMenu()">
+            Client Stories
+          </a>
+        </li>
+        <li class="nav-item">
+          <a routerLink="/about" routerLinkActive="active" (click)="closeMobileMenu()">
+            About
+          </a>
+        </li>
+        <li class="nav-item">
+          <a routerLink="/blog" routerLinkActive="active" (click)="closeMobileMenu()">
+            Journal
+          </a>
+        </li>
+        <li class="nav-item">
+          <a routerLink="/search" routerLinkActive="active" (click)="closeMobileMenu()">
+            Search
+          </a>
+        </li>
+        <li class="nav-item mobile-only">
+          <a routerLink="/contact" routerLinkActive="active" (click)="closeMobileMenu()">
+            Contact
+          </a>
+        </li>
+        
+        <!-- Authentication Links -->
+        @if (authService.isAuthenticated()) {
+          @if (authService.canManageContent()) {
+            <li class="nav-item">
+              <a routerLink="/admin" routerLinkActive="active" (click)="closeMobileMenu()">
+                Admin Dashboard
+              </a>
+            </li>
+          }
+          <li class="nav-item">
+            <button type="button" (click)="logout()" class="auth-link logout-btn">
+              Logout ({{ authService.currentUser()?.email }})
+            </button>
+          </li>
+        } @else {
+          <li class="nav-item">
+            <a routerLink="/auth/login" routerLinkActive="active" (click)="closeMobileMenu()">
+              Sign In
+            </a>
+          </li>
+        }
+      </ul>
+
+      <div class="nav-cta">
+        <a href="tel:7863562958" class="cta-link" (click)="closeMobileMenu()">
+          Call (786) 356-2958
+        </a>
+        <a routerLink="/contact" class="btn btn-primary" (click)="closeMobileMenu()">
+          Plan Your Event
+        </a>
+      </div>
+    </div>
+  </div>
+</nav>

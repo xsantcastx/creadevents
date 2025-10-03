@@ -29,16 +29,8 @@ import {
 import { Observable, from, BehaviorSubject } from 'rxjs';
 import { environment } from '../../environments/environment';
 
-// Direct Firebase configuration
-const firebaseConfig = {
-  apiKey: "AIzaSyAUz7FJezTXW-k4SxVKWPkxtPJ1h6s4xTQ",
-  authDomain: "creadevents-437a8.firebaseapp.com",
-  projectId: "creadevents-437a8",
-  storageBucket: "creadevents-437a8.firebasestorage.app",
-  messagingSenderId: "256034995785",
-  appId: "1:256034995785:web:a315f7b9fcbc4ebce0c998",
-  measurementId: "G-NV1R46RCLZ"
-};
+// Use environment configuration
+const firebaseConfig = environment.firebase;
 
 export interface UserProfile {
   uid: string;

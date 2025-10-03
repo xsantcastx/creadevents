@@ -1,0 +1,246 @@
+<div class="gallery-container">
+  <!-- Hero Section -->
+  <section class="gallery-hero">
+    <div class="hero-content">
+      <h1>Our Gallery</h1>
+      <p>Discover our collection of {{ totalImages() }} beautiful moments across {{ totalCategories() }} categories</p>
+    </div>
+  </section>
+
+  <!-- Filter Controls -->
+  <div class="filter-controls">
+    <div class="search-box">
+      <input 
+        type="text" 
+        [(ngModel)]="searchTerm" 
+        (ngModelChange)="onSearchChange()"
+        placeholder="Search images by name, category, or tags..."
+        class="search-input">
+    </div>
+
+    <div class="category-filters">
+      <button 
+        type="button"
+        (click)="selectCategory('')" 
+        [class.active]="selectedCategory() === ''"
+        class="category-btn all-btn">
+        All Categories ({{ totalImages() }})
+      </button>
+      
+      <button 
+        type="button"
+        *ngFor="let stat of categoryStats()" 
+        (click)="selectCategory(stat.category)"
+        [class.active]="selectedCategory() === stat.category"
+        class="category-btn">
+        {{ formatCategoryName(stat.category) }} ({{ stat.count }})
+      </button>
+    </div>
+
+    <div class="view-options">
+      <div class="items-per-page">
+        <label>Show:</label>
+        <select [(ngModel)]="itemsPerPage" (ngModelChange)="onItemsPerPageChange()">
+          <option value="12">12</option>
+          <option value="24">24</option>
+          <option value="48">48</option>
+          <option value="96">96</option>
+        </select>
+        <span>per page</span>
+      </div>
+
+      <div class="sort-options">
+        <label>Sort by:</label>
+        <select [(ngModel)]="sortBy" (ngModelChange)="onSortChange()">
+          <option value="newest">Newest First</option>
+          <option value="oldest">Oldest First</option>
+          <option value="name">Name A-Z</option>
+          <option value="category">Category</option>
+        </select>
+      </div>
+
+      <div class="featured-toggle">
+        <label>
+          <input 
+            type="checkbox" 
+            [(ngModel)]="showFeaturedOnly" 
+            (ngModelChange)="onFeaturedToggle()">
+          Featured Only
+        </label>
+      </div>
+    </div>
+  </div>
+
+  <!-- Results Info -->
+  <div class="results-info" *ngIf="!loading()">
+    <p>
+      Showing {{ paginatedImages().length }} of {{ filteredImages().length }} images
+      <span *ngIf="selectedCategory()"> in "{{ formatCategoryName(selectedCategory()) }}"</span>
+      <span *ngIf="searchTerm"> matching "{{ searchTerm }}"</span>
+    </p>
+  </div>
+
+  <!-- Loading State -->
+  <div class="loading-container" *ngIf="loading()">
+    <div class="loading-spinner"></div>
+    <p>Loading gallery...</p>
+  </div>
+
+  <!-- Image Grid -->
+  <div class="image-grid" *ngIf="!loading() && paginatedImages().length > 0">
+    <div 
+      class="image-card" 
+      *ngFor="let image of paginatedImages(); trackBy: trackByImageId"
+      (click)="openImageModal(image)">
+      
+      <div class="image-container">
+        <img 
+          [src]="imageStorageService.getThumbnailUrl(image.storageUrl || image.downloadURL || '', 'medium')" 
+          [alt]="image.altText"
+          loading="lazy"
+          class="gallery-image">
+        
+        <div class="image-overlay">
+          <div class="image-info">
+            <h3 class="image-title">{{ image.originalName }}</h3>
+            <p class="image-category">{{ formatCategoryName(image.category) }}</p>
+            <div class="image-tags" *ngIf="image.tags.length > 0">
+              <span class="tag" *ngFor="let tag of image.tags.slice(0, 3)">{{ tag }}</span>
+              <span class="tag more" *ngIf="image.tags.length > 3">+{{ image.tags.length - 3 }}</span>
+            </div>
+          </div>
+          
+          <div class="image-actions">
+            <button type="button" class="action-btn view-btn" title="View Full Size">
+              👁️
+            </button>
+            <span class="featured-badge" *ngIf="image.featured" title="Featured Image">⭐</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Empty State -->
+  <div class="empty-state" *ngIf="!loading() && paginatedImages().length === 0">
+    <div class="empty-content">
+      <h3>No images found</h3>
+      <p *ngIf="searchTerm || selectedCategory() || showFeaturedOnly">
+        Try adjusting your filters or search terms.
+      </p>
+      <p *ngIf="!searchTerm && !selectedCategory() && !showFeaturedOnly">
+        The gallery is currently empty. Check back later for updates.
+      </p>
+      <button type="button" (click)="clearAllFilters()" class="clear-filters-btn">
+        Clear All Filters
+      </button>
+    </div>
+  </div>
+
+  <!-- Pagination -->
+  <div class="pagination" *ngIf="totalPages() > 1 && !loading()">
+    <button 
+      type="button"
+      (click)="goToPage(currentPage() - 1)" 
+      [disabled]="currentPage() === 1"
+      class="page-btn">
+      ← Previous
+    </button>
+
+    <div class="page-numbers">
+      <button 
+        type="button"
+        *ngFor="let page of getVisiblePages()" 
+        (click)="goToPage(page)"
+        [class.active]="page === currentPage()"
+        [class.ellipsis]="page === -1"
+        [disabled]="page === -1"
+        class="page-number">
+        {{ page === -1 ? '...' : page }}
+      </button>
+    </div>
+
+    <button 
+      type="button"
+      (click)="goToPage(currentPage() + 1)" 
+      [disabled]="currentPage() === totalPages()"
+      class="page-btn">
+      Next →
+    </button>
+  </div>
+</div>
+
+<!-- Image Modal -->
+<div class="image-modal" *ngIf="selectedImage()" (click)="closeImageModal()">
+  <div class="modal-backdrop"></div>
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h2>{{ selectedImage()?.originalName }}</h2>
+      <button type="button" (click)="closeImageModal()" class="close-btn">×</button>
+    </div>
+    
+    <div class="modal-body">
+      <div class="modal-image-container">
+        <img 
+          [src]="selectedImage()?.storageUrl" 
+          [alt]="selectedImage()?.altText"
+          class="modal-image">
+      </div>
+      
+      <div class="modal-details">
+        <div class="detail-row">
+          <span class="label">Category:</span>
+          <span class="value">{{ formatCategoryName(selectedImage()?.category || '') }}</span>
+        </div>
+        
+        <div class="detail-row" *ngIf="selectedImage()?.subcategory">
+          <span class="label">Subcategory:</span>
+          <span class="value">{{ selectedImage()?.subcategory }}</span>
+        </div>
+        
+        <div class="detail-row" *ngIf="selectedImage()?.tags && selectedImage()!.tags.length > 0">
+          <span class="label">Tags:</span>
+          <div class="tags-list">
+            <span class="tag" *ngFor="let tag of selectedImage()!.tags">{{ tag }}</span>
+          </div>
+        </div>
+        
+        <div class="detail-row">
+          <span class="label">Upload Date:</span>
+          <span class="value">{{ formatDate(selectedImage()?.uploadedAt) }}</span>
+        </div>
+        
+        <div class="detail-row">
+          <span class="label">File Size:</span>
+          <span class="value">{{ formatFileSize(selectedImage()?.metadata?.size || 0) }}</span>
+        </div>
+        
+        <div class="detail-row" *ngIf="selectedImage()?.featured">
+          <span class="featured-indicator">⭐ Featured Image</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-navigation" *ngIf="canNavigate()">
+      <button 
+        type="button"
+        (click)="navigateImage('prev')" 
+        [disabled]="!hasPreviousImage()"
+        class="nav-btn prev-btn">
+        ← Previous
+      </button>
+      
+      <span class="nav-info">
+        {{ getCurrentImageIndex() + 1 }} of {{ filteredImages().length }}
+      </span>
+      
+      <button 
+        type="button"
+        (click)="navigateImage('next')" 
+        [disabled]="!hasNextImage()"
+        class="nav-btn next-btn">
+        Next →
+      </button>
+    </div>
+  </div>
+</div>

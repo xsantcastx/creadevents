@@ -1,0 +1,181 @@
+<div class="testimonials-page">
+  <!-- Hero Section -->
+  <section class="hero-section">
+    <div class="hero-content">
+      <h1 class="hero-title">What Our Clients Say</h1>
+      <p class="hero-subtitle">
+        Don't just take our word for it - hear from the couples, businesses, and families 
+        who have trusted us to make their special moments unforgettable.
+      </p>
+    </div>
+  </section>
+
+  <!-- Featured Testimonials Slider -->
+  <section class="featured-testimonials">
+    <div class="container">
+      <div class="slider-container">
+        @if (featuredTestimonials().length > 0) {
+          <div class="testimonial-slider">
+            @for (testimonial of featuredTestimonials(); track testimonial.id; let i = $index) {
+              <div 
+                class="testimonial-slide" 
+                [class.active]="i === currentSlide()"
+                [style.transform]="'translateX(' + (i - currentSlide()) * 100 + '%)'">
+                
+                <div class="testimonial-card">
+                  <div class="quote-mark">"</div>
+                  <blockquote class="testimonial-quote">
+                    {{ testimonial.quote }}
+                  </blockquote>
+                  
+                  <div class="testimonial-footer">
+                    @if (testimonial.photo) {
+                      <div class="client-photo">
+                        <img [src]="testimonial.photo" [alt]="testimonial.author" loading="lazy">
+                      </div>
+                    }
+                    
+                    <div class="client-info">
+                      <div class="client-name">{{ testimonial.author }}</div>
+                      @if (testimonial.event) {
+                        <div class="event-type">{{ testimonial.event }}</div>
+                      }
+                      @if (testimonial.role) {
+                        <div class="client-role">{{ testimonial.role }}</div>
+                      }
+                      @if (testimonial.rating) {
+                        <div class="rating">
+                          @for (star of getStars(testimonial.rating); track star) {
+                            <span class="star">⭐</span>
+                          }
+                        </div>
+                      }
+                    </div>
+                  </div>
+                </div>
+              </div>
+            }
+          </div>
+
+          <!-- Slider Controls -->
+          <div class="slider-controls">
+            <button 
+              class="slider-btn prev" 
+              (click)="previousSlide()"
+              [disabled]="featuredTestimonials().length <= 1">
+              &#8249;
+            </button>
+            
+            <div class="slider-dots">
+              @for (testimonial of featuredTestimonials(); track testimonial.id; let i = $index) {
+                <button 
+                  class="dot" 
+                  [class.active]="i === currentSlide()"
+                  (click)="goToSlide(i)">
+                </button>
+              }
+            </div>
+            
+            <button 
+              class="slider-btn next" 
+              (click)="nextSlide()"
+              [disabled]="featuredTestimonials().length <= 1">
+              &#8250;
+            </button>
+          </div>
+        } @else {
+          <div class="loading-state">
+            <p>Loading testimonials...</p>
+          </div>
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- All Testimonials Grid -->
+  <section class="all-testimonials">
+    <div class="container">
+      <h2>All Client Reviews</h2>
+      
+      @if (allTestimonials().length > 0) {
+        <div class="testimonials-grid">
+          @for (testimonial of allTestimonials(); track testimonial.id) {
+            <div class="testimonial-grid-item" [class.featured]="testimonial.featured">
+              <div class="grid-quote-mark">"</div>
+              <blockquote class="grid-testimonial-quote">
+                {{ testimonial.quote }}
+              </blockquote>
+              
+              <div class="grid-testimonial-footer">
+                @if (testimonial.photo) {
+                  <div class="grid-client-photo">
+                    <img [src]="testimonial.photo" [alt]="testimonial.author" loading="lazy">
+                  </div>
+                }
+                
+                <div class="grid-client-info">
+                  <div class="grid-client-name">{{ testimonial.author }}</div>
+                  @if (testimonial.event) {
+                    <div class="grid-event-type">{{ testimonial.event }}</div>
+                  }
+                  @if (testimonial.rating) {
+                    <div class="grid-rating">
+                      @for (star of getStars(testimonial.rating); track star) {
+                        <span class="star">⭐</span>
+                      }
+                    </div>
+                  }
+                </div>
+              </div>
+            </div>
+          }
+        </div>
+      } @else {
+        <div class="no-testimonials">
+          <p>No testimonials available at this time.</p>
+        </div>
+      }
+    </div>
+  </section>
+
+  <!-- Statistics Section -->
+  <section class="stats-section">
+    <div class="container">
+      <div class="stats-grid">
+        <div class="stat-item">
+          <div class="stat-number">{{ allTestimonials().length }}+</div>
+          <div class="stat-label">Happy Clients</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number">{{ getAverageRating() }}</div>
+          <div class="stat-label">Average Rating</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number">15+</div>
+          <div class="stat-label">Years of Excellence</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number">500+</div>
+          <div class="stat-label">Events Completed</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Call to Action -->
+  <section class="cta-section">
+    <div class="container">
+      <div class="cta-content">
+        <h2>Ready to Create Your Own Success Story?</h2>
+        <p>
+          Join our family of satisfied clients and let us make your event dreams come true. 
+          Contact us today for a personalized consultation.
+        </p>
+        <div class="cta-actions">
+          <a href="tel:7863562958" class="btn btn-primary">Call (786) 356-2958</a>
+          <a routerLink="/contact" class="btn btn-outline">Start Planning</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>

@@ -1,0 +1,320 @@
+<div class="search-page">
+  <!-- Search Header -->
+  <section class="search-header">
+    <div class="container">
+      <div class="search-header-content">
+        <h1>Search CreaDEvents</h1>
+        <p>Find exactly what you're looking for</p>
+        
+        <!-- Main Search Bar -->
+        <div class="search-bar-container">
+          <div class="search-bar" [class.focused]="searchFocused()" [class.has-results]="showSuggestions()">
+            <div class="search-input-wrapper">
+              <input
+                type="text"
+                placeholder="Search for services, projects, blog posts..."
+                [value]="currentQuery()"
+                (input)="onSearchInput($event)"
+                (focus)="onSearchFocus()"
+                (blur)="onSearchBlur()"
+                (keydown)="onSearchKeydown($event)"
+                class="search-input"
+                #searchInput>
+              
+              <button
+                type="button"
+                (click)="performSearch()"
+                class="search-button"
+                [disabled]="!currentQuery()">
+                <span class="search-icon">🔍</span>
+              </button>
+              
+              @if (currentQuery()) {
+                <button
+                  type="button"
+                  (click)="clearSearch()"
+                  class="clear-button">
+                  ✕
+                </button>
+              }
+            </div>
+
+            <!-- Search Suggestions -->
+            @if (showSuggestions()) {
+              <div class="search-suggestions">
+                @if (isSearching()) {
+                  <div class="suggestion-item loading">
+                    <span class="loading-spinner"></span>
+                    Searching...
+                  </div>
+                } @else {
+                  @for (suggestion of searchSuggestions(); track suggestion.text) {
+                    <button
+                      type="button"
+                      (click)="selectSuggestion(suggestion)"
+                      class="suggestion-item"
+                      [class]="'suggestion-' + suggestion.type">
+                      <span class="suggestion-icon">
+                        @switch (suggestion.type) {
+                          @case ('query') { 🔍 }
+                          @case ('category') { 📁 }
+                          @case ('tag') { 🏷️ }
+                        }
+                      </span>
+                      <span class="suggestion-text">{{ suggestion.text }}</span>
+                      @if (suggestion.count) {
+                        <span class="suggestion-count">{{ suggestion.count }}</span>
+                      }
+                    </button>
+                  }
+                }
+                
+                @if (recentSearches().length > 0 && !currentQuery()) {
+                  <div class="suggestion-section">
+                    <div class="suggestion-header">Recent Searches</div>
+                    @for (search of recentSearches().slice(0, 5); track search) {
+                      <button
+                        type="button"
+                        (click)="selectSuggestion({text: search, type: 'query'})"
+                        class="suggestion-item suggestion-recent">
+                        <span class="suggestion-icon">🕒</span>
+                        <span class="suggestion-text">{{ search }}</span>
+                      </button>
+                    }
+                  </div>
+                }
+              </div>
+            }
+          </div>
+        </div>
+
+        <!-- Quick Filters -->
+        <div class="quick-filters">
+          @for (type of contentTypes; track type.key) {
+            <button
+              type="button"
+              (click)="toggleContentType(type.key)"
+              class="filter-chip"
+              [class.active]="selectedFilters().contentTypes.includes(type.key)">
+              <span class="filter-icon">{{ type.icon }}</span>
+              {{ type.label }}
+              @if (getTypeCount(type.key) > 0) {
+                <span class="filter-count">{{ getTypeCount(type.key) }}</span>
+              }
+            </button>
+          }
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Search Results -->
+  <section class="search-results-section">
+    <div class="container">
+      <div class="search-results-layout">
+        
+        <!-- Sidebar Filters -->
+        <aside class="search-sidebar">
+          <div class="sidebar-content">
+            <h3>Filters</h3>
+            
+            <!-- Sort Options -->
+            <div class="filter-group">
+              <h4>Sort By</h4>
+              <div class="sort-options">
+                @for (option of sortOptions; track option.value) {
+                  <label class="radio-option">
+                    <input
+                      type="radio"
+                      [value]="option.value"
+                      [checked]="selectedFilters().sortBy === option.value"
+                      (change)="updateSortBy(option.value)">
+                    <span class="radio-label">{{ option.label }}</span>
+                  </label>
+                }
+              </div>
+            </div>
+
+            <!-- Categories Filter -->
+            <div class="filter-group">
+              <h4>Categories</h4>
+              <div class="category-filters">
+                @for (category of availableCategories; track category) {
+                  <label class="checkbox-option">
+                    <input
+                      type="checkbox"
+                      [checked]="selectedFilters().categories.includes(category)"
+                      (change)="toggleCategory(category, $event)">
+                    <span class="checkbox-label">{{ category | titlecase }}</span>
+                  </label>
+                }
+              </div>
+            </div>
+
+            <!-- Clear Filters -->
+            @if (hasActiveFilters()) {
+              <button
+                type="button"
+                (click)="clearFilters()"
+                class="clear-filters-btn">
+                Clear All Filters
+              </button>
+            }
+          </div>
+        </aside>
+
+        <!-- Main Results -->
+        <main class="search-main">
+          @if (hasSearched()) {
+            <div class="search-results-header">
+              <div class="results-info">
+                @if (isSearching()) {
+                  <p>Searching...</p>
+                } @else if (hasResults()) {
+                  <p>
+                    Found <strong>{{ resultCount() }}</strong> results for 
+                    <strong>"{{ currentQuery() }}"</strong>
+                  </p>
+                } @else {
+                  <p>No results found for <strong>"{{ currentQuery() }}"</strong></p>
+                }
+              </div>
+              
+              @if (hasResults()) {
+                <div class="view-toggle">
+                  <button
+                    type="button"
+                    (click)="setViewMode('list')"
+                    class="view-btn"
+                    [class.active]="viewMode() === 'list'">
+                    ☰ List
+                  </button>
+                  <button
+                    type="button"
+                    (click)="setViewMode('grid')"
+                    class="view-btn"
+                    [class.active]="viewMode() === 'grid'">
+                    ⊞ Grid
+                  </button>
+                </div>
+              }
+            </div>
+
+            @if (isSearching()) {
+              <div class="search-loading">
+                <div class="loading-spinner-large"></div>
+                <p>Searching through our content...</p>
+              </div>
+            } @else if (hasResults()) {
+              <div class="search-results" [class]="'view-' + viewMode()">
+                @for (result of searchResults(); track result.id) {
+                  <article class="search-result-item" [class]="'result-' + result.type">
+                    <div class="result-content">
+                      @if (result.imageUrl) {
+                        <div class="result-image">
+                          <img [src]="result.imageUrl" [alt]="result.title" loading="lazy">
+                          <div class="result-type-badge">{{ getTypeLabel(result.type) }}</div>
+                        </div>
+                      }
+                      
+                      <div class="result-info">
+                        <div class="result-meta">
+                          <span class="result-type">{{ getTypeLabel(result.type) }}</span>
+                          @if (result.category) {
+                            <span class="result-category">{{ result.category | titlecase }}</span>
+                          }
+                          @if (result.date) {
+                            <span class="result-date">{{ formatDate(result.date) }}</span>
+                          }
+                        </div>
+                        
+                        <h3 class="result-title">
+                          <a [routerLink]="result.url" [innerHTML]="result.highlightedTitle || result.title"></a>
+                        </h3>
+                        
+                        <p class="result-description" [innerHTML]="result.highlightedDescription || result.description"></p>
+                        
+                        @if (result.tags && result.tags.length > 0) {
+                          <div class="result-tags">
+                            @for (tag of result.tags.slice(0, 3); track tag) {
+                              <span class="result-tag">{{ tag }}</span>
+                            }
+                          </div>
+                        }
+                        
+                        @if (result.author) {
+                          <div class="result-author">
+                            By {{ result.author }}
+                          </div>
+                        }
+                      </div>
+                    </div>
+                    
+                    <a [routerLink]="result.url" class="result-link">
+                      View Details →
+                    </a>
+                  </article>
+                }
+              </div>
+            } @else {
+              <div class="no-results">
+                <div class="no-results-icon">🔍</div>
+                <h3>No results found</h3>
+                <p>Try adjusting your search terms or filters</p>
+                
+                <div class="search-suggestions-help">
+                  <h4>Suggestions:</h4>
+                  <ul>
+                    <li>Check your spelling</li>
+                    <li>Try more general terms</li>
+                    <li>Use different keywords</li>
+                    <li>Remove some filters</li>
+                  </ul>
+                </div>
+                
+                @if (popularSearches().length > 0) {
+                  <div class="popular-searches">
+                    <h4>Popular searches:</h4>
+                    <div class="popular-search-tags">
+                      @for (search of popularSearches(); track search) {
+                        <button
+                          type="button"
+                          (click)="performSearchQuery(search)"
+                          class="popular-search-tag">
+                          {{ search }}
+                        </button>
+                      }
+                    </div>
+                  </div>
+                }
+              </div>
+            }
+          } @else {
+            <div class="search-welcome">
+              <div class="welcome-content">
+                <h2>Discover Amazing Content</h2>
+                <p>Search through our projects, services, blog posts, and testimonials to find exactly what you're looking for.</p>
+                
+                @if (popularSearches().length > 0) {
+                  <div class="popular-searches">
+                    <h3>Popular searches:</h3>
+                    <div class="popular-search-tags">
+                      @for (search of popularSearches(); track search) {
+                        <button
+                          type="button"
+                          (click)="performSearchQuery(search)"
+                          class="popular-search-tag">
+                          {{ search }}
+                        </button>
+                      }
+                    </div>
+                  </div>
+                }
+              </div>
+            </div>
+          }
+        </main>
+      </div>
+    </div>
+  </section>
+</div>

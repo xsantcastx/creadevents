@@ -1,0 +1,86 @@
+<div class="services-page">
+  <!-- Hero Section -->
+  <section class="hero-section">
+    <div class="hero-content">
+      <h1 class="hero-title">Our Services</h1>
+      <p class="hero-subtitle">
+        Professional event planning and floral design services for over 15 years in Miami.
+        Creating unforgettable moments with personalized attention to detail.
+      </p>
+    </div>
+    
+    <!-- Service Categories Filter -->
+    <div class="category-filters">
+      <button 
+        class="filter-btn"
+        [class.active]="selectedCategory === 'all'"
+        (click)="filterServices('all')">
+        All Services
+      </button>
+      <button 
+        class="filter-btn"
+        [class.active]="selectedCategory === 'events'"
+        (click)="filterServices('events')">
+        Events
+      </button>
+      <button 
+        class="filter-btn"
+        [class.active]="selectedCategory === 'florals'"
+        (click)="filterServices('florals')">
+        Florals
+      </button>
+    </div>
+  </section>
+
+  <!-- Services Grid -->
+  <section class="services-section">
+    <div class="container">
+      <div class="services-grid">
+        @for (service of filteredServices$ | async; track service.id) {
+          <div class="service-card card" [class.featured]="service.featured">
+            @if (service.featured) {
+              <div class="featured-badge">Most Popular</div>
+            }
+            <div class="service-image">
+              <img [src]="service.images[0] || '/assets/logo1.jpg'" [alt]="service.title" loading="lazy">
+            </div>
+            <div class="service-content">
+              <h3 class="service-title">{{ service.title }}</h3>
+              <p class="service-description">{{ service.summary || service.description }}</p>
+              <div class="service-features">
+                @for (feature of service.inclusions.slice(0, 3); track feature) {
+                  <div class="feature">
+                    <i class="check-icon">✓</i>
+                    {{ feature }}
+                  </div>
+                }
+              </div>
+              <div class="service-footer">
+                <div class="service-price">{{ formatBudget(service.minBudget) }}</div>
+                <a [routerLink]="['/services', service.slug]" class="btn btn-outline">Learn More</a>
+              </div>
+            </div>
+          </div>
+        } @empty {
+          <div class="no-services">
+            <p>Loading services...</p>
+          </div>
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section class="cta-section">
+    <div class="container">
+      <div class="cta-content">
+        <h2>Ready to Plan Your Event?</h2>
+        <p>Let's discuss your vision and create something beautiful together.</p>
+        <div class="cta-actions">
+          <a routerLink="/contact" class="btn btn-primary">Get Started</a>
+          <a routerLink="/portfolio" class="btn btn-outline">View Our Work</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
