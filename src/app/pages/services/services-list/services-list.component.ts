@@ -1,85 +1,108 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
-import { Observable, map } from 'rxjs';
-import { SeasonalThemeService } from '../../../services/seasonal-theme.service';
-import { FirestoreService } from '../../../services/firestore.service';
 import { SlotImgComponent } from '../../../shared/slot-img/slot-img.component';
-import { Service } from '../../../models/data.models';
 
 @Component({
   selector: 'app-services-list',
   imports: [CommonModule, RouterLink, SlotImgComponent],
   template: `
     <div class="services-page">
-      <!-- Hero Section -->
+      <!-- Hero Section with Slot -->
       <section class="hero-section">
-        <slot-img key="services.header" altDefault="Services header" class="hero-background" />
-        <div class="hero-content">
-          <h1 class="hero-title">Our Services</h1>
-          <p class="hero-subtitle">
-            Professional event planning and floral design services for over 15 years in Miami.
-            Creating unforgettable moments with personalized attention to detail.
-          </p>
-        </div>
-        
-        <!-- Service Categories Filter -->
-        <div class="category-filters">
-          <button 
-            class="filter-btn"
-            [class.active]="selectedCategory === 'all'"
-            (click)="filterServices('all')">
-            All Services
-          </button>
-          <button 
-            class="filter-btn"
-            [class.active]="selectedCategory === 'events'"
-            (click)="filterServices('events')">
-            Events
-          </button>
-          <button 
-            class="filter-btn"
-            [class.active]="selectedCategory === 'florals'"
-            (click)="filterServices('florals')">
-            Florals
-          </button>
+        <slot-img key="services.header" class="hero-img" altDefault="Our Services – CreaDEvents"></slot-img>
+        <div class="hero-overlay">
+          <div class="hero-content">
+            <h1>Floral Design & Event Services</h1>
+            <p>Creating artful experiences for weddings, corporate events, and private celebrations throughout South Florida.</p>
+          </div>
         </div>
       </section>
 
       <!-- Services Grid -->
-      <section class="services-section">
+      <section class="services-grid">
         <div class="container">
-          <div class="services-grid">
-            @for (service of filteredServices$ | async; track service.id) {
-              <div class="service-card card" [class.featured]="service.featured">
-                @if (service.featured) {
-                  <div class="featured-badge">Most Popular</div>
-                }
-                <div class="service-image">
-                  <img [src]="service.images[0] || '/assets/logo1.jpg'" [alt]="service.title" loading="lazy">
-                </div>
-                <div class="service-content">
-                  <h3 class="service-title">{{ service.title }}</h3>
-                  <p class="service-description">{{ service.summary || service.description }}</p>
-                  <div class="service-features">
-                    @for (feature of service.inclusions.slice(0, 3); track feature) {
-                      <div class="feature">
-                        <i class="check-icon">✓</i>
-                        {{ feature }}
-                      </div>
-                    }
-                  </div>
-                  <div class="service-footer">
-                    <div class="service-price">{{ formatBudget(service.minBudget) }}</div>
-                    <a [routerLink]="['/services', service.slug]" class="btn btn-outline">Learn More</a>
-                  </div>
-                </div>
+          <div class="services-intro">
+            <h2>Tailored to Your Vision</h2>
+            <p>Every celebration is unique. We craft custom floral designs that reflect your style, season, and story.</p>
+          </div>
+
+          <div class="service-cards">
+            <!-- Wedding Services -->
+            <div class="service-card">
+              <div class="service-icon">💍</div>
+              <h3>Wedding Florals</h3>
+              <p>Complete bridal floral packages from bouquets to ceremony installations and reception centerpieces.</p>
+              <ul class="service-includes">
+                <li>Bridal bouquet design</li>
+                <li>Ceremony installations</li>
+                <li>Reception centerpieces</li>
+                <li>Boutonnières & corsages</li>
+              </ul>
+              <div class="service-cta">
+                <span class="starting-price">Starting at $2.5k</span>
+                <a routerLink="/contact" class="btn ghost">Inquire</a>
               </div>
-            } @empty {
-              <div class="no-services">
-                <p>Loading services...</p>
+            </div>
+
+            <!-- Corporate Events -->
+            <div class="service-card featured">
+              <div class="featured-badge">Most Popular</div>
+              <div class="service-icon">🏢</div>
+              <h3>Corporate Events</h3>
+              <p>Brand-aligned floral designs for product launches, galas, conferences, and seasonal office décor.</p>
+              <ul class="service-includes">
+                <li>Event installations</li>
+                <li>Brand color coordination</li>
+                <li>Seasonal office décor</li>
+                <li>VIP arrangements</li>
+              </ul>
+              <div class="service-cta">
+                <span class="starting-price">Starting at $1.5k</span>
+                <a routerLink="/contact" class="btn btn-primary">Get Quote</a>
               </div>
-            }
+            </div>
+
+            <!-- Private Celebrations -->
+            <div class="service-card">
+              <div class="service-icon">🎉</div>
+              <h3>Private Celebrations</h3>
+              <p>Intimate dinners, birthdays, baby showers—personalized arrangements that set the perfect mood.</p>
+              <ul class="service-includes">
+                <li>Table arrangements</li>
+                <li>Entrance installations</li>
+                <li>Themed designs</li>
+                <li>Seasonal specialties</li>
+              </ul>
+              <div class="service-cta">
+                <span class="starting-price">Starting at $800</span>
+                <a routerLink="/contact" class="btn ghost">Plan Event</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Process Steps -->
+      <section class="process-section">
+        <div class="container">
+          <h2>Our Design Process</h2>
+          <div class="process-steps">
+            <div class="step">
+              <div class="step-number">1</div>
+              <h3>Discovery</h3>
+              <p>We start with your vision, venue details, and inspiration to understand your style and budget.</p>
+            </div>
+            <div class="step">
+              <div class="step-number">2</div>
+              <h3>Design</h3>
+              <p>Our team creates a custom proposal with seasonal florals and installation concepts.</p>
+            </div>
+            <div class="step">
+              <div class="step-number">3</div>
+              <h3>Delivery</h3>
+              <p>Professional setup and installation on your event day, ensuring everything is picture-perfect.</p>
+            </div>
           </div>
         </div>
       </section>
@@ -88,11 +111,11 @@ import { Service } from '../../../models/data.models';
       <section class="cta-section">
         <div class="container">
           <div class="cta-content">
-            <h2>Ready to Plan Your Event?</h2>
-            <p>Let's discuss your vision and create something beautiful together.</p>
+            <h2>Ready to Bring Your Vision to Life?</h2>
+            <p>Share your event details and let's create something beautiful together. We'll respond within 24 hours with next steps.</p>
             <div class="cta-actions">
-              <a routerLink="/contact" class="btn btn-primary">Get Started</a>
-              <a routerLink="/portfolio" class="btn btn-outline">View Our Work</a>
+              <a routerLink="/contact" class="btn btn-primary">Start Your Inquiry</a>
+              <a routerLink="/portfolio" class="btn ghost">View Our Portfolio</a>
             </div>
           </div>
         </div>
@@ -101,205 +124,235 @@ import { Service } from '../../../models/data.models';
   `,
   styles: [`
     .services-page {
-      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      gap: 0;
     }
 
+    /* Hero Section */
     .hero-section {
-      background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-      padding: 6rem 1.5rem 4rem;
-      text-align: center;
+      position: relative;
+      min-height: 60vh;
+      display: flex;
+      align-items: center;
+    }
+
+    .hero-img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: 1;
+    }
+
+    .hero-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(15, 61, 62, 0.8) 0%, rgba(15, 61, 62, 0.5) 100%);
+      z-index: 2;
+      display: flex;
+      align-items: center;
+      padding: 0 var(--pad);
     }
 
     .hero-content {
-      max-width: 800px;
-      margin: 0 auto 3rem;
-    }
-
-    .hero-title {
-      font-size: 3.5rem;
-      font-weight: 700;
-      color: #212529;
-      margin-bottom: 1.5rem;
-      line-height: 1.2;
-    }
-
-    .hero-subtitle {
-      font-size: 1.25rem;
-      color: #6c757d;
-      line-height: 1.6;
-      margin-bottom: 2rem;
-    }
-
-    .category-filters {
-      display: flex;
-      gap: 1rem;
-      justify-content: center;
-      flex-wrap: wrap;
-    }
-
-    .filter-btn {
-      padding: 0.75rem 1.5rem;
-      border: 2px solid #dee2e6;
-      background: white;
-      color: #495057;
-      border-radius: 30px;
-      font-weight: 500;
-      cursor: pointer;
-      transition: all 0.3s ease;
-    }
-
-    .filter-btn:hover,
-    .filter-btn.active {
-      border-color: var(--primary-color, #007bff);
-      background: var(--primary-color, #007bff);
+      max-width: var(--container);
+      margin: 0 auto;
       color: white;
+      text-align: center;
     }
 
-    .services-section {
-      padding: 4rem 1.5rem;
+    .hero-content h1 {
+      font-size: clamp(2.5rem, 5vw, 3.5rem);
+      margin-bottom: 1rem;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
     }
 
+    .hero-content p {
+      font-size: 1.2rem;
+      margin-bottom: 0;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+      opacity: 0.95;
+    }
+
+    /* Services Grid */
     .services-grid {
+      padding: 5rem 0;
+      background: var(--surface);
+    }
+
+    .services-intro {
+      text-align: center;
+      margin-bottom: 4rem;
+    }
+
+    .services-intro h2 {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+      color: var(--brand);
+    }
+
+    .services-intro p {
+      font-size: 1.1rem;
+      color: var(--muted);
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    .service-cards {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
       gap: 2rem;
-      max-width: 1200px;
-      margin: 0 auto;
     }
 
     .service-card {
       position: relative;
-      border: 1px solid #e9ecef;
-      border-radius: 12px;
-      overflow: hidden;
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
       background: white;
+      padding: 2rem;
+      border-radius: var(--radius);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      text-align: center;
     }
 
     .service-card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      transform: translateY(-4px);
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
     }
 
     .service-card.featured {
-      border-color: var(--primary-color, #007bff);
-      box-shadow: 0 5px 20px rgba(0, 123, 255, 0.1);
+      border: 2px solid var(--accent);
+      transform: scale(1.02);
     }
 
     .featured-badge {
       position: absolute;
-      top: 1rem;
-      right: 1rem;
-      background: var(--primary-color, #007bff);
+      top: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--accent);
       color: white;
       padding: 0.5rem 1rem;
       border-radius: 20px;
       font-size: 0.875rem;
       font-weight: 600;
-      z-index: 2;
     }
 
-    .service-image {
-      height: 250px;
-      overflow: hidden;
-    }
-
-    .service-image img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      transition: transform 0.3s ease;
-    }
-
-    .service-card:hover .service-image img {
-      transform: scale(1.05);
-    }
-
-    .service-content {
-      padding: 1.5rem;
-    }
-
-    .service-title {
-      font-size: 1.5rem;
-      font-weight: 600;
+    .service-icon {
+      font-size: 3rem;
       margin-bottom: 1rem;
-      color: #212529;
     }
 
-    .service-description {
-      color: #6c757d;
+    .service-card h3 {
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+      color: var(--brand);
+    }
+
+    .service-card > p {
+      color: var(--muted);
+      margin-bottom: 1.5rem;
       line-height: 1.6;
-      margin-bottom: 1.5rem;
     }
 
-    .service-features {
-      margin-bottom: 1.5rem;
+    .service-includes {
+      list-style: none;
+      padding: 0;
+      margin: 0 0 2rem 0;
+      text-align: left;
     }
 
-    .feature {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      margin-bottom: 0.5rem;
-      font-size: 0.9rem;
-      color: #495057;
+    .service-includes li {
+      padding: 0.5rem 0;
+      border-bottom: 1px solid var(--border);
+      position: relative;
+      padding-left: 1.5rem;
+      color: var(--muted);
     }
 
-    .check-icon {
-      color: var(--success-color, #28a745);
+    .service-includes li:before {
+      content: '✓';
+      position: absolute;
+      left: 0;
+      color: var(--brand);
       font-weight: bold;
     }
 
-    .service-footer {
+    .service-includes li:last-child {
+      border-bottom: none;
+    }
+
+    .service-cta {
       display: flex;
       justify-content: space-between;
       align-items: center;
       padding-top: 1rem;
-      border-top: 1px solid #e9ecef;
+      border-top: 1px solid var(--border);
     }
 
-    .service-price {
-      font-size: 1.1rem;
+    .starting-price {
       font-weight: 600;
-      color: var(--primary-color, #007bff);
+      color: var(--brand);
+      font-size: 1.1rem;
     }
 
-    .btn {
-      padding: 0.75rem 1.5rem;
-      border-radius: 6px;
-      text-decoration: none;
-      font-weight: 500;
-      transition: all 0.3s ease;
-      border: 2px solid transparent;
-      display: inline-flex;
+    /* Process Steps */
+    .process-section {
+      padding: 5rem 0;
+      background: var(--brand-ghost);
+    }
+
+    .process-section h2 {
+      text-align: center;
+      font-size: 2.5rem;
+      margin-bottom: 3rem;
+      color: var(--brand);
+    }
+
+    .process-steps {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 2rem;
+    }
+
+    .step {
+      text-align: center;
+      padding: 2rem 1rem;
+    }
+
+    .step-number {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background: var(--brand);
+      color: white;
+      display: flex;
       align-items: center;
       justify-content: center;
+      font-size: 1.5rem;
+      font-weight: bold;
+      margin: 0 auto 1rem auto;
     }
 
-    .btn-primary {
-      background: var(--primary-color, #007bff);
-      color: white;
+    .step h3 {
+      font-size: 1.3rem;
+      margin-bottom: 1rem;
+      color: var(--brand);
     }
 
-    .btn-primary:hover {
-      background: var(--primary-dark, #0056b3);
+    .step p {
+      color: var(--muted);
+      line-height: 1.6;
     }
 
-    .btn-outline {
-      border-color: var(--primary-color, #007bff);
-      color: var(--primary-color, #007bff);
-      background: transparent;
-    }
-
-    .btn-outline:hover {
-      background: var(--primary-color, #007bff);
-      color: white;
-    }
-
+    /* CTA Section */
     .cta-section {
-      background: var(--primary-color, #007bff);
+      padding: 5rem 0;
+      background: var(--brand);
       color: white;
-      padding: 4rem 1.5rem;
       text-align: center;
     }
 
@@ -309,9 +362,12 @@ import { Service } from '../../../models/data.models';
     }
 
     .cta-content p {
-      font-size: 1.25rem;
+      font-size: 1.1rem;
       margin-bottom: 2rem;
-      opacity: 0.9;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+      opacity: 0.95;
     }
 
     .cta-actions {
@@ -323,44 +379,37 @@ import { Service } from '../../../models/data.models';
 
     .cta-actions .btn-primary {
       background: white;
-      color: var(--primary-color, #007bff);
+      color: var(--brand);
     }
 
     .cta-actions .btn-primary:hover {
-      background: #f8f9fa;
+      background: var(--surface);
     }
 
-    .cta-actions .btn-outline {
+    .cta-actions .ghost {
       border-color: white;
       color: white;
     }
 
-    .cta-actions .btn-outline:hover {
+    .cta-actions .ghost:hover {
       background: white;
-      color: var(--primary-color, #007bff);
+      color: var(--brand);
     }
 
-    .no-services {
-      grid-column: 1 / -1;
-      text-align: center;
-      padding: 3rem;
-      color: #6c757d;
-    }
-
+    /* Responsive */
     @media (max-width: 768px) {
-      .hero-title {
-        font-size: 2.5rem;
-      }
-
-      .services-grid {
+      .service-cards {
         grid-template-columns: 1fr;
-        gap: 1.5rem;
       }
 
-      .service-footer {
+      .process-steps {
+        grid-template-columns: 1fr;
+      }
+
+      .service-cta {
         flex-direction: column;
         gap: 1rem;
-        align-items: stretch;
+        text-align: center;
       }
 
       .cta-actions {
@@ -370,35 +419,4 @@ import { Service } from '../../../models/data.models';
     }
   `]
 })
-export class ServicesListComponent implements OnInit {
-  private seasonalThemeService = inject(SeasonalThemeService);
-  private firestoreService = inject(FirestoreService);
-  
-  services$!: Observable<Service[]>;
-  filteredServices$!: Observable<Service[]>;
-  selectedCategory = 'all';
-
-  ngOnInit(): void {
-    this.seasonalThemeService.applyThemeToDocument();
-    this.services$ = this.firestoreService.getServices();
-    this.filteredServices$ = this.services$;
-  }
-
-  filterServices(category: string): void {
-    this.selectedCategory = category;
-    if (category === 'all') {
-      this.filteredServices$ = this.services$;
-    } else {
-      this.filteredServices$ = this.services$.pipe(
-        map((services: Service[]) => services.filter((service: Service) => service.category === category))
-      );
-    }
-  }
-
-  formatBudget(minBudget: number): string {
-    if (minBudget >= 1000) {
-      return `Starting at $${(minBudget / 1000).toFixed(1)}k`;
-    }
-    return `Starting at $${minBudget}`;
-  }
-}
+export class ServicesListComponent {}

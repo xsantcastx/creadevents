@@ -1,0 +1,42 @@
+<header class="header">
+  <div class="container bar">
+    <!-- Brand -->
+    <a routerLink="/" class="brand" (click)="close()">
+      <div class="brand-mark">
+        <span class="logo">CreaDEvents</span>
+        <small>Floral Studio & Event Design</small>
+      </div>
+    </a>
+
+    <!-- Desktop nav -->
+    <nav class="nav desktop">
+      <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}">Home</a>
+      <a routerLink="/services" routerLinkActive="active">Services</a>
+      <a routerLink="/portfolio" routerLinkActive="active">Portfolio</a>
+      <a routerLink="/about" routerLinkActive="active">About</a>
+      <a routerLink="/contact" class="btn">Contact</a>
+    </nav>
+
+    <!-- Admin chip (only when signed-in; no public link to admin) -->
+    @if (admin.authed()) {
+      <a routerLink="/admin/slots" class="admin-chip">Admin</a>
+    }
+
+    <!-- Burger -->
+    <button class="burger" (click)="toggle()" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+
+  <!-- Mobile drawer -->
+  <nav class="nav mobile" [class.open]="open()">
+    <a routerLink="/" (click)="close()">Home</a>
+    <a routerLink="/services" (click)="close()">Services</a>
+    <a routerLink="/portfolio" (click)="close()">Portfolio</a>
+    <a routerLink="/about" (click)="close()">About</a>
+    <a routerLink="/contact" class="btn" (click)="close()">Contact</a>
+    @if (admin.authed()) {
+      <a routerLink="/admin/slots" (click)="close()">Admin</a>
+    }
+  </nav>
+</header>

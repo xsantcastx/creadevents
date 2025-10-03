@@ -22,6 +22,7 @@ export interface ImageDoc {
   order: number;     // UI sort
   alt?: string;
   caption?: string;
+  tags?: string[];   // tags for filtering (e.g., ['weddings', 'corporate', 'private'])
   createdAt?: any;
 }
 
@@ -69,7 +70,7 @@ export class ImageAssetService {
     });
   }
 
-  async updateMeta(id: string, patch: Partial<Pick<ImageDoc, 'alt'|'caption'>>): Promise<void> {
+  async updateMeta(id: string, patch: Partial<Pick<ImageDoc, 'alt'|'caption'|'tags'>>): Promise<void> {
     await updateDoc(doc(this.db, 'images', id), patch as any);
   }
 

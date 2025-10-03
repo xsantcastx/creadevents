@@ -63,6 +63,14 @@
               [ngModel]="meta(img.id).caption"
               (ngModelChange)="meta(img.id).caption = $event; markDirty(img.id)" />
           </label>
+          <label>
+            <span>Tags (comma separated)</span>
+            <input
+              type="text"
+              placeholder="weddings, corporate, private"
+              [ngModel]="meta(img.id).tags"
+              (ngModelChange)="meta(img.id).tags = $event; markDirty(img.id)" />
+          </label>
         </div>
 
         <div class="actions">
@@ -76,6 +84,6 @@
   </section>
 
   <footer class="hint">
-    <small>Drag cards to reorder. Click "Save meta" to persist alt/caption. Reuse URLs in your content.</small>
+    <small>Drag cards to reorder. Click "Save meta" to persist alt/caption/tags. Use tags for Portfolio filtering (e.g., "weddings, corporate, private").</small>
   </footer>
 </div>

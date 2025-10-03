@@ -1,18 +1,13 @@
-<!-- Main Application Layout -->
-<div class="app-container">
-  <!-- Navigation -->
-  <app-navigation />
-  
-  <!-- Main Content -->
-  <main class="main-content">
-    <router-outlet />
-  </main>
-  
-  <!-- Footer -->
-  <app-footer />
-</div>
+<!-- New Site Layout -->
+<app-site-header></app-site-header>
 
-<!-- Admin Toolbar (appears on all pages when authenticated) -->
+<main class="container stack-24" style="padding: 16px 0 40px;">
+  <router-outlet></router-outlet>
+</main>
+
+<app-site-footer></app-site-footer>
+
+<!-- Keep the floating admin toolbar for inline edit mode -->
 <app-admin-toolbar />
 
 <!-- Global Notifications -->

@@ -1,7 +1,7 @@
 import { RenderMode, ServerRoute } from '@angular/ssr';
 
 export const serverRoutes: ServerRoute[] = [
-  // Static routes with prerendering
+  // Core 5-page public site with prerendering
   {
     path: '',
     renderMode: RenderMode.Prerender
@@ -19,34 +19,10 @@ export const serverRoutes: ServerRoute[] = [
     renderMode: RenderMode.Prerender
   },
   {
-    path: 'testimonials',
-    renderMode: RenderMode.Prerender
-  },
-  {
-    path: 'blog',
-    renderMode: RenderMode.Prerender
-  },
-  {
     path: 'contact',
     renderMode: RenderMode.Prerender
   },
-  {
-    path: 'season/spring',
-    renderMode: RenderMode.Prerender
-  },
-  {
-    path: 'season/summer',
-    renderMode: RenderMode.Prerender
-  },
-  {
-    path: 'season/autumn',
-    renderMode: RenderMode.Prerender
-  },
-  {
-    path: 'season/winter',
-    renderMode: RenderMode.Prerender
-  },
-  // Dynamic routes with SSR instead of prerendering
+  // Legacy dynamic routes with SSR (kept for existing content)
   {
     path: 'services/:slug',
     renderMode: RenderMode.Server
@@ -55,13 +31,19 @@ export const serverRoutes: ServerRoute[] = [
     path: 'portfolio/:slug',
     renderMode: RenderMode.Server
   },
-  {
-    path: 'blog/:slug',
-    renderMode: RenderMode.Server
-  },
   // Admin routes should be client-side only
   {
     path: 'admin/**',
+    renderMode: RenderMode.Client
+  },
+  // Auth routes should be client-side only
+  {
+    path: 'auth/**',
+    renderMode: RenderMode.Client
+  },
+  // Debug routes should be client-side only
+  {
+    path: 'debug/**',
     renderMode: RenderMode.Client
   },
   // Fallback for other routes

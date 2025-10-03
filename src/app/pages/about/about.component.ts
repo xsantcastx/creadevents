@@ -1,193 +1,148 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
-import { SeasonalThemeService } from '../../services/seasonal-theme.service';
 import { SlotImgComponent } from '../../shared/slot-img/slot-img.component';
 
 @Component({
   selector: 'app-about',
   imports: [CommonModule, RouterLink, SlotImgComponent],
   template: `
-    <div class="about-page">
-      <!-- Hero Section -->
+    <div class="about">
+      <!-- Hero Section with Slot -->
       <section class="hero-section">
-        <slot-img key="about.header" altDefault="About header" class="hero-background" />
-        <div class="hero-content">
-          <h1 class="hero-title">About Creation Design & Events</h1>
-          <p class="hero-subtitle">
-            A family-owned business bringing beauty and joy to Miami's most important celebrations 
-            for over 15 years.
-          </p>
+        <slot-img key="about.header" class="hero-img" altDefault="About Us – CreaDEvents"></slot-img>
+        <div class="hero-overlay">
+          <div class="hero-content">
+            <h1>About CreaDEvents</h1>
+            <p>A family-owned floral studio creating artful experiences in South Florida for over 15 years.</p>
+          </div>
         </div>
       </section>
 
-      <!-- Our Story Section -->
+      <!-- Our Story -->
       <section class="story-section">
         <div class="container">
-          <div class="story-grid">
-            <div class="story-content">
+          <div class="two-col">
+            <div class="content">
               <h2>Our Story</h2>
-              <p class="lead">
-                Founded in Miami with a passion for creating unforgettable moments, Creation Design & Events 
-                has been the trusted choice for exceptional event planning and floral design for over 15 years.
-              </p>
-              <p>
-                What started as a small dream has grown into a comprehensive event planning service that serves 
-                Miami and surrounding areas. We believe that every celebration, whether it's an intimate gathering 
-                or a grand celebration, deserves the same attention to detail and personal touch.
-              </p>
-              <p>
-                Our team combines traditional craftsmanship with modern design sensibilities, ensuring that 
-                each event reflects the unique personality and style of our clients while maintaining the 
-                highest standards of quality and service.
-              </p>
-            </div>
-            <div class="story-image">
-              <img src="/assets/logo1.jpg" alt="Our beautiful event designs" loading="lazy">
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- Values Section -->
-      <section class="values-section">
-        <div class="container">
-          <h2 class="section-title">What We Stand For</h2>
-          <div class="values-grid">
-            <div class="value-card">
-              <div class="value-icon">🎨</div>
-              <h3>Creative Excellence</h3>
-              <p>We bring fresh, innovative ideas to every project while respecting your personal style and vision.</p>
-            </div>
-            <div class="value-card">
-              <div class="value-icon">❤️</div>
-              <h3>Personal Touch</h3>
-              <p>Every client receives individual attention and customized solutions tailored to their specific needs.</p>
-            </div>
-            <div class="value-card">
-              <div class="value-icon">⭐</div>
-              <h3>Quality First</h3>
-              <p>We use only the finest materials and work with trusted vendors to ensure exceptional results.</p>
-            </div>
-            <div class="value-card">
-              <div class="value-icon">🤝</div>
-              <h3>Reliability</h3>
-              <p>With over 15 years of experience, you can trust us to deliver on time and exceed expectations.</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- Services Overview -->
-      <section class="services-overview">
-        <div class="container">
-          <div class="overview-content">
-            <div class="overview-text">
-              <h2>What We Do Best</h2>
-              <p>
-                From weddings and corporate events to seasonal decorating and custom floral arrangements, 
-                we offer comprehensive event planning and design services throughout Miami.
-              </p>
-              <div class="specialties">
-                <div class="specialty">
-                  <strong>Wedding Planning & Design</strong>
-                  <span>Complete wedding coordination from intimate ceremonies to grand celebrations</span>
+              <p class="lead">Every celebration begins with a story. Ours started with a simple belief: flowers have the power to transform moments into memories.</p>
+              <p>Founded in Miami, CreaDEvents has grown from a passion project into a trusted partner for weddings, corporate events, and private celebrations throughout South Florida.</p>
+              <p>We're not just florists—we're memory makers, mood setters, and moment creators. Each arrangement tells a story, each installation sets a scene, and each celebration becomes unforgettable.</p>
+              <div class="story-stats">
+                <div class="stat">
+                  <div class="stat-number">15+</div>
+                  <div class="stat-label">Years in Business</div>
                 </div>
-                <div class="specialty">
-                  <strong>Corporate Events</strong>
-                  <span>Professional events that impress clients and inspire teams</span>
+                <div class="stat">
+                  <div class="stat-number">500+</div>
+                  <div class="stat-label">Events Created</div>
                 </div>
-                <div class="specialty">
-                  <strong>Floral Arrangements</strong>
-                  <span>Custom floral designs for any occasion using the freshest flowers</span>
-                </div>
-                <div class="specialty">
-                  <strong>Seasonal Decorating</strong>
-                  <span>Transform your space for holidays and special seasons</span>
-                </div>
-              </div>
-              <a routerLink="/services" class="btn btn-primary">View All Services</a>
-            </div>
-            <div class="overview-image">
-              <img src="/assets/logo3.jpg" alt="Beautiful floral arrangements" loading="lazy">
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- Experience Stats -->
-      <section class="stats-section">
-        <div class="container">
-          <div class="stats-grid">
-            <div class="stat-item">
-              <div class="stat-number">15+</div>
-              <div class="stat-label">Years of Experience</div>
-            </div>
-            <div class="stat-item">
-              <div class="stat-number">500+</div>
-              <div class="stat-label">Events Planned</div>
-            </div>
-            <div class="stat-item">
-              <div class="stat-number">1000+</div>
-              <div class="stat-label">Floral Arrangements</div>
-            </div>
-            <div class="stat-item">
-              <div class="stat-number">100%</div>
-              <div class="stat-label">Client Satisfaction</div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- Location & Contact -->
-      <section class="location-section">
-        <div class="container">
-          <div class="location-grid">
-            <div class="location-content">
-              <h2>Serving Miami & Beyond</h2>
-              <p>
-                Based in beautiful Miami, Florida, we're proud to serve clients throughout 
-                Miami-Dade County and surrounding areas. Our local knowledge and established 
-                vendor relationships ensure seamless event execution.
-              </p>
-              <div class="contact-info">
-                <div class="contact-item">
-                  <strong>📍 Location</strong>
-                  <span>Miami, Florida</span>
-                </div>
-                <div class="contact-item">
-                  <strong>📞 Phone</strong>
-                  <a href="tel:7863562958">(786) 356-2958</a>
-                </div>
-                <div class="contact-item">
-                  <strong>✉️ Email</strong>
-                  <a href="mailto:Carlos@creadevents.com">Carlos@creadevents.com</a>
-                </div>
-                <div class="contact-item">
-                  <strong>🕒 Consultation Hours</strong>
-                  <span>Monday - Saturday, 9 AM - 6 PM</span>
+                <div class="stat">
+                  <div class="stat-number">3</div>
+                  <div class="stat-label">Service Areas</div>
                 </div>
               </div>
             </div>
-            <div class="location-image">
-              <img src="/assets/logo1.jpg" alt="Miami event planning" loading="lazy">
+            <div class="visual">
+              <slot-img key="about.studio" class="story-img" altDefault="Our studio"></slot-img>
             </div>
           </div>
         </div>
       </section>
 
-      <!-- Call to Action -->
+      <!-- Team Section -->
+      <section class="team-section">
+        <div class="container">
+          <div class="team-intro">
+            <h2>Meet Our Team</h2>
+            <p>The passionate creators behind every beautiful moment.</p>
+          </div>
+          
+          <div class="team-content">
+            <slot-img key="about.team" class="team-img" altDefault="Our team"></slot-img>
+            <div class="team-story">
+              <h3>Passionate Artisans</h3>
+              <p>Our team brings together diverse backgrounds in floral design, event planning, and hospitality. We share a common passion: creating experiences that exceed expectations.</p>
+              <p>From concept to installation, each team member contributes their expertise to ensure your celebration reflects your unique style and vision.</p>
+              <p>We stay current with design trends while honoring timeless techniques, blending innovation with the artisanal craftsmanship that defines our work.</p>
+              
+              <div class="values">
+                <div class="value">
+                  <h4>Seasonal Sourcing</h4>
+                  <p>Working with the best blooms each season has to offer.</p>
+                </div>
+                <div class="value">
+                  <h4>Personal Attention</h4>
+                  <p>Every client receives dedicated, personalized service.</p>
+                </div>
+                <div class="value">
+                  <h4>Sustainable Practices</h4>
+                  <p>Environmentally conscious choices in sourcing and design.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Process Section -->
+      <section class="process-section">
+        <div class="container">
+          <h2>How We Work</h2>
+          <div class="process-steps">
+            <div class="step">
+              <div class="step-icon">💭</div>
+              <h3>Discovery</h3>
+              <p>We start by understanding your vision, venue, and style preferences. Tell us about your dream celebration.</p>
+            </div>
+            <div class="step">
+              <div class="step-icon">🎨</div>
+              <h3>Design</h3>
+              <p>Our team creates a custom proposal with seasonal florals, color palettes, and installation concepts.</p>
+            </div>
+            <div class="step">
+              <div class="step-icon">✨</div>
+              <h3>Installation</h3>
+              <p>On your special day, we handle every detail of setup and installation, ensuring everything is perfect.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Service Areas -->
+      <section class="coverage-section">
+        <div class="container">
+          <div class="coverage-content">
+            <h2>Where We Serve</h2>
+            <p>Based in Miami, we serve South Florida and welcome destination projects.</p>
+            
+            <div class="coverage-areas">
+              <div class="area">
+                <h3>Miami-Dade</h3>
+                <p>Our home base with full-service availability.</p>
+              </div>
+              <div class="area">
+                <h3>Broward County</h3>
+                <p>Fort Lauderdale and surrounding areas.</p>
+              </div>
+              <div class="area">
+                <h3>Destination Events</h3>
+                <p>We travel for special celebrations.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- CTA Section -->
       <section class="cta-section">
         <div class="container">
           <div class="cta-content">
-            <h2>Ready to Plan Your Perfect Event?</h2>
-            <p>
-              Let's schedule a consultation to discuss your vision and how we can bring it to life. 
-              Contact us today to get started.
-            </p>
+            <h2>Ready to Start Planning?</h2>
+            <p>Let's discuss your vision and create something beautiful together. We're here to make your celebration extraordinary.</p>
             <div class="cta-actions">
-              <a href="tel:7863562958" class="btn btn-primary">Call (786) 356-2958</a>
-              <a routerLink="/contact" class="btn btn-outline">Schedule Consultation</a>
+              <a routerLink="/contact" class="btn btn-primary">Get in Touch</a>
+              <a routerLink="/portfolio" class="btn ghost">See Our Work</a>
             </div>
           </div>
         </div>
@@ -195,401 +150,352 @@ import { SlotImgComponent } from '../../shared/slot-img/slot-img.component';
     </div>
   `,
   styles: [`
-    .about-page {
-      min-height: 100vh;
-      padding-top: 70px;
+    .about {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
     }
 
+    /* Hero Section */
     .hero-section {
-      background: linear-gradient(
-        135deg,
-        var(--theme-primary, #7FB069) 0%,
-        var(--theme-secondary, #F7E9E3) 100%
-      );
-      padding: 4rem 0;
-      text-align: center;
-      color: white;
+      position: relative;
+      min-height: 60vh;
+      display: flex;
+      align-items: center;
+    }
+
+    .hero-img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: 1;
+    }
+
+    .hero-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(15, 61, 62, 0.8) 0%, rgba(15, 61, 62, 0.5) 100%);
+      z-index: 2;
+      display: flex;
+      align-items: center;
+      padding: 0 var(--pad);
     }
 
     .hero-content {
-      max-width: 800px;
+      max-width: var(--container);
       margin: 0 auto;
-      padding: 0 2rem;
+      color: white;
+      text-align: center;
     }
 
-    .hero-title {
-      font-size: 3rem;
-      font-weight: 700;
+    .hero-content h1 {
+      font-size: clamp(2.5rem, 5vw, 3.5rem);
       margin-bottom: 1rem;
-      text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
     }
 
-    .hero-subtitle {
+    .hero-content p {
       font-size: 1.2rem;
-      line-height: 1.6;
+      margin-bottom: 0;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
       opacity: 0.95;
     }
 
-    .container {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 0 2rem;
-    }
-
+    /* Story Section */
     .story-section {
-      padding: 4rem 0;
+      padding: 5rem 0;
+      background: var(--surface);
     }
 
-    .story-grid {
+    .two-col {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 4rem;
       align-items: center;
     }
 
-    .story-content h2 {
+    .content h2 {
       font-size: 2.5rem;
-      color: var(--theme-text, #2D3436);
       margin-bottom: 1.5rem;
+      color: var(--brand);
     }
 
     .lead {
       font-size: 1.2rem;
       font-weight: 500;
-      color: var(--theme-primary, #7FB069);
+      color: var(--brand);
       margin-bottom: 1.5rem;
       line-height: 1.6;
     }
 
-    .story-content p {
-      font-size: 1rem;
-      line-height: 1.7;
-      color: var(--theme-text-secondary, #636E72);
+    .content p {
       margin-bottom: 1.5rem;
+      color: var(--muted);
+      line-height: 1.7;
     }
 
-    .story-image {
-      border-radius: 15px;
-      overflow: hidden;
-      box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+    .story-stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2rem;
+      margin-top: 2rem;
     }
 
-    .story-image img {
+    .stat {
+      text-align: center;
+    }
+
+    .stat-number {
+      font-size: 2.5rem;
+      font-weight: bold;
+      color: var(--brand);
+      margin-bottom: 0.5rem;
+    }
+
+    .stat-label {
+      font-size: 0.9rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .story-img {
       width: 100%;
-      height: 400px;
+      aspect-ratio: 4/3;
       object-fit: cover;
+      border-radius: var(--radius);
     }
 
-    .values-section {
-      background: var(--theme-secondary, #F7E9E3);
-      padding: 4rem 0;
+    /* Team Section */
+    .team-section {
+      padding: 5rem 0;
     }
 
-    .section-title {
+    .team-intro {
+      text-align: center;
+      margin-bottom: 4rem;
+    }
+
+    .team-intro h2 {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+      color: var(--brand);
+    }
+
+    .team-intro p {
+      font-size: 1.1rem;
+      color: var(--muted);
+      max-width: 500px;
+      margin: 0 auto;
+    }
+
+    .team-content {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+      align-items: start;
+    }
+
+    .team-img {
+      width: 100%;
+      aspect-ratio: 4/3;
+      object-fit: cover;
+      border-radius: var(--radius);
+    }
+
+    .team-story h3 {
+      font-size: 1.8rem;
+      margin-bottom: 1rem;
+      color: var(--brand);
+    }
+
+    .team-story p {
+      margin-bottom: 1.5rem;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    .values {
+      margin-top: 2rem;
+      display: grid;
+      gap: 1.5rem;
+    }
+
+    .value h4 {
+      font-size: 1.1rem;
+      margin-bottom: 0.5rem;
+      color: var(--brand);
+    }
+
+    .value p {
+      margin: 0;
+      font-size: 0.95rem;
+      color: var(--muted);
+    }
+
+    /* Process Section */
+    .process-section {
+      padding: 5rem 0;
+      background: var(--brand-ghost);
+    }
+
+    .process-section h2 {
       text-align: center;
       font-size: 2.5rem;
-      color: var(--theme-text, #2D3436);
       margin-bottom: 3rem;
+      color: var(--brand);
     }
 
-    .values-grid {
+    .process-steps {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
       gap: 2rem;
     }
 
-    .value-card {
-      background: white;
-      padding: 2rem;
-      border-radius: 15px;
+    .step {
       text-align: center;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-      transition: transform 0.3s ease;
+      padding: 2rem 1rem;
     }
 
-    .value-card:hover {
-      transform: translateY(-5px);
-    }
-
-    .value-icon {
+    .step-icon {
       font-size: 3rem;
       margin-bottom: 1rem;
     }
 
-    .value-card h3 {
+    .step h3 {
       font-size: 1.3rem;
-      color: var(--theme-text, #2D3436);
       margin-bottom: 1rem;
+      color: var(--brand);
     }
 
-    .value-card p {
-      color: var(--theme-text-secondary, #636E72);
+    .step p {
+      color: var(--muted);
       line-height: 1.6;
     }
 
-    .services-overview {
-      padding: 4rem 0;
+    /* Coverage Section */
+    .coverage-section {
+      padding: 5rem 0;
     }
 
-    .overview-content {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 4rem;
-      align-items: center;
-    }
-
-    .overview-text h2 {
-      font-size: 2.5rem;
-      color: var(--theme-text, #2D3436);
-      margin-bottom: 1.5rem;
-    }
-
-    .overview-text p {
-      font-size: 1.1rem;
-      line-height: 1.7;
-      color: var(--theme-text-secondary, #636E72);
-      margin-bottom: 2rem;
-    }
-
-    .specialties {
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
-      margin-bottom: 2rem;
-    }
-
-    .specialty {
-      display: flex;
-      flex-direction: column;
-      gap: 0.25rem;
-    }
-
-    .specialty strong {
-      color: var(--theme-primary, #7FB069);
-      font-weight: 600;
-    }
-
-    .specialty span {
-      font-size: 0.9rem;
-      color: var(--theme-text-secondary, #636E72);
-    }
-
-    .overview-image {
-      border-radius: 15px;
-      overflow: hidden;
-      box-shadow: 0 8px 30px rgba(0,0,0,0.15);
-    }
-
-    .overview-image img {
-      width: 100%;
-      height: 400px;
-      object-fit: cover;
-    }
-
-    .stats-section {
-      background: var(--theme-primary, #7FB069);
-      padding: 3rem 0;
-      color: white;
-    }
-
-    .stats-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 2rem;
-    }
-
-    .stat-item {
+    .coverage-content {
       text-align: center;
     }
 
-    .stat-number {
-      font-size: 3rem;
-      font-weight: 700;
-      margin-bottom: 0.5rem;
-    }
-
-    .stat-label {
-      font-size: 1.1rem;
-      opacity: 0.9;
-    }
-
-    .location-section {
-      padding: 4rem 0;
-    }
-
-    .location-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 4rem;
-      align-items: center;
-    }
-
-    .location-content h2 {
+    .coverage-content h2 {
       font-size: 2.5rem;
-      color: var(--theme-text, #2D3436);
-      margin-bottom: 1.5rem;
+      margin-bottom: 1rem;
+      color: var(--brand);
     }
 
-    .location-content p {
+    .coverage-content > p {
       font-size: 1.1rem;
-      line-height: 1.7;
-      color: var(--theme-text-secondary, #636E72);
-      margin-bottom: 2rem;
+      margin-bottom: 3rem;
+      color: var(--muted);
+      max-width: 500px;
+      margin-left: auto;
+      margin-right: auto;
     }
 
-    .contact-info {
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
+    .coverage-areas {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 2rem;
     }
 
-    .contact-item {
-      display: flex;
-      flex-direction: column;
-      gap: 0.25rem;
+    .area {
+      padding: 2rem;
+      background: white;
+      border-radius: var(--radius);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
     }
 
-    .contact-item strong {
-      color: var(--theme-text, #2D3436);
-      font-weight: 600;
+    .area h3 {
+      font-size: 1.3rem;
+      margin-bottom: 1rem;
+      color: var(--brand);
     }
 
-    .contact-item a {
-      color: var(--theme-primary, #7FB069);
-      text-decoration: none;
+    .area p {
+      margin: 0;
+      color: var(--muted);
     }
 
-    .contact-item a:hover {
-      text-decoration: underline;
-    }
-
-    .location-image {
-      border-radius: 15px;
-      overflow: hidden;
-      box-shadow: 0 8px 30px rgba(0,0,0,0.15);
-    }
-
-    .location-image img {
-      width: 100%;
-      height: 400px;
-      object-fit: cover;
-    }
-
+    /* CTA Section */
     .cta-section {
-      background: var(--theme-secondary, #F7E9E3);
-      padding: 4rem 0;
+      padding: 5rem 0;
+      background: var(--brand);
+      color: white;
       text-align: center;
     }
 
     .cta-content h2 {
       font-size: 2.5rem;
-      color: var(--theme-text, #2D3436);
       margin-bottom: 1rem;
     }
 
     .cta-content p {
       font-size: 1.1rem;
-      color: var(--theme-text-secondary, #636E72);
       margin-bottom: 2rem;
       max-width: 600px;
       margin-left: auto;
       margin-right: auto;
+      opacity: 0.95;
     }
 
     .cta-actions {
       display: flex;
-      justify-content: center;
       gap: 1rem;
+      justify-content: center;
       flex-wrap: wrap;
     }
 
-    .btn {
-      padding: 1rem 2rem;
-      border-radius: 5px;
-      text-decoration: none;
-      font-weight: 500;
-      text-align: center;
-      transition: all 0.3s ease;
-      border: 2px solid transparent;
-      display: inline-block;
-      font-size: 1rem;
+    .cta-actions .btn-primary {
+      background: white;
+      color: var(--brand);
     }
 
-    .btn-primary {
-      background: var(--theme-primary, #7FB069);
-      color: white;
-      border-color: var(--theme-primary, #7FB069);
+    .cta-actions .btn-primary:hover {
+      background: var(--surface);
     }
 
-    .btn-primary:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-    }
-
-    .btn-outline {
-      background: transparent;
-      color: var(--theme-primary, #7FB069);
-      border-color: var(--theme-primary, #7FB069);
-    }
-
-    .btn-outline:hover {
-      background: var(--theme-primary, #7FB069);
+    .cta-actions .ghost {
+      border-color: white;
       color: white;
     }
 
-    /* Mobile Responsive */
+    .cta-actions .ghost:hover {
+      background: white;
+      color: var(--brand);
+    }
+
+    /* Responsive */
     @media (max-width: 768px) {
-      .hero-title {
-        font-size: 2rem;
-      }
-
-      .story-grid,
-      .overview-content,
-      .location-grid {
+      .two-col,
+      .team-content {
         grid-template-columns: 1fr;
         gap: 2rem;
       }
 
-      .values-grid {
+      .story-stats {
         grid-template-columns: 1fr;
+        gap: 1.5rem;
       }
 
-      .stats-grid {
-        grid-template-columns: repeat(2, 1fr);
-      }
-
-      .story-image img,
-      .overview-image img,
-      .location-image img {
-        height: 250px;
+      .process-steps,
+      .coverage-areas {
+        grid-template-columns: 1fr;
       }
 
       .cta-actions {
         flex-direction: column;
         align-items: center;
       }
-
-      .cta-actions .btn {
-        width: 100%;
-        max-width: 300px;
-      }
-    }
-
-    @media (max-width: 480px) {
-      .stats-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .stat-number {
-        font-size: 2.5rem;
-      }
     }
   `]
 })
-export class AboutComponent implements OnInit {
-  private seasonalThemeService = inject(SeasonalThemeService);
-
-  ngOnInit(): void {
-    this.seasonalThemeService.applyThemeToDocument();
-  }
-}
+export class AboutComponent {}

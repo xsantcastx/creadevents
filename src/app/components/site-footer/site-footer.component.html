@@ -1,0 +1,26 @@
+<footer class="footer">
+  <div class="container grid">
+    <div class="brand">
+      <slot-img key="footer.logo" class="logo" altDefault="CreaDEvents"></slot-img>
+      <p class="muted">Floral studio crafting elegant arrangements for weddings, events, and brands.</p>
+    </div>
+
+    <nav class="links">
+      <a routerLink="/">Home</a>
+      <a routerLink="/services">Services</a>
+      <a routerLink="/portfolio">Portfolio</a>
+      <a routerLink="/about">About</a>
+      <a routerLink="/contact">Contact</a>
+    </nav>
+
+    <div class="contact">
+      <h4>Contact</h4>
+      <p>Email: <a href="mailto:hello@creadevents.com">hello@creadevents.com</a></p>
+      <p>Instagram: <a href="https://instagram.com" target="_blank" rel="noopener">/creadevents</a></p>
+    </div>
+  </div>
+
+  <div class="container sub">
+    <small>© {{ currentYear }} CreaDEvents. All rights reserved.</small>
+  </div>
+</footer>

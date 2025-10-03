@@ -26,8 +26,8 @@ export class ImagesDashboardComponent {
   images = signal<ImageDoc[]>([]);
   filter = signal('');
 
-  // track dirty states for alt/caption edits
-  edited = new Map<string, { alt: string; caption: string; dirty: boolean }>();
+  // track dirty states for alt/caption/tags edits
+  edited = new Map<string, { alt: string; caption: string; tags: string; dirty: boolean }>();
 
   constructor(private svc: ImageAssetService) { this.refresh(); }
 
@@ -38,7 +38,12 @@ export class ImagesDashboardComponent {
       this.images.set(list);
       // seed edited map
       this.edited.clear();
-      list.forEach(i => this.edited.set(i.id, { alt: i.alt ?? '', caption: i.caption ?? '', dirty: false }));
+      list.forEach(i => this.edited.set(i.id, { 
+        alt: i.alt ?? '', 
+        caption: i.caption ?? '', 
+        tags: (i.tags ?? []).join(', '), // CSV format for UI
+        dirty: false 
+      }));
     } finally {
       this.uploading.set(false);
     }
@@ -107,7 +112,18 @@ export class ImagesDashboardComponent {
   async saveMeta(img: ImageDoc) {
     const m = this.meta(img.id);
     if (!m?.dirty) return;
-    await this.svc.updateMeta(img.id, { alt: m.alt, caption: m.caption });
+    
+    // Process tags from CSV to array
+    const tags = (m.tags || '')
+      .split(',')
+      .map(s => s.trim())
+      .filter(Boolean);
+    
+    await this.svc.updateMeta(img.id, { 
+      alt: m.alt, 
+      caption: m.caption,
+      tags: tags.length > 0 ? tags : undefined
+    });
     m.dirty = false;
   }
 

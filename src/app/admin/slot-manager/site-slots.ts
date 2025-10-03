@@ -4,10 +4,8 @@ export type PageKey =
   | 'home'
   | 'services'
   | 'portfolio'
-  | 'seasonal'
-  | 'client-stories'
   | 'about'
-  | 'journal'
+  | 'contact'
   | 'footer';
 
 export interface SlotDef {
@@ -21,32 +19,26 @@ export interface SlotDef {
 export const SITE_SLOTS: Record<PageKey, SlotDef[]> = {
   home: [
     { key: 'header', label: 'Home Header (Hero)', section: 'hero', description: 'Hero image at top of Home' },
-    { key: 'cta', label: 'Home CTA Banner', section: 'gallery', description: 'Wide banner below hero' },
-    { key: 'promo1', label: 'Promo 1', section: 'gallery' },
-    { key: 'promo2', label: 'Promo 2', section: 'gallery' },
-    { key: 'promo3', label: 'Promo 3', section: 'gallery' },
+    { key: 'cta', label: 'Home CTA Banner', section: 'gallery', description: 'Wide banner below content' },
+    { key: 'promo1', label: 'Promo 1', section: 'gallery', description: 'First promotional tile' },
+    { key: 'promo2', label: 'Promo 2', section: 'gallery', description: 'Second promotional tile' },
+    { key: 'promo3', label: 'Promo 3', section: 'gallery', description: 'Third promotional tile' },
   ],
   services: [
-    { key: 'header', label: 'Services Header', section: 'hero' },
-    { key: 'banner', label: 'Services Banner', section: 'gallery' },
+    { key: 'header', label: 'Services Header', section: 'hero', description: 'Hero image at top of Services' },
   ],
   portfolio: [
-    { key: 'header', label: 'Portfolio Header', section: 'hero' },
-  ],
-  seasonal: [
-    { key: 'header', label: 'Seasonal Looks Header', section: 'hero' },
-  ],
-  'client-stories': [
-    { key: 'header', label: 'Client Stories Header', section: 'hero' },
+    { key: 'header', label: 'Portfolio Header', section: 'hero', description: 'Hero image at top of Portfolio' },
   ],
   about: [
-    { key: 'header', label: 'About Header', section: 'hero' },
+    { key: 'header', label: 'About Header', section: 'hero', description: 'Hero image at top of About' },
+    { key: 'team', label: 'Team Photo', section: 'about', description: 'Team or founder photo' },
+    { key: 'studio', label: 'Studio Photo', section: 'about', description: 'Studio or atelier photo' },
   ],
-  journal: [
-    { key: 'header', label: 'Journal Header', section: 'hero' },
+  contact: [
+    { key: 'header', label: 'Contact Header', section: 'hero', description: 'Hero image at top of Contact' },
   ],
   footer: [
     { key: 'logo', label: 'Footer Logo', section: 'footer', description: 'Brand mark in footer' },
-    { key: 'background', label: 'Footer Background', section: 'gallery' },
   ],
 };
