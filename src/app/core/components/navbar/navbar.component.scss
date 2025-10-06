@@ -1,0 +1,63 @@
+// Navbar specific styles
+.navbar-backdrop {
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+// Smooth transitions for mega menu
+.mega-menu-enter {
+  opacity: 0;
+  transform: translateY(-10px);
+}
+
+.mega-menu-enter-active {
+  opacity: 1;
+  transform: translateY(0);
+  transition: all 200ms ease-out;
+}
+
+// Mobile drawer animation overrides
+@media (max-width: 768px) {
+  .mobile-drawer {
+    transform: translateX(100%);
+    transition: transform 300ms ease-out;
+    
+    &.open {
+      transform: translateX(0);
+    }
+  }
+}
+
+// Logo transition
+.logo-transition {
+  transition: all 300ms ease-out;
+}
+
+// Enhanced hover effects for mega menu items
+.mega-menu-item {
+  transition: all 200ms ease-out;
+  
+  &:hover {
+    color: var(--ts-accent);
+    transform: translateX(4px);
+  }
+}
+
+// Custom scrollbar for mobile drawer
+.mobile-drawer {
+  scrollbar-width: thin;
+  scrollbar-color: var(--ts-line) transparent;
+  
+  &::-webkit-scrollbar {
+    width: 4px;
+  }
+  
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  
+  &::-webkit-scrollbar-thumb {
+    background: var(--ts-line);
+    border-radius: 2px;
+  }
+}

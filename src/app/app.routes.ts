@@ -37,7 +37,12 @@ export const routes: Routes = [
     title: 'TopStone | Contacto'
   },
   {
+    path: '404',
+    loadComponent: () => import('./pages/not-found/not-found.page').then(m => m.NotFoundPageComponent),
+    title: 'TopStone | Página no encontrada'
+  },
+  {
     path: '**',
-    redirectTo: ''
+    redirectTo: '404'
   }
 ];

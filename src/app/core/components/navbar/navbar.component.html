@@ -1,0 +1,220 @@
+<header
+  class="fixed inset-x-0 top-0 z-50 transition-all duration-300"
+  [class.bg-white/90]="scrolled"
+  [class.text-neutral-900]="scrolled"
+  [class.backdrop-blur]="scrolled"
+  [class.text-white]="!scrolled"
+  [class.shadow-sm]="scrolled"
+>
+  <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    <div class="flex h-16 items-center justify-between">
+      <!-- Logo -->
+      <a routerLink="/" class="flex items-center gap-3">
+        <img [src]="logoSrc" alt="TopStone" class="h-8 w-auto" />
+      </a>
+
+      <!-- Mobile hamburger -->
+      <button 
+        class="md:hidden p-2 rounded-lg transition-colors"
+        [class.bg-white/10]="!scrolled"
+        [class.bg-neutral-100]="scrolled"
+        (click)="mobileOpen = !mobileOpen" 
+        aria-label="Abrir menú"
+      >
+        <div class="w-5 h-0.5 mb-1 transition-colors" [class.bg-neutral-900]="scrolled" [class.bg-white]="!scrolled"></div>
+        <div class="w-5 h-0.5 mb-1 transition-colors" [class.bg-neutral-900]="scrolled" [class.bg-white]="!scrolled"></div>
+        <div class="w-5 h-0.5 transition-colors" [class.bg-neutral-900]="scrolled" [class.bg-white]="!scrolled"></div>
+      </button>
+
+      <!-- Desktop navigation -->
+      <nav class="hidden md:flex items-center gap-8 font-sans text-sm">
+        <a routerLink="/" routerLinkActive="text-ts-accent" [routerLinkActiveOptions]="{exact: true}" 
+           class="hover:text-ts-accent transition-colors">
+          Home
+        </a>
+
+        <!-- Products mega menu -->
+        <div class="relative group"
+             (mouseenter)="showMega = true" 
+             (mouseleave)="showMega = false">
+          <button class="hover:text-ts-accent transition-colors flex items-center gap-1">
+            Productos
+            <svg class="w-4 h-4 transition-transform" [class.rotate-180]="showMega" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"/>
+            </svg>
+          </button>
+
+          <!-- Mega menu dropdown -->
+          <div
+            *ngIf="showMega"
+            class="absolute left-1/2 -translate-x-1/2 mt-4 w-[min(100vw-2rem,920px)]
+                   p-6 rounded-2xl bg-white text-neutral-900 shadow-xl border border-neutral-100 grid grid-cols-4 gap-6
+                   animate-in fade-in slide-in-from-top-2 duration-200"
+          >
+            <!-- 12mm Column -->
+            <div>
+              <h4 class="font-serif font-semibold mb-3 text-ts-accent">12mm</h4>
+              <p class="text-xs text-neutral-500 mb-3">160×320cm</p>
+              <ul class="space-y-2">
+                @for (producto of productos12mm; track producto.slug) {
+                  <li>
+                    <a [routerLink]="['/productos/12mm', producto.slug]" 
+                       class="block hover:text-ts-accent transition-colors text-sm"
+                       (mouseenter)="onProductHover('12mm', producto.slug)">
+                      {{producto.name}}
+                    </a>
+                  </li>
+                }
+              </ul>
+            </div>
+
+            <!-- 15mm Column -->
+            <div>
+              <h4 class="font-serif font-semibold mb-3 text-ts-accent">15mm</h4>
+              <p class="text-xs text-neutral-500 mb-3">160×320cm</p>
+              <ul class="space-y-2">
+                @for (producto of productos15mm; track producto.slug) {
+                  <li>
+                    <a [routerLink]="['/productos/15mm', producto.slug]" 
+                       class="block hover:text-ts-accent transition-colors text-sm"
+                       (mouseenter)="onProductHover('15mm', producto.slug)">
+                      {{producto.name}}
+                    </a>
+                  </li>
+                }
+              </ul>
+            </div>
+
+            <!-- 20mm Column -->
+            <div>
+              <h4 class="font-serif font-semibold mb-3 text-ts-accent">20mm</h4>
+              <p class="text-xs text-neutral-500 mb-3">160×320cm</p>
+              <ul class="space-y-2">
+                @for (producto of productos20mm; track producto.slug) {
+                  <li>
+                    <a [routerLink]="['/productos/20mm', producto.slug]" 
+                       class="block hover:text-ts-accent transition-colors text-sm"
+                       (mouseenter)="onProductHover('20mm', producto.slug)">
+                      {{producto.name}}
+                    </a>
+                  </li>
+                }
+              </ul>
+            </div>
+
+            <!-- Preview Image -->
+            <div class="rounded-xl overflow-hidden bg-neutral-100">
+              <img [src]="hoverPreviewUrl" 
+                   alt="Vista previa del producto" 
+                   class="w-full h-full object-cover aspect-square" 
+                   loading="lazy" />
+            </div>
+          </div>
+        </div>
+
+        <a routerLink="/galeria" routerLinkActive="text-ts-accent" 
+           class="hover:text-ts-accent transition-colors">
+          Galería
+        </a>
+        <a routerLink="/datos-tecnicos" routerLinkActive="text-ts-accent" 
+           class="hover:text-ts-accent transition-colors">
+          Datos técnicos
+        </a>
+        <a routerLink="/contacto" routerLinkActive="text-ts-accent" 
+           class="hover:text-ts-accent transition-colors">
+          Contacto
+        </a>
+      </nav>
+    </div>
+  </div>
+</header>
+
+<!-- Mobile overlay -->
+<div *ngIf="mobileOpen" 
+     class="md:hidden fixed inset-0 z-40 bg-black/60 backdrop-blur-sm" 
+     (click)="closeMobile()"></div>
+
+<!-- Mobile drawer -->
+<aside *ngIf="mobileOpen" 
+       class="md:hidden fixed top-0 right-0 z-50 w-[84%] max-w-sm h-full
+              bg-white text-neutral-900 shadow-xl overflow-y-auto
+              animate-in slide-in-from-right duration-300">
+  
+  <!-- Mobile drawer header -->
+  <div class="flex items-center justify-between p-6 border-b border-neutral-200">
+    <img src="assets/Logo.jpeg" alt="TopStone" class="h-8" />
+    <button (click)="closeMobile()" class="p-2 hover:bg-neutral-100 rounded-lg">
+      <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+        <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"/>
+      </svg>
+    </button>
+  </div>
+
+  <!-- Mobile navigation -->
+  <nav class="p-6">
+    <div class="flex flex-col space-y-4">
+      <a routerLink="/" (click)="closeMobile()" 
+         class="text-lg font-medium hover:text-ts-accent transition-colors">
+        Home
+      </a>
+      
+      <!-- Mobile products accordion -->
+      <details class="group">
+        <summary class="text-lg font-medium cursor-pointer hover:text-ts-accent transition-colors">
+          Productos
+        </summary>
+        <div class="mt-3 pl-4 space-y-3">
+          <div>
+            <h5 class="font-medium text-sm text-ts-accent mb-2">12mm (160×320cm)</h5>
+            <div class="space-y-1">
+              @for (producto of productos12mm.slice(0, 6); track producto.slug) {
+                <a [routerLink]="['/productos/12mm', producto.slug]" 
+                   (click)="closeMobile()" 
+                   class="block text-sm hover:text-ts-accent transition-colors">
+                  {{producto.name}}
+                </a>
+              }
+            </div>
+          </div>
+          <div>
+            <h5 class="font-medium text-sm text-ts-accent mb-2">15mm (160×320cm)</h5>
+            <div class="space-y-1">
+              @for (producto of productos15mm; track producto.slug) {
+                <a [routerLink]="['/productos/15mm', producto.slug]" 
+                   (click)="closeMobile()" 
+                   class="block text-sm hover:text-ts-accent transition-colors">
+                  {{producto.name}}
+                </a>
+              }
+            </div>
+          </div>
+          <div>
+            <h5 class="font-medium text-sm text-ts-accent mb-2">20mm (160×320cm)</h5>
+            <div class="space-y-1">
+              @for (producto of productos20mm.slice(0, 6); track producto.slug) {
+                <a [routerLink]="['/productos/20mm', producto.slug]" 
+                   (click)="closeMobile()" 
+                   class="block text-sm hover:text-ts-accent transition-colors">
+                  {{producto.name}}
+                </a>
+              }
+            </div>
+          </div>
+        </div>
+      </details>
+      
+      <a routerLink="/galeria" (click)="closeMobile()" 
+         class="text-lg font-medium hover:text-ts-accent transition-colors">
+        Galería
+      </a>
+      <a routerLink="/datos-tecnicos" (click)="closeMobile()" 
+         class="text-lg font-medium hover:text-ts-accent transition-colors">
+        Datos técnicos
+      </a>
+      <a routerLink="/contacto" (click)="closeMobile()" 
+         class="text-lg font-medium hover:text-ts-accent transition-colors">
+        Contacto
+      </a>
+    </div>
+  </nav>
+</aside>

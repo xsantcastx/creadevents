@@ -756,3 +756,556 @@ Subir a tu rama feature/redesign y verificar en el deploy.
 
 
 Puedes ver images en src/assets
+
+
+
+Here’s how to fix the “images not showing” + the best way to store them going forward:
+
+Quick diagnosis (likely causes)
+
+Assets not tracked: the src/assets/... folders exist locally but weren’t git add-ed and pushed.
+
+Wrong folder: images are in public/ but you’re referencing /assets/... (or vice-versa).
+
+Path mismatch: using leading /assets/... vs assets/... with routing can 404 on some hosts.
+
+angular.json not copying assets: the assets array doesn’t include src/assets (or your public/ mapping).
+
+Case sensitivity: Calacatta-Gold.jpg vs calacatta-gold.jpg (works on Windows, breaks on hosting).
+
+JSON path: productos.json points to images that aren’t there or use a wrong relative path.
+
+SPA rewrite catching assets (rare on Firebase): misconfigured firebase.json rewrites.
+
+The simplest & fastest approach (static assets)
+
+For a catalog of ~30–40 productos, keep binaries as static files and keep only metadata as JSON (or Firestore later). It’s fastest, cheap, SEO-friendly, and avoids async image URL code.
+
+Do this now:
+
+Put images here
+src/assets/productos/{12mm|15mm|20mm}/<slug>.jpg
+src/assets/galeria/{cocinas|banos|fachadas|industria|otros}/*.jpg
+
+Ensure Angular copies assets (check angular.json > projects.app.architect.build.options.assets)
+Add both src/assets and (if you want to use a public/ folder) the mapping below:
+
+"assets": [
+  "src/favicon.ico",
+  "src/assets",
+  { "glob": "**/*", "input": "public", "output": "/" }
+]
+
+
+Use safe paths in templates & JSON
+
+In templates: use src="assets/..." (no leading slash).
+
+In JSON: use "cover": "assets/productos/12mm/saint-laurent.jpg" (no leading slash).
+
+When fetching JSON: fetch('assets/data/productos.json') (no leading slash).
+This respects <base href="/"> and avoids subpath gotchas.
+
+Commit the files
+
+git add src/assets
+git commit -m "add product & gallery assets"
+git push origin feature/redesign
+
+
+Check in DevTools → Network
+Reload the app and look for 404s on your image URLs. If you see /productos/12mm/...jpg being requested without assets/, your JSON/HTML path is wrong.
+
+What I recommend for TopStone right now
+
+Go static first (put images in src/assets/... and reference assets/... in JSON & templates). It’s aligned with the Caesarstone-like site (curated, not UGC) and is the quickest path to “it looks right”.
+
+Keep our JSON seeds as the single source of truth. If you later add an admin dashboard, we’ll migrate the same shape to Firestore + Storage with minimal code changes (I already designed the shapes in the guide for that).
+
+Tiny debug checklist you can do immediately
+
+Search the project for "/assets/" and replace with "assets/" in both HTML and JSON.
+
+Verify angular.json has src/assets in assets[].
+
+Ensure images are actually in the repo (not only local): git ls-files | grep src/assets.
+
+Check file names match slugs exactly (lowercase, hyphens).
+
+If you used the public/ folder, either move images to src/assets or add the public mapping shown above.
+
+
+1) Navbar: centrado, mega-menú alineado y contraste en mobile/scroll
+✅ Pega este componente como src/app/components/navbar/navbar.component.ts
+import { Component, HostListener } from '@angular/core';
+import { RouterLink } from '@angular/router';
+
+@Component({
+  standalone: true,
+  selector: 'ts-navbar',
+  imports: [RouterLink],
+  templateUrl: './navbar.component.html'
+})
+export class NavbarComponent {
+  scrolled = false;
+  mobileOpen = false;
+  showMega = false;
+
+  @HostListener('window:scroll')
+  onScroll() {
+    this.scrolled = window.scrollY > 8;
+  }
+
+  get logoSrc() {
+    return this.scrolled ? '/assets/logo_topstone-dark.svg' : '/assets/logo_topstone.svg';
+  }
+}
+
+✅ Y este HTML como src/app/components/navbar/navbar.component.html
+<header
+  class="fixed inset-x-0 top-0 z-50 transition-colors duration-300"
+  [class.bg-white/90]="scrolled"
+  [class.text-neutral-900]="scrolled"
+  [class.backdrop-blur]="scrolled"
+  [class.text-white]="!scrolled"
+>
+  <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    <div class="flex h-16 items-center justify-between">
+      <a routerLink="/" class="flex items-center gap-3">
+        <img [src]="logoSrc" alt="TopStone" class="h-8" />
+      </a>
+
+      <!-- Mobile toggle -->
+      <button class="md:hidden p-2 ring-1 ring-white/20 rounded-lg" (click)="mobileOpen = !mobileOpen" aria-label="Abrir menú">
+        <!-- simple hamburger -->
+        <div class="w-5 h-[2px] mb-1" [class.bg-neutral-900]="scrolled" [class.bg-white]="!scrolled"></div>
+        <div class="w-5 h-[2px] mb-1" [class.bg-neutral-900]="scrolled" [class.bg-white]="!scrolled"></div>
+        <div class="w-5 h-[2px]" [class.bg-neutral-900]="scrolled" [class.bg-white]="!scrolled"></div>
+      </button>
+
+      <!-- Desktop nav -->
+      <nav class="hidden md:flex items-center gap-8 font-sans text-sm">
+        <a routerLink="/" class="hover:text-[var(--ts-accent)]">Home</a>
+
+        <!-- Products with centered mega menu -->
+        <div class="relative"
+             (mouseenter)="showMega = true" (mouseleave)="showMega = false">
+          <button class="hover:text-[var(--ts-accent)] flex items-center gap-1">
+            Productos
+            <span aria-hidden>▾</span>
+          </button>
+
+          <div
+            *ngIf="showMega"
+            class="absolute left-1/2 -translate-x-1/2 mt-4 w-[min(100vw-2rem,960px)]
+                   p-6 rounded-2xl bg-white text-neutral-900 shadow-xl grid grid-cols-4 gap-6"
+          >
+            <div>
+              <h4 class="font-semibold mb-3">12mm (160×320cm)</h4>
+              <ul class="space-y-2">
+                <li><a routerLink="/productos/12mm/saint-laurent" class="hover:text-[var(--ts-accent)]">Saint Laurent</a></li>
+                <li><a routerLink="/productos/12mm/black-gold" class="hover:text-[var(--ts-accent)]">Black Gold</a></li>
+                <!-- … resto -->
+              </ul>
+            </div>
+
+            <div>
+              <h4 class="font-semibold mb-3">15mm (160×320cm)</h4>
+              <!-- … -->
+            </div>
+
+            <div>
+              <h4 class="font-semibold mb-3">20mm (160×320cm)</h4>
+              <!-- … -->
+            </div>
+
+            <!-- Vista previa -->
+            <div class="rounded-xl overflow-hidden bg-neutral-100">
+              <img src="/assets/productos/12mm/saint-laurent.jpg" alt="Preview" class="w-full h-full object-cover" />
+            </div>
+          </div>
+        </div>
+
+        <a routerLink="/galeria" class="hover:text-[var(--ts-accent)]">Galería</a>
+        <a routerLink="/datos-tecnicos" class="hover:text-[var(--ts-accent)]">Datos técnicos</a>
+        <a routerLink="/contacto" class="hover:text-[var(--ts-accent)]">Contacto</a>
+      </nav>
+    </div>
+  </div>
+
+  <!-- Mobile overlay + drawer -->
+  <div *ngIf="mobileOpen" class="md:hidden fixed inset-0 z-40 bg-black/60" (click)="mobileOpen = false"></div>
+  <aside *ngIf="mobileOpen" class="md:hidden fixed top-0 right-0 z-50 w-[84%] max-w-sm h-full
+                                 bg-white text-neutral-900 shadow-xl p-6 overflow-y-auto">
+    <nav class="flex flex-col gap-4">
+      <a routerLink="/" (click)="mobileOpen=false">Home</a>
+      <details>
+        <summary class="cursor-pointer">Productos</summary>
+        <div class="mt-2 grid grid-cols-2 gap-3 text-sm">
+          <a routerLink="/productos/12mm" (click)="mobileOpen=false" class="underline">12mm</a>
+          <a routerLink="/productos/15mm" (click)="mobileOpen=false" class="underline">15mm</a>
+          <a routerLink="/productos/20mm" (click)="mobileOpen=false" class="underline">20mm</a>
+        </div>
+      </details>
+      <a routerLink="/galeria" (click)="mobileOpen=false">Galería</a>
+      <a routerLink="/datos-tecnicos" (click)="mobileOpen=false">Datos técnicos</a>
+      <a routerLink="/contacto" (click)="mobileOpen=false">Contacto</a>
+    </nav>
+  </aside>
+</header>
+
+
+Cómo usarlo
+
+Importa <ts-navbar /> en tu app.component.html al inicio del body.
+
+Asegúrate de tener dos versiones del logo:
+
+/assets/logo_topstone.svg (blanco para hero oscuro)
+
+/assets/logo_topstone-dark.svg (negro para header blanco al hacer scroll)
+
+Con esto:
+
+El mega-menú queda centrado respecto al viewport y ya no se “desplaza” a la izquierda.
+
+En mobile, se ve sobre fondo blanco (texto oscuro) con overlay — no desaparece al scrollear.
+
+En scroll, el header pasa a blanco + texto oscuro con backdrop-blur, evitando que “se pierda”.
+
+2) Imágenes: por qué no aparecen y qué es “lo mejor”
+A) Arreglo inmediato (mantener en src/assets)
+
+Verifica en angular.json que tengas:
+
+"assets": ["src/favicon.ico","src/assets"]
+
+
+Rutas en JSON/HTML deben empezar con /assets/... (no ./assets ni ../assets).
+
+Prueba directa en el navegador:
+http://localhost:4200/assets/productos/12mm/saint-laurent.jpg
+Si da 404, no están donde crees. Mueve a src/assets/productos/12mm/....
+
+B) Opción profesional (Storage + Firestore metadata)
+
+Imágenes en Firebase Storage (carpetas productos/12mm/...).
+
+Metadatos (nombre, slug, grosor, coverUrl) en Firestore o en tu productos.json.
+
+Pasos rápidos (sin código backend):
+
+Sube imágenes en la consola de Storage (productos/12mm/...).
+
+Copia la URL de descarga y úsala en tu JSON:
+
+{ "nombre":"Saint Laurent", "slug":"saint-laurent", "grosor":"12mm",
+  "cover":"https://firebasestorage.googleapis.com/v0/b/<tu-bucket>/o/productos%2F12mm%2Fsaint-laurent.jpg?alt=media" }
+
+
+Listo: no necesitas redeploy para cambiar fotos; solo actualizas URLs.
+
+Cuándo elegir cada opción
+
+src/assets: perfecto si el catálogo cambia poco y quieres simplicidad/velocidad.
+
+Storage + Firestore/JSON: ideal si el cliente quiere panel admin para subir/editar sin redeploy.
+
+3) Mini-checklist de bugs comunes que causan tu síntoma
+
+ Falta max-w-7xl mx-auto en el contenedor del header → causa desalineación del menú.
+
+ Mega-menú con absolute right-0 dentro de un contenedor estrecho → puede verse corrida la columna. Usa left-1/2 -translate-x-1/2.
+
+ Texto blanco sobre fondo blanco después de scroll → añade binding de clases para colores como en el componente.
+
+ Logo único (blanco) sobre header blanco → logo “desaparece”. Usa dos versiones del logo.
+
+ Rutas de assets relativas o assets fuera de src/ → 404 de imágenes.
+
+ Z-index bajo del header o mega-menú → el menú “desaparece” detrás de secciones. Usa z-50 en el header y shadow-xl en el menú.
+
+
+ Qué te incluyo ahora
+
+Servicio Angular con Firestore + Storage (guarda paths y resuelve URLs con getDownloadURL en runtime).
+
+Script Node tools/upload-and-seed.mjs para subir tus imágenes locales de src/assets/productos/** a Storage y generar un seed.
+
+Reglas de Storage y Firestore para lectura pública del catálogo.
+
+Variante rápida si prefieres seguir con JSON pero usando Storage para las fotos.
+
+1) Instala y configura Firebase
+npm i firebase
+
+
+src/environments/environment.ts
+
+export const environment = {
+  production: false,
+  firebase: {
+    apiKey: 'TU_API_KEY',
+    authDomain: 'tstone-XXXX.firebaseapp.com',
+    projectId: 'tstone-XXXX',
+    storageBucket: 'tstone-XXXX.appspot.com',
+    appId: '1:XXXX:web:XXXX'
+  }
+};
+
+2) Servicio Angular (Firestore + Storage con paths)
+
+Guarda en Firestore documentos con coverPath y galleryPaths (rutas en Storage). El servicio resuelve las URLs en cliente.
+
+src/app/core/services/data.firestore.service.ts
+
+import { Injectable } from '@angular/core';
+import { initializeApp } from 'firebase/app';
+import { getFirestore, collection, getDocs, query, where } from 'firebase/firestore';
+import { getStorage, ref, getDownloadURL } from 'firebase/storage';
+import { environment } from '../../../environments/environment';
+
+export type Grosor = '12mm'|'15mm'|'20mm';
+export interface ProductoDoc {
+  nombre: string; slug: string; grosor: Grosor; medida: string;
+  coverPath: string;            // p.ej. 'productos/12mm/saint-laurent/cover.jpg'
+  galleryPaths?: string[];      // p.ej. ['productos/12mm/saint-laurent/g1.jpg']
+}
+export interface ProductoResolved extends Omit<ProductoDoc,'coverPath'|'galleryPaths'> {
+  coverUrl: string; galleryUrls: string[];
+}
+
+@Injectable({ providedIn: 'root' })
+export class DataFirestoreService {
+  private app = initializeApp(environment.firebase);
+  private db = getFirestore(this.app);
+  private storage = getStorage(this.app);
+
+  async listByGrosor(grosor: Grosor): Promise<ProductoResolved[]> {
+    const q = query(collection(this.db, 'productos'), where('grosor', '==', grosor));
+    const snap = await getDocs(q);
+    const docs = snap.docs.map(d => d.data() as ProductoDoc);
+    return Promise.all(docs.map(async (p) => ({
+      nombre: p.nombre,
+      slug: p.slug,
+      grosor: p.grosor,
+      medida: p.medida,
+      coverUrl: await getDownloadURL(ref(this.storage, p.coverPath)),
+      galleryUrls: await Promise.all((p.galleryPaths || []).map(path => getDownloadURL(ref(this.storage, path))))
+    })));
+  }
+
+  async getBySlug(grosor: Grosor, slug: string): Promise<ProductoResolved | null> {
+    const q = query(collection(this.db, 'productos'), where('grosor','==',grosor), where('slug','==',slug));
+    const snap = await getDocs(q);
+    if (snap.empty) return null;
+    const p = snap.docs[0].data() as ProductoDoc;
+    return {
+      nombre: p.nombre,
+      slug: p.slug,
+      grosor: p.grosor,
+      medida: p.medida,
+      coverUrl: await getDownloadURL(ref(this.storage, p.coverPath)),
+      galleryUrls: await Promise.all((p.galleryPaths || []).map(path => getDownloadURL(ref(this.storage, path))))
+    };
+  }
+}
+
+
+Uso en tu grosor.component.ts (ejemplo):
+
+import { Component, inject } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { CommonModule } from '@angular/common';
+import { DataFirestoreService, ProductoResolved } from '@/app/core/services/data.firestore.service';
+
+@Component({
+  standalone: true,
+  imports: [CommonModule],
+  template: `
+  <div class="max-w-7xl mx-auto px-6 py-12">
+    <h2 class="font-serif text-3xl mb-6">Productos {{grosor}}</h2>
+    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      <article *ngFor="let p of productos" class="group rounded-2xl overflow-hidden bg-[var(--ts-paper)] shadow">
+        <div class="aspect-[4/3] overflow-hidden">
+          <img [src]="p.coverUrl" [alt]="p.nombre" class="w-full h-full object-cover group-hover:scale-[1.02] transition"/>
+        </div>
+        <div class="p-4">
+          <h3 class="font-serif text-xl">{{ p.nombre }}</h3>
+          <p class="text-sm text-neutral-600">{{ p.medida }} · {{ p.grosor }}</p>
+        </div>
+      </article>
+    </div>
+  </div>
+  `
+})
+export class GrosorComponent {
+  private route = inject(ActivatedRoute);
+  private data = inject(DataFirestoreService);
+  grosor = this.route.snapshot.paramMap.get('grosor') as '12mm'|'15mm'|'20mm';
+  productos: ProductoResolved[] = [];
+
+  async ngOnInit() {
+    this.productos = await this.data.listByGrosor(this.grosor);
+  }
+}
+
+3) Reglas de seguridad (público de solo lectura)
+
+Storage (storage.rules)
+
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    match /productos/{allPaths=**} { allow read; }
+    match /galeria/{allPaths=**}   { allow read; }
+    match /{path=**} { allow read: if false; allow write: if false; }
+  }
+}
+
+
+Firestore (firestore.rules)
+
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /productos/{docId} {
+      allow read;
+      allow write: if false;
+    }
+  }
+}
+
+
+Despliegue:
+
+firebase deploy --only storage,firestore:rules
+
+4) Script de subida masiva + seed
+
+Sube todo lo que tengas en src/assets/productos/** a Storage y genera un JSON seed (y opcionalmente inserta en Firestore).
+
+npm i -D glob fs-extra
+npm i firebase-admin
+
+
+tools/upload-and-seed.mjs
+
+import 'dotenv/config';
+import { glob } from 'glob';
+import fs from 'fs-extra';
+import path from 'node:path';
+import admin from 'firebase-admin';
+
+admin.initializeApp({
+  credential: admin.credential.applicationDefault(),
+  storageBucket: process.env.FB_BUCKET // p.ej. tstone-xxxx.appspot.com
+});
+
+const db = admin.firestore();
+const bucket = admin.storage().bucket();
+
+const LOCAL_ROOT = 'src/assets/productos';
+const OUT_JSON = 'tools/productos.seed.json';
+
+function grosorFrom(rel) { return rel.split(path.sep)[0]; }
+function slugFrom(rel)   { return rel.split(path.sep)[1]; }
+
+async function uploadFile(localFile, storagePath) {
+  await bucket.upload(localFile, {
+    destination: storagePath,
+    metadata: { cacheControl: 'public, max-age=31536000, immutable' }
+  });
+}
+
+async function main() {
+  const files = await glob(`${LOCAL_ROOT}/**/*.{jpg,jpeg,png,webp}`, { nodir: true });
+  const seedMap = new Map();
+
+  for (const file of files) {
+    const rel = path.relative(LOCAL_ROOT, file); // 12mm/saint-laurent/cover.jpg
+    const grosor = grosorFrom(rel);
+    const slug = slugFrom(rel);
+    const fname = path.basename(file);
+    const storagePath = `productos/${grosor}/${slug}/${fname}`;
+
+    await uploadFile(file, storagePath);
+
+    const key = `${grosor}:${slug}`;
+    if (!seedMap.has(key)) seedMap.set(key, { grosor, slug, coverPath: '', galleryPaths: [] });
+    const entry = seedMap.get(key);
+    if (fname.startsWith('cover')) entry.coverPath = storagePath; else entry.galleryPaths.push(storagePath);
+  }
+
+  const items = [];
+  for (const { grosor, slug, coverPath, galleryPaths } of seedMap.values()) {
+    items.push({
+      nombre: slug.replace(/-/g,' ').replace(/\b\w/g, c => c.toUpperCase()),
+      slug, grosor, medida: '160x320cm', coverPath, galleryPaths
+    });
+  }
+
+  await fs.outputJson(OUT_JSON, { items }, { spaces: 2 });
+  console.log(`Generado ${OUT_JSON} con ${items.length} productos.`);
+
+  if (process.env.SEED_TO_FIRESTORE === 'true') {
+    const batch = db.batch();
+    for (const p of items) {
+      const id = `${p.grosor}-${p.slug}`;
+      batch.set(db.collection('productos').doc(id), p);
+    }
+    await batch.commit();
+    console.log('Seed insertado en Firestore.');
+  }
+}
+
+main().catch(e => { console.error(e); process.exit(1); });
+
+
+Uso
+
+# Variables (PowerShell)
+$env:FB_BUCKET="tstone-xxxx.appspot.com"
+$env:GOOGLE_APPLICATION_CREDENTIALS="C:\ruta\serviceAccount.json"
+
+# Ejecuta
+node tools/upload-and-seed.mjs
+
+# Insertar además en Firestore
+$env:SEED_TO_FIRESTORE="true"; node tools/upload-and-seed.mjs
+
+
+Tip: pon el principal de cada producto como cover.jpg (el script lo detecta).
+
+5) Alternativa rápida sin Firestore (JSON + Storage)
+
+Si prefieres seguir con productos.json:
+
+Guarda coverPath y galleryPaths (paths de Storage) y en el cliente resuelve con getDownloadURL.
+
+src/app/core/services/data.storagejson.service.ts
+
+import { Injectable } from '@angular/core';
+import { getStorage, ref, getDownloadURL } from 'firebase/storage';
+import { initializeApp } from 'firebase/app';
+import { environment } from '../../../environments/environment';
+
+export interface ProductoLocal {
+  nombre: string; slug: string; grosor: '12mm'|'15mm'|'20mm'; medida: string;
+  coverPath: string; galleryPaths?: string[];
+}
+
+@Injectable({ providedIn: 'root' })
+export class DataStorageJsonService {
+  private app = initializeApp(environment.firebase);
+  private storage = getStorage(this.app);
+
+  async listAll(): Promise<ProductoLocal[]> {
+    const json = await fetch('/assets/data/productos.json').then(r => r.json());
+    return json.items as ProductoLocal[];
+  }
+
+  async resolveUrl(path: string) {
+    return getDownloadURL(ref(this.storage, path));
+  }
+}

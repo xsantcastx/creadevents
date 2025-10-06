@@ -21,6 +21,8 @@ export interface GaleriaItem {
   src: string;
   alt: string;
   producto?: string;
+  proyecto?: string;
+  ubicacion?: string;
 }
 
 export interface CategoriaGaleria {
