@@ -1,1 +1,298 @@
-<app-datos-tecnicos></app-datos-tecnicos>
+<!-- Header -->
+<section class="py-20 lg:py-28 body-dark">
+  <div class="max-w-7xl mx-auto px-6">
+    <div class="text-center mb-16">
+      <h1 class="font-serif text-5xl lg:text-6xl text-ts-ink mb-4">
+        Datos Técnicos
+      </h1>
+      <p class="text-xl text-ts-ink-soft max-w-2xl mx-auto">
+        Información técnica completa sobre nuestras superficies porcelánicas, 
+        especificaciones, instalación y mantenimiento.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- Contenido Técnico -->
+<section class="py-12 bg-ts-paper" *ngIf="datosTecnicos">
+  <div class="max-w-4xl mx-auto px-6">
+    
+    <!-- Especificaciones Técnicas -->
+    <div class="mb-8 bg-white rounded-2xl shadow-sm overflow-hidden">
+      <button 
+        (click)="toggleAcordeon('especificaciones')"
+        class="w-full p-6 text-left flex items-center justify-between hover:bg-gray-50 transition-colors">
+        <h2 class="font-serif text-2xl text-ts-bg">Especificaciones Técnicas</h2>
+        <svg 
+          class="w-6 h-6 transition-transform"
+          [class.rotate-180]="acordeonesAbiertos['especificaciones']"
+          fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+        </svg>
+      </button>
+      
+      <div 
+        class="overflow-hidden transition-all duration-300"
+        [class.max-h-0]="!acordeonesAbiertos['especificaciones']"
+        [class.max-h-screen]="acordeonesAbiertos['especificaciones']">
+        <div class="p-6 pt-0 border-t border-gray-100">
+          <div class="grid md:grid-cols-2 gap-4">
+            <div *ngFor="let item of datosTecnicos.especificacionesTecnicas | keyvalue" 
+                 class="flex justify-between p-3 bg-gray-50 rounded-lg">
+              <span class="font-medium">{{formatearTexto(item.key) | titlecase}}:</span>
+              <span class="text-ts-accent">{{item.value}}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Acabados de Superficie -->
+    <div class="mb-8 bg-white rounded-2xl shadow-sm overflow-hidden">
+      <button 
+        (click)="toggleAcordeon('acabados')"
+        class="w-full p-6 text-left flex items-center justify-between hover:bg-gray-50 transition-colors">
+        <h2 class="font-serif text-2xl text-ts-bg">Acabados de Superficie</h2>
+        <svg 
+          class="w-6 h-6 transition-transform"
+          [class.rotate-180]="acordeonesAbiertos['acabados']"
+          fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+        </svg>
+      </button>
+      
+      <div 
+        class="overflow-hidden transition-all duration-300"
+        [class.max-h-0]="!acordeonesAbiertos['acabados']"
+        [class.max-h-screen]="acordeonesAbiertos['acabados']">
+        <div class="p-6 pt-0 border-t border-gray-100">
+          <div class="grid md:grid-cols-3 gap-6">
+            <div *ngFor="let acabado of datosTecnicos.acabadosSuperficie" class="text-center">
+              <img [src]="acabado.imagen" [alt]="acabado.nombre" 
+                   class="w-full h-32 object-cover rounded-lg mb-4">
+              <h3 class="font-semibold text-lg mb-2">{{acabado.nombre}}</h3>
+              <p class="text-sm text-gray-600">{{acabado.descripcion}}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Fichas Técnicas -->
+    <div class="mb-8 bg-white rounded-2xl shadow-sm overflow-hidden">
+      <button 
+        (click)="toggleAcordeon('fichas')"
+        class="w-full p-6 text-left flex items-center justify-between hover:bg-gray-50 transition-colors">
+        <h2 class="font-serif text-2xl text-ts-bg">Fichas Técnicas</h2>
+        <svg 
+          class="w-6 h-6 transition-transform"
+          [class.rotate-180]="acordeonesAbiertos['fichas']"
+          fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+        </svg>
+      </button>
+      
+      <div 
+        class="overflow-hidden transition-all duration-300"
+        [class.max-h-0]="!acordeonesAbiertos['fichas']"
+        [class.max-h-screen]="acordeonesAbiertos['fichas']">
+        <div class="p-6 pt-0 border-t border-gray-100">
+          <div class="space-y-4">
+            <div *ngFor="let ficha of datosTecnicos.fichasTecnicas" 
+                 class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+              <div>
+                <h3 class="font-semibold">{{ficha.nombre}}</h3>
+                <p class="text-sm text-gray-600">{{ficha.descripcion}}</p>
+              </div>
+              <div class="flex items-center gap-4">
+                <span class="text-sm text-gray-500">{{ficha.tamano}}</span>
+                <a [href]="ficha.url" target="_blank" 
+                   class="inline-flex items-center gap-2 px-4 py-2 bg-ts-accent text-ts-bg rounded-lg hover:bg-ts-accent/90 transition-colors">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                          d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                  </svg>
+                  Descargar
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Información de Packing -->
+    <div class="mb-8 bg-white rounded-2xl shadow-sm overflow-hidden">
+      <button 
+        (click)="toggleAcordeon('packing')"
+        class="w-full p-6 text-left flex items-center justify-between hover:bg-gray-50 transition-colors">
+        <h2 class="font-serif text-2xl text-ts-bg">Información de Embalaje</h2>
+        <svg 
+          class="w-6 h-6 transition-transform"
+          [class.rotate-180]="acordeonesAbiertos['packing']"
+          fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+        </svg>
+      </button>
+      
+      <div 
+        class="overflow-hidden transition-all duration-300"
+        [class.max-h-0]="!acordeonesAbiertos['packing']"
+        [class.max-h-screen]="acordeonesAbiertos['packing']">
+        <div class="p-6 pt-0 border-t border-gray-100">
+          <div class="overflow-x-auto">
+            <table class="w-full text-sm">
+              <thead>
+                <tr class="border-b border-gray-200">
+                  <th class="text-left py-3 px-4">Grosor</th>
+                  <th class="text-left py-3 px-4">Piezas/Pallet</th>
+                  <th class="text-left py-3 px-4">Peso Aprox.</th>
+                  <th class="text-left py-3 px-4">Dimensiones Pallet</th>
+                  <th class="text-left py-3 px-4">Volumen</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let pack of datosTecnicos.packing" class="border-b border-gray-100">
+                  <td class="py-3 px-4 font-medium">{{pack.grosor}}</td>
+                  <td class="py-3 px-4">{{pack.piezasPorPallet}}</td>
+                  <td class="py-3 px-4">{{pack.pesoAprox}}</td>
+                  <td class="py-3 px-4">{{pack.dimensionesPallet}}</td>
+                  <td class="py-3 px-4">{{pack.volumen}}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Acabados de Bordes -->
+    <div class="mb-8 bg-white rounded-2xl shadow-sm overflow-hidden">
+      <button 
+        (click)="toggleAcordeon('bordes')"
+        class="w-full p-6 text-left flex items-center justify-between hover:bg-gray-50 transition-colors">
+        <h2 class="font-serif text-2xl text-ts-bg">Acabados de Bordes</h2>
+        <svg 
+          class="w-6 h-6 transition-transform"
+          [class.rotate-180]="acordeonesAbiertos['bordes']"
+          fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+        </svg>
+      </button>
+      
+      <div 
+        class="overflow-hidden transition-all duration-300"
+        [class.max-h-0]="!acordeonesAbiertos['bordes']"
+        [class.max-h-screen]="acordeonesAbiertos['bordes']">
+        <div class="p-6 pt-0 border-t border-gray-100">
+          <div class="grid md:grid-cols-3 gap-6">
+            <div *ngFor="let borde of datosTecnicos.acabadosBordes" class="text-center">
+              <img [src]="borde.imagen" [alt]="borde.nombre" 
+                   class="w-full h-32 object-cover rounded-lg mb-4">
+              <h3 class="font-semibold text-lg mb-2">{{borde.nombre}}</h3>
+              <p class="text-sm text-gray-600">{{borde.descripcion}}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Fijaciones en Fachada -->
+    <div class="mb-8 bg-white rounded-2xl shadow-sm overflow-hidden">
+      <button 
+        (click)="toggleAcordeon('fijaciones')"
+        class="w-full p-6 text-left flex items-center justify-between hover:bg-gray-50 transition-colors">
+        <h2 class="font-serif text-2xl text-ts-bg">Fijaciones en Fachada</h2>
+        <svg 
+          class="w-6 h-6 transition-transform"
+          [class.rotate-180]="acordeonesAbiertos['fijaciones']"
+          fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+        </svg>
+      </button>
+      
+      <div 
+        class="overflow-hidden transition-all duration-300"
+        [class.max-h-0]="!acordeonesAbiertos['fijaciones']"
+        [class.max-h-screen]="acordeonesAbiertos['fijaciones']">
+        <div class="p-6 pt-0 border-t border-gray-100">
+          <div class="grid md:grid-cols-2 gap-8">
+            <div>
+              <img [src]="datosTecnicos.fijacionesFachada.imagen" 
+                   alt="Fijaciones fachada"
+                   class="w-full h-48 object-cover rounded-lg mb-4">
+              <p class="text-gray-600">{{datosTecnicos.fijacionesFachada.descripcion}}</p>
+            </div>
+            <div>
+              <h3 class="font-semibold text-lg mb-4">Ventajas:</h3>
+              <ul class="space-y-2">
+                <li *ngFor="let ventaja of datosTecnicos.fijacionesFachada.ventajas" 
+                    class="flex items-start gap-2">
+                  <svg class="w-5 h-5 text-ts-accent mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                  </svg>
+                  <span>{{ventaja}}</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mantenimiento -->
+    <div class="mb-8 bg-white rounded-2xl shadow-sm overflow-hidden">
+      <button 
+        (click)="toggleAcordeon('mantenimiento')"
+        class="w-full p-6 text-left flex items-center justify-between hover:bg-gray-50 transition-colors">
+        <h2 class="font-serif text-2xl text-ts-bg">Mantenimiento</h2>
+        <svg 
+          class="w-6 h-6 transition-transform"
+          [class.rotate-180]="acordeonesAbiertos['mantenimiento']"
+          fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+        </svg>
+      </button>
+      
+      <div 
+        class="overflow-hidden transition-all duration-300"
+        [class.max-h-0]="!acordeonesAbiertos['mantenimiento']"
+        [class.max-h-screen]="acordeonesAbiertos['mantenimiento']">
+        <div class="p-6 pt-0 border-t border-gray-100">
+          <div class="grid md:grid-cols-2 gap-8">
+            <div>
+              <h3 class="font-semibold text-lg mb-3">Limpieza Regular</h3>
+              <p class="text-gray-600 mb-4">{{datosTecnicos.mantenimiento.limpieza}}</p>
+              <p class="text-sm text-gray-500">{{datosTecnicos.mantenimiento.frecuencia}}</p>
+              
+              <h4 class="font-semibold mt-6 mb-3">Productos Recomendados:</h4>
+              <ul class="space-y-1">
+                <li *ngFor="let producto of datosTecnicos.mantenimiento.productos" 
+                    class="flex items-center gap-2">
+                  <svg class="w-4 h-4 text-ts-accent" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                  </svg>
+                  <span>{{producto}}</span>
+                </li>
+              </ul>
+            </div>
+            
+            <div>
+              <h4 class="font-semibold mb-3">Productos a Evitar:</h4>
+              <ul class="space-y-1">
+                <li *ngFor="let prohibido of datosTecnicos.mantenimiento.evitar" 
+                    class="flex items-center gap-2">
+                  <svg class="w-4 h-4 text-red-500" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                  </svg>
+                  <span>{{prohibido}}</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>

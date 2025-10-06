@@ -1,1 +1,116 @@
-<app-galeria></app-galeria>
+<!-- Galería Header -->
+<section class="py-20 lg:py-28 body-dark">
+  <div class="max-w-7xl mx-auto px-6">
+    <div class="text-center mb-16">
+      <h1 class="font-serif text-5xl lg:text-6xl text-ts-ink mb-4">
+        Galería de Proyectos
+      </h1>
+      <p class="text-xl text-ts-ink-soft max-w-2xl mx-auto">
+        Descubre cómo nuestras superficies porcelánicas transforman espacios reales 
+        en proyectos únicos y excepcionales.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- Filtros de Categoría -->
+<section class="py-12 bg-ts-paper">
+  <div class="max-w-7xl mx-auto px-6">
+    <div class="flex flex-wrap justify-center gap-4 mb-12">
+      <button 
+        (click)="filtrarPorCategoria('todos')"
+        [class.bg-ts-accent]="categoriaActiva === 'todos'"
+        [class.text-ts-bg]="categoriaActiva === 'todos'"
+        [class.bg-white]="categoriaActiva !== 'todos'"
+        [class.text-gray-700]="categoriaActiva !== 'todos'"
+        class="px-6 py-3 rounded-full font-medium transition-colors hover:bg-ts-accent hover:text-ts-bg">
+        Todos
+      </button>
+      
+      <button 
+        *ngFor="let categoria of categorias"
+        (click)="filtrarPorCategoria(categoria.slug)"
+        [class.bg-ts-accent]="categoriaActiva === categoria.slug"
+        [class.text-ts-bg]="categoriaActiva === categoria.slug"
+        [class.bg-white]="categoriaActiva !== categoria.slug"
+        [class.text-gray-700]="categoriaActiva !== categoria.slug"
+        class="px-6 py-3 rounded-full font-medium transition-colors hover:bg-ts-accent hover:text-ts-bg">
+        {{categoria.titulo}}
+      </button>
+    </div>
+
+    <!-- Masonry Grid -->
+    <div class="columns-1 md:columns-2 lg:columns-3 xl:columns-4 gap-6 space-y-6">
+      <div 
+        *ngFor="let item of itemsVisible; let i = index"
+        class="break-inside-avoid group cursor-pointer"
+        (click)="abrirModal(item, i)">
+        <div class="rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300">
+          <img 
+            [src]="item.src" 
+            [alt]="item.alt"
+            class="w-full h-auto object-cover group-hover:scale-105 transition-transform duration-500"
+            loading="lazy"/>
+          <div class="p-4 bg-white">
+            <p class="text-sm text-gray-600">{{item.alt}}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mensaje vacío -->
+    <div *ngIf="itemsVisible.length === 0" class="text-center py-16">
+      <p class="text-gray-500">No hay imágenes disponibles para esta categoría.</p>
+    </div>
+  </div>
+</section>
+
+<!-- Modal -->
+<div 
+  *ngIf="modalItem" 
+  class="fixed inset-0 z-50 flex items-center justify-center bg-black/90"
+  (click)="cerrarModal()">
+  
+  <div class="relative max-w-7xl max-h-full p-6" (click)="$event.stopPropagation()">
+    <!-- Botón cerrar -->
+    <button 
+      (click)="cerrarModal()"
+      class="absolute top-4 right-4 z-10 w-10 h-10 rounded-full bg-black/50 text-white hover:bg-black/70 transition-colors">
+      <svg class="w-6 h-6 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+      </svg>
+    </button>
+
+    <!-- Navegación anterior -->
+    <button 
+      *ngIf="modalIndex > 0"
+      (click)="anterior()"
+      class="absolute left-4 top-1/2 transform -translate-y-1/2 w-12 h-12 rounded-full bg-black/50 text-white hover:bg-black/70 transition-colors">
+      <svg class="w-6 h-6 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+      </svg>
+    </button>
+
+    <!-- Navegación siguiente -->
+    <button 
+      *ngIf="modalIndex < itemsVisible.length - 1"
+      (click)="siguiente()"
+      class="absolute right-4 top-1/2 transform -translate-y-1/2 w-12 h-12 rounded-full bg-black/50 text-white hover:bg-black/70 transition-colors">
+      <svg class="w-6 h-6 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+      </svg>
+    </button>
+
+    <!-- Imagen modal -->
+    <img 
+      [src]="modalItem.src" 
+      [alt]="modalItem.alt"
+      class="max-w-full max-h-full object-contain rounded-2xl">
+    
+    <!-- Descripción -->
+    <div class="absolute bottom-4 left-4 right-4 bg-black/50 text-white p-4 rounded-lg">
+      <p class="text-lg">{{modalItem.alt}}</p>
+      <p class="text-sm text-gray-300">{{modalIndex + 1}} de {{itemsVisible.length}}</p>
+    </div>
+  </div>
+</div>

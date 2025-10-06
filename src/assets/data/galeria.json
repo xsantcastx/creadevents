@@ -1,0 +1,54 @@
+{
+  "categorias": [
+    {
+      "slug": "cocinas",
+      "titulo": "Cocinas",
+      "items": [
+        {"src":"/assets/Modern/image2.jpeg","alt":"Isla moderna en Saint Laurent","producto":"saint-laurent"},
+        {"src":"/assets/Modern/image3.jpeg","alt":"Encimera Black Gold con iluminación","producto":"black-gold"},
+        {"src":"/assets/Modern/image4.jpeg","alt":"Cocina minimalista Arenaria Ivory","producto":"arenaria-ivory"},
+        {"src":"/assets/Modern/image5.jpeg","alt":"Península Rapolano con textura natural","producto":"rapolano"},
+        {"src":"/assets/Modern/image6.jpeg","alt":"Cocina industrial Konkrete","producto":"konkrete"},
+        {"src":"/assets/Modern/image10.jpeg","alt":"Cocina clásica Calacatta Gold","producto":"calacatta-gold"}
+      ]
+    },
+    {
+      "slug": "banos",
+      "titulo": "Baños",
+      "items": [
+        {"src":"/assets/Bathroom.jpeg","alt":"Baño elegante Apollo White","producto":"apollo-white"},
+        {"src":"/assets/Bathroom2.jpeg","alt":"Lavabo Calacatta Gold premium","producto":"calacatta-gold"},
+        {"src":"/assets/Detailed/image2.jpeg","alt":"Ducha Statuario Elegance","producto":"statuario-elegance"},
+        {"src":"/assets/Detailed/image3.jpeg","alt":"Baño moderno Laponia Black","producto":"laponia-black"}
+      ]
+    },
+    {
+      "slug": "fachadas",
+      "titulo": "Fachadas",
+      "items": [
+        {"src":"/assets/Modern/image7.jpeg","alt":"Fachada ventilada Konkrete","producto":"konkrete"},
+        {"src":"/assets/Modern/image8.jpeg","alt":"Revestimiento exterior Taj Mahal","producto":"taj-mahal"},
+        {"src":"/assets/Detailed/image4.jpeg","alt":"Fachada Patagonia Natural","producto":"patagonia-natural"},
+        {"src":"/assets/Detailed/image1.jpeg","alt":"Fachada residencial Patagonia","producto":"patagonia"}
+      ]
+    },
+    {
+      "slug": "industria",
+      "titulo": "Industria",
+      "items": [
+        {"src":"/assets/Detailed/image5.jpeg","alt":"Superficie industrial Saint Laurent Premium","producto":"saint-laurent-20"},
+        {"src":"/assets/Detailed/image6.jpeg","alt":"Aplicación comercial Black Gold Premium","producto":"black-gold-20"},
+        {"src":"/assets/Detailed/image7.jpeg","alt":"Laboratorio Crystal Clear Premium","producto":"crystal-clear-20"}
+      ]
+    },
+    {
+      "slug": "otros",
+      "titulo": "Otros trabajos",
+      "items": [
+        {"src":"/assets/Modern/image9.jpeg","alt":"Mostrador comercial Apollo White","producto":"apollo-white"},
+        {"src":"/assets/Modern/image7.jpeg","alt":"Mesa Crystal Clear","producto":"crystal-clear"},
+        {"src":"/assets/Modern/image5.jpeg","alt":"Recepción Rapolano","producto":"rapolano"}
+      ]
+    }
+  ]
+}

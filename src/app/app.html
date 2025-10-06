@@ -1,9 +1,7 @@
-<app-navbar (toggleCart)="alternarCarrito()"></app-navbar>
+<app-header></app-header>
 
-<main>
+<main id="main-content" class="pt-16 min-h-screen">
   <router-outlet></router-outlet>
 </main>
 
 <app-footer></app-footer>
-
-<app-cart-sidebar [visible]="carritoVisible()" (close)="cerrarCarrito()"></app-cart-sidebar>
