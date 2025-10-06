@@ -2,6 +2,88 @@
 @use 'tailwindcss/components';
 @use 'tailwindcss/utilities';
 
+/* Component utilities for pill and navigation */
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  border-radius: 9999px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  border: 1px solid;
+  transition: all 0.2s ease-out;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.pill-light {
+  background-color: rgba(255, 255, 255, 0.9);
+  color: rgb(23 23 23);
+  border-color: rgb(229 229 229);
+  backdrop-filter: blur(8px);
+}
+
+.pill-light:hover {
+  background-color: rgb(255 255 255);
+  box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+}
+
+.pill-dark {
+  background-color: rgba(0, 0, 0, 0.5);
+  color: rgb(255 255 255);
+  border-color: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(8px);
+}
+
+.pill-dark:hover {
+  background-color: rgba(0, 0, 0, 0.7);
+}
+
+.pill-active {
+  border-color: var(--ts-accent);
+  color: var(--ts-accent);
+  background-color: rgb(255 255 255);
+  box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  font-weight: 600;
+}
+
+.subnav {
+  position: sticky;
+  top: 4rem;
+  z-index: 40;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+  padding: 0.75rem 1.5rem;
+}
+
+.pill:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--ts-accent), 0 0 0 4px rgba(200, 169, 107, 0.2);
+}
+
+.nav-link {
+  transition: color 0.2s ease-out;
+  text-decoration: none;
+}
+
+.nav-link:hover {
+  color: var(--ts-accent);
+}
+
+.nav-link:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--ts-accent);
+  border-radius: 0.125rem;
+}
+
+.nav-link-active {
+  color: var(--ts-accent);
+  font-weight: 500;
+}
+
 :root {
   --ts-bg: #0E0F10;
   --ts-bg-soft: #111316;

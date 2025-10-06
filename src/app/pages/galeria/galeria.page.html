@@ -19,33 +19,33 @@
   </div>
 </section>
 
-<!-- Enhanced Category Filters -->
-<section class="py-12 bg-white border-b border-gray-100">
-  <div class="max-w-7xl mx-auto px-6">
-    <div class="flex flex-wrap justify-center gap-3 mb-8">
-      <!-- All Categories Button -->
+<!-- Enhanced Category Filters with Pill Components -->
+<section class="py-8 bg-white/50 backdrop-blur-sm border-b border-gray-100">
+  <div class="max-w-7xl mx-auto">
+    <div class="subnav justify-center">
+      <!-- All Categories Pill -->
       <button 
         (click)="filtrarPorCategoria('todos')"
         [class]="{
-          'bg-ts-accent text-ts-bg shadow-lg': categoriaActiva === 'todos',
-          'bg-white text-gray-700 hover:bg-ts-accent hover:text-ts-bg border border-gray-200': categoriaActiva !== 'todos'
+          'pill-active': categoriaActiva === 'todos',
+          'pill-light': categoriaActiva !== 'todos'
         }"
-        class="px-6 py-3 rounded-full font-medium transition-all duration-300 transform hover:scale-105">
+        class="pill">
         <span>Todos</span>
-        <span class="ml-2 text-xs opacity-75">({{getCategoryCount('todos')}})</span>
+        <span class="text-xs opacity-75 ml-1">({{getCategoryCount('todos')}})</span>
       </button>
       
-      <!-- Category Buttons -->
+      <!-- Category Pills -->
       @for (categoria of categorias; track categoria.slug) {
         <button 
           (click)="filtrarPorCategoria(categoria.slug)"
           [class]="{
-            'bg-ts-accent text-ts-bg shadow-lg': categoriaActiva === categoria.slug,
-            'bg-white text-gray-700 hover:bg-ts-accent hover:text-ts-bg border border-gray-200': categoriaActiva !== categoria.slug
+            'pill-active': categoriaActiva === categoria.slug,
+            'pill-light': categoriaActiva !== categoria.slug
           }"
-          class="px-6 py-3 rounded-full font-medium transition-all duration-300 transform hover:scale-105">
+          class="pill">
           <span>{{categoria.titulo}}</span>
-          <span class="ml-2 text-xs opacity-75">({{getCategoryCount(categoria.slug)}})</span>
+          <span class="text-xs opacity-75 ml-1">({{getCategoryCount(categoria.slug)}})</span>
         </button>
       }
     </div>

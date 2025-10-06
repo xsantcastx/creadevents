@@ -24,53 +24,69 @@
   <section class="py-16 bg-white min-h-screen">
     <div class="max-w-5xl mx-auto px-6">
       
-      <!-- Quick Navigation -->
+      <!-- Quick Navigation with Enhanced Pills -->
       <div class="mb-12 bg-gradient-to-r from-ts-paper to-white rounded-2xl p-6 shadow-sm">
         <h2 class="text-xl font-medium text-ts-bg mb-4">Navegación Rápida</h2>
-        <div class="flex flex-wrap gap-3">
+        <div class="subnav p-0">
           <button 
             (click)="openAccordionExclusive('especificaciones')"
             [class]="{
-              'bg-ts-accent text-ts-bg': acordeonesAbiertos['especificaciones'],
-              'bg-white text-ts-bg border border-gray-200 hover:bg-ts-accent hover:text-ts-bg': !acordeonesAbiertos['especificaciones']
+              'pill-active': acordeonesAbiertos['especificaciones'],
+              'pill-light': !acordeonesAbiertos['especificaciones']
             }"
-            class="px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 hover:scale-105">
+            class="pill">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v1a2 2 0 002 2h2m0 0h2a2 2 0 012-2V7a2 2 0 00-2-2H9m0 0v10m0-10h2v10"></path>
+            </svg>
             Especificaciones
           </button>
           <button 
             (click)="openAccordionExclusive('acabados')"
             [class]="{
-              'bg-ts-accent text-ts-bg': acordeonesAbiertos['acabados'],
-              'bg-white text-ts-bg border border-gray-200 hover:bg-ts-accent hover:text-ts-bg': !acordeonesAbiertos['acabados']
+              'pill-active': acordeonesAbiertos['acabados'],
+              'pill-light': !acordeonesAbiertos['acabados']
             }"
-            class="px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 hover:scale-105">
+            class="pill">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zM21 5a2 2 0 00-2-2h-4a2 2 0 00-2 2v6a2 2 0 002 2h4a2 2 0 002-2V5z"></path>
+            </svg>
             Acabados
           </button>
           <button 
             (click)="openAccordionExclusive('fichas')"
             [class]="{
-              'bg-ts-accent text-ts-bg': acordeonesAbiertos['fichas'],
-              'bg-white text-ts-bg border border-gray-200 hover:bg-ts-accent hover:text-ts-bg': !acordeonesAbiertos['fichas']
+              'pill-active': acordeonesAbiertos['fichas'],
+              'pill-light': !acordeonesAbiertos['fichas']
             }"
-            class="px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 hover:scale-105">
+            class="pill">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+            </svg>
             Fichas PDF
           </button>
           <button 
             (click)="openAccordionExclusive('packing')"
             [class]="{
-              'bg-ts-accent text-ts-bg': acordeonesAbiertos['packing'],
-              'bg-white text-ts-bg border border-gray-200 hover:bg-ts-accent hover:text-ts-bg': !acordeonesAbiertos['packing']
+              'pill-active': acordeonesAbiertos['packing'],
+              'pill-light': !acordeonesAbiertos['packing']
             }"
-            class="px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 hover:scale-105">
+            class="pill">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10"></path>
+            </svg>
             Embalaje
           </button>
           <button 
             (click)="openAccordionExclusive('mantenimiento')"
             [class]="{
-              'bg-ts-accent text-ts-bg': acordeonesAbiertos['mantenimiento'],
-              'bg-white text-ts-bg border border-gray-200 hover:bg-ts-accent hover:text-ts-bg': !acordeonesAbiertos['mantenimiento']
+              'pill-active': acordeonesAbiertos['mantenimiento'],
+              'pill-light': !acordeonesAbiertos['mantenimiento']
             }"
-            class="px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 hover:scale-105">
+            class="pill">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+            </svg>
             Mantenimiento
           </button>
         </div>

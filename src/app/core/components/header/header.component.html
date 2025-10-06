@@ -15,20 +15,22 @@
     <!-- Desktop Navigation -->
     <nav class="hidden md:flex items-center gap-8 font-sans text-sm text-ts-ink">
       <a routerLink="/" 
-         routerLinkActive="text-ts-accent" 
+         routerLinkActive="nav-link-active" 
          [routerLinkActiveOptions]="{exact: true}"
-         class="hover:text-ts-accent transition-colors">
+         class="nav-link">
         Home
       </a>
       
       <!-- Products Mega Menu -->
       <div class="relative group">
-        <button class="hover:text-ts-accent transition-colors py-2">
+        <a routerLink="/productos"
+           routerLinkActive="nav-link-active"
+           class="nav-link inline-flex items-center gap-1 py-2">
           Productos
-          <svg class="w-4 h-4 ml-1 inline-block transform group-hover:rotate-180 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg class="w-4 h-4 transform group-hover:rotate-180 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
           </svg>
-        </button>
+        </a>
         
         <!-- Mega Menu -->
         <div class="invisible opacity-0 group-hover:visible group-hover:opacity-100 transition-all duration-300 absolute right-0 mt-2 w-[920px] -translate-x-[calc(100%-200px)]">
@@ -39,7 +41,7 @@
               <ul class="space-y-2">
                 <li *ngFor="let producto of productos12mm">
                   <a [routerLink]="['/productos', '12mm', producto.slug]" 
-                     class="hover:text-ts-accent transition-colors text-sm"
+                     class="nav-link text-sm block py-1"
                      (mouseenter)="onProductHover(producto)">
                     {{producto.nombre}}
                   </a>
@@ -53,7 +55,7 @@
               <ul class="space-y-2">
                 <li *ngFor="let producto of productos15mm">
                   <a [routerLink]="['/productos', '15mm', producto.slug]" 
-                     class="hover:text-ts-accent transition-colors text-sm"
+                     class="nav-link text-sm block py-1"
                      (mouseenter)="onProductHover(producto)">
                     {{producto.nombre}}
                   </a>
@@ -67,7 +69,7 @@
               <ul class="space-y-2">
                 <li *ngFor="let producto of productos20mm">
                   <a [routerLink]="['/productos', '20mm', producto.slug]" 
-                     class="hover:text-ts-accent transition-colors text-sm"
+                     class="nav-link text-sm block py-1"
                      (mouseenter)="onProductHover(producto)">
                     {{producto.nombre}}
                   </a>
@@ -87,20 +89,20 @@
       </div>
       
       <a routerLink="/galeria" 
-         routerLinkActive="text-ts-accent" 
-         class="hover:text-ts-accent transition-colors">
+         routerLinkActive="nav-link-active" 
+         class="nav-link">
         Galería
       </a>
       
       <a routerLink="/datos-tecnicos" 
-         routerLinkActive="text-ts-accent" 
-         class="hover:text-ts-accent transition-colors">
+         routerLinkActive="nav-link-active" 
+         class="nav-link">
         Datos técnicos
       </a>
       
       <a routerLink="/contacto" 
-         routerLinkActive="text-ts-accent" 
-         class="hover:text-ts-accent transition-colors">
+         routerLinkActive="nav-link-active" 
+         class="nav-link">
         Contacto
       </a>
     </nav>
