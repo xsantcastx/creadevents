@@ -1,1 +1,161 @@
-<app-productos></app-productos>
+<!-- Productos Overview Page -->
+<section class="bg-ts-paper min-h-screen">
+  <!-- Hero Section -->
+  <div class="relative py-24 lg:py-32 bg-gradient-to-b from-ts-paper to-white overflow-hidden">
+    <div class="max-w-7xl mx-auto px-6 text-center">
+      <h1 class="font-serif text-5xl lg:text-6xl text-ts-bg mb-6">
+        Nuestros Productos
+      </h1>
+      <p class="text-xl text-neutral-600 max-w-3xl mx-auto leading-relaxed">
+        Superficies porcelánicas de gran formato disponibles en diferentes grosores.
+        Cada colección está diseñada para adaptarse a las necesidades específicas de tu proyecto.
+      </p>
+    </div>
+  </div>
+
+  <!-- Products by Thickness -->
+  <div class="max-w-7xl mx-auto px-6 pb-20">
+    
+    <!-- 12mm Collection -->
+    <section class="mb-20">
+      <div class="flex items-center justify-between mb-8">
+        <div>
+          <h2 class="font-serif text-4xl text-ts-bg mb-2">12mm</h2>
+          <p class="text-lg text-neutral-600">160×320cm · Ideal para revestimientos interiores y exteriores</p>
+        </div>
+        <a routerLink="/productos/12mm" 
+           class="inline-flex items-center gap-2 px-6 py-3 bg-ts-accent text-black rounded-full font-semibold hover:bg-ts-accent/90 transition-colors">
+          Ver toda la colección
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+          </svg>
+        </a>
+      </div>
+      
+      <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
+        @for (producto of productos12mm; track producto.slug) {
+          <article class="group rounded-2xl overflow-hidden bg-white shadow-sm hover:shadow-xl transition-all duration-300">
+            <div class="aspect-[4/3] overflow-hidden">
+              <img [src]="producto.cover" 
+                   [alt]="producto.nombre"
+                   class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                   loading="lazy"/>
+            </div>
+            <div class="p-6">
+              <h3 class="font-serif text-xl text-ts-bg mb-2">{{producto.nombre}}</h3>
+              <p class="text-sm text-neutral-600 mb-4">{{producto.medida}} · {{producto.grosor}}</p>
+              <a [routerLink]="['/productos', '12mm', producto.slug]" 
+                 class="text-ts-accent hover:underline font-medium transition-colors">
+                Ver detalles →
+              </a>
+            </div>
+          </article>
+        }
+      </div>
+    </section>
+
+    <!-- 15mm Collection -->
+    <section class="mb-20">
+      <div class="flex items-center justify-between mb-8">
+        <div>
+          <h2 class="font-serif text-4xl text-ts-bg mb-2">15mm</h2>
+          <p class="text-lg text-neutral-600">160×320cm · Perfectas para pavimentos y encimeras</p>
+        </div>
+        <a routerLink="/productos/15mm" 
+           class="inline-flex items-center gap-2 px-6 py-3 bg-ts-accent text-black rounded-full font-semibold hover:bg-ts-accent/90 transition-colors">
+          Ver toda la colección
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+          </svg>
+        </a>
+      </div>
+      
+      <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
+        @for (producto of productos15mm; track producto.slug) {
+          <article class="group rounded-2xl overflow-hidden bg-white shadow-sm hover:shadow-xl transition-all duration-300">
+            <div class="aspect-[4/3] overflow-hidden">
+              <img [src]="producto.cover" 
+                   [alt]="producto.nombre"
+                   class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                   loading="lazy"/>
+            </div>
+            <div class="p-6">
+              <h3 class="font-serif text-xl text-ts-bg mb-2">{{producto.nombre}}</h3>
+              <p class="text-sm text-neutral-600 mb-4">{{producto.medida}} · {{producto.grosor}}</p>
+              <a [routerLink]="['/productos', '15mm', producto.slug]" 
+                 class="text-ts-accent hover:underline font-medium transition-colors">
+                Ver detalles →
+              </a>
+            </div>
+          </article>
+        }
+      </div>
+    </section>
+
+    <!-- 20mm Collection -->
+    <section class="mb-20">
+      <div class="flex items-center justify-between mb-8">
+        <div>
+          <h2 class="font-serif text-4xl text-ts-bg mb-2">20mm</h2>
+          <p class="text-lg text-neutral-600">160×320cm · Ideales para exteriores y zonas de alto tránsito</p>
+        </div>
+        <a routerLink="/productos/20mm" 
+           class="inline-flex items-center gap-2 px-6 py-3 bg-ts-accent text-black rounded-full font-semibold hover:bg-ts-accent/90 transition-colors">
+          Ver toda la colección
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+          </svg>
+        </a>
+      </div>
+      
+      <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
+        @for (producto of productos20mm; track producto.slug) {
+          <article class="group rounded-2xl overflow-hidden bg-white shadow-sm hover:shadow-xl transition-all duration-300">
+            <div class="aspect-[4/3] overflow-hidden">
+              <img [src]="producto.cover" 
+                   [alt]="producto.nombre"
+                   class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                   loading="lazy"/>
+            </div>
+            <div class="p-6">
+              <h3 class="font-serif text-xl text-ts-bg mb-2">{{producto.nombre}}</h3>
+              <p class="text-sm text-neutral-600 mb-4">{{producto.medida}} · {{producto.grosor}}</p>
+              <a [routerLink]="['/productos', '20mm', producto.slug]" 
+                 class="text-ts-accent hover:underline font-medium transition-colors">
+                Ver detalles →
+              </a>
+            </div>
+          </article>
+        }
+      </div>
+    </section>
+
+    <!-- Call to Action -->
+    <section class="text-center py-16">
+      <div class="max-w-3xl mx-auto">
+        <h2 class="font-serif text-3xl text-ts-bg mb-4">
+          ¿Necesitas asesoramiento personalizado?
+        </h2>
+        <p class="text-lg text-neutral-600 mb-8">
+          Nuestro equipo de expertos te ayudará a elegir la superficie perfecta para tu proyecto.
+        </p>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+          <a routerLink="/contacto" 
+             class="inline-flex items-center gap-2 px-8 py-4 bg-ts-accent text-black rounded-full font-semibold hover:bg-ts-accent/90 transition-colors">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-3.582 8-8 8a8.955 8.955 0 01-3.793-.793L3 21l1.793-6.207A8.955 8.955 0 013 12a8 8 0 018-8c4.418 0 8 3.582 8 8z"/>
+            </svg>
+            Solicitar asesoramiento
+          </a>
+          <a routerLink="/datos-tecnicos" 
+             class="inline-flex items-center gap-2 px-8 py-4 ring-2 ring-ts-accent text-ts-accent hover:bg-ts-accent hover:text-black rounded-full font-semibold transition-colors">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25zM6.75 12h.008v.008H6.75V12zm0 3h.008v.008H6.75V15zm0 3h.008v.008H6.75V18z"/>
+            </svg>
+            Datos técnicos
+          </a>
+        </div>
+      </div>
+    </section>
+  </div>
+</section>

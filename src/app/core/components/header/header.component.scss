@@ -1,0 +1,32 @@
+// Custom styles for header component
+.group:hover .group-hover\:visible {
+  visibility: visible;
+}
+
+.group:hover .group-hover\:opacity-100 {
+  opacity: 1;
+}
+
+// Ensure mega menu positioning
+.group {
+  position: relative;
+}
+
+// Smooth hover transitions for mega menu
+.group > div {
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+// Mobile menu animation
+@media (max-width: 768px) {
+  .mobile-menu-enter {
+    transform: translateY(-10px);
+    opacity: 0;
+  }
+  
+  .mobile-menu-enter-active {
+    transform: translateY(0);
+    opacity: 1;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+  }
+}

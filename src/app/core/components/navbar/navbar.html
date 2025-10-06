@@ -1,31 +1,222 @@
-<nav class="navbar">
-  <div class="container navbar__content">
-    <a class="navbar__logo" routerLink="/" (click)="cerrarMenu()">The Stone</a>
+<nav class="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md border-b border-gray-100 transition-all duration-300" 
+     [class.navbar-scrolled]="isScrolled">
+  <div class="max-w-7xl mx-auto px-6">
+    <div class="flex items-center justify-between h-20">
+      
+      <!-- Logo -->
+      <a routerLink="/" class="flex items-center gap-3 group" (click)="cerrarMenu()">
+        <div class="w-10 h-10 bg-ts-accent rounded-lg flex items-center justify-center group-hover:bg-ts-accent/90 transition-colors">
+          <span class="text-white font-bold text-lg">T</span>
+        </div>
+        <span class="font-serif text-2xl text-ts-bg font-semibold hidden sm:block">TopStone</span>
+      </a>
 
-    <button class="navbar__toggle" type="button" (click)="alternarMenu()" aria-label="Abrir menu">
-      <span></span>
-      <span></span>
-      <span></span>
-    </button>
-
-    <ul class="navbar__links" [class.navbar__links--abierto]="menuAbierto()">
-      @for (enlace of enlaces; track enlace.ruta) {
-        <li>
-          <a
-            [routerLink]="enlace.ruta"
-            routerLinkActive="navbar__link--activo"
-            [routerLinkActiveOptions]="{ exact: enlace.exact ?? false }"
-            (click)="cerrarMenu()"
-          >
-            {{ enlace.etiqueta }}
+      <!-- Desktop Navigation -->
+      <div class="hidden lg:flex items-center gap-8">
+        <!-- Home -->
+        <a routerLink="/" 
+           routerLinkActive="text-ts-accent" 
+           [routerLinkActiveOptions]="{exact: true}"
+           class="font-medium text-gray-700 hover:text-ts-accent transition-colors px-3 py-2">
+          Inicio
+        </a>
+        
+        <!-- Productos with Mega Menu -->
+        <div class="relative mega-menu-container" 
+             (mouseenter)="showProductsMenu = true" 
+             (mouseleave)="showProductsMenu = false">
+          <a routerLink="/productos" 
+             routerLinkActive="text-ts-accent"
+             class="font-medium text-gray-700 hover:text-ts-accent transition-colors px-3 py-2 flex items-center gap-1">
+            Productos
+            <svg class="w-4 h-4 transition-transform duration-200" 
+                 [class.rotate-180]="showProductsMenu"
+                 fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+            </svg>
           </a>
-        </li>
-      }
-    </ul>
+          
+          <!-- Invisible Bridge Area -->
+          <div class="absolute top-full left-0 right-0 h-2" 
+               [class.block]="showProductsMenu" 
+               [class.hidden]="!showProductsMenu"></div>
+          
+          <!-- Mega Menu -->
+          <div class="mega-menu" 
+               [class.mega-menu-visible]="showProductsMenu">
+            <div class="p-6">
+              <h3 class="font-serif text-lg text-ts-bg mb-4">Explorar por Grosor</h3>
+              <div class="space-y-3">
+                <a routerLink="/productos/12mm" 
+                   class="block p-4 rounded-xl hover:bg-ts-accent/5 transition-colors group/item">
+                  <div class="flex items-center justify-between">
+                    <div>
+                      <h4 class="font-semibold text-gray-900 group-hover/item:text-ts-accent transition-colors">12mm</h4>
+                      <p class="text-sm text-gray-600">Superficie ultrafina para revestimientos</p>
+                    </div>
+                    <div class="text-ts-accent opacity-60 group-hover/item:opacity-100 transition-opacity">
+                      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                      </svg>
+                    </div>
+                  </div>
+                </a>
+                <a routerLink="/productos/15mm" 
+                   class="block p-4 rounded-xl hover:bg-ts-accent/5 transition-colors group/item">
+                  <div class="flex items-center justify-between">
+                    <div>
+                      <h4 class="font-semibold text-gray-900 group-hover/item:text-ts-accent transition-colors">15mm</h4>
+                      <p class="text-sm text-gray-600">Equilibrio perfecto grosor-resistencia</p>
+                    </div>
+                    <div class="text-ts-accent opacity-60 group-hover/item:opacity-100 transition-opacity">
+                      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                      </svg>
+                    </div>
+                  </div>
+                </a>
+                <a routerLink="/productos/20mm" 
+                   class="block p-4 rounded-xl hover:bg-ts-accent/5 transition-colors group/item">
+                  <div class="flex items-center justify-between">
+                    <div>
+                      <h4 class="font-semibold text-gray-900 group-hover/item:text-ts-accent transition-colors">20mm</h4>
+                      <p class="text-sm text-gray-600">Máxima resistencia para exteriores</p>
+                    </div>
+                    <div class="text-ts-accent opacity-60 group-hover/item:opacity-100 transition-opacity">
+                      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                      </svg>
+                    </div>
+                  </div>
+                </a>
+              </div>
+              <div class="mt-6 pt-4 border-t border-gray-100">
+                <a routerLink="/productos" 
+                   class="inline-flex items-center gap-2 text-ts-accent hover:text-ts-accent/80 font-medium text-sm">
+                  Ver todos los productos
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                  </svg>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Other Navigation Items -->
+        <a routerLink="/galeria" 
+           routerLinkActive="text-ts-accent"
+           class="font-medium text-gray-700 hover:text-ts-accent transition-colors px-3 py-2">
+          Galería
+        </a>
+        <a routerLink="/datos-tecnicos" 
+           routerLinkActive="text-ts-accent"
+           class="font-medium text-gray-700 hover:text-ts-accent transition-colors px-3 py-2">
+          Datos Técnicos
+        </a>
+        <a routerLink="/contacto" 
+           routerLinkActive="text-ts-accent"
+           class="font-medium text-gray-700 hover:text-ts-accent transition-colors px-3 py-2">
+          Contacto
+        </a>
+      </div>
 
-    <button class="navbar__cart" type="button" (click)="activarCarrito()">
-      Carrito
-      <span class="navbar__cart-count">{{ totalItems() }}</span>
-    </button>
+      <!-- Actions -->
+      <div class="flex items-center gap-4">
+        <!-- Cart Button -->
+        <button 
+          (click)="activarCarrito()"
+          class="relative p-2 hover:bg-gray-100 rounded-lg transition-colors group">
+          <svg class="w-6 h-6 text-gray-700 group-hover:text-ts-accent transition-colors" 
+               fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                  d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
+          </svg>
+          @if (totalItems() > 0) {
+            <span class="absolute -top-1 -right-1 w-5 h-5 bg-ts-accent text-white text-xs rounded-full flex items-center justify-center font-medium">
+              {{totalItems()}}
+            </span>
+          }
+        </button>
+        
+        <!-- Mobile Menu Button -->
+        <button 
+          (click)="alternarMenu()"
+          class="lg:hidden p-2 hover:bg-gray-100 rounded-lg transition-colors">
+          <svg class="w-6 h-6 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Mobile Menu -->
+    @if (menuAbierto()) {
+      <div class="lg:hidden border-t border-gray-100 bg-white/95 backdrop-blur-md">
+        <div class="py-4 space-y-2">
+          <a routerLink="/" 
+             routerLinkActive="bg-ts-accent/10 text-ts-accent" 
+             [routerLinkActiveOptions]="{exact: true}"
+             (click)="cerrarMenu()"
+             class="block px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-lg transition-colors font-medium">
+            Inicio
+          </a>
+          <div>
+            <button 
+              (click)="toggleMobileProductsMenu()"
+              class="w-full flex items-center justify-between px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-lg transition-colors font-medium">
+              Productos
+              <svg class="w-4 h-4 transition-transform duration-200" 
+                   [class.rotate-180]="mobileProductsOpen"
+                   fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+              </svg>
+            </button>
+            @if (mobileProductsOpen) {
+              <div class="ml-4 mt-2 space-y-1">
+                <a routerLink="/productos" 
+                   (click)="cerrarMenu()"
+                   class="block px-4 py-2 text-sm text-gray-600 hover:text-ts-accent transition-colors">
+                  Todos los productos
+                </a>
+                <a routerLink="/productos/12mm" 
+                   (click)="cerrarMenu()"
+                   class="block px-4 py-2 text-sm text-gray-600 hover:text-ts-accent transition-colors">
+                  12mm - Ultrafino
+                </a>
+                <a routerLink="/productos/15mm" 
+                   (click)="cerrarMenu()"
+                   class="block px-4 py-2 text-sm text-gray-600 hover:text-ts-accent transition-colors">
+                  15mm - Estándar
+                </a>
+                <a routerLink="/productos/20mm" 
+                   (click)="cerrarMenu()"
+                   class="block px-4 py-2 text-sm text-gray-600 hover:text-ts-accent transition-colors">
+                  20mm - Resistente
+                </a>
+              </div>
+            }
+          </div>
+          <a routerLink="/galeria" 
+             routerLinkActive="bg-ts-accent/10 text-ts-accent"
+             (click)="cerrarMenu()"
+             class="block px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-lg transition-colors font-medium">
+            Galería
+          </a>
+          <a routerLink="/datos-tecnicos" 
+             routerLinkActive="bg-ts-accent/10 text-ts-accent"
+             (click)="cerrarMenu()"
+             class="block px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-lg transition-colors font-medium">
+            Datos Técnicos
+          </a>
+          <a routerLink="/contacto" 
+             routerLinkActive="bg-ts-accent/10 text-ts-accent"
+             (click)="cerrarMenu()"
+             class="block px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-lg transition-colors font-medium">
+            Contacto
+          </a>
+        </div>
+      </div>
+    }
   </div>
 </nav>
