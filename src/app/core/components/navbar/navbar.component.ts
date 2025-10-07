@@ -3,8 +3,7 @@ import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { map } from 'rxjs/operators';
-import { DataService } from '../../services/data.service';
-import { CartService } from '../../../services/cart.service';
+import { CartService } from '../../../shared/services/cart';
 
 @Component({
   selector: 'app-navbar',
@@ -31,9 +30,11 @@ export class NavbarComponent {
   @ViewChild('productsGroup') productsGroupRef!: ElementRef<HTMLDivElement>;
 
   readonly totalItems = toSignal(
-    this.cartService.count$,
+    this.cartService.items$.pipe(
+      map((items: any[]) => items.reduce((total: number, item: any) => total + item.cantidad, 0))
+    ),
     { initialValue: 0 }
-  );
+  ) as () => number;
   
   // Fallback product data for mega menu (matches README specifications)
   productos12mm = [

@@ -40,19 +40,3 @@ testem.log
 # System files
 .DS_Store
 Thumbs.db
-
-# Environment variables
-.env
-.env.local
-.env.production
-
-# Firebase
-.firebase/
-firebase-debug.log
-firestore-debug.log
-
-# Secrets and API keys
-**/environment.ts
-**/environment.prod.ts
-secrets.json
-service-account-key.json
