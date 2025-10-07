@@ -1,58 +1,48 @@
-<nav class="fixed top-0 left-0 right-0 z-50 transition-all duration-300" 
-     [class.bg-transparent]="!isScrolled"
-     [class.bg-white/95]="isScrolled"
-     [class.backdrop-blur-md]="isScrolled"
-     [class.border-b]="isScrolled"
-     [class.border-gray-100]="isScrolled">
+<nav class="fixed top-0 left-0 right-0 z-[70] transition-all duration-300" 
+     [class.bg-transparent]="!scrolled"
+     [class.bg-white/95]="scrolled"
+     [class.backdrop-blur-md]="scrolled"
+     [class.border-b]="scrolled"
+     [class.border-gray-100]="scrolled">
   <div class="max-w-7xl mx-auto px-6">
     <div class="flex items-center justify-between h-20">
       
       <!-- Logo -->
       <a routerLink="/" class="flex items-center gap-3 group" (click)="cerrarMenu()">
-        <div class="w-10 h-10 bg-ts-accent rounded-lg flex items-center justify-center group-hover:bg-ts-accent/90 transition-colors">
-          <span class="text-white font-bold text-lg">T</span>
-        </div>
-        <span class="font-serif text-2xl font-semibold hidden sm:block transition-colors"
-              [class.text-white]="!isScrolled"
-              [class.text-ts-bg]="isScrolled">TopStone</span>
+        <img [src]="logoSrc" 
+             alt="TopStone Logo" 
+             class="h-10 w-auto transition-opacity duration-300 group-hover:opacity-90"/>
       </a>
 
       <!-- Desktop Navigation -->
-      <div class="hidden lg:flex items-center gap-8">
+      <div class="hidden lg:flex items-center gap-8"
+           [class.text-white]="!scrolled"
+           [class.text-neutral-900]="scrolled">
         <!-- Home -->
         <a routerLink="/" 
            routerLinkActive="text-ts-accent" 
            [routerLinkActiveOptions]="{exact: true}"
-           class="font-medium hover:text-ts-accent transition-colors px-3 py-2"
-           [class.text-white]="!isScrolled"
-           [class.text-gray-700]="isScrolled">
+           class="font-medium hover:text-ts-accent transition-colors px-3 py-2">
           Inicio
         </a>
         
-        <!-- Productos with Mega Menu -->
-        <div class="relative" 
-             (mouseenter)="openMega()" (mouseleave)="closeMegaDelayed()"
-             (keydown)="onEsc($event)">
+        <!-- Productos with CSS-only Mega Menu -->
+        <div class="relative group">
           <a routerLink="/productos" 
              routerLinkActive="text-ts-accent"
-             class="font-medium hover:text-ts-accent transition-colors px-3 py-2 inline-flex items-center gap-1 relative
-                    before:content-[''] before:absolute before:left-0 before:top-full before:w-full before:h-3"
-             [class.text-white]="!isScrolled"
-             [class.text-gray-700]="isScrolled">
-            Productos
-            <svg class="w-4 h-4 transition-transform duration-200" 
-                 [class.rotate-180]="showProductsMenu"
-                 fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-            </svg>
+             class="relative inline-flex items-center gap-1 font-medium hover:text-ts-accent transition-colors px-3 py-2
+                    before:content-[''] before:absolute before:left-0 before:top-full before:w-full before:h-5">
+            Productos <span aria-hidden>▾</span>
           </a>
           
-          <!-- Mega Menu -->
-          <div *ngIf="showProductsMenu"
-               class="absolute left-1/2 -translate-x-1/2 top-full pt-3 z-50"
-               (mouseenter)="openMega()" (mouseleave)="closeMegaDelayed()">
-            <div class="w-[min(100vw-2rem,960px)] p-6 rounded-2xl bg-white text-neutral-900 shadow-xl
-                        grid grid-cols-4 gap-6 ring-1 ring-neutral-200">
+          <!-- Mega Panel -->
+          <div class="pointer-events-none group-hover:pointer-events-auto
+                      invisible opacity-0 group-hover:visible group-hover:opacity-100
+                      transition-opacity duration-150
+                      absolute left-1/2 -translate-x-1/2 top-full pt-5 z-[60]">
+            <div class="w-[min(100vw-2rem,960px)] p-6 rounded-2xl bg-white text-neutral-900
+                        shadow-xl ring-1 ring-neutral-200 grid grid-cols-4 gap-6">
+              <!-- Col 1: 12mm -->
               <div>
                 <h4 class="font-semibold mb-3">12mm (160×320cm)</h4>
                 <ul class="space-y-2">
@@ -60,6 +50,7 @@
                 </ul>
               </div>
               
+              <!-- Col 2: 15mm -->
               <div>
                 <h4 class="font-semibold mb-3">15mm (160×320cm)</h4>
                 <ul class="space-y-2">
@@ -67,6 +58,7 @@
                 </ul>
               </div>
               
+              <!-- Col 3: 20mm -->
               <div>
                 <h4 class="font-semibold mb-3">20mm (160×320cm)</h4>
                 <ul class="space-y-2">
@@ -74,6 +66,7 @@
                 </ul>
               </div>
               
+              <!-- Col 4: Preview Image -->
               <div class="rounded-xl overflow-hidden bg-neutral-100">
                 <img src="/assets/hero.jpg" alt="Vista previa" class="w-full h-full object-cover">
               </div>
@@ -85,22 +78,22 @@
         <a routerLink="/galeria" 
            routerLinkActive="text-ts-accent"
            class="font-medium hover:text-ts-accent transition-colors px-3 py-2"
-           [class.text-white]="!isScrolled"
-           [class.text-gray-700]="isScrolled">
+           [class.text-white]="!scrolled"
+           [class.text-gray-700]="scrolled">
           Galería
         </a>
         <a routerLink="/datos-tecnicos" 
            routerLinkActive="text-ts-accent"
            class="font-medium hover:text-ts-accent transition-colors px-3 py-2"
-           [class.text-white]="!isScrolled"
-           [class.text-gray-700]="isScrolled">
+           [class.text-white]="!scrolled"
+           [class.text-gray-700]="scrolled">
           Datos Técnicos
         </a>
         <a routerLink="/contacto" 
            routerLinkActive="text-ts-accent"
            class="font-medium hover:text-ts-accent transition-colors px-3 py-2"
-           [class.text-white]="!isScrolled"
-           [class.text-gray-700]="isScrolled">
+           [class.text-white]="!scrolled"
+           [class.text-gray-700]="scrolled">
           Contacto
         </a>
       </div>
@@ -111,11 +104,11 @@
         <button 
           (click)="activarCarrito()"
           class="relative p-2 rounded-lg transition-colors group"
-          [class.hover:bg-white/10]="!isScrolled"
-          [class.hover:bg-gray-100]="isScrolled">
+          [class.hover:bg-white/10]="!scrolled"
+          [class.hover:bg-gray-100]="scrolled">
           <svg class="w-6 h-6 group-hover:text-ts-accent transition-colors" 
-               [class.text-white]="!isScrolled"
-               [class.text-gray-700]="isScrolled"
+               [class.text-white]="!scrolled"
+               [class.text-gray-700]="scrolled"
                fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
                   d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
@@ -131,11 +124,11 @@
         <button 
           (click)="alternarMenu()"
           class="lg:hidden p-2 rounded-lg transition-colors"
-          [class.hover:bg-white/10]="!isScrolled"
-          [class.hover:bg-gray-100]="isScrolled">
+          [class.hover:bg-white/10]="!scrolled"
+          [class.hover:bg-gray-100]="scrolled">
           <svg class="w-6 h-6 transition-colors" 
-               [class.text-white]="!isScrolled"
-               [class.text-gray-700]="isScrolled"
+               [class.text-white]="!scrolled"
+               [class.text-gray-700]="scrolled"
                fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
           </svg>

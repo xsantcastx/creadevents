@@ -19,10 +19,8 @@ export class NavbarComponent {
   private readonly platformId = inject(PLATFORM_ID);
 
   readonly menuAbierto = signal(false);
-  showProductsMenu = false;
   mobileProductsOpen = false;
-  isScrolled = false;
-  private hideTimer: any;
+  scrolled = false;
   
   readonly totalItems = toSignal(
     this.cartService.items$.pipe(
@@ -33,7 +31,11 @@ export class NavbarComponent {
 
   @HostListener('window:scroll')
   onScroll() {
-    this.isScrolled = window.scrollY > 10;
+    this.scrolled = window.scrollY > 8;
+  }
+
+  get logoSrc() {
+    return this.scrolled ? '/assets/logo_topstone-dark.svg' : '/assets/logo_topstone.svg';
   }
 
   ngOnInit() {
@@ -45,24 +47,6 @@ export class NavbarComponent {
   ngOnDestroy() {
     if (isPlatformBrowser(this.platformId)) {
       window.removeEventListener('scroll', this.onScroll.bind(this));
-    }
-    clearTimeout(this.hideTimer);
-  }
-
-  openMega() {
-    clearTimeout(this.hideTimer);
-    this.showProductsMenu = true;
-  }
-
-  closeMegaDelayed() {
-    this.hideTimer = setTimeout(() => {
-      this.showProductsMenu = false;
-    }, 140);
-  }
-
-  onEsc(evt: KeyboardEvent) {
-    if (evt.key === 'Escape') {
-      this.showProductsMenu = false;
     }
   }
 
