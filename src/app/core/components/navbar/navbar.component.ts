@@ -1,7 +1,10 @@
-import { Component, HostListener, inject, PLATFORM_ID } from '@angular/core';
+import { Component, HostListener, inject, PLATFORM_ID, EventEmitter, Output, ElementRef, ViewChild } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { RouterLink, RouterLinkActive } from '@angular/router';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { map } from 'rxjs/operators';
 import { DataService } from '../../services/data.service';
+import { CartService } from '../../../shared/services/cart';
 
 @Component({
   selector: 'app-navbar',
@@ -11,12 +14,28 @@ import { DataService } from '../../services/data.service';
   styleUrls: ['./navbar.component.scss']
 })
 export class NavbarComponent {
+  @Output() toggleCart = new EventEmitter<void>();
+
   private platformId = inject(PLATFORM_ID);
+  private readonly cartService = inject(CartService);
   
   scrolled = false;
   mobileOpen = false;
   showMega = false;
   hoverPreviewUrl = 'assets/productos/12mm/saint-laurent.jpg';
+  
+  // Mega menu state and controls
+  private hideTimer: any;
+
+  @ViewChild('mega') megaRef!: ElementRef<HTMLDivElement>;
+  @ViewChild('productsGroup') productsGroupRef!: ElementRef<HTMLDivElement>;
+
+  readonly totalItems = toSignal(
+    this.cartService.items$.pipe(
+      map((items) => items.reduce((total, item) => total + item.cantidad, 0))
+    ),
+    { initialValue: 0 }
+  );
   
   // Fallback product data for mega menu (matches README specifications)
   productos12mm = [
@@ -52,12 +71,69 @@ export class NavbarComponent {
     { name: 'Patagonia', slug: 'patagonia-20' }
   ];
 
+  ngOnDestroy() {
+    // Clean up timer
+    if (this.hideTimer) {
+      clearTimeout(this.hideTimer);
+    }
+  }
+
   @HostListener('window:scroll')
   onScroll() {
     // Only run in browser to avoid SSR issues
     if (isPlatformBrowser(this.platformId)) {
       this.scrolled = window.scrollY > 8;
     }
+  }
+
+  // Mega menu hover controls with delay for stability
+  openMega() {
+    clearTimeout(this.hideTimer);
+    this.showMega = true;
+  }
+
+  closeMegaDelayed() {
+    clearTimeout(this.hideTimer);
+    this.hideTimer = setTimeout(() => {
+      this.showMega = false;
+    }, 100);
+  }
+
+  closeMegaImmediate() {
+    clearTimeout(this.hideTimer);
+    this.showMega = false;
+  }
+
+  // Caret button toggles without affecting the Products link
+  toggleMega(ev: MouseEvent) {
+    ev.stopPropagation();
+    this.showMega = !this.showMega;
+  }
+
+  // Close when clicking outside
+  @HostListener('document:click', ['$event'])
+  onDocClick(e: MouseEvent) {
+    if (!this.productsGroupRef) return;
+    const g = this.productsGroupRef.nativeElement;
+    if (!g.contains(e.target as Node)) this.showMega = false;
+  }
+
+  // Close when mouse leaves viewport
+  @HostListener('document:mouseout', ['$event'])
+  onDocMouseOut(e: MouseEvent) {
+    if (!e.relatedTarget || (e.relatedTarget as Element).nodeName === 'HTML') {
+      this.showMega = false;
+    }
+  }
+
+  // ESC to close
+  @HostListener('window:keydown', ['$event'])
+  onKey(e: KeyboardEvent) {
+    if (e.key === 'Escape') this.showMega = false;
+  }
+
+  activarCarrito(): void {
+    this.toggleCart.emit();
   }
 
   onProductHover(grosor: string, slug: string) {
@@ -74,6 +150,6 @@ export class NavbarComponent {
 
   // Support dual logo versions as per README specs
   get logoSrc() {
-    return this.scrolled ? 'assets/Logo.jpeg' : 'assets/Logo.jpeg';
+    return this.scrolled ? '/assets/logo_topstone-dark.svg' : '/assets/logo_topstone.svg';
   }
 }

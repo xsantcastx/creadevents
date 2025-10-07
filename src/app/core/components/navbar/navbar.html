@@ -1,66 +1,64 @@
-<nav class="fixed inset-x-0 top-0 z-[90] transition-all duration-300" 
-     [class.bg-transparent]="!scrolled"
-     [class.bg-white/95]="scrolled"
-     [class.backdrop-blur-md]="scrolled"
-     [class.border-b]="scrolled"
-     [class.border-gray-100]="scrolled"
-     [class.text-white]="!scrolled"
-     [class.text-neutral-900]="scrolled">
-  <div class="max-w-7xl mx-auto px-6">
-    <div class="flex items-center justify-between h-20">
-      
+<header class="fixed w-full top-0 z-[120] overflow-visible bg-white/90 backdrop-blur-md">
+  <div class="mx-auto max-w-7xl px-4">
+    <div class="flex h-16 items-center justify-between">
       <!-- Logo -->
-      <a routerLink="/" class="flex items-center gap-3 group" (click)="cerrarMenu()">
-        <img [src]="logoSrc" 
-             alt="TopStone Logo" 
-             class="h-10 w-auto transition-opacity duration-300 group-hover:opacity-90"/>
+      <a routerLink="/" class="flex items-center gap-2">
+        <img [src]="logoSrc" alt="TopStone" class="h-8 w-auto">
       </a>
 
-      <!-- Desktop Navigation -->
-      <div class="hidden lg:flex items-center gap-8"
-           [class.text-white]="!scrolled"
-           [class.text-neutral-900]="scrolled">
-        <!-- Home -->
-        <a routerLink="/" 
-           routerLinkActive="text-ts-accent" 
-           [routerLinkActiveOptions]="{exact: true}"
-           class="font-medium hover:text-ts-accent transition-colors px-3 py-2">
-          Inicio
-        </a>
-        
-        <!-- Productos with CSS-only Mega Menu -->
-        <!-- Productos + Mega menu -->
-        <div class="relative group">
-          <!-- Trigger (still navigates to /productos) -->
-          <a routerLink="/productos"
-             class="relative inline-flex items-center gap-1 hover:text-[var(--ts-accent)]
-                    before:content-[''] before:absolute before:left-0 before:top-full
-                    before:w-full before:h-5">
-            Productos <span aria-hidden>▾</span>
-          </a>
+      <!-- Desktop nav -->
+      <nav class="hidden md:flex items-center gap-8 text-sm font-medium text-neutral-900">
+        <a routerLink="/" routerLinkActive="text-[var(--ts-accent,#B08968)]" class="hover:text-[var(--ts-accent,#B08968)]">Home</a>
 
-          <!-- Panel -->
-          <div
-            class="pointer-events-none group-hover:pointer-events-auto
-                   invisible opacity-0 group-hover:visible group-hover:opacity-100
-                   transition-opacity duration-150
-                   absolute left-1/2 -translate-x-1/2 top-full pt-5 z-[80]">
-            <div class="w-[min(100vw-2rem,960px)] p-6 rounded-2xl bg-white text-neutral-900
-                        shadow-xl ring-1 ring-neutral-200 grid grid-cols-4 gap-6">
+        <!-- Productos: link + caret button (separate), with rock-solid hover group -->
+        <div #productsGroup class="relative group/mega">
+          <div class="inline-flex items-center gap-1 py-8 px-4 relative z-[125]">
+            <!-- IMPORTANT: This link is clean (no click handlers) so it ALWAYS navigates -->
+            <a routerLink="/productos"
+               routerLinkActive="text-[var(--ts-accent,#B08968)]"
+               class="hover:text-[var(--ts-accent,#B08968)]">Productos</a>
+
+            <!-- Caret only controls the panel; doesn't interfere with link clicks -->
+            <button type="button"
+                    class="p-1 rounded-md ring-1 ring-transparent hover:ring-neutral-300"
+                    [attr.aria-expanded]="showMega" aria-haspopup="true"
+                    (click)="toggleMega($event)">
+              <svg viewBox="0 0 20 20" class="h-4 w-4" aria-hidden="true">
+                <path d="M5 7l5 6 5-6" fill="currentColor"></path>
+              </svg>
+            </button>
+          </div>
+
+          <!-- Massive hover detection area -->
+          <div class="absolute inset-0 -inset-x-8 h-20 -top-4"
+               (mouseenter)="openMega()" (mouseleave)="closeMegaDelayed()"></div>
+
+          <!-- Mega panel with its own hover detection -->
+          <div #mega
+               class="absolute left-1/2 -translate-x-1/2 top-full z-[110]"
+               [class.hidden]="!showMega"
+               (mouseenter)="openMega()" (mouseleave)="closeMegaDelayed()">
+            <div class="w-[min(100vw-2rem,960px)] grid grid-cols-4 gap-6
+                        rounded-2xl bg-white text-neutral-900 shadow-xl ring-1 ring-neutral-200 p-6"
+                 role="menu" aria-label="Productos">
               <div>
                 <h4 class="font-semibold mb-3">12mm (160×320cm)</h4>
                 <ul class="space-y-2">
-                  <li><a routerLink="/productos/12mm/saint-laurent" class="hover:text-[var(--ts-accent)]">Saint Laurent</a></li>
-                  <li><a routerLink="/productos/12mm/black-gold" class="hover:text-[var(--ts-accent)]">Black Gold</a></li>
+                  <li><a routerLink="/productos/12mm/saint-laurent" class="hover:text-[var(--ts-accent,#B08968)]">Saint Laurent</a></li>
+                  <li><a routerLink="/productos/12mm/black-gold" class="hover:text-[var(--ts-accent,#B08968)]">Black Gold</a></li>
                 </ul>
               </div>
               <div>
                 <h4 class="font-semibold mb-3">15mm (160×320cm)</h4>
-                <!-- items... -->
+                <ul class="space-y-2">
+                  <li><a routerLink="/productos/15mm/carrara" class="hover:text-[var(--ts-accent,#B08968)]">Carrara</a></li>
+                </ul>
               </div>
               <div>
                 <h4 class="font-semibold mb-3">20mm (160×320cm)</h4>
-                <!-- items... -->
+                <ul class="space-y-2">
+                  <li><a routerLink="/productos/20mm/onyx" class="hover:text-[var(--ts-accent,#B08968)]">Onyx</a></li>
+                </ul>
               </div>
               <div class="rounded-xl overflow-hidden bg-neutral-100">
                 <img src="/assets/productos/12mm/saint-laurent.jpg" alt="Vista previa" class="w-full h-full object-cover">
@@ -68,136 +66,70 @@
             </div>
           </div>
         </div>
-        
-        <!-- Other Navigation Items -->
+
+        <a routerLink="/galeria" routerLinkActive="text-[var(--ts-accent,#B08968)]" class="hover:text-[var(--ts-accent,#B08968)]">Galería</a>
+        <a routerLink="/datos-tecnicos" routerLinkActive="text-[var(--ts-accent,#B08968)]" class="hover:text-[var(--ts-accent,#B08968)]">Datos técnicos</a>
+        <a routerLink="/contacto" routerLinkActive="text-[var(--ts-accent,#B08968)]" class="hover:text-[var(--ts-accent,#B08968)]">Contacto</a>
+      </nav>
+
+      <!-- Mobile Menu Button -->
+      <button (click)="alternarMenu()" 
+              class="md:hidden flex items-center justify-center w-10 h-10 rounded-lg hover:bg-gray-100 transition-colors">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          @if (!menuAbierto()) {
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+          } @else {
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+          }
+        </svg>
+      </button>
+
+      <!-- Cart Button -->
+      <button (click)="activarCarrito()" 
+              class="hidden md:flex items-center justify-center w-10 h-10 rounded-lg hover:bg-gray-100 transition-colors relative">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-2.5 5M7 13h10m0 0v6a1 1 0 01-1 1H8a1 1 0 01-1-1v-6m8 0V9a1 1 0 00-1-1H8a1 1 0 00-1 1v4.01"/>
+        </svg>
+        @if (totalItems() > 0) {
+          <span class="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+            {{totalItems()}}
+          </span>
+        }
+      </button>
+    </div>
+  </div>
+
+  <!-- Mobile Menu -->
+  @if (menuAbierto()) {
+    <div class="md:hidden bg-white border-t border-gray-200 shadow-lg">
+      <div class="px-4 py-6 space-y-4">
+        <a routerLink="/" 
+           (click)="cerrarMenu()"
+           class="block px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-lg transition-colors font-medium">
+          Home
+        </a>
+        <a routerLink="/productos" 
+           (click)="cerrarMenu()"
+           class="block px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-lg transition-colors font-medium">
+          Productos
+        </a>
         <a routerLink="/galeria" 
-           routerLinkActive="text-ts-accent"
-           class="font-medium hover:text-ts-accent transition-colors px-3 py-2"
-           [class.text-white]="!scrolled"
-           [class.text-gray-700]="scrolled">
+           (click)="cerrarMenu()"
+           class="block px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-lg transition-colors font-medium">
           Galería
         </a>
         <a routerLink="/datos-tecnicos" 
-           routerLinkActive="text-ts-accent"
-           class="font-medium hover:text-ts-accent transition-colors px-3 py-2"
-           [class.text-white]="!scrolled"
-           [class.text-gray-700]="scrolled">
+           (click)="cerrarMenu()"
+           class="block px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-lg transition-colors font-medium">
           Datos Técnicos
         </a>
         <a routerLink="/contacto" 
-           routerLinkActive="text-ts-accent"
-           class="font-medium hover:text-ts-accent transition-colors px-3 py-2"
-           [class.text-white]="!scrolled"
-           [class.text-gray-700]="scrolled">
+           (click)="cerrarMenu()"
+           class="block px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-lg transition-colors font-medium">
           Contacto
         </a>
       </div>
-
-      <!-- Actions -->
-      <div class="flex items-center gap-4">
-        <!-- Cart Button -->
-        <button 
-          (click)="activarCarrito()"
-          class="relative p-2 rounded-lg transition-colors group"
-          [class.hover:bg-white/10]="!scrolled"
-          [class.hover:bg-gray-100]="scrolled">
-          <svg class="w-6 h-6 group-hover:text-ts-accent transition-colors" 
-               [class.text-white]="!scrolled"
-               [class.text-gray-700]="scrolled"
-               fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
-                  d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
-          </svg>
-          @if (totalItems() > 0) {
-            <span class="absolute -top-1 -right-1 w-5 h-5 bg-ts-accent text-white text-xs rounded-full flex items-center justify-center font-medium">
-              {{totalItems()}}
-            </span>
-          }
-        </button>
-        
-        <!-- Mobile Menu Button -->
-        <button 
-          (click)="alternarMenu()"
-          class="lg:hidden p-2 rounded-lg transition-colors"
-          [class.hover:bg-white/10]="!scrolled"
-          [class.hover:bg-gray-100]="scrolled">
-          <svg class="w-6 h-6 transition-colors" 
-               [class.text-white]="!scrolled"
-               [class.text-gray-700]="scrolled"
-               fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
-          </svg>
-        </button>
-      </div>
     </div>
-
-    <!-- Mobile Menu -->
-    @if (menuAbierto()) {
-      <div class="lg:hidden border-t border-gray-100 bg-white/95 backdrop-blur-md">
-        <div class="py-4 space-y-2">
-          <a routerLink="/" 
-             routerLinkActive="bg-ts-accent/10 text-ts-accent" 
-             [routerLinkActiveOptions]="{exact: true}"
-             (click)="cerrarMenu()"
-             class="block px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-lg transition-colors font-medium">
-            Inicio
-          </a>
-          <div>
-            <button 
-              (click)="toggleMobileProductsMenu()"
-              class="w-full flex items-center justify-between px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-lg transition-colors font-medium">
-              Productos
-              <svg class="w-4 h-4 transition-transform duration-200" 
-                   [class.rotate-180]="mobileProductsOpen"
-                   fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-              </svg>
-            </button>
-            @if (mobileProductsOpen) {
-              <div class="ml-4 mt-2 space-y-1">
-                <a routerLink="/productos" 
-                   (click)="cerrarMenu()"
-                   class="block px-4 py-2 text-sm text-gray-600 hover:text-ts-accent transition-colors">
-                  Todos los productos
-                </a>
-                <a routerLink="/productos/12mm" 
-                   (click)="cerrarMenu()"
-                   class="block px-4 py-2 text-sm text-gray-600 hover:text-ts-accent transition-colors">
-                  12mm - Ultrafino
-                </a>
-                <a routerLink="/productos/15mm" 
-                   (click)="cerrarMenu()"
-                   class="block px-4 py-2 text-sm text-gray-600 hover:text-ts-accent transition-colors">
-                  15mm - Estándar
-                </a>
-                <a routerLink="/productos/20mm" 
-                   (click)="cerrarMenu()"
-                   class="block px-4 py-2 text-sm text-gray-600 hover:text-ts-accent transition-colors">
-                  20mm - Resistente
-                </a>
-              </div>
-            }
-          </div>
-          <a routerLink="/galeria" 
-             routerLinkActive="bg-ts-accent/10 text-ts-accent"
-             (click)="cerrarMenu()"
-             class="block px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-lg transition-colors font-medium">
-            Galería
-          </a>
-          <a routerLink="/datos-tecnicos" 
-             routerLinkActive="bg-ts-accent/10 text-ts-accent"
-             (click)="cerrarMenu()"
-             class="block px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-lg transition-colors font-medium">
-            Datos Técnicos
-          </a>
-          <a routerLink="/contacto" 
-             routerLinkActive="bg-ts-accent/10 text-ts-accent"
-             (click)="cerrarMenu()"
-             class="block px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-lg transition-colors font-medium">
-            Contacto
-          </a>
-        </div>
-      </div>
-    }
-  </div>
-</nav>
+  }
+</header>

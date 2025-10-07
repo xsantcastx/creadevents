@@ -2,6 +2,15 @@
 @use 'tailwindcss/components';
 @use 'tailwindcss/utilities';
 
+@layer base {
+  :root { --ts-accent: #B08968; }
+}
+
+/* DO NOT CLIP THE HEADER */
+header { 
+  overflow: visible !important; 
+}
+
 /* Component utilities for pill and navigation */
 .pill {
   display: inline-flex;
