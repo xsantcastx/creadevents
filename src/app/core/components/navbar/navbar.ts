@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output, signal, inject, PLATFORM_ID } from '@angular/core';
+import { Component, EventEmitter, Output, signal, inject, PLATFORM_ID, HostListener } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { map } from 'rxjs/operators';
@@ -22,6 +22,7 @@ export class NavbarComponent {
   showProductsMenu = false;
   mobileProductsOpen = false;
   isScrolled = false;
+  private hideTimer: any;
   
   readonly totalItems = toSignal(
     this.cartService.items$.pipe(
@@ -29,6 +30,11 @@ export class NavbarComponent {
     ),
     { initialValue: 0 }
   );
+
+  @HostListener('window:scroll')
+  onScroll() {
+    this.isScrolled = window.scrollY > 10;
+  }
 
   ngOnInit() {
     if (isPlatformBrowser(this.platformId)) {
@@ -40,10 +46,24 @@ export class NavbarComponent {
     if (isPlatformBrowser(this.platformId)) {
       window.removeEventListener('scroll', this.onScroll.bind(this));
     }
+    clearTimeout(this.hideTimer);
   }
 
-  onScroll() {
-    this.isScrolled = window.scrollY > 20;
+  openMega() {
+    clearTimeout(this.hideTimer);
+    this.showProductsMenu = true;
+  }
+
+  closeMegaDelayed() {
+    this.hideTimer = setTimeout(() => {
+      this.showProductsMenu = false;
+    }, 140);
+  }
+
+  onEsc(evt: KeyboardEvent) {
+    if (evt.key === 'Escape') {
+      this.showProductsMenu = false;
+    }
   }
 
   activarCarrito(): void {
