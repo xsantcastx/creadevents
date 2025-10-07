@@ -2,11 +2,13 @@ import { Component, OnInit, PLATFORM_ID, inject } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { DataService, Producto } from '../../../core/services/data.service';
+import { Product } from '../../../models/product';
+import { ProductCardComponent } from '../../../shared/components/product-card/product-card.component';
 
 @Component({
   selector: 'app-grosor',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, RouterLink, ProductCardComponent],
   template: `
     <!-- Hero Section with matching background -->
     <section class="relative py-16 lg:py-24 bg-gradient-to-b from-ts-paper to-white overflow-hidden">
@@ -116,65 +118,12 @@ import { DataService, Producto } from '../../../core/services/data.service';
       <!-- Products Grid -->
       <div [class]="viewMode === 'grid' ? 'grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8' : 'space-y-6'"
            *ngIf="productosFiltrados.length > 0">
-        <article *ngFor="let producto of productosFiltrados" 
-                 [class]="viewMode === 'grid' ? 'product-card-grid' : 'product-card-list'"
-                 class="group rounded-2xl overflow-hidden bg-white shadow-sm hover:shadow-xl transition-all duration-300">
-          
-          <!-- Grid View -->
-          <ng-container *ngIf="viewMode === 'grid'">
-            <div class="aspect-[4/3] overflow-hidden">
-              <img [src]="producto.cover" 
-                   [alt]="producto.nombre" 
-                   class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                   loading="lazy"/>
-            </div>
-            <div class="p-6">
-              <h3 class="font-serif text-xl text-neutral-800 mb-2">{{ producto.nombre }}</h3>
-              <p class="text-sm text-neutral-600 mb-4">{{ producto.medida }} · {{ producto.grosor }}</p>
-              <div class="flex items-center justify-between">
-                <a [routerLink]="['/productos', grosor, producto.slug]" 
-                   class="text-ts-accent hover:underline font-medium transition-colors">
-                  Ver detalles →
-                </a>
-                <button class="p-2 hover:bg-neutral-100 rounded-full transition-colors"
-                        title="Agregar a favoritos">
-                  <svg class="w-5 h-5 text-neutral-400 hover:text-ts-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
-                  </svg>
-                </button>
-              </div>
-            </div>
-          </ng-container>
-
-          <!-- List View -->
-          <ng-container *ngIf="viewMode === 'list'">
-            <div class="flex gap-6">
-              <div class="w-48 aspect-[4/3] overflow-hidden rounded-xl">
-                <img [src]="producto.cover" 
-                     [alt]="producto.nombre" 
-                     class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                     loading="lazy"/>
-              </div>
-              <div class="flex-1 p-6">
-                <h3 class="font-serif text-2xl text-neutral-800 mb-2">{{ producto.nombre }}</h3>
-                <p class="text-neutral-600 mb-4">{{ producto.medida }} · {{ producto.grosor }}</p>
-                <p class="text-neutral-700 mb-6 leading-relaxed">
-                  Superficie porcelánica de gran formato con acabado premium. 
-                  Ideal para {{getAplicaciones(producto.grosor)}}.
-                </p>
-                <div class="flex items-center justify-between">
-                  <a [routerLink]="['/productos', grosor, producto.slug]" 
-                     class="inline-flex items-center px-6 py-3 bg-ts-accent text-black rounded-full font-semibold hover:bg-ts-accent/90 transition-colors">
-                    Ver detalles
-                    <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
-                    </svg>
-                  </a>
-                </div>
-              </div>
-            </div>
-          </ng-container>
-        </article>
+        <ts-product-card 
+          *ngFor="let producto of productosFiltrados" 
+          [product]="producto"
+          [viewMode]="viewMode"
+          [grosorPath]="grosor">
+        </ts-product-card>
       </div>
       
       <!-- Empty State -->
@@ -230,26 +179,26 @@ export class GrosorComponent implements OnInit {
   
   grosor = '';
   productos: Producto[] = [];
-  productosFiltrados: Producto[] = [];
+  productosFiltrados: Product[] = [];
   viewMode: 'grid' | 'list' = 'grid';
 
-  // Fallback data for immediate display
-  fallbackData = {
+  // Fallback data for immediate display - converted to Product interface
+  fallbackData: Record<string, Product[]> = {
     '12mm': [
-      { nombre: 'Saint Laurent', slug: 'saint-laurent', grosor: '12mm', medida: '160x320cm', cover: 'assets/productos/12mm/saint-laurent.jpg' },
-      { nombre: 'Black Gold', slug: 'black-gold', grosor: '12mm', medida: '160x320cm', cover: 'assets/productos/12mm/black-gold.jpg' },
-      { nombre: 'Arenaria Ivory', slug: 'arenaria-ivory', grosor: '12mm', medida: '160x320cm', cover: 'assets/productos/12mm/arenaria-ivory.jpg' },
-      { nombre: 'Calacatta Gold', slug: 'calacatta-gold', grosor: '12mm', medida: '160x320cm', cover: 'assets/productos/12mm/calacatta-gold.jpg' }
+      { id: '12mm-saint-laurent', name: 'Saint Laurent', thickness: '12mm', category: '160×320cm', imageUrl: 'assets/productos/12mm/saint-laurent.jpg' },
+      { id: '12mm-black-gold', name: 'Black Gold', thickness: '12mm', category: '160×320cm', imageUrl: 'assets/productos/12mm/black-gold.jpg' },
+      { id: '12mm-arenaria-ivory', name: 'Arenaria Ivory', thickness: '12mm', category: '160×320cm', imageUrl: 'assets/productos/12mm/arenaria-ivory.jpg' },
+      { id: '12mm-calacatta-gold', name: 'Calacatta Gold', thickness: '12mm', category: '160×320cm', imageUrl: 'assets/productos/12mm/calacatta-gold.jpg' }
     ],
     '15mm': [
-      { nombre: 'Statuario Elegance', slug: 'statuario-elegance', grosor: '15mm', medida: '160x320cm', cover: 'assets/productos/15mm/statuario-elegance.jpg' },
-      { nombre: 'Laponia Black', slug: 'laponia-black', grosor: '15mm', medida: '160x320cm', cover: 'assets/productos/15mm/laponia-black.jpg' },
-      { nombre: 'Patagonia Natural', slug: 'patagonia-natural', grosor: '15mm', medida: '160x320cm', cover: 'assets/productos/15mm/patagonia-natural.jpg' }
+      { id: '15mm-statuario-elegance', name: 'Statuario Elegance', thickness: '15mm', category: '160×320cm', imageUrl: 'assets/productos/15mm/statuario-elegance.jpg' },
+      { id: '15mm-laponia-black', name: 'Laponia Black', thickness: '15mm', category: '160×320cm', imageUrl: 'assets/productos/15mm/laponia-black.jpg' },
+      { id: '15mm-patagonia-natural', name: 'Patagonia Natural', thickness: '15mm', category: '160×320cm', imageUrl: 'assets/productos/15mm/patagonia-natural.jpg' }
     ],
     '20mm': [
-      { nombre: 'Saint Laurent', slug: 'saint-laurent-20', grosor: '20mm', medida: '160x320cm', cover: 'assets/productos/20mm/saint-laurent.jpg' },
-      { nombre: 'Black Gold', slug: 'black-gold-20', grosor: '20mm', medida: '160x320cm', cover: 'assets/productos/20mm/black-gold.jpg' },
-      { nombre: 'Limestone Ivory', slug: 'limestone-ivory-20', grosor: '20mm', medida: '160x320cm', cover: 'assets/productos/20mm/limestone-ivory.jpg' }
+      { id: '20mm-saint-laurent', name: 'Saint Laurent', thickness: '20mm', category: '160×320cm', imageUrl: 'assets/productos/20mm/saint-laurent.jpg' },
+      { id: '20mm-black-gold', name: 'Black Gold', thickness: '20mm', category: '160×320cm', imageUrl: 'assets/productos/20mm/black-gold.jpg' },
+      { id: '20mm-limestone-ivory', name: 'Limestone Ivory', thickness: '20mm', category: '160×320cm', imageUrl: 'assets/productos/20mm/limestone-ivory.jpg' }
     ]
   };
 
@@ -262,7 +211,7 @@ export class GrosorComponent implements OnInit {
     this.grosor = this.route.snapshot.paramMap.get('grosor') || '';
     
     // Set fallback data immediately
-    this.productosFiltrados = (this.fallbackData as any)[this.grosor] || [];
+    this.productosFiltrados = this.fallbackData[this.grosor] || [];
     
     // Load real data if in browser
     if (isPlatformBrowser(this.platformId)) {
@@ -276,7 +225,14 @@ export class GrosorComponent implements OnInit {
         this.productos = data.items;
         const filtered = this.dataService.getProductosByGrosor(this.productos, this.grosor);
         if (filtered.length > 0) {
-          this.productosFiltrados = filtered;
+          // Convert to Product interface
+          this.productosFiltrados = filtered.map(p => ({
+            id: `${p.grosor}-${p.slug}`,
+            name: p.nombre,
+            thickness: p.grosor as '12mm'|'15mm'|'20mm',
+            category: p.medida,
+            imageUrl: p.cover
+          }));
         }
       },
       error: () => {

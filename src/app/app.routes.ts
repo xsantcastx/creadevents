@@ -37,6 +37,11 @@ export const routes: Routes = [
     title: 'TopStone | Contacto'
   },
   {
+    path: 'cart',
+    loadComponent: () => import('./pages/cart/cart.page').then(m => m.CartPage),
+    title: 'TopStone | Carrito'
+  },
+  {
     path: '404',
     loadComponent: () => import('./pages/not-found/not-found.page').then(m => m.NotFoundPageComponent),
     title: 'TopStone | Página no encontrada'

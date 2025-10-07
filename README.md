@@ -1,152 +1,126 @@
-Yes—let’s rebuild the navbar so it’s bullet-proof. This version guarantees:
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" aria-label="TopStone mark">
+  <defs>
+    <style>
+      :root { --ts-bronze: #B08968; }
+    </style>
+  </defs>
+  <!-- Slab plate -->
+  <rect x="20" y="20" width="200" height="200" rx="24" fill="#0B0B0C"/>
+  <!-- Transcend cut (bevel) -->
+  <path d="M220 95 L95 220 L220 220 Z" fill="var(--ts-bronze)"/>
+  <!-- T (negative carve) -->
+  <rect x="64" y="60" width="112" height="18" fill="#F3F2EF"/>
+  <rect x="112" y="78" width="16" height="88" fill="#F3F2EF"/>
+  <!-- S (negative carve) -->
+  <path d="M152 176c0 14-12 24-32 24-18 0-32-7-40-18l14-10c6 7 15 12 26 12 10 0 16-3 16-8 0-5-5-8-20-11-24-5-38-13-38-30 0-16 15-28 38-28 18 0 31 6 39 16l-14 10c-6-7-15-10-25-10-12 0-18 4-18 10 0 5 6 8 22 11 22 5 36 12 36 30Z" fill="#F3F2EF"/>
+</svg>
 
-Clicking Productos always navigates to /productos
 
-Hover OR the little caret button opens a sticky mega-menu (no flicker)
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 220" aria-label="TopStone logotype">
+  <!-- Icon -->
+  <g transform="translate(0,0) scale(0.9)">
+    <rect x="20" y="20" width="200" height="200" rx="24" fill="#0B0B0C"/>
+    <path d="M220 95 L95 220 L220 220 Z" fill="#B08968"/>
+    <rect x="64" y="60" width="112" height="18" fill="#F3F2EF"/>
+    <rect x="112" y="78" width="16" height="88" fill="#F3F2EF"/>
+    <path d="M152 176c0 14-12 24-32 24-18 0-32-7-40-18l14-10c6 7 15 12 26 12 10 0 16-3 16-8 0-5-5-8-20-11-24-5-38-13-38-30 0-16 15-28 38-28 18 0 31 6 39 16l-14 10c-6-7-15-10-25-10-12 0-18 4-18 10 0 5 6 8 22 11 22 5 36 12 36 30Z" fill="#F3F2EF"/>
+  </g>
 
-Keyboard + Escape support
+  <!-- Wordmark + tagline -->
+  <g transform="translate(235,40)">
+    <text x="0" y="60" font-family="Cinzel, 'Cormorant Garamond', serif" font-size="64" letter-spacing="2" fill="#0B0B0C">
+      TOPSTONE
+    </text>
+    <text x="0" y="110" font-family="Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif"
+          font-size="18" letter-spacing="2.5" fill="#6B7280">
+      Superficies que trascienden
+    </text>
+  </g>
+</svg>
 
-No “dead gap”, no clipping, no overlay blocking clicks
 
-Paste these three files (or adapt) into feature/font_fix.
-
-1) src/app/components/nav/nav.component.ts
-import { Component, ElementRef, HostListener, ViewChild } from '@angular/core';
-import { RouterLink, RouterLinkActive } from '@angular/router';
-
-@Component({
-  standalone: true,
-  selector: 'ts-nav',
-  imports: [RouterLink, RouterLinkActive],
-  templateUrl: './nav.component.html',
-})
-export class NavComponent {
-  showMega = false;
-  private hideTimer: any;
-
-  @ViewChild('mega') megaRef!: ElementRef<HTMLDivElement>;
-  @ViewChild('productsGroup') productsGroupRef!: ElementRef<HTMLDivElement>;
-
-  // Hover open/close with a small delay for stability
-  openMega() {
-    clearTimeout(this.hideTimer);
-    this.showMega = true;
-  }
-  closeMegaDelayed() {
-    clearTimeout(this.hideTimer);
-    this.hideTimer = setTimeout(() => (this.showMega = false), 140);
-  }
-  // Caret button toggles without affecting the Products link
-  toggleMega(ev: MouseEvent) {
-    ev.stopPropagation();
-    this.showMega = !this.showMega;
-  }
-
-  // Close when clicking outside
-  @HostListener('document:click', ['$event'])
-  onDocClick(e: MouseEvent) {
-    if (!this.productsGroupRef) return;
-    const g = this.productsGroupRef.nativeElement;
-    if (!g.contains(e.target as Node)) this.showMega = false;
-  }
-
-  // ESC to close
-  @HostListener('window:keydown', ['$event'])
-  onKey(e: KeyboardEvent) {
-    if (e.key === 'Escape') this.showMega = false;
-  }
+:root{
+  --ts-ink:#0B0B0C;
+  --ts-bone:#F3F2EF;
+  --ts-bronze:#B08968;
 }
+.logo--bronze { color: var(--ts-bronze); fill: var(--ts-bronze); }
 
-2) src/app/components/nav/nav.component.html
-<header class="fixed inset-x-0 top-0 z-[120] overflow-visible bg-white/90 backdrop-blur-md">
-  <div class="mx-auto max-w-7xl px-4">
-    <div class="flex h-16 items-center justify-between">
-      <!-- Logo -->
-      <a routerLink="/" class="flex items-center gap-2">
-        <img src="/assets/logo_topstone-dark.svg" alt="TopStone" class="h-8 w-auto">
-      </a>
 
-      <!-- Desktop nav -->
-      <nav class="hidden md:flex items-center gap-8 text-sm font-medium text-neutral-900">
-        <a routerLink="/" routerLinkActive="text-[var(--ts-accent,#B08968)]" class="hover:text-[var(--ts-accent,#B08968)]">Home</a>
+love the slogan choice. here’s a logo concept that fits TopStone — “Superficies que trascienden” and looks premium on web, print, and etched on stone.
 
-        <!-- Productos: link + caret button (separate), with rock-solid hover group -->
-        <div #productsGroup class="relative"
-             (mouseenter)="openMega()" (mouseleave)="closeMegaDelayed()">
-          <div class="inline-flex items-center gap-1">
-            <!-- IMPORTANT: This link is clean (no click handlers) so it ALWAYS navigates -->
-            <a routerLink="/productos"
-               class="hover:text-[var(--ts-accent,#B08968)]">Productos</a>
+Concept (clean + timeless)
 
-            <!-- Caret only controls the panel; doesn't interfere with link clicks -->
-            <button type="button"
-                    class="p-1 rounded-md ring-1 ring-transparent hover:ring-neutral-300"
-                    [attr.aria-expanded]="showMega" aria-haspopup="true"
-                    (click)="toggleMega($event)">
-              <svg viewBox="0 0 20 20" class="h-4 w-4" aria-hidden="true">
-                <path d="M5 7l5 6 5-6" fill="currentColor"></path>
-              </svg>
-            </button>
-          </div>
+Monogram + wordmark. A chiselled “TS” monogram inside a subtle slab silhouette with a diagonal “transcend” cut. It suggests a large-format tile and the idea of rising beyond the surface.
 
-          <!-- Invisible bridge (prevents hover gap between trigger and panel) -->
-          <span aria-hidden class="block absolute left-0 top-full h-4 w-full"></span>
+Shapes: square/portrait slab with a 12–15° diagonal bevel slicing upward; negative-space forms the T and S.
 
-          <!-- Mega panel -->
-          <div #mega
-               class="absolute left-1/2 -translate-x-1/2 top-full mt-4 z-[110]"
-               [class.hidden]="!showMega">
-            <div class="w-[min(100vw-2rem,960px)] grid grid-cols-4 gap-6
-                        rounded-2xl bg-white text-neutral-900 shadow-xl ring-1 ring-neutral-200 p-6"
-                 role="menu" aria-label="Productos">
-              <div>
-                <h4 class="font-semibold mb-3">12mm (160×320cm)</h4>
-                <ul class="space-y-2">
-                  <li><a routerLink="/productos/12mm/saint-laurent" class="hover:text-[var(--ts-accent,#B08968)]">Saint Laurent</a></li>
-                  <li><a routerLink="/productos/12mm/black-gold" class="hover:text-[var(--ts-accent,#B08968)]">Black Gold</a></li>
-                </ul>
-              </div>
-              <div>
-                <h4 class="font-semibold mb-3">15mm (160×320cm)</h4>
-                <ul class="space-y-2">
-                  <li><a routerLink="/productos/15mm/carrara" class="hover:text-[var(--ts-accent,#B08968)]">Carrara</a></li>
-                </ul>
-              </div>
-              <div>
-                <h4 class="font-semibold mb-3">20mm (160×320cm)</h4>
-                <ul class="space-y-2">
-                  <li><a routerLink="/productos/20mm/onyx" class="hover:text-[var(--ts-accent,#B08968)]">Onyx</a></li>
-                </ul>
-              </div>
-              <div class="rounded-xl overflow-hidden bg-neutral-100">
-                <img src="/assets/productos/12mm/saint-laurent.jpg" alt="Vista previa" class="w-full h-full object-cover">
-              </div>
-            </div>
-          </div>
-        </div>
+Vibe: architectural, luxe, minimal—works as an icon, watermark, or emboss.
 
-        <a routerLink="/galeria" routerLinkActive="text-[var(--ts-accent,#B08968)]" class="hover:text-[var(--ts-accent,#B08968)]">Galería</a>
-        <a routerLink="/datos-tecnicos" routerLinkActive="text-[var(--ts-accent,#B08968)]" class="hover:text-[var(--ts-accent,#B08968)]">Datos técnicos</a>
-        <a routerLink="/contacto" routerLinkActive="text-[var(--ts-accent,#B08968)]" class="hover:text-[var(--ts-accent,#B08968)]">Contacto</a>
-      </nav>
+Palette
 
-      <!-- Keep/adjust your mobile menu separately -->
-      <button class="md:hidden p-2 rounded-lg ring-1 ring-neutral-300" aria-label="Menú">☰</button>
-    </div>
-  </div>
-</header>
+Charcoal: #0B0B0C (primary for text/icons)
 
-3) src/styles.css (add the accent token + make sure nothing clips)
-:root { --ts-accent: #B08968; }
-/* DO NOT CLIP THE HEADER */
-header { overflow: visible !important; }
+Bone: #F3F2EF (light background)
 
-Important checks (do these if you still see issues)
+Bronze accent: #B08968 (subtle highlight, CTAs)
 
-Routes: confirm you have a route for /productos (or change the link to the actual path).
+White: #FFFFFF (reverse lockup)
 
-No overlay blocking the header: remove any full-width absolute/fixed element at the top that might catch clicks. If you need it, add pointer-events:none to that overlay.
+Type pairing
 
-No overflow-hidden on header ancestors. If a hero section needs clipping, put overflow-hidden on the hero content wrapper, not on <header> or its parents.
+Wordmark: Cinzel (or Cormorant Garamond if you prefer softer serifs). Uppercase with a bit of tracking for stone-brand elegance.
 
-Z-index: header uses z-[120]. Make sure nothing else sits higher.
+Tagline: Inter (medium), letter-spaced to breathe under the wordmark.
+
+Lockups
+
+Horizontal: [Icon] — TOPSTONE ⏎ “Superficies que trascienden”
+
+Stacked: Icon above, then TOPSTONE, then the tagline
+
+Icon-only: The TS monogram for favicon/social/engraving
+
+Clearspace & sizing
+
+Clearspace = height of the T (one “T-unit”) all around.
+
+Minimum sizes:
+
+Icon-only: 16 px (favicon), 24 px UI
+
+Full lockup with tagline: 120 px width (web), 35 mm (print)
+
+SVG — Icon-only monogram (ready to drop in /assets/logo_topstone-mark.svg)
+
+Pure vector, no fonts. Bronze variant included via a CSS var.
+
+SVG — Horizontal lockup (icon + wordmark + tagline)
+
+Uses system/Google fonts. If you want this 100% vector, I can convert to outlines next.
+
+Usage on your site
+
+Header (light background): use the charcoal icon + black wordmark; tagline optional in navbar (keep it on hero instead).
+
+Hero on photo/dark: use white/bronze reverse: change #0B0B0C to #FFFFFF and #F3F2EF to #0B0B0C, or simply add filter: invert(1) for the icon.
+
+Engraving/etching: use single-color mark (all #0B0B0C or all white). The monogram works at 1-color without losing recognition.
+
+Drop-in CSS tokens (match your site)
+:root{
+  --ts-ink:#0B0B0C;
+  --ts-bone:#F3F2EF;
+  --ts-bronze:#B08968;
+}
+.logo--bronze { color: var(--ts-bronze); fill: var(--ts-bronze); }
+
+What I can do next
+
+Convert the wordmark + tagline to outlines (SVG paths) so it renders identically everywhere.
+
+Provide a stacked variant and favicon (16/32/48/512).
+
+Generate dark/light/mono export set and a tiny brand sheet PDF.
+
+If you want me to tweak the monogram angles or make the “S” more geometric (less calligraphic), say the word and I’ll adjust + send outlined SVGs.

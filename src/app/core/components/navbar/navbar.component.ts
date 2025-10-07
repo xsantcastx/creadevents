@@ -4,7 +4,7 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { map } from 'rxjs/operators';
 import { DataService } from '../../services/data.service';
-import { CartService } from '../../../shared/services/cart';
+import { CartService } from '../../../services/cart.service';
 
 @Component({
   selector: 'app-navbar',
@@ -31,9 +31,7 @@ export class NavbarComponent {
   @ViewChild('productsGroup') productsGroupRef!: ElementRef<HTMLDivElement>;
 
   readonly totalItems = toSignal(
-    this.cartService.items$.pipe(
-      map((items) => items.reduce((total, item) => total + item.cantidad, 0))
-    ),
+    this.cartService.count$,
     { initialValue: 0 }
   );
   
@@ -150,6 +148,6 @@ export class NavbarComponent {
 
   // Support dual logo versions as per README specs
   get logoSrc() {
-    return this.scrolled ? '/assets/logo_topstone-dark.svg' : '/assets/logo_topstone.svg';
+    return this.scrolled ? '/assets/topstone-mark-dark.svg' : '/assets/topstone-mark-light.svg';
   }
 }
