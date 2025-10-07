@@ -2,6 +2,15 @@
 @use 'tailwindcss/components';
 @use 'tailwindcss/utilities';
 
+@layer base {
+  :root { --ts-accent: #B08968; }
+}
+
+/* DO NOT CLIP THE HEADER */
+header { 
+  overflow: visible !important; 
+}
+
 /* Component utilities for pill and navigation */
 .pill {
   display: inline-flex;
@@ -17,27 +26,58 @@
   text-decoration: none;
 }
 
-.pill-light {
-  background-color: rgba(255, 255, 255, 0.9);
+/* New ts-tab classes for unified navigation */
+.ts-tab {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.375rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  background-color: rgb(245 245 245);
   color: rgb(23 23 23);
-  border-color: rgb(229 229 229);
+  text-decoration: none;
+  transition: all 0.2s ease-out;
+}
+
+.ts-tab:hover {
+  background-color: rgb(229 229 229);
+}
+
+.ts-tab-active {
+  background-color: rgb(23 23 23) !important;
+  color: rgb(255 255 255) !important;
+}
+
+.ts-tab-active:hover {
+  background-color: rgb(23 23 23) !important;
+}
+
+.pill-light {
+  background-color: rgba(255, 255, 255, 0.95);
+  color: rgb(17 24 39);
+  border-color: rgb(156 163 175);
   backdrop-filter: blur(8px);
+  font-weight: 500;
 }
 
 .pill-light:hover {
   background-color: rgb(255 255 255);
-  box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  box-shadow: 0 2px 4px 0 rgb(0 0 0 / 0.1);
+  border-color: rgb(107 114 128);
 }
 
 .pill-dark {
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(0, 0, 0, 0.7);
   color: rgb(255 255 255);
-  border-color: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.3);
   backdrop-filter: blur(8px);
+  font-weight: 500;
 }
 
 .pill-dark:hover {
-  background-color: rgba(0, 0, 0, 0.7);
+  background-color: rgba(0, 0, 0, 0.85);
+  border-color: rgba(255, 255, 255, 0.4);
 }
 
 .pill-active {

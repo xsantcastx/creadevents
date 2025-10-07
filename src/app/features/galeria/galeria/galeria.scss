@@ -12,8 +12,14 @@
   position: relative;
   border-radius: 24px;
   overflow: hidden;
-  min-height: 280px;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+  aspect-ratio: 4/3;
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  transition: box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+.galeria__card:hover {
+  box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  transform: translateY(-2px);
 }
 
 .galeria__imagen {

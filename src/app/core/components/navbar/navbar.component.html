@@ -9,8 +9,11 @@
   <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
     <div class="flex h-16 items-center justify-between">
       <!-- Logo -->
-      <a routerLink="/" class="flex items-center gap-3">
+      <a routerLink="/" class="flex items-center gap-3 group">
         <img [src]="logoSrc" alt="TopStone" class="h-8 w-auto" />
+        <span class="font-serif text-xl font-semibold transition-colors group-hover:text-ts-accent"
+              [class.text-neutral-900]="scrolled"
+              [class.text-white]="!scrolled">TopStone</span>
       </a>
 
       <!-- Mobile hamburger -->
@@ -33,24 +36,27 @@
           Home
         </a>
 
-        <!-- Products mega menu -->
-        <div class="relative group"
-             (mouseenter)="showMega = true" 
-             (mouseleave)="showMega = false">
-          <button class="hover:text-ts-accent transition-colors flex items-center gap-1">
+        <!-- Products mega menu with robust hover controls -->
+        <div #productsGroup class="relative"
+             (mouseenter)="openMega()" (mouseleave)="closeMegaDelayed()">
+          <a routerLink="/productos" class="hover:text-ts-accent transition-colors flex items-center gap-1">
             Productos
             <svg class="w-4 h-4 transition-transform" [class.rotate-180]="showMega" fill="currentColor" viewBox="0 0 20 20">
               <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"/>
             </svg>
-          </button>
+          </a>
+
+          <!-- Bridge element to prevent gaps -->
+          <div *ngIf="showMega" class="absolute left-1/2 -translate-x-1/2 mt-0 w-[min(100vw-2rem,920px)] h-4 z-[105]"
+               (mouseenter)="openMega()" (mouseleave)="closeMegaDelayed()"></div>
 
           <!-- Mega menu dropdown -->
-          <div
+          <div #mega
             *ngIf="showMega"
             class="absolute left-1/2 -translate-x-1/2 mt-4 w-[min(100vw-2rem,920px)]
                    p-6 rounded-2xl bg-white text-neutral-900 shadow-xl border border-neutral-100 grid grid-cols-4 gap-6
-                   animate-in fade-in slide-in-from-top-2 duration-200"
-          >
+                   animate-in fade-in slide-in-from-top-2 duration-200 z-[110]"
+            (mouseenter)="openMega()" (mouseleave)="closeMegaImmediate()">
             <!-- 12mm Column -->
             <div>
               <h4 class="font-serif font-semibold mb-3 text-ts-accent">12mm</h4>
@@ -125,6 +131,20 @@
           Contacto
         </a>
       </nav>
+
+      <!-- Cart Button -->
+      <a routerLink="/cart" 
+         class="hidden md:flex items-center justify-center w-10 h-10 rounded-lg hover:bg-gray-100 transition-colors relative">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-2.5 5M7 13h10m0 0v6a1 1 0 01-1 1H8a1 1 0 01-1-1v-6m8 0V9a1 1 0 00-1-1H8a1 1 0 00-1 1v4.01"/>
+        </svg>
+        @if (totalItems() > 0) {
+          <span class="absolute -top-2 -right-2 bg-ts-accent text-black text-xs rounded-full w-5 h-5 flex items-center justify-center font-semibold">
+            {{totalItems()}}
+          </span>
+        }
+      </a>
     </div>
   </div>
 </header>
@@ -142,7 +162,10 @@
   
   <!-- Mobile drawer header -->
   <div class="flex items-center justify-between p-6 border-b border-neutral-200">
-    <img src="assets/Logo.jpeg" alt="TopStone" class="h-8" />
+    <div class="flex items-center gap-3">
+      <img src="assets/topstone-mark-dark.svg" alt="TopStone" class="h-8" />
+      <span class="font-serif text-xl font-semibold text-neutral-900">TopStone</span>
+    </div>
     <button (click)="closeMobile()" class="p-2 hover:bg-neutral-100 rounded-lg">
       <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
         <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"/>

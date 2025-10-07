@@ -44,10 +44,16 @@
             <div class="p-6">
               <h3 class="font-serif text-xl text-ts-bg mb-2">{{producto.nombre}}</h3>
               <p class="text-sm text-neutral-600 mb-4">{{producto.medida}} · {{producto.grosor}}</p>
-              <a [routerLink]="['/productos', '12mm', producto.slug]" 
-                 class="text-ts-accent hover:underline font-medium transition-colors">
-                Ver detalles →
-              </a>
+              <div class="flex items-center justify-between">
+                <a [routerLink]="['/productos', '12mm', producto.slug]" 
+                   class="text-ts-accent hover:underline font-medium transition-colors">
+                  Ver detalles →
+                </a>
+                <button (click)="addToCart(producto, $event)"
+                        class="px-4 py-2 bg-ts-accent text-black rounded-lg font-medium hover:bg-ts-accent/90 transition-colors">
+                  Añadir
+                </button>
+              </div>
             </div>
           </article>
         }
@@ -82,10 +88,16 @@
             <div class="p-6">
               <h3 class="font-serif text-xl text-ts-bg mb-2">{{producto.nombre}}</h3>
               <p class="text-sm text-neutral-600 mb-4">{{producto.medida}} · {{producto.grosor}}</p>
-              <a [routerLink]="['/productos', '15mm', producto.slug]" 
-                 class="text-ts-accent hover:underline font-medium transition-colors">
-                Ver detalles →
-              </a>
+              <div class="flex items-center justify-between">
+                <a [routerLink]="['/productos', '15mm', producto.slug]" 
+                   class="text-ts-accent hover:underline font-medium transition-colors">
+                  Ver detalles →
+                </a>
+                <button (click)="addToCart(producto, $event)"
+                        class="px-4 py-2 bg-ts-accent text-black rounded-lg font-medium hover:bg-ts-accent/90 transition-colors">
+                  Añadir
+                </button>
+              </div>
             </div>
           </article>
         }
@@ -120,10 +132,16 @@
             <div class="p-6">
               <h3 class="font-serif text-xl text-ts-bg mb-2">{{producto.nombre}}</h3>
               <p class="text-sm text-neutral-600 mb-4">{{producto.medida}} · {{producto.grosor}}</p>
-              <a [routerLink]="['/productos', '20mm', producto.slug]" 
-                 class="text-ts-accent hover:underline font-medium transition-colors">
-                Ver detalles →
-              </a>
+              <div class="flex items-center justify-between">
+                <a [routerLink]="['/productos', '20mm', producto.slug]" 
+                   class="text-ts-accent hover:underline font-medium transition-colors">
+                  Ver detalles →
+                </a>
+                <button (click)="addToCart(producto, $event)"
+                        class="px-4 py-2 bg-ts-accent text-black rounded-lg font-medium hover:bg-ts-accent/90 transition-colors">
+                  Añadir
+                </button>
+              </div>
             </div>
           </article>
         }

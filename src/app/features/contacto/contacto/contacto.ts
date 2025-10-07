@@ -1,8 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { SectionTitleComponent } from '../../../shared/components/section-title/section-title';
-import { EmailService } from '../../../shared/services/email';
-import { CustomerInfo } from '../../../shared/models/catalog';
+import { EmailService } from '../../../services/email.service';
 
 @Component({
   selector: 'app-contacto',
@@ -25,24 +24,29 @@ export class ContactoComponent {
     mensaje: ['', Validators.required]
   });
 
-  enviar(): void {
+  async enviar(): Promise<void> {
     if (this.formulario.invalid) {
       this.formulario.markAllAsTouched();
       return;
     }
 
     const datos = this.formulario.getRawValue();
-    const cliente: CustomerInfo = {
+    const contactData = {
       nombre: datos.nombre ?? '',
       email: datos.email ?? '',
       telefono: datos.telefono ?? '',
       empresa: datos.empresa ?? undefined,
-      mensaje: datos.mensaje ?? undefined
+      mensaje: datos.mensaje ?? '',
+      aceptarPrivacidad: true // Since this is an older component, auto-accept
     };
 
-    this.emailService.sendCartSolicitud([], cliente).subscribe(() => {
+    try {
+      await this.emailService.sendContactForm(contactData);
       this.enviado = true;
       this.formulario.reset();
-    });
+    } catch (error) {
+      console.error('Error sending contact form:', error);
+      // Could add error handling UI here
+    }
   }
 }

@@ -9,33 +9,6 @@ button:focus-visible {
   border-radius: 8px;
 }
 
-// Mega menu specific styles
-.mega-menu-container {
-  position: relative;
-}
-
-.mega-menu {
-  position: absolute;
-  top: 100%;
-  left: 50%;
-  transform: translateX(-50%) translateY(8px);
-  width: 320px;
-  background: white;
-  border-radius: 16px;
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-  border: 1px solid #e5e7eb;
-  opacity: 0;
-  visibility: hidden;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  z-index: 50;
-}
-
-.mega-menu-visible {
-  transform: translateX(-50%) translateY(0);
-  opacity: 1;
-  visibility: visible;
-}
-
 // Mobile menu animation
 @keyframes slideDown {
   from {
@@ -52,11 +25,6 @@ button:focus-visible {
 .backdrop-blur-md {
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-}
-
-// Ensure proper z-index stacking
-nav {
-  z-index: 9999;
 }
 
 // Custom hover effects for navbar links
