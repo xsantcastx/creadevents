@@ -1,9 +1,11 @@
-<nav class="fixed top-0 left-0 right-0 z-[70] transition-all duration-300" 
+<nav class="fixed inset-x-0 top-0 z-[90] transition-all duration-300" 
      [class.bg-transparent]="!scrolled"
      [class.bg-white/95]="scrolled"
      [class.backdrop-blur-md]="scrolled"
      [class.border-b]="scrolled"
-     [class.border-gray-100]="scrolled">
+     [class.border-gray-100]="scrolled"
+     [class.text-white]="!scrolled"
+     [class.text-neutral-900]="scrolled">
   <div class="max-w-7xl mx-auto px-6">
     <div class="flex items-center justify-between h-20">
       
@@ -27,48 +29,41 @@
         </a>
         
         <!-- Productos with CSS-only Mega Menu -->
+        <!-- Productos + Mega menu -->
         <div class="relative group">
-          <a routerLink="/productos" 
-             routerLinkActive="text-ts-accent"
-             class="relative inline-flex items-center gap-1 font-medium hover:text-ts-accent transition-colors px-3 py-2
-                    before:content-[''] before:absolute before:left-0 before:top-full before:w-full before:h-5">
+          <!-- Trigger (still navigates to /productos) -->
+          <a routerLink="/productos"
+             class="relative inline-flex items-center gap-1 hover:text-[var(--ts-accent)]
+                    before:content-[''] before:absolute before:left-0 before:top-full
+                    before:w-full before:h-5">
             Productos <span aria-hidden>▾</span>
           </a>
-          
-          <!-- Mega Panel -->
-          <div class="pointer-events-none group-hover:pointer-events-auto
-                      invisible opacity-0 group-hover:visible group-hover:opacity-100
-                      transition-opacity duration-150
-                      absolute left-1/2 -translate-x-1/2 top-full pt-5 z-[60]">
+
+          <!-- Panel -->
+          <div
+            class="pointer-events-none group-hover:pointer-events-auto
+                   invisible opacity-0 group-hover:visible group-hover:opacity-100
+                   transition-opacity duration-150
+                   absolute left-1/2 -translate-x-1/2 top-full pt-5 z-[80]">
             <div class="w-[min(100vw-2rem,960px)] p-6 rounded-2xl bg-white text-neutral-900
                         shadow-xl ring-1 ring-neutral-200 grid grid-cols-4 gap-6">
-              <!-- Col 1: 12mm -->
               <div>
                 <h4 class="font-semibold mb-3">12mm (160×320cm)</h4>
                 <ul class="space-y-2">
-                  <li><a routerLink="/productos/12mm" class="hover:text-[var(--ts-accent)] text-sm">Ver todos 12mm</a></li>
+                  <li><a routerLink="/productos/12mm/saint-laurent" class="hover:text-[var(--ts-accent)]">Saint Laurent</a></li>
+                  <li><a routerLink="/productos/12mm/black-gold" class="hover:text-[var(--ts-accent)]">Black Gold</a></li>
                 </ul>
               </div>
-              
-              <!-- Col 2: 15mm -->
               <div>
                 <h4 class="font-semibold mb-3">15mm (160×320cm)</h4>
-                <ul class="space-y-2">
-                  <li><a routerLink="/productos/15mm" class="hover:text-[var(--ts-accent)] text-sm">Ver todos 15mm</a></li>
-                </ul>
+                <!-- items... -->
               </div>
-              
-              <!-- Col 3: 20mm -->
               <div>
                 <h4 class="font-semibold mb-3">20mm (160×320cm)</h4>
-                <ul class="space-y-2">
-                  <li><a routerLink="/productos/20mm" class="hover:text-[var(--ts-accent)] text-sm">Ver todos 20mm</a></li>
-                </ul>
+                <!-- items... -->
               </div>
-              
-              <!-- Col 4: Preview Image -->
               <div class="rounded-xl overflow-hidden bg-neutral-100">
-                <img src="/assets/hero.jpg" alt="Vista previa" class="w-full h-full object-cover">
+                <img src="/assets/productos/12mm/saint-laurent.jpg" alt="Vista previa" class="w-full h-full object-cover">
               </div>
             </div>
           </div>

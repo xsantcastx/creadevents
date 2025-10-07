@@ -1,12 +1,11 @@
-1) Mega-menu that doesn’t disappear
+1) Mega-menu: make hover continuous (no flicker)
+Replace the “Productos” block with this
 
-This version avoids JS timing glitches by using pure CSS “group-hover”, removes the hover “gap”, and ensures the panel sits above everything.
+Make sure trigger + panel are inside the same .group.relative and that the panel uses group-hover + an invisible bridge under the trigger.
 
-navbar.component.html
-
-<!-- Wrap trigger + panel in the same relative group -->
-<div class="relative group" >
-  <!-- The link still navigates to /productos -->
+<!-- Productos + Mega menu -->
+<div class="relative group">
+  <!-- Trigger (still navigates to /productos) -->
   <a routerLink="/productos"
      class="relative inline-flex items-center gap-1 hover:text-[var(--ts-accent)]
             before:content-[''] before:absolute before:left-0 before:top-full
@@ -14,15 +13,14 @@ navbar.component.html
     Productos <span aria-hidden>▾</span>
   </a>
 
-  <!-- Mega panel -->
+  <!-- Panel -->
   <div
     class="pointer-events-none group-hover:pointer-events-auto
            invisible opacity-0 group-hover:visible group-hover:opacity-100
            transition-opacity duration-150
-           absolute left-1/2 -translate-x-1/2 top-full pt-5 z-[60]">
+           absolute left-1/2 -translate-x-1/2 top-full pt-5 z-[80]">
     <div class="w-[min(100vw-2rem,960px)] p-6 rounded-2xl bg-white text-neutral-900
                 shadow-xl ring-1 ring-neutral-200 grid grid-cols-4 gap-6">
-      <!-- col 1 -->
       <div>
         <h4 class="font-semibold mb-3">12mm (160×320cm)</h4>
         <ul class="space-y-2">
@@ -30,7 +28,14 @@ navbar.component.html
           <li><a routerLink="/productos/12mm/black-gold" class="hover:text-[var(--ts-accent)]">Black Gold</a></li>
         </ul>
       </div>
-      <!-- col 2, 3 ... -->
+      <div>
+        <h4 class="font-semibold mb-3">15mm (160×320cm)</h4>
+        <!-- items... -->
+      </div>
+      <div>
+        <h4 class="font-semibold mb-3">20mm (160×320cm)</h4>
+        <!-- items... -->
+      </div>
       <div class="rounded-xl overflow-hidden bg-neutral-100">
         <img src="/assets/productos/12mm/saint-laurent.jpg" alt="Vista previa" class="w-full h-full object-cover">
       </div>
@@ -38,21 +43,33 @@ navbar.component.html
   </div>
 </div>
 
+Important parent fixes (do these too)
 
-Important parent fixes (common culprits)
+Give the header a high stacking context and no clipping:
 
-Make sure no ancestor of the panel has overflow:hidden (except intentionally). If your <header> or a container has it, remove it or scope it.
+<header class="fixed inset-x-0 top-0 z-[90]"> <!-- remove any overflow-hidden here -->
 
-Keep the nav high: e.g. <header class="fixed inset-x-0 top-0 z-[70]">.
 
-If you previously bound (mouseenter)/(mouseleave) with timers, you can remove that logic now.
+Make sure no ancestor of the mega-panel has overflow-hidden (common cause of “disappears/clipped”).
 
-2) “Galería” sub-nav color (match “Datos técnicos”)
+If you previously added (mouseenter)/(mouseleave) timers in TS, remove them—the CSS above is enough.
 
-Unify the tab/pill styles and make the active route consistent.
+2) “Galería” pill looks gray: unify its style with “Datos técnicos”
 
-tabs.component.html (or wherever those pills live)
+Create two small utility classes (component layer) and apply them to all sub-nav pills.
 
+In styles.css (or your Tailwind entry)
+@layer components {
+  .ts-tab {
+    @apply inline-flex items-center px-3 py-1.5 rounded-full
+           text-sm font-medium bg-neutral-100 text-neutral-800 hover:bg-neutral-200;
+  }
+  .ts-tab-active {
+    @apply bg-neutral-900 text-white hover:bg-neutral-900;
+  }
+}
+
+In the sub-nav (where “Galería” and “Datos técnicos” render)
 <nav class="flex flex-wrap gap-2">
   <a routerLink="/galeria"
      routerLinkActive="ts-tab-active"
@@ -65,35 +82,19 @@ tabs.component.html (or wherever those pills live)
 </nav>
 
 
-Global styles (Tailwind layer)
+If you don’t want to add the utility classes, you can inline the same @apply styles directly on the anchors for a quick test.
 
-/* tailwind.css or styles.css */
-@layer components {
-  .ts-tab {
-    @apply inline-flex items-center px-3 py-1.5 rounded-full
-           text-sm font-medium bg-neutral-100 text-neutral-800 hover:bg-neutral-200;
-  }
-  .ts-tab-active {
-    @apply bg-neutral-900 text-white hover:bg-neutral-900;
-  }
-}
+3) Two tiny polish tweaks (optional but helpful)
 
-
-If you don’t have a shared tabs component, paste those classes directly on the Galería pills so they match Datos técnicos.
-
-3) Small polish while you’re here
-
-Set product card images to a fixed ratio so grids don’t jump:
-
-<img class="w-full aspect-[4/3] object-cover" ...>
-
-
-Ensure the nav flips to dark logo + dark text on scroll for contrast:
+Ensure nav text color flips on scroll so links never look washed out:
 
 // navbar.component.ts
 scrolled = false;
 @HostListener('window:scroll') onScroll(){ this.scrolled = window.scrollY > 8; }
-get logoSrc(){ return this.scrolled ? '/assets/logo_topstone-dark.svg' : '/assets/logo_topstone.svg'; }
 
-<!-- header text colors -->
-<nav [class.text-white]="!scrolled" [class.text-neutral-900]="scrolled">...</nav>
+<nav [class.text-white]="!scrolled" [class.text-neutral-900]="scrolled"> ... </nav>
+
+
+Lock product card images to one ratio to prevent grid jump:
+
+<img class="w-full aspect-[4/3] object-cover" ...>
