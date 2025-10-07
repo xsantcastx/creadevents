@@ -44,7 +44,7 @@
               type="text"
               id="nombre"
               formControlName="nombre"
-              class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-ts-accent focus:border-transparent transition-colors"
+              class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-ts-accent focus:border-transparent transition-colors text-neutral-800 placeholder-neutral-500"
               placeholder="Tu nombre completo">
             <p *ngIf="getFieldError('nombre')" class="mt-1 text-sm text-red-600">
               {{getFieldError('nombre')}}
@@ -60,7 +60,7 @@
               type="email"
               id="email"
               formControlName="email"
-              class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-ts-accent focus:border-transparent transition-colors"
+              class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-ts-accent focus:border-transparent transition-colors text-neutral-800 placeholder-neutral-500"
               placeholder="tu@email.com">
             <p *ngIf="getFieldError('email')" class="mt-1 text-sm text-red-600">
               {{getFieldError('email')}}
@@ -76,7 +76,7 @@
               type="tel"
               id="telefono"
               formControlName="telefono"
-              class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-ts-accent focus:border-transparent transition-colors"
+              class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-ts-accent focus:border-transparent transition-colors text-neutral-800 placeholder-neutral-500"
               placeholder="+34 123 456 789">
             <p *ngIf="getFieldError('telefono')" class="mt-1 text-sm text-red-600">
               {{getFieldError('telefono')}}
@@ -92,7 +92,7 @@
               type="text"
               id="empresa"
               formControlName="empresa"
-              class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-ts-accent focus:border-transparent transition-colors"
+              class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-ts-accent focus:border-transparent transition-colors text-neutral-800 placeholder-neutral-500"
               placeholder="Nombre de tu empresa (opcional)">
           </div>
 
@@ -105,7 +105,7 @@
               id="mensaje"
               formControlName="mensaje"
               rows="5"
-              class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-ts-accent focus:border-transparent transition-colors resize-none"
+              class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-ts-accent focus:border-transparent transition-colors resize-none text-neutral-800 placeholder-neutral-500"
               placeholder="Cuéntanos sobre tu proyecto, qué productos te interesan, medidas, plazos, etc."></textarea>
             <p *ngIf="getFieldError('mensaje')" class="mt-1 text-sm text-red-600">
               {{getFieldError('mensaje')}}

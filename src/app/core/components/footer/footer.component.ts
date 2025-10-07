@@ -14,7 +14,7 @@ import { RouterModule } from '@angular/router';
           <!-- Logo y descripción -->
           <div class="md:col-span-2">
             <div class="flex items-center gap-3 mb-4">
-              <img src="/assets/Logo.jpeg" alt="TopStone" class="h-8 w-auto rounded"/>
+              <img src="/assets/topstone-mark-light.svg" alt="TopStone" class="h-8 w-auto"/>
               <span class="font-serif text-xl font-semibold text-ts-ink">TopStone</span>
             </div>
             <p class="text-ts-ink-soft mb-6 max-w-md">

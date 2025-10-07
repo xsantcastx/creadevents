@@ -36,23 +36,23 @@
     <form class="contacto__form" [formGroup]="formulario" (ngSubmit)="enviar()">
       <label>
         Nombre y apellidos
-        <input type="text" formControlName="nombre" placeholder="Laura Martinez" />
+        <input type="text" formControlName="nombre" placeholder="Laura Martinez" class="text-neutral-800 placeholder-neutral-500" />
       </label>
       <label>
         Correo electronico
-        <input type="email" formControlName="email" placeholder="contacto@estudio.com" />
+        <input type="email" formControlName="email" placeholder="contacto@estudio.com" class="text-neutral-800 placeholder-neutral-500" />
       </label>
       <label>
         Telefono
-        <input type="tel" formControlName="telefono" placeholder="+34 600 000 000" />
+        <input type="tel" formControlName="telefono" placeholder="+34 600 000 000" class="text-neutral-800 placeholder-neutral-500" />
       </label>
       <label>
         Empresa / Estudio
-        <input type="text" formControlName="empresa" placeholder="Nombre de la empresa" />
+        <input type="text" formControlName="empresa" placeholder="Nombre de la empresa" class="text-neutral-800 placeholder-neutral-500" />
       </label>
       <label class="contacto__full">
         Cuentanos tu proyecto
-        <textarea formControlName="mensaje" rows="5" placeholder="Superficies, fechas, acabados preferidos..."></textarea>
+        <textarea formControlName="mensaje" rows="5" placeholder="Superficies, fechas, acabados preferidos..." class="text-neutral-800 placeholder-neutral-500"></textarea>
       </label>
       <button type="submit">Enviar mensaje</button>
 

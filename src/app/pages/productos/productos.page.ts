@@ -2,6 +2,8 @@ import { Component, OnInit, PLATFORM_ID, inject } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { DataService, Producto } from '../../core/services/data.service';
+import { CartService } from '../../services/cart.service';
+import { Product } from '../../models/product';
 
 @Component({
   selector: 'app-productos-page',
@@ -37,7 +39,27 @@ export class ProductosPageComponent implements OnInit {
     ]
   };
 
-  constructor(private dataService: DataService) {}
+  constructor(
+    private dataService: DataService,
+    private cartService: CartService
+  ) {}
+
+  addToCart(producto: Producto, event: Event) {
+    event.preventDefault();
+    event.stopPropagation();
+    
+    // Convert Producto to Product interface
+    const product: Product = {
+      id: `${producto.grosor}-${producto.slug}`,
+      name: producto.nombre,
+      thickness: producto.grosor as '12mm'|'15mm'|'20mm',
+      category: producto.medida,
+      imageUrl: producto.cover,
+      sku: producto.slug
+    };
+    
+    this.cartService.add(product, 1);
+  }
 
   ngOnInit() {
     // Set fallback data immediately

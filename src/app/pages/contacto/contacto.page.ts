@@ -1,7 +1,7 @@
 import { Component, PLATFORM_ID, inject } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { EmailService } from '../../shared/services/email';
+import { EmailService } from '../../services/email.service';
 
 interface ContactFormData {
   nombre: string;
@@ -42,7 +42,7 @@ export class ContactoPageComponent {
     });
   }
 
-  onSubmit() {
+  async onSubmit() {
     if (this.contactForm.valid && !this.isSubmitting) {
       this.isSubmitting = true;
       this.submitError = false;
@@ -52,28 +52,27 @@ export class ContactoPageComponent {
       
       // Only submit if in browser (not during SSR)
       if (isPlatformBrowser(this.platformId)) {
-        this.emailService.sendContactForm(formData).subscribe({
-          next: () => {
-            this.isSubmitting = false;
-            this.submitSuccess = true;
-            this.contactForm.reset();
-            
-            // Reset success message after 8 seconds
-            setTimeout(() => {
-              this.submitSuccess = false;
-            }, 8000);
-          },
-          error: (error: any) => {
-            this.isSubmitting = false;
-            this.submitError = true;
-            this.submitErrorMessage = error.message || 'Hubo un error al enviar el mensaje. Por favor, inténtalo de nuevo.';
-            
-            // Reset error message after 10 seconds
-            setTimeout(() => {
-              this.submitError = false;
-            }, 10000);
-          }
-        });
+        try {
+          await this.emailService.sendContactForm(formData);
+          
+          this.isSubmitting = false;
+          this.submitSuccess = true;
+          this.contactForm.reset();
+          
+          // Reset success message after 8 seconds
+          setTimeout(() => {
+            this.submitSuccess = false;
+          }, 8000);
+        } catch (error: any) {
+          this.isSubmitting = false;
+          this.submitError = true;
+          this.submitErrorMessage = error.message || 'Hubo un error al enviar el mensaje. Por favor, inténtalo de nuevo.';
+          
+          // Reset error message after 10 seconds
+          setTimeout(() => {
+            this.submitError = false;
+          }, 10000);
+        }
       } else {
         // Fallback for SSR
         setTimeout(() => {
