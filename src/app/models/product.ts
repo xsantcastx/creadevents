@@ -1,10 +1,20 @@
+import { Timestamp } from '@angular/fire/firestore';
+
 export interface Product {
-  id: string;              // e.g. "12mm-saint-laurent"
+  id?: string;             // Firestore document ID
   name: string;            // "Saint Laurent"
-  sku?: string;            // optional
-  thickness?: '12mm'|'15mm'|'20mm';
-  category?: string;       // e.g., "160×320"
-  imageUrl?: string;
+  slug: string;            // "saint-laurent" (URL-friendly)
+  grosor: '12mm' | '15mm' | '20mm';  // Thickness
+  size: string;            // e.g., "160×320cm"
+  imageUrl: string;        // Main product image URL
+  description?: string;    // Product description
+  price?: number;          // Price per unit
+  stock?: number;          // Available stock
+  sku?: string;            // SKU code
+  features?: string[];     // Product features
+  active?: boolean;        // Is product active/visible
+  createdAt?: Timestamp;   // Creation timestamp
+  updatedAt?: Timestamp;   // Last update timestamp
 }
 
 export interface CartItem {

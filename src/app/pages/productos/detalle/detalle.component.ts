@@ -1,12 +1,16 @@
 import { Component, OnInit, PLATFORM_ID, inject } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { TranslateModule } from '@ngx-translate/core';
 import { DataService, Producto } from '../../../core/services/data.service';
+import { CartService } from '../../../services/cart.service';
+import { Product } from '../../../models/product';
+import { ImageLightboxComponent } from '../../../shared/components/image-lightbox/image-lightbox.component';
 
 @Component({
   selector: 'app-detalle',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, RouterLink, TranslateModule, ImageLightboxComponent],
   template: `
     <section *ngIf="producto" class="bg-ts-paper min-h-screen">
       <!-- Breadcrumb Navigation -->
@@ -29,7 +33,8 @@ import { DataService, Producto } from '../../../core/services/data.service';
         <div class="grid lg:grid-cols-2 gap-12 mb-16">
           <!-- Product Image Gallery -->
           <div>
-            <div class="aspect-[4/3] overflow-hidden rounded-2xl bg-white shadow-lg mb-4">
+            <div class="aspect-[4/3] overflow-hidden rounded-2xl bg-white shadow-lg mb-4 cursor-zoom-in"
+                 (click)="openLightbox()">
               <img [src]="producto.cover" 
                    [alt]="producto.nombre"
                    class="w-full h-full object-cover hover:scale-105 transition-transform duration-500" 
@@ -69,21 +74,32 @@ import { DataService, Producto } from '../../../core/services/data.service';
             
             <!-- Action Buttons -->
             <div class="flex flex-col sm:flex-row gap-4 mb-8">
+              <button
+                (click)="addToCart()"
+                class="inline-flex items-center justify-center gap-2 px-8 py-4 bg-ts-accent text-black rounded-full font-semibold hover:bg-ts-accent/90 transition-colors">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+                </svg>
+                {{ 'products.addToCart' | translate }}
+              </button>
+              
               <a href="assets/fichas/topstone-ficha-general.pdf" 
                  target="_blank"
-                 class="inline-flex items-center justify-center gap-2 px-8 py-4 bg-ts-accent text-black rounded-full font-semibold hover:bg-ts-accent/90 transition-colors">
+                 class="inline-flex items-center justify-center gap-2 px-8 py-4 ring-2 ring-ts-accent text-ts-accent hover:bg-ts-accent hover:text-black rounded-full font-semibold transition-colors">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
                 </svg>
-                Descargar ficha técnica
+                {{ 'technical.sections.datasheets' | translate }}
               </a>
-              
+            </div>
+
+            <div class="mb-8">
               <a routerLink="/contacto" 
-                 class="inline-flex items-center justify-center gap-2 px-8 py-4 ring-2 ring-ts-accent text-ts-accent hover:bg-ts-accent hover:text-black rounded-full font-semibold transition-colors">
+                 class="inline-flex items-center justify-center gap-2 px-8 py-4 w-full sm:w-auto ring-2 ring-neutral-300 text-neutral-700 hover:bg-neutral-50 rounded-full font-semibold transition-colors">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-3.582 8-8 8a8.955 8.955 0 01-3.793-.793L3 21l1.793-6.207A8.955 8.955 0 013 12a8 8 0 018-8c4.418 0 8 3.582 8 8z"></path>
                 </svg>
-                Solicitar información
+                {{ 'nav.contact' | translate }}
               </a>
             </div>
 
@@ -192,6 +208,13 @@ import { DataService, Producto } from '../../../core/services/data.service';
       <div class="w-16 h-16 mx-auto mb-6 border-4 border-ts-accent/30 border-t-ts-accent rounded-full animate-spin"></div>
       <p class="text-neutral-600">Cargando producto...</p>
     </div>
+
+    <!-- Image Lightbox -->
+    <app-image-lightbox
+      [imageUrl]="producto?.cover || ''"
+      [altText]="producto?.nombre || ''"
+      [(isOpen)]="lightboxOpen"
+    />
   `
 })
 export class DetalleComponent implements OnInit {
@@ -201,11 +224,13 @@ export class DetalleComponent implements OnInit {
   productosRelacionados: Producto[] = [];
   grosor = '';
   loading = true;
+  lightboxOpen = false;
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private dataService: DataService
+    private dataService: DataService,
+    private cartService: CartService
   ) {}
 
   ngOnInit() {
@@ -256,5 +281,25 @@ export class DetalleComponent implements OnInit {
     } else {
       this.router.navigate(['/productos']);
     }
+  }
+
+  openLightbox() {
+    this.lightboxOpen = true;
+  }
+
+  addToCart() {
+    if (!this.producto) return;
+    
+    const product: Product = {
+      id: `${this.producto.grosor}-${this.producto.slug}`,
+      name: this.producto.nombre,
+      slug: this.producto.slug,
+      grosor: this.producto.grosor as '12mm'|'15mm'|'20mm',
+      size: this.producto.medida,
+      imageUrl: this.producto.cover,
+      sku: this.producto.slug
+    };
+    
+    this.cartService.add(product, 1);
   }
 }

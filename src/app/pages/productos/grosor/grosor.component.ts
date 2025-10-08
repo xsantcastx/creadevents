@@ -185,20 +185,20 @@ export class GrosorComponent implements OnInit {
   // Fallback data for immediate display - converted to Product interface
   fallbackData: Record<string, Product[]> = {
     '12mm': [
-      { id: '12mm-saint-laurent', name: 'Saint Laurent', thickness: '12mm', category: '160×320cm', imageUrl: 'assets/productos/12mm/saint-laurent.jpg' },
-      { id: '12mm-black-gold', name: 'Black Gold', thickness: '12mm', category: '160×320cm', imageUrl: 'assets/productos/12mm/black-gold.jpg' },
-      { id: '12mm-arenaria-ivory', name: 'Arenaria Ivory', thickness: '12mm', category: '160×320cm', imageUrl: 'assets/productos/12mm/arenaria-ivory.jpg' },
-      { id: '12mm-calacatta-gold', name: 'Calacatta Gold', thickness: '12mm', category: '160×320cm', imageUrl: 'assets/productos/12mm/calacatta-gold.jpg' }
+      { id: '12mm-saint-laurent', name: 'Saint Laurent', slug: 'saint-laurent', grosor: '12mm', size: '160×320cm', imageUrl: 'assets/productos/12mm/saint-laurent.jpg' },
+      { id: '12mm-black-gold', name: 'Black Gold', slug: 'black-gold', grosor: '12mm', size: '160×320cm', imageUrl: 'assets/productos/12mm/black-gold.jpg' },
+      { id: '12mm-arenaria-ivory', name: 'Arenaria Ivory', slug: 'arenaria-ivory', grosor: '12mm', size: '160×320cm', imageUrl: 'assets/productos/12mm/arenaria-ivory.jpg' },
+      { id: '12mm-calacatta-gold', name: 'Calacatta Gold', slug: 'calacatta-gold', grosor: '12mm', size: '160×320cm', imageUrl: 'assets/productos/12mm/calacatta-gold.jpg' }
     ],
     '15mm': [
-      { id: '15mm-statuario-elegance', name: 'Statuario Elegance', thickness: '15mm', category: '160×320cm', imageUrl: 'assets/productos/15mm/statuario-elegance.jpg' },
-      { id: '15mm-laponia-black', name: 'Laponia Black', thickness: '15mm', category: '160×320cm', imageUrl: 'assets/productos/15mm/laponia-black.jpg' },
-      { id: '15mm-patagonia-natural', name: 'Patagonia Natural', thickness: '15mm', category: '160×320cm', imageUrl: 'assets/productos/15mm/patagonia-natural.jpg' }
+      { id: '15mm-statuario-elegance', name: 'Statuario Elegance', slug: 'statuario-elegance', grosor: '15mm', size: '160×320cm', imageUrl: 'assets/productos/15mm/statuario-elegance.jpg' },
+      { id: '15mm-laponia-black', name: 'Laponia Black', slug: 'laponia-black', grosor: '15mm', size: '160×320cm', imageUrl: 'assets/productos/15mm/laponia-black.jpg' },
+      { id: '15mm-patagonia-natural', name: 'Patagonia Natural', slug: 'patagonia-natural', grosor: '15mm', size: '160×320cm', imageUrl: 'assets/productos/15mm/patagonia-natural.jpg' }
     ],
     '20mm': [
-      { id: '20mm-saint-laurent', name: 'Saint Laurent', thickness: '20mm', category: '160×320cm', imageUrl: 'assets/productos/20mm/saint-laurent.jpg' },
-      { id: '20mm-black-gold', name: 'Black Gold', thickness: '20mm', category: '160×320cm', imageUrl: 'assets/productos/20mm/black-gold.jpg' },
-      { id: '20mm-limestone-ivory', name: 'Limestone Ivory', thickness: '20mm', category: '160×320cm', imageUrl: 'assets/productos/20mm/limestone-ivory.jpg' }
+      { id: '20mm-saint-laurent', name: 'Saint Laurent', slug: 'saint-laurent', grosor: '20mm', size: '160×320cm', imageUrl: 'assets/productos/20mm/saint-laurent.jpg' },
+      { id: '20mm-black-gold', name: 'Black Gold', slug: 'black-gold', grosor: '20mm', size: '160×320cm', imageUrl: 'assets/productos/20mm/black-gold.jpg' },
+      { id: '20mm-limestone-ivory', name: 'Limestone Ivory', slug: 'limestone-ivory', grosor: '20mm', size: '160×320cm', imageUrl: 'assets/productos/20mm/limestone-ivory.jpg' }
     ]
   };
 
@@ -229,8 +229,9 @@ export class GrosorComponent implements OnInit {
           this.productosFiltrados = filtered.map(p => ({
             id: `${p.grosor}-${p.slug}`,
             name: p.nombre,
-            thickness: p.grosor as '12mm'|'15mm'|'20mm',
-            category: p.medida,
+            slug: p.slug,
+            grosor: p.grosor as '12mm'|'15mm'|'20mm',
+            size: p.medida,
             imageUrl: p.cover
           }));
         }

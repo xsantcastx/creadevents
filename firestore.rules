@@ -2,23 +2,78 @@ rules_version = '2';
 
 service cloud.firestore {
   match /databases/{database}/documents {
-    // Allow users to write to the mail collection for sending emails
-    // but prevent reading arbitrary emails or sending to arbitrary recipients
+    
+    // Helper functions
+    function isSignedIn() {
+      return request.auth != null;
+    }
+    
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+    
+    function isAdmin() {
+      return isSignedIn() && 
+             get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+    }
+
+    // Products - Public read, Admin write
+    match /products/{productId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // Gallery Categories - Public read, Admin write
+    match /galleryCategories/{categoryId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // Gallery Images - Public read, Admin write
+    match /galleryImages/{imageId} {
+      allow read: if true;
+      allow create, update, delete: if isAdmin();
+    }
+
+    // Technical Data - Public read, Admin write
+    match /technicalData/{docId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // Users - Users can read/write own data, Admins can read all
+    match /users/{userId} {
+      allow read: if isOwner(userId) || isAdmin();
+      allow create: if isSignedIn();
+      allow update: if isOwner(userId);
+      allow delete: if false;
+    }
+
+    // Orders - Users can create and read own orders, Admins can read/update all
+    match /orders/{orderId} {
+      allow read: if isAdmin() || 
+                    (isSignedIn() && resource.data.userId == request.auth.uid);
+      allow create: if isSignedIn() && 
+                      request.resource.data.userId == request.auth.uid;
+      allow update: if isAdmin();
+      allow delete: if isAdmin();
+    }
+
+    // Mail collection for contact form (Brevo integration)
     match /mail/{document} {
       allow create: if request.auth == null 
         && resource == null
         && request.resource.data.keys().hasAll(['to', 'message'])
         && request.resource.data.to is list
-        && request.resource.data.to.size() <= 3  // Limit recipients
+        && request.resource.data.to.size() <= 3
         && request.resource.data.message.keys().hasAll(['subject', 'html'])
-        && request.resource.data.to[0] in ['ventas@tstone.com', 'info@tstone.com', 'xsantcastx@xsantcastx.com']; // Only allow sending to your business emails
+        && request.resource.data.to[0] in ['ventas@tstone.com', 'info@tstone.com', 'xsantcastx@xsantcastx.com'];
       
-      // Prevent reading emails
       allow read: if false;
       allow update, delete: if false;
     }
-    
-    // Deny access to all other collections by default
+
+    // Deny all other access
     match /{document=**} {
       allow read, write: if false;
     }

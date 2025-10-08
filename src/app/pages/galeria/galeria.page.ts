@@ -1,11 +1,15 @@
 import { Component, OnInit, inject, PLATFORM_ID } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { TranslateModule } from '@ngx-translate/core';
 import { DataService, CategoriaGaleria, GaleriaItem } from '../../core/services/data.service';
+import { GalleryService, GalleryImage } from '../../services/gallery.service';
+import { ImageLightboxComponent } from '../../shared/components/image-lightbox/image-lightbox.component';
+import { LoadingSpinnerComponent } from '../../shared/components/loading-spinner/loading-spinner.component';
 
 @Component({
   selector: 'app-galeria-page',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, TranslateModule],
   templateUrl: './galeria.page.html',
   styleUrl: './galeria.page.scss'
 })
@@ -71,7 +75,10 @@ export class GaleriaPageComponent implements OnInit {
     }
   ];
 
-  constructor(private dataService: DataService) {}
+  constructor(
+    private dataService: DataService,
+    private galleryService: GalleryService
+  ) {}
 
   ngOnInit() {
     // Load fallback data immediately
@@ -81,8 +88,56 @@ export class GaleriaPageComponent implements OnInit {
     
     // Then try to load real data if in browser
     if (this.isBrowser) {
-      this.loadGaleria();
+      this.loadGaleriaFromFirebase();
     }
+  }
+
+  private loadGaleriaFromFirebase() {
+    // Try to load from Firebase first
+    this.galleryService.getAllImages().subscribe({
+      next: (images: GalleryImage[]) => {
+        if (images.length > 0) {
+          // Group images by category
+          this.categorias = this.groupImagesByCategory(images);
+          this.filtrarPorCategoria(this.categoriaActiva);
+        } else {
+          // Fall back to JSON data
+          this.loadGaleria();
+        }
+        this.isLoading = false;
+      },
+      error: () => {
+        // Fall back to JSON data on Firebase error
+        this.loadGaleria();
+      }
+    });
+  }
+
+  private groupImagesByCategory(images: GalleryImage[]): CategoriaGaleria[] {
+    const categories = ['cocinas', 'banos', 'fachadas', 'industria', 'otros'];
+    const categoryTitles: Record<string, string> = {
+      'cocinas': 'Cocinas',
+      'banos': 'Baños',
+      'fachadas': 'Fachadas',
+      'industria': 'Industria',
+      'otros': 'Otros'
+    };
+
+    return categories
+      .map(cat => ({
+        slug: cat,
+        titulo: categoryTitles[cat],
+        items: images
+          .filter(img => img.category === cat)
+          .map(img => ({
+            src: img.imageUrl,
+            alt: img.title || img.description || 'Proyecto TStone',
+            producto: img.title,
+            proyecto: img.project,
+            ubicacion: img.location
+          }))
+      }))
+      .filter(cat => cat.items.length > 0); // Only include categories with images
   }
 
   private loadGaleria() {

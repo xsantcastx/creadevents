@@ -1,17 +1,21 @@
 import { Component, OnInit, inject, PLATFORM_ID } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { TranslateModule } from '@ngx-translate/core';
 import { DataService, DatosTecnicosData } from '../../core/services/data.service';
+import { ImageLightboxComponent } from '../../shared/components/image-lightbox/image-lightbox.component';
 
 @Component({
   selector: 'app-datos-tecnicos-page',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, TranslateModule, ImageLightboxComponent],
   templateUrl: './datos-tecnicos.page.html',
   styleUrl: './datos-tecnicos.page.scss'
 })
 export class DatosTecnicosPageComponent implements OnInit {
   datosTecnicos: DatosTecnicosData | null = null;
   isLoading = true;
+  lightboxOpen = false;
+  lightboxImage = '';
   
   private platformId = inject(PLATFORM_ID);
   private isBrowser = isPlatformBrowser(this.platformId);
@@ -209,5 +213,11 @@ export class DatosTecnicosPageComponent implements OnInit {
   // Get count of open accordions
   getOpenAccordionCount(): number {
     return Object.values(this.acordeonesAbiertos).filter(open => open).length;
+  }
+
+  // Open image in lightbox
+  openLightbox(imageSrc: string) {
+    this.lightboxImage = imageSrc;
+    this.lightboxOpen = true;
   }
 }

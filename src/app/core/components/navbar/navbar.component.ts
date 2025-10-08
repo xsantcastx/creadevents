@@ -3,12 +3,16 @@ import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { map } from 'rxjs/operators';
-import { CartService } from '../../../shared/services/cart';
+import { CartService } from '../../../services/cart.service';
+import { AuthService } from '../../../services/auth.service';
+import { LanguageSelectorComponent } from '../../../shared/components/language-selector/language-selector.component';
+import { CartButtonComponent } from '../../../shared/components/cart-button/cart-button.component';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-navbar',
   standalone: true,
-  imports: [CommonModule, RouterLink, RouterLinkActive],
+  imports: [CommonModule, RouterLink, RouterLinkActive, LanguageSelectorComponent, CartButtonComponent, TranslateModule],
   templateUrl: './navbar.component.html',
   styleUrls: ['./navbar.component.scss']
 })
@@ -17,11 +21,17 @@ export class NavbarComponent {
 
   private platformId = inject(PLATFORM_ID);
   private readonly cartService = inject(CartService);
+  private readonly authService = inject(AuthService);
   
   scrolled = false;
   mobileOpen = false;
   showMega = false;
+  showUserMenu = false;
   hoverPreviewUrl = 'assets/productos/12mm/saint-laurent.jpg';
+  
+  // Auth state
+  user$ = this.authService.user$;
+  userProfile$ = this.authService.userProfile$;
   
   // Mega menu state and controls
   private hideTimer: any;
@@ -30,9 +40,7 @@ export class NavbarComponent {
   @ViewChild('productsGroup') productsGroupRef!: ElementRef<HTMLDivElement>;
 
   readonly totalItems = toSignal(
-    this.cartService.items$.pipe(
-      map((items: any[]) => items.reduce((total: number, item: any) => total + item.cantidad, 0))
-    ),
+    this.cartService.count$,
     { initialValue: 0 }
   ) as () => number;
   
@@ -115,6 +123,9 @@ export class NavbarComponent {
     if (!this.productsGroupRef) return;
     const g = this.productsGroupRef.nativeElement;
     if (!g.contains(e.target as Node)) this.showMega = false;
+    
+    // Close user menu when clicking outside
+    this.showUserMenu = false;
   }
 
   // Close when mouse leaves viewport
@@ -128,7 +139,10 @@ export class NavbarComponent {
   // ESC to close
   @HostListener('window:keydown', ['$event'])
   onKey(e: KeyboardEvent) {
-    if (e.key === 'Escape') this.showMega = false;
+    if (e.key === 'Escape') {
+      this.showMega = false;
+      this.showUserMenu = false;
+    }
   }
 
   activarCarrito(): void {
@@ -145,6 +159,25 @@ export class NavbarComponent {
 
   toggleMobile() {
     this.mobileOpen = !this.mobileOpen;
+  }
+
+  // User menu controls
+  toggleUserMenu(event: Event): void {
+    event.stopPropagation();
+    this.showUserMenu = !this.showUserMenu;
+  }
+
+  closeUserMenu(): void {
+    console.log('Closing user menu');
+    this.showUserMenu = false;
+  }
+
+  // Auth methods
+  async logout(): Promise<void> {
+    console.log('Logging out user');
+    await this.authService.signOutUser();
+    this.closeMobile();
+    this.closeUserMenu();
   }
 
   // Support dual logo versions as per README specs

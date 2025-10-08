@@ -2,13 +2,14 @@ import { Component, inject, computed, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { RouterLink } from '@angular/router';
+import { TranslateModule } from '@ngx-translate/core';
 import { CartService } from '../../services/cart.service';
 import { EmailService } from '../../services/email.service';
 
 @Component({
   standalone: true,
   selector: 'ts-cart-page',
-  imports: [CommonModule, ReactiveFormsModule, RouterLink],
+  imports: [CommonModule, ReactiveFormsModule, RouterLink, TranslateModule],
   templateUrl: './cart.page.html',
   styleUrls: ['./cart.page.scss']
 })
@@ -47,7 +48,7 @@ export class CartPage {
           id: i.product.id, 
           name: i.product.name, 
           sku: i.product.sku,
-          thickness: i.product.thickness, 
+          thickness: i.product.grosor, 
           qty: i.qty,
         })),
       });

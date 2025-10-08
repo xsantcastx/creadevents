@@ -1,6 +1,7 @@
 import { Component, OnInit, PLATFORM_ID, inject } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { RouterLink } from '@angular/router';
+import { TranslateModule } from '@ngx-translate/core';
 import { DataService, Producto } from '../../core/services/data.service';
 import { CartService } from '../../services/cart.service';
 import { Product } from '../../models/product';
@@ -8,7 +9,7 @@ import { Product } from '../../models/product';
 @Component({
   selector: 'app-productos-page',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, RouterLink, TranslateModule],
   templateUrl: './productos.page.html',
   styleUrl: './productos.page.scss'
 })
@@ -52,8 +53,9 @@ export class ProductosPageComponent implements OnInit {
     const product: Product = {
       id: `${producto.grosor}-${producto.slug}`,
       name: producto.nombre,
-      thickness: producto.grosor as '12mm'|'15mm'|'20mm',
-      category: producto.medida,
+      slug: producto.slug,
+      grosor: producto.grosor as '12mm'|'15mm'|'20mm',
+      size: producto.medida,
       imageUrl: producto.cover,
       sku: producto.slug
     };
