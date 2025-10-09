@@ -1,177 +1,478 @@
-# 🎯 PROJECT SPECIFICATION — TStone Website
+🧱 Goals
 
-## 🧱 Context
-This project is for **TStone**, a company specializing in tiles, marble, and wall/floor coverings.  
-The site is built with **Angular + TailwindCSS + Firebase (Firestore, Auth, Storage, Hosting)**.  
-Current repo: [https://github.com/xsantcastx/TStone](https://github.com/xsantcastx/TStone)  
-Reference demo: [https://tstone456--tstone-e1de6.us-east4.hosted.app/](https://tstone456--tstone-e1de6.us-east4.hosted.app/)
+Admin eficiente: subir producto en 1–2 pasos; descripción, SEO y specs se autocompletan por plantillas.
 
-The goal is to create a **professional, dynamic, and multilingual corporate website** with:
-- A modern **hero animation**
-- **Product catalog** with “add to cart” (interest list)
-- **Gallery** with admin uploads
-- **Technical data** with structured info
-- **Client portal** (login + order history)
-- **Admin backoffice**
+Escalable: categorías (10 cm / 12 cm), materiales (onyx, mármol, etc.), variantes, galería.
 
----
+Reutilizable: textos y atributos por defecto (por categoría/material) centralizados.
 
-## 🧩 Feature Specifications
+SEO & búsqueda: slugs únicos, campos indexados, etiquetas.
 
-### 1️⃣ Home Page (Hero Section)
-**Objective:** Improve visual presentation and usability.  
-**Requirements:**
-- Add a **dynamic hero image** (zoom-in/out or random photo rotation).
-- Include a **language selector (ES, EN, FR, IT)** in the top-right corner.
-- Add **LinkedIn and Instagram icons** in the header or footer.
-**Acceptance Criteria:**
-✅ Animation smooth and subtle  
-✅ Selector functional and persistent  
-✅ Social links active  
-✅ Fully responsive
+🗂️ Firestore — Colecciones y documentos
+1) products (colección)
 
----
+Un doc por producto comercial (no por variante). Variantes viven en un array o subcolección si crecen mucho.
 
-### 2️⃣ Product Section
-**Objective:** Allow users to browse and select products easily.  
-**Requirements:**
-- Add **“Add to cart”** (interest list) button on both product list and product detail pages.
-- Enable **image zoom/lightbox** for larger previews.
-- Keep current side menu layout, but optimize spacing and visuals.
-**Acceptance Criteria:**
-✅ Add to cart works on all products  
-✅ Zoom works without page reload  
-✅ Works on desktop and mobile  
-✅ Saves selected items to Firestore “orders” or local list
+// products/{productId}
+{
+  "name": "Onyx Imperial",
+  "slug": "onyx-imperial",                  // generado
+  "categoryId": "cat-10cm",               // referencia a categories
+  "materialId": "mat-onyx",               // referencia a materials
+  "familyId": "fam-onyx",                 // opcional: agrupar productos por familia
+  "status": "published",                  // draft | published | archived
+  "shortDescription": "Pieza de onyx de alta resistencia...",
+  "description": "Texto final autogenerado/ajustado...",
+  "specs": {                              // datos técnicos
+    "thicknessMm": 10,
+    "size": "10x10 cm",
+    "finish": "Pulido",
+    "waterAbsorption": "0.5%",
+    "density": "2.6 g/cm³",
+    "usage": ["Interior", "Pared"]
+  },
+  "variantMode": "embedded",              // embedded | subcollection
+  "variants": [
+    {
+      "sku": "ONX-10-PLD",
+      "sizeGroupId": "size-10cm",
+      "finish": "Pulido",
+      "colorId": "col-amber",
+      "images": ["gs://.../products/onyx-imperial/main.jpg"],
+      "price": null                        // si aplica vitrina precio, o null para catálogo
+    }
+  ],
+  "coverImage": "gs://.../products/onyx-imperial/cover.jpg",
+  "galleryImageIds": ["{mediaId1}", "{mediaId2}"],  // refs a media o URLs directas
+  "tags": ["onyx", "10cm", "interior"],
+  "seo": {
+    "title": "Onyx Imperial 10x10 | TStone",
+    "metaDescription": "Onyx Imperial en formato 10x10 cm...",
+    "ogImage": "https://.../og/onyx-imperial.jpg"
+  },
+  "metrics": {
+    "views": 0,
+    "favorites": 0
+  },
+  "createdAt": "serverTimestamp",
+  "updatedAt": "serverTimestamp"
+}
 
----
 
-### 3️⃣ Gallery
-**Objective:** Show product applications (e.g., kitchens, bathrooms) and allow admin uploads.  
-**Requirements:**
-- Keep layout similar to products.
-- Create **categories** (Cocina, Baño, etc.) without showing image counts.
-- Allow admins to **add/edit images** via backoffice (no numbering needed).
-**Acceptance Criteria:**
-✅ Category filter functional  
-✅ Images load fast and lazily  
-✅ Admin upload saves to Firebase Storage + Firestore  
-✅ Only admin can upload/delete  
+Si el número de variantes por producto puede crecer (colores/formatos/acabados combinatorios), cambia variantMode a subcollection y usa products/{id}/variants/{variantId}.
 
----
+2) categories
 
-### 4️⃣ Technical Data
-**Objective:** Present detailed technical specifications.  
-**Order of sections:**
-1. Acabados  
-2. Embalaje  
-3. Mantenimiento  
-4. Especificaciones Técnicas  
-5. Fichas Técnicas  
-6. Tablones (opcional)
+Separar lógicas de 10 cm y 12 cm, más otras que agregues.
 
-**Requirements:**
-- Display **Embalaje** table with these values:
+// categories/{categoryId}
+{
+  "name": "Formato 10 cm",
+  "slug": "10cm",
+  "order": 1,
+  "icon": "square-10",
+  "defaultSpecOverrides": { "size": "10x10 cm", "thicknessMm": 10 },
+  "descriptionTemplateId": "tmpl-cat-10cm"     // ver templates
+}
 
-| Espesor | Kg/palet | m²/palet | Ud/palet | m²/caja | Kg/caja |
-|----------|-----------|-----------|-----------|-----------|-----------|
-| 12 mm | 150 | 5.12 | 20 | 5.12 | 102.40 |
-| 20 mm | 230 | 5.12 | 13 | 5.12 | 66.86 |
+3) materials
 
-- Add **zoom/magnifier** for technical drawings or images.
-- Store each section as editable Firestore docs.
-**Acceptance Criteria:**
-✅ Ordered sections appear correctly  
-✅ Table displays responsively  
-✅ Zoom works smoothly  
+Estándar de materiales (onyx, mármol, granito, etc.).
 
----
+// materials/{materialId}
+{
+  "name": "Onyx",
+  "slug": "onyx",
+  "textureHints": ["traslúcido", "vetas doradas"],
+  "descriptionTemplateId": "tmpl-mat-onyx",
+  "defaultTags": ["onyx", "premium"]
+}
 
-### 5️⃣ Client Area (Registration & History)
-**Objective:** Allow clients to log in and view their orders.  
-**Requirements:**
-- Implement **Firebase Auth** (email/password).
-- Store user profiles in `/users/{uid}` collection.
-- Display basic info (name, email) + order history.
-- Restrict access to own data only.
-**Acceptance Criteria:**
-✅ Register/login/logout works  
-✅ Order history loads per user  
-✅ Admin access blocked  
+4) colors
 
----
+Paleta de colores (para filtros y variantes).
 
-### 6️⃣ Admin Panel (Backoffice)
-**Objective:** Enable management of content and client data.  
-**Modules:**
-- **Products:** Add/edit/delete  
-- **Gallery:** Upload, organize  
-- **Technical Data:** Manage text/tables  
-- **Orders:** View/filter/reply  
+// colors/{colorId}
+{
+  "name": "Ámbar",
+  "slug": "ambar",
+  "hex": "#C89B3C",
+  "aliases": ["amber", "dorado"]
+}
 
-**Requirements:**
-- Admin authentication via Firebase custom claims.  
-- Firestore rules must restrict write access to admins.  
-- UI with tabs or menu for each section.
-**Acceptance Criteria:**
-✅ CRUD operations functional  
-✅ Roles enforced  
-✅ Gallery uploads visible on frontend instantly  
+5) sizes
 
----
+Grupos de tamaño (10 cm, 12 cm, etc.) para reglas y filtros.
 
-## 🔐 Firestore Structure (Recommended)
+// sizes/{sizeId}
+{
+  "name": "10 cm",
+  "slug": "10cm",
+  "display": "10x10 cm",
+  "thicknessDefaultMm": 10
+}
 
-```
-categories/
-products/
-galleryCategories/
-galleryImages/
-technicalData/
-orders/
-users/
-```
+6) templates
 
----
+Claves para autocompletar descripciones/SEO/specs. Puedes encadenar plantillas: por categoría, material y familia. Al crear un producto, el admin elige categoría/material y la UI compone el texto final.
 
-## 🔒 Security Rules Overview
-- Public read access for: `products`, `galleryImages`, `technicalData`
-- Authenticated write only for admins
-- Orders: users can create and read only their own
-- Admin can read/write/delete all
+// templates/{templateId}
+{
+  "type": "description",            // description | seoTitle | seoMeta | specs
+  "scope": "material",              // material | category | family | global
+  "refId": "mat-onyx",              // id del material/categoría/familia si aplica
+  "language": "es",
+  "content": "El {material} {name} en formato {size} ofrece {propiedad}. Ideal para {uso}.",
+  "fields": ["material", "name", "size", "uso", "propiedad"]
+}
 
----
 
-## 📈 Analytics, SEO & Performance
-- Add Firebase Analytics / GA4
-- Add meta tags, sitemap, and Open Graph for social sharing
-- Optimize images (WebP/AVIF), lazy loading, and responsive sizes
-- Core Web Vitals ≥ 90 (Lighthouse)
+Autofill flow: la UI arma payload con { name, categoryId, materialId, sizeGroupId } → busca plantillas por material + category + global → compone description, seo.title, seo.metaDescription y specs por defecto que el editor puede ajustar.
 
----
+7) media
 
-## 🧰 Tech Stack Summary
-| Layer | Tool |
-|-------|------|
-| Frontend | Angular + TailwindCSS |
-| Backend | Firebase Firestore / Auth / Storage |
-| Hosting | Firebase Hosting |
-| CI/CD | GitHub Actions |
-| Translations | ngx-translate |
-| Analytics | GA4 / Firebase Analytics |
+Índice de imágenes y vídeos (productos y galería). Archivos en Cloud Storage; este doc guarda metadatos y relaciones.
 
----
+// media/{mediaId}
+{
+  "type": "image",                          // image | video
+  "bucketPath": "products/onyx-imperial/cover.jpg",
+  "publicUrl": "https://firebasestorage.googleapis.com/...",
+  "entityType": "product",                  // product | gallery | category
+  "entityId": "{productId}",
+  "tags": ["cover", "ambient", "detalle"],
+  "dimensions": { "w": 1920, "h": 1280 },
+  "createdAt": "serverTimestamp"
+}
 
-## ✅ Deliverables
-- Complete multilingual website
-- Responsive hero animation
-- Cart + order workflow
-- Gallery with admin uploads
-- Technical data structured and editable
-- Client login & order history
-- Admin backoffice with permissions
-- Analytics + SEO setup
-- PDF/Word documentation for client handoff
+8) gallery
 
----
+Galería independiente (inspiración/ambientes) con etiquetas y vínculos a materiales/productos cuando aplique.
 
+// gallery/{galleryId}
+{
+  "title": "Baño Onyx Imperial",
+  "slug": "bano-onyx-imperial",
+  "mediaId": "{mediaId}",
+  "relatedProductIds": ["{productId}"],
+  "tags": ["baño", "onyx", "interior"],
+  "createdAt": "serverTimestamp"
+}
+
+9) families (opcional, útil para colecciones por material/estilo)
+// families/{familyId}
+{
+  "name": "Colección Onyx",
+  "slug": "coleccion-onyx",
+  "materialId": "mat-onyx",
+  "order": 1,
+  "description": "Piezas inspiradas en onyx con vetas doradas."
+}
+
+🔁 Autocompletado (plantillas) – Lógica recomendada
+
+Al crear producto:
+
+Admin elige: name, categoryId, materialId, sizeGroupId.
+
+UI obtiene en paralelo:
+
+categories/{categoryId}
+
+materials/{materialId}
+
+sizes/{sizeGroupId}
+
+templates por scope = material + category + global
+
+Composer:
+
+specs = merge(sizes.default, categories.defaultSpecOverrides, material.defaults, overrides del form)
+
+description = render(templateMaterial) → si existe templateCategory, concat o merge.
+
+seo.title y seo.metaDescription de plantillas seoTitle y seoMeta.
+
+Al cambiar categoría/material:
+
+Recalcular sugerencias, pero no sobreescribir campos si el usuario ya editó manualmente (bandera descriptionLocked: true).
+
+🧩 TypeScript Interfaces (Angular)
+export type Id = string;
+
+export interface Product {
+  id: Id;
+  name: string;
+  slug: string;
+  categoryId: Id;
+  materialId: Id;
+  familyId?: Id;
+  status: 'draft' | 'published' | 'archived';
+  shortDescription?: string;
+  description?: string;
+  specs?: Specs;
+  variantMode: 'embedded' | 'subcollection';
+  variants?: ProductVariant[];
+  coverImage?: string;                 // gs:// path or https
+  galleryImageIds?: Id[];
+  tags?: string[];
+  seo?: Seo;
+  metrics?: { views: number; favorites: number; };
+  createdAt: any; updatedAt: any;
+}
+
+export interface Specs {
+  thicknessMm?: number;
+  size?: string;
+  finish?: string;
+  waterAbsorption?: string;
+  density?: string;
+  usage?: string[];
+}
+
+export interface ProductVariant {
+  id?: Id;
+  sku?: string;
+  sizeGroupId?: Id;
+  finish?: string;
+  colorId?: Id;
+  images?: string[];                   // gs:// or media ids
+  price?: number | null;
+}
+
+export interface Category {
+  id: Id;
+  name: string;
+  slug: string;
+  order?: number;
+  icon?: string;
+  defaultSpecOverrides?: Partial<Specs>;
+  descriptionTemplateId?: Id;
+}
+
+export interface Material {
+  id: Id;
+  name: string;
+  slug: string;
+  descriptionTemplateId?: Id;
+  defaultTags?: string[];
+}
+
+export interface SizeGroup {
+  id: Id;
+  name: string;        // '10 cm'
+  slug: string;        // '10cm'
+  display: string;     // '10x10 cm'
+  thicknessDefaultMm?: number;
+}
+
+export interface Template {
+  id: Id;
+  type: 'description' | 'seoTitle' | 'seoMeta' | 'specs';
+  scope: 'material' | 'category' | 'family' | 'global';
+  refId?: Id;
+  language: 'es' | 'en';
+  content?: string;                     // para description/seo
+  specDefaults?: Partial<Specs>;        // si type === 'specs'
+  fields?: string[];
+}
+
+export interface Media {
+  id: Id;
+  type: 'image' | 'video';
+  bucketPath: string;
+  publicUrl?: string;
+  entityType?: 'product' | 'gallery' | 'category';
+  entityId?: Id;
+  tags?: string[];
+  dimensions?: { w: number; h: number; };
+  createdAt: any;
+}
+
+export interface GalleryItem {
+  id: Id;
+  title: string;
+  slug: string;
+  mediaId: Id;
+  relatedProductIds?: Id[];
+  tags?: string[];
+  createdAt: any;
+}
+
+export interface Seo {
+  title?: string;
+  metaDescription?: string;
+  ogImage?: string;
+}
+
+🗄️ Cloud Storage — Rutas recomendadas
+/products/{slug}/cover.jpg
+/products/{slug}/variants/{variantId}/image-1.jpg
+/products/{slug}/ambient/ambient-1.jpg
+/gallery/{slug}/image.jpg
+/tmp/uploads/{uid}/{filename}
+
+
+Mantén slug como single source of truth para carpetas. Usa Cloud Functions para generar miniaturas (/thumbs/) y rellenar media con dimensiones/URL públicas.
+
+🔐 Reglas de seguridad (borrador)
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{db}/documents {
+
+    function isAdmin() {
+      return request.auth.token.admin == true;
+    }
+
+    match /products/{id} {
+      allow read: if true;
+      allow create, update, delete: if isAdmin();
+    }
+
+    match /categories/{id} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /materials/{id} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /templates/{id} {
+      allow read: if isAdmin();      // opcional: ocultar al público
+      allow write: if isAdmin();
+    }
+
+    match /media/{id} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /gallery/{id} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+  }
+}
+
+
+En Storage: permitir lectura pública de /products/** y /gallery/** si necesitas imágenes públicas; subida sólo admin. Generar URLs firmadas si prefieres privado.
+
+⚡ Cloud Functions recomendadas
+
+onProductCreate
+
+Generar slug único (slugify(name) + dedupe).
+
+Combinar plantillas (material, category, global) → description, seo.
+
+Auto-rellenar specs (merge de defaults).
+
+Normalizar/añadir tags por material.defaultTags.
+
+onFileUpload (Storage trigger)
+
+Generar miniaturas y registrar/actualizar media con dimensiones + publicUrl.
+
+onProductUpdate
+
+Si cambia name, re-generar slug sólo si slugLocked !== true.
+
+Mantener índices derivados (ej. search_name en minúsculas, keywords).
+
+🔎 Índices y performance (Firestore)
+
+Simple:
+
+products por status + categoryId
+
+products por materialId + status
+
+gallery por tags (array-contains)
+
+Compuestos:
+
+status + categoryId + materialId
+
+status + tags (array-contains)
+
+Campos derivados:
+
+search_name = name.toLowerCase() (para búsquedas client-side sin servicio externo)
+
+keywords (array) generadas de name, material, category para filtros rápidos
+
+Si más adelante necesitas full-text real, plug & play con Algolia o Elastic/FlexSearch.
+
+🧭 Flujo de Admin (UI)
+
+Crear Producto
+
+Paso 1: name, category, material, sizeGroup
+
+Paso 2: ver “Pre-Relleno” (description, specs, seo) con plantillas → el admin edita.
+
+Paso 3: subir cover y galería (arrastrar/soltar) → guarda media.
+
+Publicar → status = published.
+
+Plantillas
+
+CRUD de templates por scope. Vista previa en vivo con {placeholders}.
+
+Checkbox “Bloquear descripción” para evitar que futuros cambios de plantilla pisen texto ya revisado.
+
+Galería
+
+Subir imagen → elige tags + productos relacionados.
+
+🧪 Datos de ejemplo mínimos
+
+categories/cat-10cm
+
+{ "name": "Formato 10 cm", "slug": "10cm", "defaultSpecOverrides": { "size": "10x10 cm", "thicknessMm": 10 } }
+
+
+materials/mat-onyx
+
+{ "name": "Onyx", "slug": "onyx", "defaultTags": ["onyx","premium"], "descriptionTemplateId": "tmpl-mat-onyx" }
+
+
+templates/tmpl-mat-onyx
+
+{
+  "type": "description",
+  "scope": "material",
+  "refId": "mat-onyx",
+  "language": "es",
+  "content": "El {name} en {size} de {material} destaca por su {propiedad}. Ideal para {uso}.",
+  "fields": ["name","size","material","propiedad","uso"]
+}
+
+
+products/prod-onyx-imperial
+
+{
+  "name": "Onyx Imperial",
+  "slug": "onyx-imperial",
+  "categoryId": "cat-10cm",
+  "materialId": "mat-onyx",
+  "status": "draft",
+  "variantMode": "embedded",
+  "variants": [
+    { "sku": "ONX-10-PLD", "sizeGroupId": "size-10cm", "finish": "Pulido", "colorId": "col-amber" }
+  ]
+}
+
+✅ Por qué esta estructura te conviene
+
+Autofill real: plantillas por material/categoría + defaults de size → menos escritura manual.
+
+SEO limpio: slug y campos seo por doc; fácil generar sitemaps.
+
+Admin simple: entidades pequeñas y claras; media centralizada.
+
+Escalable: puedes pasar variants a subcolección sin romper el front.
+
+Rápida en Angular: interfaces tipadas, consultas simples, índices previsibles.

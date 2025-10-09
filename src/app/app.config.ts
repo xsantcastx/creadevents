@@ -5,6 +5,8 @@ import { provideFirebaseApp, initializeApp } from '@angular/fire/app';
 import { provideFirestore, getFirestore } from '@angular/fire/firestore';
 import { provideAuth, getAuth } from '@angular/fire/auth';
 import { provideStorage, getStorage } from '@angular/fire/storage';
+import { provideAnalytics, getAnalytics, ScreenTrackingService, UserTrackingService } from '@angular/fire/analytics';
+import { isSupported as analyticsIsSupported } from 'firebase/analytics';
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { CustomTranslateLoader } from './core/services/translate-loader';
 
@@ -27,9 +29,15 @@ export const appConfig: ApplicationConfig = {
     provideFirestore(() => getFirestore()),
     provideAuth(() => getAuth()),
     provideStorage(() => getStorage()),
+    // Analytics with browser support check and production-only
+    ...(environment.production ? [
+      provideAnalytics(() => getAnalytics()),
+      ScreenTrackingService,
+      UserTrackingService
+    ] : []),
     importProvidersFrom(
       TranslateModule.forRoot({
-        defaultLanguage: 'es',
+        fallbackLang: 'es',
         loader: {
           provide: TranslateLoader,
           useFactory: HttpLoaderFactory,

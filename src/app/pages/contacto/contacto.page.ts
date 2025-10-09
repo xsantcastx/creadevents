@@ -2,6 +2,7 @@ import { Component, PLATFORM_ID, inject } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { EmailService } from '../../services/email.service';
+import { AnalyticsService } from '../../services/analytics.service';
 
 interface ContactFormData {
   nombre: string;
@@ -21,6 +22,7 @@ interface ContactFormData {
 })
 export class ContactoPageComponent {
   private platformId = inject(PLATFORM_ID);
+  private analyticsService = inject(AnalyticsService);
   
   contactForm: FormGroup;
   isSubmitting = false;
@@ -40,6 +42,13 @@ export class ContactoPageComponent {
       mensaje: ['', [Validators.required, Validators.minLength(10), Validators.maxLength(1000)]],
       aceptarPrivacidad: [false, [Validators.requiredTrue]]
     });
+    
+    // Track form start when user starts filling it
+    this.contactForm.valueChanges.subscribe(() => {
+      if (!this.isSubmitting && !this.submitSuccess) {
+        this.analyticsService.trackFormStart('contact_form');
+      }
+    });
   }
 
   async onSubmit() {
@@ -55,6 +64,13 @@ export class ContactoPageComponent {
         try {
           await this.emailService.sendContactForm(formData);
           
+          // Track successful form submission
+          this.analyticsService.trackFormSubmit('contact_form', true);
+          this.analyticsService.trackContactSubmit('form', {
+            empresa: !!formData.empresa,
+            form_location: 'contacto_page'
+          });
+          
           this.isSubmitting = false;
           this.submitSuccess = true;
           this.contactForm.reset();
@@ -64,6 +80,10 @@ export class ContactoPageComponent {
             this.submitSuccess = false;
           }, 8000);
         } catch (error: any) {
+          // Track form error
+          this.analyticsService.trackFormSubmit('contact_form', false);
+          this.analyticsService.trackFormError('contact_form', 'submission_error');
+          
           this.isSubmitting = false;
           this.submitError = true;
           this.submitErrorMessage = error.message || 'Hubo un error al enviar el mensaje. Por favor, inténtalo de nuevo.';

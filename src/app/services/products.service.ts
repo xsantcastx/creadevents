@@ -1,7 +1,11 @@
 import { Injectable, inject } from '@angular/core';
 import { Firestore, collection, doc, addDoc, updateDoc, deleteDoc, getDocs, getDoc, query, where, orderBy, Timestamp } from '@angular/fire/firestore';
-import { Observable, from, map } from 'rxjs';
+import { Observable, from, map, firstValueFrom } from 'rxjs';
 import { Product } from '../models/product';
+import { Product as CatalogProduct, TemplateComposition, ProductFormData } from '../models/catalog';
+import { CategoryService } from './category.service';
+import { MaterialService } from './material.service';
+import { TemplateService } from './template.service';
 
 @Injectable({
   providedIn: 'root'
@@ -9,6 +13,71 @@ import { Product } from '../models/product';
 export class ProductsService {
   private firestore = inject(Firestore);
   private productsCollection = collection(this.firestore, 'products');
+  private categoryService = inject(CategoryService);
+  private materialService = inject(MaterialService);
+  private templateService = inject(TemplateService);
+
+  /**
+   * Generate auto-filled data for a product based on templates
+   * This is the magic that makes admin life easier!
+   */
+  async generateProductData(formData: ProductFormData): Promise<TemplateComposition> {
+    try {
+      // Fetch category and material in parallel
+      const [category, material] = await Promise.all([
+        firstValueFrom(this.categoryService.getCategory(formData.categoryId)),
+        firstValueFrom(this.materialService.getMaterial(formData.materialId))
+      ]);
+
+      if (!category || !material) {
+        throw new Error('Category or Material not found');
+      }
+
+      // Prepare placeholders for template rendering
+      const placeholders: Record<string, string> = {
+        name: formData.name,
+        material: material.name,
+        grosor: category.slug, // '12mm', '15mm', '20mm'
+        size: category.defaultSpecOverrides?.size || '160×320cm',
+        aplicaciones: formData.specs?.usage?.join(', ') || 'cocinas, baños, fachadas',
+        // Add more placeholders as needed
+        finish: formData.finish || 'Pulido',
+        thickness: category.defaultSpecOverrides?.thicknessMm?.toString() || '12'
+      };
+
+      // Compose templates
+      const composition = await this.templateService.composeTemplates(
+        formData.categoryId,
+        formData.materialId,
+        placeholders
+      );
+
+      // Merge specs from category defaults + composition + user input
+      const finalSpecs = {
+        ...category.defaultSpecOverrides,
+        ...composition.specs,
+        ...formData.specs
+      };
+
+      // Merge tags from material defaults + user input
+      const finalTags = [
+        ...(material.defaultTags || []),
+        ...(composition.tags || []),
+        ...(formData.tags || [])
+      ];
+
+      return {
+        description: composition.description,
+        seoTitle: composition.seoTitle,
+        seoMeta: composition.seoMeta,
+        specs: finalSpecs,
+        tags: [...new Set(finalTags)] // Remove duplicates
+      };
+    } catch (error) {
+      console.error('Error generating product data:', error);
+      throw error;
+    }
+  }
 
   /**
    * Get all products

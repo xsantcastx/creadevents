@@ -22,6 +22,28 @@ import {
 } from '@angular/fire/storage';
 import { Observable } from 'rxjs';
 
+function extractStoragePath(urlOrPath: string): string | null {
+  if (!urlOrPath) {
+    return null;
+  }
+
+  if (!urlOrPath.startsWith('http')) {
+    return urlOrPath;
+  }
+
+  try {
+    const parsed = new URL(urlOrPath);
+    const match = parsed.pathname.match(/\/o\/(.+)/);
+    if (match && match[1]) {
+      return decodeURIComponent(match[1]);
+    }
+  } catch (error) {
+    console.warn('Failed to parse storage URL:', error);
+  }
+
+  return null;
+}
+
 export interface GalleryImage {
   id?: string;
   category: 'cocinas' | 'banos' | 'fachadas' | 'industria' | 'otros';
@@ -31,6 +53,8 @@ export interface GalleryImage {
   description?: string;
   project?: string;
   location?: string;
+  tags?: string[];
+  relatedProductIds?: string[];
   uploadedAt: Date;
   uploadedBy?: string;
 }
@@ -75,8 +99,8 @@ export class GalleryService {
 
   // Upload image to Storage and create Firestore document
   async uploadImage(
-    file: File, 
-    category: string, 
+    file: File,
+    category: string,
     metadata?: Partial<GalleryImage>
   ): Promise<string> {
     // Create unique filename
@@ -101,6 +125,22 @@ export class GalleryService {
     return docRef.id;
   }
 
+  // Create Firestore document from existing URL (no upload)
+  async addImageFromUrl(
+    imageUrl: string,
+    category: string,
+    metadata?: Partial<GalleryImage>
+  ): Promise<string> {
+    const docRef = await addDoc(this.imagesCollection, {
+      category,
+      imageUrl,
+      ...metadata,
+      uploadedAt: new Date()
+    });
+
+    return docRef.id;
+  }
+
   // Update image metadata
   async updateImage(id: string, data: Partial<GalleryImage>): Promise<void> {
     const imageDoc = doc(this.firestore, `galleryImages/${id}`);
@@ -115,8 +155,11 @@ export class GalleryService {
 
     // Delete from Storage
     try {
-      const imageRef = ref(this.storage, imageUrl);
-      await deleteObject(imageRef);
+      const storagePath = extractStoragePath(imageUrl);
+      if (storagePath) {
+        const imageRef = ref(this.storage, storagePath);
+        await deleteObject(imageRef);
+      }
     } catch (error) {
       console.error('Error deleting image from storage:', error);
     }

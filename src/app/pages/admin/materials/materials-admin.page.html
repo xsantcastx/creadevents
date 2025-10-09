@@ -1,0 +1,99 @@
+<div class="min-h-screen bg-gradient-to-b from-ts-paper to-white">
+  
+  <!-- Admin Header -->
+  <div class="bg-ts-bg text-white shadow-lg">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-4">
+          <a routerLink="/admin/products" class="hover:opacity-80 transition-opacity">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+            </svg>
+          </a>
+          <h1 class="text-xl font-bold">Materials Inventory</h1>
+        </div>
+        <a routerLink="/admin" class="text-sm hover:text-white/80">Back to Admin</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    
+    @if (isLoading) {
+      <div class="bg-white rounded-2xl shadow-lg p-12 border border-gray-100">
+        <div class="flex flex-col items-center justify-center gap-4">
+          <svg class="animate-spin h-10 w-10 text-ts-accent" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+          </svg>
+          <p class="text-gray-600">Loading materials...</p>
+        </div>
+      </div>
+    } @else {
+      
+      <!-- Materials Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        @for (material of materials; track material.id) {
+          <div class="bg-white rounded-xl shadow-md p-6 border border-gray-200 hover:shadow-lg transition-shadow">
+            <div class="flex items-start justify-between mb-4">
+              <div>
+                <h3 class="text-lg font-semibold text-gray-900">{{ material.name }}</h3>
+                <p class="text-sm text-gray-500">{{ material.slug }}</p>
+              </div>
+              <span 
+                class="px-3 py-1 rounded-full text-xs font-medium"
+                [class.bg-green-100]="material.active"
+                [class.text-green-800]="material.active"
+                [class.bg-gray-100]="!material.active"
+                [class.text-gray-800]="!material.active">
+                {{ material.active ? 'Active' : 'Inactive' }}
+              </span>
+            </div>
+
+            @if (material.textureHints && material.textureHints.length > 0) {
+              <div class="mb-4">
+                <p class="text-xs text-gray-500 mb-1">Texture Hints:</p>
+                <div class="flex flex-wrap gap-1">
+                  @for (hint of material.textureHints; track hint) {
+                    <span class="px-2 py-0.5 bg-purple-50 text-purple-700 text-xs rounded">{{ hint }}</span>
+                  }
+                </div>
+              </div>
+            }
+
+            @if (material.defaultTags && material.defaultTags.length > 0) {
+              <div class="flex flex-wrap gap-2">
+                @for (tag of material.defaultTags; track tag) {
+                  <span class="px-2 py-1 bg-blue-50 text-blue-700 text-xs rounded">{{ tag }}</span>
+                }
+              </div>
+            }
+          </div>
+        }
+      </div>
+
+      @if (materials.length === 0) {
+        <div class="bg-white rounded-2xl shadow-lg p-12 border border-gray-100 text-center">
+          <p class="text-gray-600">No materials found. Run the seed first.</p>
+          <a routerLink="/admin/seed" class="mt-4 inline-block px-6 py-3 bg-ts-accent text-white rounded-xl hover:bg-ts-accent/90 transition-colors">
+            Go to Seed Page
+          </a>
+        </div>
+      }
+    }
+
+    <!-- Info Box -->
+    <div class="mt-8 p-6 bg-blue-50 rounded-xl border border-blue-200">
+      <h3 class="font-semibold text-blue-900 mb-2">📦 Materials Inventory</h3>
+      <p class="text-sm text-blue-700 mb-2">
+        Materials are the core products (colors/patterns) that can be combined with different thicknesses to create products.
+      </p>
+      <p class="text-sm text-blue-700">
+        <strong>Current materials:</strong> {{ materials.length }}
+      </p>
+      <p class="text-xs text-blue-600 mt-2">
+        Full CRUD interface coming soon. For now, manage materials through the seed or Firestore directly.
+      </p>
+    </div>
+  </div>
+</div>

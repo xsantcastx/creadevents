@@ -92,6 +92,18 @@ export const routes: Routes = [
     title: 'TopStone | Gestión de Pedidos'
   },
   {
+    path: 'admin/seed',
+    loadComponent: () => import('./pages/admin/seed/seed-admin.page').then(m => m.SeedAdminComponent),
+    canActivate: [adminGuard],
+    title: 'TopStone | Database Seeder'
+  },
+  {
+    path: 'admin/materials',
+    loadComponent: () => import('./pages/admin/materials/materials-admin.page'),
+    canActivate: [adminGuard],
+    title: 'TopStone | Materials Inventory'
+  },
+  {
     path: '404',
     loadComponent: () => import('./pages/not-found/not-found.page').then(m => m.NotFoundPageComponent),
     title: 'TopStone | Página no encontrada'

@@ -61,6 +61,7 @@
               [type]="showPassword ? 'text' : 'password'"
               id="password"
               formControlName="password"
+              autocomplete="current-password"
               class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-ts-accent focus:border-transparent transition-all pr-12"
               [class.border-red-500]="password?.invalid && password?.touched"
               placeholder="••••••••">
