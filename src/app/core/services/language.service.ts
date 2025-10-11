@@ -17,11 +17,11 @@ export class LanguageService {
   
   readonly lang$ = this.currentLang$.asObservable();
   
-  readonly languages: { code: Language; name: string; flag: string }[] = [
-    { code: 'es', name: 'Español', flag: '🇪🇸' },
-    { code: 'en', name: 'English', flag: '🇬🇧' },
-    { code: 'fr', name: 'Français', flag: '🇫🇷' },
-    { code: 'it', name: 'Italiano', flag: '🇮🇹' }
+  readonly languages: { code: Language; label: string; name: string; flag: string }[] = [
+    { code: 'es', label: 'ES', name: 'Español', flag: '🇪🇸' },
+    { code: 'en', label: 'EN', name: 'English', flag: '🇬🇧' },
+    { code: 'fr', label: 'FR', name: 'Français', flag: '🇫🇷' },
+    { code: 'it', label: 'IT', name: 'Italiano', flag: '🇮🇹' }
   ];
 
   constructor() {
@@ -68,3 +68,4 @@ export class LanguageService {
     return this.translate.instant(key, params);
   }
 }
+

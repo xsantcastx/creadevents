@@ -14,7 +14,7 @@
         </div>
         <div class="flex items-center gap-4">
           <a routerLink="/admin" class="text-sm hover:text-white/80">{{ 'admin.title' | translate }}</a>
-          <button (click)="logout()" class="px-4 py-2 bg-red-500/20 hover:bg-red-500/30 text-red-100 rounded-xl transition-all">
+          <button (click)="logout()" class="ts-btn ts-btn-ghost" data-variant="inverse">
             {{ 'client.logout' | translate }}
           </button>
         </div>
@@ -77,13 +77,13 @@
           <option value="15mm">15mm</option>
           <option value="20mm">20mm</option>
         </select>
-        <a routerLink="/admin/materials" class="px-4 py-2 border border-gray-300 text-gray-700 rounded-xl hover:bg-gray-50 transition-all duration-300 flex items-center gap-2 whitespace-nowrap">
+        <a routerLink="/admin/catalog" class="ts-btn ts-btn-outline ts-btn-sm flex items-center gap-2 whitespace-nowrap">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01"></path>
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
           </svg>
-          {{ 'admin.manage_materials' | translate }}
+          {{ 'admin.catalog.title' | translate }}
         </a>
-        <button (click)="openCreateModal()" class="px-4 py-2 bg-ts-accent text-white rounded-xl hover:bg-ts-accent/90 transition-all duration-300 flex items-center gap-2 whitespace-nowrap">
+        <button (click)="openCreateModal()" class="ts-btn ts-btn-primary ts-btn-sm flex items-center gap-2 whitespace-nowrap">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
           </svg>
@@ -172,12 +172,12 @@
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                       <div class="flex items-center justify-end gap-2">
-                        <button (click)="openEditModal(product)" class="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors" [title]="'admin.edit' | translate">
+                        <button (click)="openEditModal(product)" class="ts-btn-icon is-info" [title]="'admin.edit' | translate">
                           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
                           </svg>
                         </button>
-                        <button (click)="openDeleteConfirm(product)" class="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors" [title]="'admin.delete' | translate">
+                        <button (click)="openDeleteConfirm(product)" class="ts-btn-icon is-danger" [title]="'admin.delete' | translate">
                           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
                           </svg>
@@ -195,15 +195,14 @@
   </div>
 
   @if (showModal) {
-    <div class="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50" (click)="closeModal()">
-      <div class="bg-white rounded-2xl shadow-2xl max-w-5xl w-full max-h-[90vh] overflow-hidden" (click)="$event.stopPropagation()">
-        <div class="p-6 border-b border-gray-200">
-          <div class="flex items-start justify-between gap-4">
+    <div class="admin-backdrop fixed inset-0 flex items-center justify-center p-4 z-50" (click)="closeModal()">
+      <div class="admin-modal max-w-5xl w-full max-h-[90vh] overflow-hidden" (click)="$event.stopPropagation()">
+        <div class="admin-modal__header flex items-start justify-between gap-4">
             <div>
               <h2 class="text-2xl font-serif font-bold text-ts-bg">{{ isEditMode ? ('admin.edit_product' | translate) : ('admin.add_product' | translate) }}</h2>
               <p class="text-sm text-gray-500 mt-1">{{ 'admin.product_wizard_hint' | translate }}</p>
             </div>
-            <button type="button" (click)="closeModal()" class="p-2 hover:bg-gray-100 rounded-lg transition-colors">
+            <button type="button" (click)="closeModal()" class="admin-modal__close">
               <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
               </svg>
@@ -232,7 +231,6 @@
               </div>
             }
           </div>
-        </div>
         <form [formGroup]="productForm" class="p-6 space-y-8 overflow-y-auto max-h-[65vh]">
           @if (currentStep === 1) {
             <section class="space-y-6">
@@ -262,7 +260,7 @@
                     <p class="text-sm text-gray-500">{{ 'admin.catalog_empty' | translate }}</p>
                   } @else {
                     @for (option of filteredCatalogOptions; track option.id) {
-                      <button type="button" (click)="selectCatalogOption(option)" class="w-full text-left px-4 py-3 rounded-xl border border-gray-200 hover:border-ts-accent hover:bg-ts-paper/60 transition-all" [class.border-ts-accent]="selectedCatalogOption?.id === option.id" [class.bg-ts-paper]="selectedCatalogOption?.id === option.id">
+                      <button type="button" (click)="selectCatalogOption(option)" class="w-full text-left ts-btn ts-btn-outline ts-btn-sm justify-start" [class.border-ts-accent]="selectedCatalogOption?.id === option.id" [class.bg-ts-paper]="selectedCatalogOption?.id === option.id">
                         <div class="flex items-center justify-between gap-3">
                           <span class="font-medium text-ts-bg">{{ option.label }}</span>
                           @if (selectedCatalogOption?.id === option.id) {
@@ -318,7 +316,7 @@
                 </div>
               </div>
               <div class="flex items-center gap-3">
-                <button type="button" (click)="triggerAutoFill()" class="px-4 py-2 bg-ts-accent text-white rounded-xl hover:bg-ts-accent/90 transition-colors">{{ 'admin.refresh_autofill' | translate }}</button>
+                <button type="button" (click)="triggerAutoFill()" class="ts-btn ts-btn-primary ts-btn-sm">{{ 'admin.refresh_autofill' | translate }}</button>
                 <p class="text-sm text-gray-500">{{ 'admin.auto_fill_hint' | translate }}</p>
               </div>
 
@@ -348,7 +346,7 @@
                 <div class="space-y-3">
                   <div class="flex items-center justify-between">
                     <label class="text-sm font-medium text-gray-700">{{ 'admin.product_description' | translate }}</label>
-                    <button type="button" class="text-xs text-ts-accent" (click)="toggleDescriptionLock()">
+                    <button type="button" class="text-xs font-semibold text-ts-accent hover:underline" (click)="toggleDescriptionLock()">
                       {{ descriptionLocked ? ('admin.unlock' | translate) : ('admin.lock' | translate) }}
                     </button>
                   </div>
@@ -360,7 +358,7 @@
                 <div class="space-y-3">
                   <div class="flex items-center justify-between">
                     <label class="text-sm font-medium text-gray-700">{{ 'admin.seo_settings' | translate }}</label>
-                    <button type="button" class="text-xs text-ts-accent" (click)="toggleSeoLock()">
+                    <button type="button" class="text-xs font-semibold text-ts-accent hover:underline" (click)="toggleSeoLock()">
                       {{ seoLocked ? ('admin.unlock' | translate) : ('admin.lock' | translate) }}
                     </button>
                   </div>
@@ -434,28 +432,27 @@
             </section>
           }
         </form>
-        <div class="p-6 border-t border-gray-200 flex flex-wrap gap-3 justify-between">
+        <div class="admin-footer flex flex-wrap gap-3 justify-between">
           <div class="flex gap-3">
-            <button type="button" class="px-4 py-2 border border-gray-300 rounded-xl hover:bg-gray-50 transition-colors" (click)="closeModal()">
+            <button type="button" class="ts-btn ts-btn-outline ts-btn-sm text-neutral-600 hover:text-neutral-900" (click)="closeModal()">
               {{ 'admin.cancel' | translate }}
             </button>
             @if (currentStep > 1) {
-              <button type="button" class="px-4 py-2 border border-gray-300 rounded-xl hover:bg-gray-50 transition-colors" (click)="previousStep()">
+              <button type="button" class="ts-btn ts-btn-outline ts-btn-sm" (click)="previousStep()">
                 {{ 'admin.back' | translate }}
               </button>
             }
           </div>
-          <div class="flex gap-3">
+          <div class="flex gap-3 flex-1 justify-end">
             @if (currentStep < maxStep) {
-              <button type="button" class="px-4 py-2 bg-ts-accent text-white rounded-xl hover:bg-ts-accent/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed" (click)="nextStep()" [disabled]="!canAdvance()">
+              <button type="button" class="ts-btn ts-btn-primary ts-btn-sm" (click)="nextStep()" [disabled]="!canAdvance()">
                 {{ 'admin.next' | translate }}
               </button>
             } @else {
-              <!-- Publish Blockers Warning (if any) -->
               @if (!canPublish) {
-                <div class="w-full mb-4 p-4 bg-yellow-50 border border-yellow-200 rounded-xl">
+                <div class="warning-panel w-full">
                   <div class="flex items-start gap-3">
-                    <svg class="w-5 h-5 text-yellow-600 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                    <svg class="w-5 h-5 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
                       <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
                     </svg>
                     <div class="flex-1">
@@ -463,26 +460,26 @@
                       <ul class="text-sm text-yellow-700 space-y-1">
                         @for (blocker of getPublishBlockers(); track blocker) {
                           <li class="flex items-center gap-2">
-                            <svg class="w-4 h-4 text-yellow-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
                             </svg>
                             <span>{{ blocker }}</span>
                           </li>
                         }
                       </ul>
-                      <p class="text-xs text-yellow-600 mt-2">Complete the requirements above to publish this product.</p>
+                      <p class="text-xs text-yellow-700 mt-2">Complete the requirements above to publish this product.</p>
                     </div>
                   </div>
                 </div>
               }
-              
-              <button type="button" class="px-4 py-2 border border-gray-300 rounded-xl hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed" (click)="saveDraft()" [disabled]="isSaving || isUploading">
+
+              <button type="button" class="ts-btn ts-btn-outline ts-btn-sm" (click)="saveDraft()" [disabled]="isSaving || isUploading">
                 {{ 'admin.save_draft' | translate }}
               </button>
-              <button 
-                type="button" 
-                class="px-4 py-2 bg-ts-accent text-white rounded-xl hover:bg-ts-accent/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed" 
-                (click)="publishProduct()" 
+              <button
+                type="button"
+                class="ts-btn ts-btn-primary ts-btn-sm"
+                (click)="publishProduct()"
                 [disabled]="isSaving || isUploading || !canPublish"
                 [title]="!canPublish ? 'Complete all required fields to publish' : 'Publish product'"
               >
@@ -496,8 +493,8 @@
   }
 
   @if (showDeleteConfirm) {
-    <div class="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50" (click)="closeDeleteConfirm()">
-      <div class="bg-white rounded-2xl shadow-xl max-w-md w-full p-6" (click)="$event.stopPropagation()">
+    <div class="admin-backdrop fixed inset-0 flex items-center justify-center p-4 z-50" (click)="closeDeleteConfirm()">
+      <div class="admin-modal max-w-md w-full p-6" (click)="$event.stopPropagation()">
         <div class="flex items-center gap-4 mb-4">
           <div class="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center">
             <svg class="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -516,10 +513,10 @@
           </div>
         }
         <div class="flex gap-3">
-          <button (click)="confirmDelete()" class="flex-1 py-2 px-4 bg-red-600 text-white rounded-xl hover:bg-red-700 transition-colors font-medium">
+          <button (click)="confirmDelete()" class="ts-btn ts-btn-danger ts-btn-sm flex-1 justify-center">
             {{ 'admin.delete' | translate }}
           </button>
-          <button (click)="closeDeleteConfirm()" class="flex-1 py-2 px-4 border border-gray-300 text-gray-700 rounded-xl hover:bg-gray-50 transition-colors font-medium">
+          <button (click)="closeDeleteConfirm()" class="ts-btn ts-btn-outline ts-btn-sm flex-1 justify-center text-neutral-600 hover:text-neutral-900">
             {{ 'admin.cancel' | translate }}
           </button>
         </div>
@@ -527,3 +524,7 @@
     </div>
   }
 </div>
+
+
+
+

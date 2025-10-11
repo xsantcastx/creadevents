@@ -1,6 +1,6 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router, RouterLink } from '@angular/router';
+import { Router, RouterLink, ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { AuthService } from '../../../services/auth.service';
@@ -33,6 +33,7 @@ interface CatalogOption {
 export class ProductsAdminComponent implements OnInit {
   private authService = inject(AuthService);
   private router = inject(Router);
+  private route = inject(ActivatedRoute);
   private fb = inject(FormBuilder);
   private productsService = inject(ProductsService);
   private categoryService = inject(CategoryService);
@@ -117,6 +118,16 @@ export class ProductsAdminComponent implements OnInit {
     await this.loadMasterData();
     await this.loadProducts();
     this.setupAutoFillListeners();
+    
+    // Check if we should auto-open create modal
+    this.route.queryParams.subscribe(params => {
+      if (params['action'] === 'create') {
+        // Wait a bit for data to load, then open modal
+        setTimeout(() => {
+          this.openCreateModal();
+        }, 500);
+      }
+    });
   }
 
   private async checkAdminAccess() {
@@ -591,15 +602,25 @@ export class ProductsAdminComponent implements OnInit {
       return;
     }
 
-    // Validate image dimensions
-    const dimensionCheck = await this.mediaService.validateImageDimensions(
-      file,
-      MEDIA_VALIDATION.MIN_WIDTH,
-      MEDIA_VALIDATION.MIN_HEIGHT
-    );
+    // Validate file size
+    if (file.size > MEDIA_VALIDATION.MAX_SIZE) {
+      this.errorMessage = `File is too large. Maximum size is ${MEDIA_VALIDATION.MAX_SIZE / 1024 / 1024}MB`;
+      return;
+    }
 
-    if (!dimensionCheck.valid) {
-      this.errorMessage = dimensionCheck.error || `Image must be at least ${MEDIA_VALIDATION.MIN_WIDTH}x${MEDIA_VALIDATION.MIN_HEIGHT}px`;
+    // Get image dimensions
+    let dimensions: { width: number; height: number };
+    try {
+      dimensions = await this.mediaService.getImageDimensions(file);
+    } catch (error) {
+      console.error('Error getting image dimensions:', error);
+      this.errorMessage = 'Failed to load image. Please try another file.';
+      return;
+    }
+
+    // Validate image dimensions
+    if (dimensions.width < MEDIA_VALIDATION.MIN_WIDTH || dimensions.height < MEDIA_VALIDATION.MIN_HEIGHT) {
+      this.errorMessage = `Image is too small: ${dimensions.width}x${dimensions.height}px. Minimum required: ${MEDIA_VALIDATION.MIN_WIDTH}x${MEDIA_VALIDATION.MIN_HEIGHT}px`;
       return;
     }
 
@@ -611,7 +632,7 @@ export class ProductsAdminComponent implements OnInit {
     }
 
     this.coverPreview = URL.createObjectURL(file);
-    console.log(`✅ Cover image selected: ${dimensionCheck.width}x${dimensionCheck.height}px`);
+    console.log(`✅ Cover image selected: ${dimensions.width}x${dimensions.height}px`);
   }
 
   onGalleryFilesSelected(event: Event) {
@@ -675,17 +696,37 @@ export class ProductsAdminComponent implements OnInit {
   }
 
   private async saveProduct(status: 'draft' | 'published') {
-    if (this.productForm.invalid) {
-      this.markFormGroupTouched(this.productForm);
-      this.errorMessage = 'admin.invalid_form';
-      return;
-    }
-
-    // For published products, validate all required fields
-    if (status === 'published' && !this.canPublish) {
-      const blockers = this.getPublishBlockers();
-      this.errorMessage = `Cannot publish. Missing: ${blockers.join(', ')}`;
-      return;
+    // For drafts, only require basic product info (name, category, material)
+    // For published, validate all required fields
+    const formData = this.productForm.value;
+    
+    if (status === 'draft') {
+      // Drafts require minimal validation
+      if (!formData.name || formData.name.trim().length < 3) {
+        this.errorMessage = 'Product name is required (minimum 3 characters)';
+        return;
+      }
+      if (!formData.categoryId) {
+        this.errorMessage = 'Please select a category';
+        return;
+      }
+      if (!formData.materialId) {
+        this.errorMessage = 'Please select a material';
+        return;
+      }
+    } else if (status === 'published') {
+      // Published products need all required fields
+      if (this.productForm.invalid) {
+        this.markFormGroupTouched(this.productForm);
+        this.errorMessage = 'admin.invalid_form';
+        return;
+      }
+      
+      if (!this.canPublish) {
+        const blockers = this.getPublishBlockers();
+        this.errorMessage = `Cannot publish. Missing: ${blockers.join(', ')}`;
+        return;
+      }
     }
 
     this.isSaving = true;
@@ -693,7 +734,6 @@ export class ProductsAdminComponent implements OnInit {
     this.uploadProgress = 0;
 
     try {
-      const formData = this.productForm.value;
       const category = this.categories.find(c => c.id === formData.categoryId);
       const grosor = category?.slug || '12mm';
 
@@ -715,8 +755,12 @@ export class ProductsAdminComponent implements OnInit {
 
       const existingCover = this.selectedProduct?.coverImage || (this.selectedProduct as any)?.imageUrl;
       let coverImage = existingCover || '';
+      let coverImageUrl = this.selectedProduct?.imageUrl || '';
+      
       if (this.selectedCoverFile) {
-        coverImage = await this.uploadCoverImage(slug, grosor, existingCover);
+        const uploadResult = await this.uploadCoverImage(slug, grosor, existingCover);
+        coverImage = uploadResult.mediaId;
+        coverImageUrl = uploadResult.url;
       }
 
       const usage = formData.usage
@@ -750,7 +794,7 @@ export class ProductsAdminComponent implements OnInit {
         seo: {
           title: formData.seoTitle || '',
           metaDescription: formData.seoMeta || '',
-          ogImage: coverImage || undefined
+          ogImage: coverImageUrl || undefined
         },
         tags: this.autoFillPreview?.tags || this.selectedProduct?.tags || [],
         descriptionLocked: this.descriptionLocked,
@@ -759,7 +803,7 @@ export class ProductsAdminComponent implements OnInit {
         // Compatibility fields
         grosor,
         size: formData.size,
-        imageUrl: coverImage,
+        imageUrl: coverImageUrl, // Use the actual download URL, not Media ID
         price: formData.price ? parseFloat(formData.price) : undefined,
         stock: formData.stock ? parseInt(formData.stock) : undefined,
         sku: formData.sku || undefined,
@@ -812,9 +856,9 @@ export class ProductsAdminComponent implements OnInit {
     return baseSlug;
   }
 
-  private async uploadCoverImage(slug: string, grosor: string, existingCover?: string | null): Promise<string> {
+  private async uploadCoverImage(slug: string, grosor: string, existingCover?: string | null): Promise<{ mediaId: string; url: string }> {
     if (!this.selectedCoverFile) {
-      return existingCover || '';
+      return { mediaId: existingCover || '', url: existingCover || '' };
     }
 
     this.isUploading = true;
@@ -829,12 +873,12 @@ export class ProductsAdminComponent implements OnInit {
       // Get image dimensions
       const dimensions = await this.mediaService.getImageDimensions(this.selectedCoverFile);
 
-      // Delete old cover if exists
-      if (this.isEditMode && existingCover) {
+      // Delete old cover if exists (only if it's a Media ID)
+      if (this.isEditMode && existingCover && !existingCover.startsWith('http')) {
         try {
-          await this.storageService.deleteFile(existingCover);
+          await this.mediaService.deleteMedia(existingCover);
         } catch (error) {
-          console.warn('Could not delete old image:', error);
+          console.warn('Could not delete old media:', error);
         }
       }
 
@@ -881,8 +925,8 @@ export class ProductsAdminComponent implements OnInit {
       this.isUploading = false;
       this.selectedCoverFile = null;
 
-      // Return media ID instead of URL
-      return mediaId;
+      // Return both media ID and download URL
+      return { mediaId, url: downloadURL };
 
     } catch (error) {
       this.isUploading = false;

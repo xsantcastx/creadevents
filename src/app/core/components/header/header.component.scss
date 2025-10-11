@@ -1,4 +1,4 @@
-// Custom styles for header component
+/* Custom styles for header component */
 .group:hover .group-hover\:visible {
   visibility: visible;
 }
@@ -7,17 +7,17 @@
   opacity: 1;
 }
 
-// Ensure mega menu positioning
+/* Ensure mega menu positioning */
 .group {
   position: relative;
 }
 
-// Smooth hover transitions for mega menu
+/* Smooth hover transitions for mega menu */
 .group > div {
   transition: opacity 0.3s ease, visibility 0.3s ease;
 }
 
-// Mobile menu animation
+/* Mobile menu animation */
 @media (max-width: 768px) {
   .mobile-menu-enter {
     transform: translateY(-10px);

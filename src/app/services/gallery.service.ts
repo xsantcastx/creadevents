@@ -73,24 +73,25 @@ export interface GalleryCategory {
 export class GalleryService {
   private firestore = inject(Firestore);
   private storage = inject(Storage);
-  private imagesCollection = collection(this.firestore, 'galleryImages');
-  private categoriesCollection = collection(this.firestore, 'galleryCategories');
 
   // Get all categories
   getCategories(): Observable<GalleryCategory[]> {
-    return collectionData(this.categoriesCollection, { idField: 'id' }) as Observable<GalleryCategory[]>;
+    const categoriesCollection = collection(this.firestore, 'galleryCategories');
+    return collectionData(categoriesCollection, { idField: 'id' }) as Observable<GalleryCategory[]>;
   }
 
   // Get all images
   getAllImages(): Observable<GalleryImage[]> {
-    const q = query(this.imagesCollection, orderBy('uploadedAt', 'desc'));
+    const imagesCollection = collection(this.firestore, 'galleryImages');
+    const q = query(imagesCollection, orderBy('uploadedAt', 'desc'));
     return collectionData(q, { idField: 'id' }) as Observable<GalleryImage[]>;
   }
 
   // Get images by category
   getImagesByCategory(category: string): Observable<GalleryImage[]> {
+    const imagesCollection = collection(this.firestore, 'galleryImages');
     const q = query(
-      this.imagesCollection,
+      imagesCollection,
       where('category', '==', category),
       orderBy('uploadedAt', 'desc')
     );
@@ -103,6 +104,7 @@ export class GalleryService {
     category: string,
     metadata?: Partial<GalleryImage>
   ): Promise<string> {
+    const imagesCollection = collection(this.firestore, 'galleryImages');
     // Create unique filename
     const timestamp = Date.now();
     const filename = `${category}/${timestamp}_${file.name}`;
@@ -115,7 +117,7 @@ export class GalleryService {
     const imageUrl = await getDownloadURL(storageRef);
 
     // Create Firestore document
-    const docRef = await addDoc(this.imagesCollection, {
+    const docRef = await addDoc(imagesCollection, {
       category,
       imageUrl,
       ...metadata,
@@ -131,7 +133,8 @@ export class GalleryService {
     category: string,
     metadata?: Partial<GalleryImage>
   ): Promise<string> {
-    const docRef = await addDoc(this.imagesCollection, {
+    const imagesCollection = collection(this.firestore, 'galleryImages');
+    const docRef = await addDoc(imagesCollection, {
       category,
       imageUrl,
       ...metadata,
@@ -167,7 +170,8 @@ export class GalleryService {
 
   // Get image count by category
   async getImageCount(category: string): Promise<number> {
-    const q = query(this.imagesCollection, where('category', '==', category));
+    const imagesCollection = collection(this.firestore, 'galleryImages');
+    const q = query(imagesCollection, where('category', '==', category));
     const snapshot = await getDocs(q);
     return snapshot.size;
   }

@@ -86,22 +86,28 @@ export const routes: Routes = [
     title: 'TopStone | Gestión de Galería'
   },
   {
+    path: 'admin/catalog',
+    loadComponent: () => import('./pages/admin/catalog/catalog-admin.page').then(m => m.CatalogAdminComponent),
+    canActivate: [adminGuard],
+    title: 'TopStone | Catálogo Master'
+  },
+  {
     path: 'admin/orders',
     loadComponent: () => import('./pages/admin/orders/orders-admin.page').then(m => m.OrdersAdminComponent),
     canActivate: [adminGuard],
     title: 'TopStone | Gestión de Pedidos'
   },
   {
+    path: 'admin/users',
+    loadComponent: () => import('./pages/admin/users/users-admin.page').then(m => m.UsersAdminComponent),
+    canActivate: [adminGuard],
+    title: 'TopStone | Gestión de Usuarios'
+  },
+  {
     path: 'admin/seed',
     loadComponent: () => import('./pages/admin/seed/seed-admin.page').then(m => m.SeedAdminComponent),
     canActivate: [adminGuard],
     title: 'TopStone | Database Seeder'
-  },
-  {
-    path: 'admin/materials',
-    loadComponent: () => import('./pages/admin/materials/materials-admin.page'),
-    canActivate: [adminGuard],
-    title: 'TopStone | Materials Inventory'
   },
   {
     path: '404',

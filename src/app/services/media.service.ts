@@ -12,8 +12,6 @@ import {
   where,
   orderBy,
   Timestamp,
-  CollectionReference,
-  DocumentReference,
 } from '@angular/fire/firestore';
 import {
   Storage,
@@ -30,14 +28,10 @@ import { Media, MediaCreateInput } from '../models/media';
   providedIn: 'root',
 })
 export class MediaService {
-  private mediaCollection: CollectionReference;
-
   constructor(
     private firestore: Firestore,
     private storage: Storage
-  ) {
-    this.mediaCollection = collection(this.firestore, 'media');
-  }
+  ) {}
 
   /**
    * Upload media file to Firebase Storage and create Firestore document
@@ -142,12 +136,13 @@ export class MediaService {
    */
   async createMedia(mediaInput: MediaCreateInput): Promise<string> {
     try {
+      const mediaCollection = collection(this.firestore, 'media');
       const mediaData = {
         ...mediaInput,
         uploadedAt: Timestamp.now(),
       };
 
-      const docRef = await addDoc(this.mediaCollection, mediaData);
+      const docRef = await addDoc(mediaCollection, mediaData as any);
       console.log('✅ Media created with ID:', docRef.id);
       return docRef.id;
     } catch (error) {
@@ -161,12 +156,13 @@ export class MediaService {
    * @returns Observable of all media
    */
   getAllMedia(): Observable<Media[]> {
-    const q = query(this.mediaCollection, orderBy('uploadedAt', 'desc'));
+    const mediaCollection = collection(this.firestore, 'media');
+    const q = query(mediaCollection, orderBy('uploadedAt', 'desc'));
     
     return from(getDocs(q)).pipe(
       map((snapshot) => {
         return snapshot.docs.map((doc) => {
-          const data = doc.data();
+          const data = doc.data() as any;
           return {
             id: doc.id,
             ...data,
@@ -184,11 +180,11 @@ export class MediaService {
    */
   async getMediaById(id: string): Promise<Media | null> {
     try {
-      const docRef = doc(this.firestore, 'media', id) as DocumentReference;
+      const docRef = doc(this.firestore, 'media', id);
       const docSnap = await getDoc(docRef);
 
       if (docSnap.exists()) {
-        const data = docSnap.data();
+        const data = docSnap.data() as any;
         return {
           id: docSnap.id,
           ...data,
@@ -233,8 +229,9 @@ export class MediaService {
     entityType: 'product' | 'gallery' | 'other',
     entityId: string
   ): Observable<Media[]> {
+    const mediaCollection = collection(this.firestore, 'media');
     const q = query(
-      this.mediaCollection,
+      mediaCollection,
       where('relatedEntityType', '==', entityType),
       where('relatedEntityIds', 'array-contains', entityId),
       orderBy('uploadedAt', 'desc')
@@ -243,7 +240,7 @@ export class MediaService {
     return from(getDocs(q)).pipe(
       map((snapshot) => {
         return snapshot.docs.map((doc) => {
-          const data = doc.data();
+          const data = doc.data() as any;
           return {
             id: doc.id,
             ...data,
@@ -267,8 +264,9 @@ export class MediaService {
       });
     }
 
+    const mediaCollection = collection(this.firestore, 'media');
     const q = query(
-      this.mediaCollection,
+      mediaCollection,
       where('tags', 'array-contains-any', tags),
       orderBy('uploadedAt', 'desc')
     );
@@ -276,7 +274,7 @@ export class MediaService {
     return from(getDocs(q)).pipe(
       map((snapshot) => {
         return snapshot.docs.map((doc) => {
-          const data = doc.data();
+          const data = doc.data() as any;
           return {
             id: doc.id,
             ...data,
@@ -295,12 +293,12 @@ export class MediaService {
    */
   async updateMedia(id: string, updates: Partial<Media>): Promise<void> {
     try {
-      const docRef = doc(this.firestore, 'media', id) as DocumentReference;
+      const docRef = doc(this.firestore, 'media', id);
       
       // Remove id and uploadedAt from updates (shouldn't change)
       const { id: _id, uploadedAt: _uploadedAt, ...safeUpdates } = updates;
 
-      await updateDoc(docRef, safeUpdates);
+      await updateDoc(docRef, safeUpdates as any);
       console.log('✅ Media updated:', id);
     } catch (error) {
       console.error('❌ Error updating media:', error);
@@ -315,7 +313,7 @@ export class MediaService {
    */
   async deleteMedia(id: string): Promise<void> {
     try {
-      const docRef = doc(this.firestore, 'media', id) as DocumentReference;
+      const docRef = doc(this.firestore, 'media', id);
       await deleteDoc(docRef);
       console.log('✅ Media deleted:', id);
     } catch (error) {

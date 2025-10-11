@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router, RouterLink } from '@angular/router';
+import { Router, RouterLink, ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, FormsModule, Validators } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { Subscription } from 'rxjs';
@@ -21,6 +21,7 @@ import { Media, MediaTag, GALLERY_TAGS, MediaCreateInput } from '../../../models
 export class GalleryAdminComponent implements OnInit, OnDestroy {
   private authService = inject(AuthService);
   private router = inject(Router);
+  private route = inject(ActivatedRoute);
   private fb = inject(FormBuilder);
   private mediaService = inject(MediaService);
   private productsService = inject(ProductsService);
@@ -70,6 +71,16 @@ export class GalleryAdminComponent implements OnInit, OnDestroy {
     await this.checkAdminAccess();
     this.subscribeToMedia();
     this.subscribeToProducts();
+    
+    // Check if we should auto-open upload modal
+    this.route.queryParams.subscribe(params => {
+      if (params['action'] === 'upload') {
+        // Wait a bit for data to load, then open modal
+        setTimeout(() => {
+          this.openUploadModal();
+        }, 500);
+      }
+    });
   }
 
   ngOnDestroy(): void {

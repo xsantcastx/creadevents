@@ -10,9 +10,7 @@ import {
   getDoc,
   query,
   where,
-  Timestamp,
-  CollectionReference,
-  DocumentReference
+  Timestamp
 } from '@angular/fire/firestore';
 import { Observable, from, map } from 'rxjs';
 import { Template, TemplateComposition, Specs } from '../models/catalog';
@@ -20,15 +18,15 @@ import { Template, TemplateComposition, Specs } from '../models/catalog';
 @Injectable({ providedIn: 'root' })
 export class TemplateService {
   private firestore = inject(Firestore);
-  private templatesCollection = collection(this.firestore, 'templates') as CollectionReference<Template>;
 
   /**
    * Get all templates
    */
   getAllTemplates(): Observable<Template[]> {
-    return from(getDocs(this.templatesCollection)).pipe(
+    const templatesCollection = collection(this.firestore, 'templates');
+    return from(getDocs(templatesCollection)).pipe(
       map(snapshot => 
-        snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }))
+        snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() as any } as Template))
       )
     );
   }
@@ -42,8 +40,9 @@ export class TemplateService {
     refId?: string,
     language: string = 'es'
   ): Promise<Template[]> {
+    const templatesCollection = collection(this.firestore, 'templates');
     let q = query(
-      this.templatesCollection,
+      templatesCollection,
       where('type', '==', type),
       where('scope', '==', scope),
       where('language', '==', language),
@@ -55,7 +54,7 @@ export class TemplateService {
     }
 
     const snapshot = await getDocs(q);
-    return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() as any } as Template));
   }
 
   /**
@@ -160,6 +159,7 @@ export class TemplateService {
    * Create new template
    */
   async addTemplate(template: Omit<Template, 'id'>): Promise<string> {
+    const templatesCollection = collection(this.firestore, 'templates');
     const now = Timestamp.now();
     const data = {
       ...template,
@@ -167,36 +167,34 @@ export class TemplateService {
       createdAt: now,
       updatedAt: now
     };
-    const docRef = await addDoc(this.templatesCollection, data);
+    const docRef = await addDoc(templatesCollection, data as any);
     return docRef.id;
-  }
-
-  /**
-   * Update template
-   */
-  async updateTemplate(id: string, updates: Partial<Template>): Promise<void> {
-    const docRef = doc(this.templatesCollection, id);
-    await updateDoc(docRef, {
-      ...updates,
-      updatedAt: Timestamp.now()
-    });
-  }
-
-  /**
-   * Delete template
-   */
-  async deleteTemplate(id: string): Promise<void> {
-    const docRef = doc(this.templatesCollection, id);
-    await deleteDoc(docRef);
   }
 
   /**
    * Get template by ID
    */
   getTemplate(id: string): Observable<Template | null> {
-    const docRef = doc(this.templatesCollection, id) as DocumentReference<Template>;
+    const docRef = doc(this.firestore, `templates/${id}`);
     return from(getDoc(docRef)).pipe(
-      map(doc => doc.exists() ? { id: doc.id, ...doc.data() } : null)
+      map(doc => doc.exists() ? { id: doc.id, ...doc.data() as any } as Template : null)
     );
+  }
+
+  private templateDoc(id: string) {
+    return doc(this.firestore, `templates/${id}`);
+  }
+
+  async updateTemplate(id: string, updates: Partial<Template>): Promise<void> {
+    const docRef = this.templateDoc(id);
+    await updateDoc(docRef, {
+      ...updates,
+      updatedAt: Timestamp.now()
+    });
+  }
+
+  async deleteTemplate(id: string): Promise<void> {
+    const docRef = this.templateDoc(id);
+    await deleteDoc(docRef);
   }
 }

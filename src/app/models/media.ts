@@ -76,11 +76,11 @@ export interface MediaCreateInput {
  * Media validation constants
  */
 export const MEDIA_VALIDATION = {
-  /** Minimum image width in pixels */
-  MIN_WIDTH: 1600,
+  /** Minimum image width in pixels (flexible for various image sizes) */
+  MIN_WIDTH: 400,
 
-  /** Minimum image height in pixels (optional, more flexible) */
-  MIN_HEIGHT: 1200,
+  /** Minimum image height in pixels (flexible for various image sizes) */
+  MIN_HEIGHT: 400,
 
   /** Maximum file size in bytes (10MB) */
   MAX_SIZE: 10 * 1024 * 1024,

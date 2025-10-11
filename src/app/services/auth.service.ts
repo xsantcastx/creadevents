@@ -13,7 +13,11 @@ import {
   doc, 
   setDoc, 
   getDoc,
-  updateDoc 
+  updateDoc,
+  collection,
+  getDocs,
+  query,
+  orderBy
 } from '@angular/fire/firestore';
 import { Observable, from, of, switchMap } from 'rxjs';
 
@@ -26,6 +30,8 @@ export interface UserProfile {
   role: 'client' | 'admin';
   createdAt: Date;
   updatedAt?: Date;
+  disabled?: boolean;
+  lastLogin?: Date;
 }
 
 @Injectable({
@@ -109,5 +115,31 @@ export class AuthService {
   // Get current user
   getCurrentUser(): User | null {
     return this.auth.currentUser;
+  }
+
+  // Get all users (admin only)
+  async getAllUsers(): Promise<UserProfile[]> {
+    const usersCol = collection(this.firestore, 'users');
+    const q = query(usersCol, orderBy('createdAt', 'desc'));
+    const snapshot = await getDocs(q);
+    return snapshot.docs.map(doc => doc.data() as UserProfile);
+  }
+
+  // Update user role (admin only)
+  async updateUserRole(uid: string, role: 'admin' | 'client'): Promise<void> {
+    const userDoc = doc(this.firestore, `users/${uid}`);
+    await updateDoc(userDoc, {
+      role,
+      updatedAt: new Date()
+    });
+  }
+
+  // Update user status (enable/disable) (admin only)
+  async updateUserStatus(uid: string, disabled: boolean): Promise<void> {
+    const userDoc = doc(this.firestore, `users/${uid}`);
+    await updateDoc(userDoc, {
+      disabled,
+      updatedAt: new Date()
+    });
   }
 }

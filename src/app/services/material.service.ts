@@ -11,9 +11,7 @@ import {
   query,
   where,
   orderBy,
-  Timestamp,
-  CollectionReference,
-  DocumentReference
+  Timestamp
 } from '@angular/fire/firestore';
 import { Observable, from, map } from 'rxjs';
 import { Material } from '../models/catalog';
@@ -21,16 +19,16 @@ import { Material } from '../models/catalog';
 @Injectable({ providedIn: 'root' })
 export class MaterialService {
   private firestore = inject(Firestore);
-  private materialsCollection = collection(this.firestore, 'materials') as CollectionReference<Material>;
 
   /**
    * Get all materials
    */
   getAllMaterials(): Observable<Material[]> {
-    const q = query(this.materialsCollection, orderBy('name', 'asc'));
+    const materialsCollection = collection(this.firestore, 'materials');
+    const q = query(materialsCollection, orderBy('name', 'asc'));
     return from(getDocs(q)).pipe(
       map(snapshot => 
-        snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }))
+        snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() as any } as Material))
       )
     );
   }
@@ -39,14 +37,15 @@ export class MaterialService {
    * Get active materials only
    */
   getActiveMaterials(): Observable<Material[]> {
+    const materialsCollection = collection(this.firestore, 'materials');
     const q = query(
-      this.materialsCollection, 
+      materialsCollection, 
       where('active', '==', true),
       orderBy('name', 'asc')
     );
     return from(getDocs(q)).pipe(
       map(snapshot => 
-        snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }))
+        snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() as any } as Material))
       )
     );
   }
@@ -55,9 +54,9 @@ export class MaterialService {
    * Get single material by ID
    */
   getMaterial(id: string): Observable<Material | null> {
-    const docRef = doc(this.materialsCollection, id) as DocumentReference<Material>;
+    const docRef = this.materialDoc(id);
     return from(getDoc(docRef)).pipe(
-      map(doc => doc.exists() ? { id: doc.id, ...doc.data() } : null)
+      map(doc => doc.exists() ? { id: doc.id, ...doc.data() as any } as Material : null)
     );
   }
 
@@ -65,12 +64,13 @@ export class MaterialService {
    * Get material by slug
    */
   getMaterialBySlug(slug: string): Observable<Material | null> {
-    const q = query(this.materialsCollection, where('slug', '==', slug));
+    const materialsCollection = collection(this.firestore, 'materials');
+    const q = query(materialsCollection, where('slug', '==', slug));
     return from(getDocs(q)).pipe(
       map(snapshot => {
         if (snapshot.empty) return null;
         const doc = snapshot.docs[0];
-        return { id: doc.id, ...doc.data() };
+        return { id: doc.id, ...doc.data() as any } as Material;
       })
     );
   }
@@ -79,6 +79,7 @@ export class MaterialService {
    * Create new material
    */
   async addMaterial(material: Omit<Material, 'id'>): Promise<string> {
+    const materialsCollection = collection(this.firestore, 'materials');
     const now = Timestamp.now();
     const data = {
       ...material,
@@ -86,7 +87,7 @@ export class MaterialService {
       createdAt: now,
       updatedAt: now
     };
-    const docRef = await addDoc(this.materialsCollection, data);
+    const docRef = await addDoc(materialsCollection, data as any);
     return docRef.id;
   }
 
@@ -94,18 +95,18 @@ export class MaterialService {
    * Update existing material
    */
   async updateMaterial(id: string, updates: Partial<Material>): Promise<void> {
-    const docRef = doc(this.materialsCollection, id);
+    const docRef = this.materialDoc(id);
     await updateDoc(docRef, {
       ...updates,
       updatedAt: Timestamp.now()
-    });
+    } as any);
   }
 
   /**
    * Delete material
    */
   async deleteMaterial(id: string): Promise<void> {
-    const docRef = doc(this.materialsCollection, id);
+    const docRef = this.materialDoc(id);
     await deleteDoc(docRef);
   }
 
@@ -113,7 +114,8 @@ export class MaterialService {
    * Check if slug exists
    */
   async slugExists(slug: string, excludeId?: string): Promise<boolean> {
-    const q = query(this.materialsCollection, where('slug', '==', slug));
+    const materialsCollection = collection(this.firestore, 'materials');
+    const q = query(materialsCollection, where('slug', '==', slug));
     const snapshot = await getDocs(q);
     
     if (snapshot.empty) return false;
@@ -121,5 +123,9 @@ export class MaterialService {
       return snapshot.docs.some(doc => doc.id !== excludeId);
     }
     return true;
+  }
+
+  private materialDoc(id: string) {
+    return doc(this.firestore, `materials/${id}`);
   }
 }

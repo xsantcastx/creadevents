@@ -34,11 +34,11 @@ export interface Order {
 })
 export class OrderService {
   private firestore = inject(Firestore);
-  private ordersCollection = collection(this.firestore, 'orders');
 
   // Create new order
   async createOrder(orderData: Omit<Order, 'id' | 'createdAt'>): Promise<string> {
-    const docRef = await addDoc(this.ordersCollection, {
+    const ordersCollection = collection(this.firestore, 'orders');
+    const docRef = await addDoc(ordersCollection, {
       ...orderData,
       createdAt: new Date(),
       status: 'pending'
@@ -48,8 +48,9 @@ export class OrderService {
 
   // Get orders for a specific user
   getUserOrders(userId: string): Observable<Order[]> {
+    const ordersCollection = collection(this.firestore, 'orders');
     const q = query(
-      this.ordersCollection,
+      ordersCollection,
       where('userId', '==', userId),
       orderBy('createdAt', 'desc')
     );
@@ -58,7 +59,8 @@ export class OrderService {
 
   // Get all orders (admin)
   getAllOrders(): Observable<Order[]> {
-    const q = query(this.ordersCollection, orderBy('createdAt', 'desc'));
+    const ordersCollection = collection(this.firestore, 'orders');
+    const q = query(ordersCollection, orderBy('createdAt', 'desc'));
     return collectionData(q, { idField: 'id' }) as Observable<Order[]>;
   }
 

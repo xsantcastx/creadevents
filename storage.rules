@@ -20,7 +20,8 @@ service firebase.storage {
     }
     
     // Product images - Admin can write, everyone can read
-    match /products/{grosor}/{imageName} {
+    // Supports both cover images (2 levels) and gallery images (deeper nesting)
+    match /products/{grosor}/{allPaths=**} {
       allow read: if true;
       allow write: if isAdmin() && isValidImage();
       allow delete: if isAdmin();

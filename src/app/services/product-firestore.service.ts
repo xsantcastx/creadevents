@@ -13,15 +13,18 @@ import {
   orderBy,
   limit
 } from '@angular/fire/firestore';
-import { Observable } from 'rxjs';
+import { Observable, combineLatest, map } from 'rxjs';
 
 export interface FirestoreProduct {
   id?: string;
   name: string;
   slug: string;
-  thickness: '12mm' | '15mm' | '20mm';
-  dimensions: string;
-  imageUrl: string;
+  grosor?: '12mm' | '15mm' | '20mm';
+  thickness?: '12mm' | '15mm' | '20mm'; // legacy support
+  dimensions?: string;
+  size?: string;
+  imageUrl?: string;
+  coverImage?: string;
   description?: string;
   applications?: string[];
   category?: string;
@@ -36,22 +39,33 @@ export interface FirestoreProduct {
 })
 export class ProductFirestoreService {
   private firestore = inject(Firestore);
-  private productsCollection = collection(this.firestore, 'products');
 
   // Get all products
   getProducts(): Observable<FirestoreProduct[]> {
-    return collectionData(this.productsCollection, { idField: 'id' }) as Observable<FirestoreProduct[]>;
+    const productsCol = collection(this.firestore, 'products');
+    return collectionData(productsCol, { idField: 'id' }) as Observable<FirestoreProduct[]>;
   }
 
   // Get products by thickness
   getProductsByThickness(thickness: string): Observable<FirestoreProduct[]> {
-    const q = query(
-      this.productsCollection,
-      where('thickness', '==', thickness),
-      where('available', '==', true),
-      orderBy('name')
+    const productsRef = collection(this.firestore, 'products');
+    const grosorQuery = query(productsRef, where('grosor', '==', thickness));
+    const legacyQuery = query(productsRef, where('thickness', '==', thickness));
+
+    const grosor$ = collectionData(grosorQuery, { idField: 'id' }) as Observable<FirestoreProduct[]>;
+    const legacy$ = collectionData(legacyQuery, { idField: 'id' }) as Observable<FirestoreProduct[]>;
+
+    return combineLatest([grosor$, legacy$]).pipe(
+      map(([grosorResults, legacyResults]) => {
+        const merged = [...grosorResults];
+        legacyResults.forEach(product => {
+          if (!merged.some(existing => existing.id === product.id)) {
+            merged.push({ ...product, grosor: product.grosor ?? (product as any).thickness });
+          }
+        });
+        return merged.sort((a, b) => (a.name || '').localeCompare(b.name || '', undefined, { sensitivity: 'base' }));
+      })
     );
-    return collectionData(q, { idField: 'id' }) as Observable<FirestoreProduct[]>;
   }
 
   // Get single product
@@ -62,13 +76,15 @@ export class ProductFirestoreService {
 
   // Get product by slug
   getProductBySlug(slug: string): Observable<FirestoreProduct[]> {
-    const q = query(this.productsCollection, where('slug', '==', slug), limit(1));
+    const productsCol = collection(this.firestore, 'products');
+    const q = query(productsCol, where('slug', '==', slug), limit(1));
     return collectionData(q, { idField: 'id' }) as Observable<FirestoreProduct[]>;
   }
 
   // Admin: Add product
   async addProduct(product: Omit<FirestoreProduct, 'id'>): Promise<string> {
-    const docRef = await addDoc(this.productsCollection, {
+    const productsCol = collection(this.firestore, 'products');
+    const docRef = await addDoc(productsCol, {
       ...product,
       createdAt: new Date(),
       updatedAt: new Date(),

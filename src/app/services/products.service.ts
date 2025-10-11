@@ -12,7 +12,6 @@ import { TemplateService } from './template.service';
 })
 export class ProductsService {
   private firestore = inject(Firestore);
-  private productsCollection = collection(this.firestore, 'products');
   private categoryService = inject(CategoryService);
   private materialService = inject(MaterialService);
   private templateService = inject(TemplateService);
@@ -83,7 +82,8 @@ export class ProductsService {
    * Get all products
    */
   getAllProducts(): Observable<Product[]> {
-    const q = query(this.productsCollection, orderBy('name', 'asc'));
+    const productsCol = collection(this.firestore, 'products');
+    const q = query(productsCol, orderBy('name', 'asc'));
     return from(getDocs(q)).pipe(
       map(snapshot => snapshot.docs.map(doc => ({
         id: doc.id,
@@ -96,8 +96,9 @@ export class ProductsService {
    * Get products by thickness
    */
   getProductsByGrosor(grosor: string): Observable<Product[]> {
+    const productsCol = collection(this.firestore, 'products');
     const q = query(
-      this.productsCollection, 
+      productsCol, 
       where('grosor', '==', grosor),
       orderBy('name', 'asc')
     );
@@ -128,8 +129,9 @@ export class ProductsService {
    * Get a product by slug and thickness
    */
   getProductBySlug(slug: string, grosor: string): Observable<Product | null> {
+    const productsCol = collection(this.firestore, 'products');
     const q = query(
-      this.productsCollection,
+      productsCol,
       where('slug', '==', slug),
       where('grosor', '==', grosor)
     );
@@ -154,7 +156,12 @@ export class ProductsService {
         createdAt: Timestamp.now(),
         updatedAt: Timestamp.now()
       };
-      const docRef = await addDoc(this.productsCollection, productData);
+      
+      // Clean undefined values (Firestore doesn't accept undefined)
+      const cleanedData = this.removeUndefinedFields(productData);
+      
+      const productsCol = collection(this.firestore, 'products');
+      const docRef = await addDoc(productsCol, cleanedData);
       return docRef.id;
     } catch (error) {
       console.error('Error adding product:', error);
@@ -172,11 +179,44 @@ export class ProductsService {
         ...updates,
         updatedAt: Timestamp.now()
       };
-      await updateDoc(docRef, updateData);
+      
+      // Clean undefined values (Firestore doesn't accept undefined)
+      const cleanedData = this.removeUndefinedFields(updateData);
+      
+      await updateDoc(docRef, cleanedData);
     } catch (error) {
       console.error('Error updating product:', error);
       throw error;
     }
+  }
+
+  /**
+   * Remove undefined fields from object (recursively)
+   * Firestore doesn't accept undefined values
+   */
+  private removeUndefinedFields(obj: any): any {
+    if (obj === null || obj === undefined) {
+      return null;
+    }
+
+    if (Array.isArray(obj)) {
+      return obj.map(item => this.removeUndefinedFields(item));
+    }
+
+    if (typeof obj === 'object') {
+      const cleaned: any = {};
+      for (const key in obj) {
+        if (obj.hasOwnProperty(key)) {
+          const value = obj[key];
+          if (value !== undefined) {
+            cleaned[key] = this.removeUndefinedFields(value);
+          }
+        }
+      }
+      return cleaned;
+    }
+
+    return obj;
   }
 
   /**
@@ -197,8 +237,9 @@ export class ProductsService {
    */
   async slugExists(slug: string, grosor: string, excludeId?: string): Promise<boolean> {
     try {
+      const productsCol = collection(this.firestore, 'products');
       const q = query(
-        this.productsCollection,
+        productsCol,
         where('slug', '==', slug),
         where('grosor', '==', grosor)
       );
