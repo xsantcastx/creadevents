@@ -1,11 +1,14 @@
 import { Component, OnInit, inject, PLATFORM_ID } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { DataService, CategoriaGaleria, GaleriaItem } from '../../core/services/data.service';
+import { TranslateModule } from '@ngx-translate/core';
+import { CategoriaGaleria, GaleriaItem } from '../../core/services/data.service';
+import { Firestore, collection, query, where, orderBy, getDocs, QueryDocumentSnapshot } from '@angular/fire/firestore';
+import { Media } from '../../models/media';
 
 @Component({
   selector: 'app-galeria-page',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, TranslateModule],
   templateUrl: './galeria.page.html',
   styleUrl: './galeria.page.scss'
 })
@@ -20,84 +23,104 @@ export class GaleriaPageComponent implements OnInit {
   private platformId = inject(PLATFORM_ID);
   private isBrowser = isPlatformBrowser(this.platformId);
 
-  // Fallback data for immediate display
-  private fallbackData: CategoriaGaleria[] = [
-    {
-      slug: 'cocinas',
-      titulo: 'Cocinas',
-      items: [
-        {
-          src: '/assets/galeria/cocinas/isla-saint-laurent.jpg',
-          alt: 'Isla moderna en Saint Laurent',
-          producto: 'saint-laurent',
-          proyecto: 'Residencia Los Pinos',
-          ubicacion: 'Valencia'
-        },
-        {
-          src: '/assets/galeria/cocinas/encimera-black-gold.jpg',
-          alt: 'Encimera Black Gold con iluminación',
-          producto: 'black-gold',
-          proyecto: 'Casa Mediterránea',
-          ubicacion: 'Castellón'
-        },
-        {
-          src: '/assets/galeria/cocinas/minimalista-arenaria.jpg',
-          alt: 'Cocina minimalista Arenaria Ivory',
-          producto: 'arenaria-ivory',
-          proyecto: 'Apartamento Moderno',
-          ubicacion: 'Barcelona'
-        }
-      ]
-    },
-    {
-      slug: 'banos',
-      titulo: 'Baños',
-      items: [
-        {
-          src: '/assets/galeria/banos/elegante-apollo.jpg',
-          alt: 'Baño elegante Apollo White',
-          producto: 'apollo-white',
-          proyecto: 'Suite Master',
-          ubicacion: 'Valencia'
-        },
-        {
-          src: '/assets/galeria/banos/lavabo-calacatta.jpg',
-          alt: 'Lavabo Calacatta Gold premium',
-          producto: 'calacatta-gold',
-          proyecto: 'Baño Principal',
-          ubicacion: 'Castellón'
-        }
-      ]
-    }
-  ];
-
-  constructor(private dataService: DataService) {}
+  constructor(
+    private firestore: Firestore
+  ) {}
 
   ngOnInit() {
-    // Load fallback data immediately
-    this.categorias = this.fallbackData;
-    this.filtrarPorCategoria('todos');
-    this.isLoading = false;
-    
-    // Then try to load real data if in browser
+    // Load gallery from Firestore only
     if (this.isBrowser) {
-      this.loadGaleria();
+      this.loadGaleriaFromFirebase();
+    } else {
+      this.isLoading = false;
     }
   }
 
-  private loadGaleria() {
-    this.dataService.getGaleria().subscribe({
-      next: (data) => {
-        if (data.categorias.length > 0) {
-          this.categorias = data.categorias;
-          this.filtrarPorCategoria(this.categoriaActiva);
-        }
-        this.isLoading = false;
-      },
-      error: () => {
-        // Keep fallback data on error
-        this.isLoading = false;
+  private async loadGaleriaFromFirebase() {
+    try {
+      // Load all gallery media from Media collection (relatedEntityType='gallery')
+      const mediaQuery = query(
+        collection(this.firestore, 'media'),
+        where('relatedEntityType', '==', 'gallery')
+        // Note: orderBy removed to avoid index requirement - sorting in memory instead
+      );
+      
+      const snapshot = await getDocs(mediaQuery);
+      const mediaItems: Media[] = snapshot.docs
+        .map((doc: QueryDocumentSnapshot) => ({
+          id: doc.id,
+          ...doc.data() as Omit<Media, 'id'>
+        }))
+        .sort((a, b) => {
+          // Sort by uploadedAt descending (newest first) in memory
+          const dateA = a.uploadedAt instanceof Date ? a.uploadedAt : (a.uploadedAt as any).toDate();
+          const dateB = b.uploadedAt instanceof Date ? b.uploadedAt : (b.uploadedAt as any).toDate();
+          return dateB.getTime() - dateA.getTime();
+        });
+      
+      console.log('📸 Gallery loaded from Firestore:', mediaItems.length, 'images');
+      
+      if (mediaItems.length > 0) {
+        // Group media by tags (using tags as categories)
+        this.categorias = this.groupMediaByTags(mediaItems);
+        this.filtrarPorCategoria(this.categoriaActiva);
+      } else {
+        console.log('ℹ️ No gallery images found in Firestore');
+        this.categorias = [];
+        this.itemsVisible = [];
       }
+      this.isLoading = false;
+    } catch (error) {
+      console.error('❌ Error loading gallery from Firebase:', error);
+      this.categorias = [];
+      this.itemsVisible = [];
+      this.isLoading = false;
+    }
+  }
+
+  // Group media by tags - Map to category structure
+  private groupMediaByTags(mediaItems: Media[]): CategoriaGaleria[] {
+    // Tag to category mapping
+    const tagToCategoryMap: Record<string, { slug: string, titulo: string }> = {
+      'kitchen': { slug: 'cocinas', titulo: 'Cocinas' },
+      'bathroom': { slug: 'banos', titulo: 'Baños' },
+      'facade': { slug: 'fachadas', titulo: 'Fachadas' },
+      'industrial': { slug: 'industria', titulo: 'Industria' },
+      'other': { slug: 'otros', titulo: 'Otros' }
+    };
+
+    // Group images by their first tag
+    const categoriesMap = new Map<string, GaleriaItem[]>();
+
+    mediaItems.forEach(media => {
+      if (!media.tags || media.tags.length === 0) return;
+
+      const firstTag = media.tags[0]; // Use first tag as category
+      const category = tagToCategoryMap[firstTag];
+      
+      if (!category) return; // Skip if unknown tag
+
+      if (!categoriesMap.has(category.slug)) {
+        categoriesMap.set(category.slug, []);
+      }
+
+      categoriesMap.get(category.slug)!.push({
+        src: media.url,
+        alt: media.altText || media.caption || 'Proyecto TStone',
+        producto: media.filename,
+        proyecto: '',
+        ubicacion: ''
+      });
+    });
+
+    // Convert map to array of categories
+    return Array.from(categoriesMap.entries()).map(([slug, items]) => {
+      const categoryInfo = Object.values(tagToCategoryMap).find(cat => cat.slug === slug);
+      return {
+        slug,
+        titulo: categoryInfo?.titulo || slug,
+        items
+      };
     });
   }
 

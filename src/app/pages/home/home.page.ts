@@ -1,12 +1,14 @@
 import { Component, OnInit, PLATFORM_ID, inject } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { RouterModule } from '@angular/router';
+import { TranslateModule } from '@ngx-translate/core';
 import { DataService, Producto } from '../../core/services/data.service';
+import { HomeHeroComponent } from '../../features/home/home-hero/home-hero.component';
 
 @Component({
   selector: 'app-home-page',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, TranslateModule, HomeHeroComponent],
   templateUrl: './home.page.html',
   styleUrl: './home.page.scss'
 })

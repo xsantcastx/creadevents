@@ -1,0 +1,164 @@
+<!-- Cookie Consent Banner -->
+@if (showBanner && !showSettings) {
+  <div class="fixed inset-x-0 bottom-0 z-[60] pb-4 px-4 sm:px-6 lg:px-8 animate-slide-up">
+    <div class="max-w-4xl mx-auto cookie-banner-surface rounded-2xl shadow-2xl overflow-hidden">
+      <div class="p-6 sm:p-8">
+        <div class="flex items-start gap-4">
+          <div class="flex-shrink-0">
+            <svg class="w-12 h-12 text-ts-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+          </div>
+
+          <div class="flex-1 min-w-0">
+            <h3 class="text-lg font-semibold cookie-heading mb-2">
+              🍪 Utilizamos cookies
+            </h3>
+            <p class="text-sm cookie-body mb-4">
+              Utilizamos cookies y tecnologías similares para mejorar su experiencia, analizar el tráfico del sitio y personalizar el contenido. Al hacer clic en "Aceptar todas", acepta nuestro uso de cookies. Puede gestionar sus preferencias en cualquier momento.
+            </p>
+            <p class="text-xs cookie-muted">
+              Lee nuestra
+              <a href="/privacy-policy" class="cookie-link">Política de Privacidad</a>
+              y
+              <a href="/cookie-policy" class="cookie-link">Política de Cookies</a>
+              para más información.
+            </p>
+          </div>
+        </div>
+
+        <div class="mt-6 flex flex-col sm:flex-row gap-3 cookie-banner-actions">
+          <button (click)="acceptAll()" class="ts-btn ts-btn-primary w-full sm:w-auto justify-center">
+            Aceptar todas
+          </button>
+          <button (click)="rejectAll()" class="ts-btn ts-btn-outline w-full sm:w-auto justify-center">
+            Solo esenciales
+          </button>
+          <button (click)="openSettings()" class="ts-btn ts-btn-ghost w-full sm:w-auto justify-center">
+            Personalizar
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+}
+
+<!-- Cookie Settings Modal -->
+@if (showSettings) {
+  <div class="fixed inset-0 z-[60] overflow-y-auto" (click)="closeSettings()">
+    <div class="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:p-0">
+      <div class="fixed inset-0 cookie-overlay transition-opacity"></div>
+
+      <div class="relative inline-block cookie-banner-surface rounded-2xl shadow-xl transform transition-all sm:max-w-2xl sm:w-full text-left overflow-hidden" (click)="$event.stopPropagation()">
+        <div class="px-6 pt-6 pb-4">
+          <div class="flex items-start justify-between mb-4">
+            <h3 class="text-2xl font-semibold cookie-heading">
+              Configuración de cookies
+            </h3>
+            <button (click)="closeSettings()" class="p-2 rounded-lg transition-colors cookie-icon-btn">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+              </svg>
+            </button>
+          </div>
+
+          <p class="text-sm cookie-body mb-6">
+            Gestiona tus preferencias de cookies. Algunas cookies son esenciales para el funcionamiento del sitio y no se pueden desactivar.
+          </p>
+
+          <div class="space-y-4">
+            <div class="cookie-section">
+              <div class="flex items-start justify-between">
+                <div class="flex-1">
+                  <h4 class="font-semibold cookie-heading mb-1">
+                    🔒 Cookies esenciales
+                  </h4>
+                  <p class="text-sm cookie-body">
+                    Necesarias para el funcionamiento básico del sitio web, incluyendo seguridad y acceso a áreas protegidas.
+                  </p>
+                </div>
+                <div class="ml-4">
+                  <span class="cookie-chip">
+                    Siempre activas
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <div class="cookie-section cookie-section--analytics">
+              <div class="flex items-start justify-between">
+                <div class="flex-1">
+                  <h4 class="font-semibold cookie-heading mb-1">
+                    📊 Cookies de análisis
+                  </h4>
+                  <p class="text-sm cookie-body mb-3">
+                    Nos ayudan a entender cómo los visitantes interactúan con nuestro sitio mediante la recopilación de información anónima (Google Analytics).
+                  </p>
+                  <label class="flex items-center gap-2 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      [(ngModel)]="analyticsConsent"
+                      [ngModelOptions]="{standalone: true}"
+                      class="cookie-checkbox">
+                    <span class="text-sm font-medium cookie-heading">Permitir cookies de análisis</span>
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <div class="cookie-section cookie-section--marketing">
+              <div class="flex items-start justify-between">
+                <div class="flex-1">
+                  <h4 class="font-semibold cookie-heading mb-1">
+                    🎯 Cookies de marketing
+                  </h4>
+                  <p class="text-sm cookie-body mb-3">
+                    Se utilizan para rastrear visitantes en sitios web y mostrar anuncios relevantes y atractivos.
+                  </p>
+                  <label class="flex items-center gap-2 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      [(ngModel)]="marketingConsent"
+                      [ngModelOptions]="{standalone: true}"
+                      class="cookie-checkbox">
+                    <span class="text-sm font-medium cookie-heading">Permitir cookies de marketing</span>
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <div class="cookie-section cookie-section--preferences">
+              <div class="flex items-start justify-between">
+                <div class="flex-1">
+                  <h4 class="font-semibold cookie-heading mb-1">
+                    🎛️ Cookies de preferencias
+                  </h4>
+                  <p class="text-sm cookie-body mb-3">
+                    Permiten que el sitio web recuerde información que cambia la forma en que se comporta o se ve (idioma, región, tema).
+                  </p>
+                  <label class="flex items-center gap-2 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      [(ngModel)]="preferencesConsent"
+                      [ngModelOptions]="{standalone: true}"
+                      class="cookie-checkbox">
+                    <span class="text-sm font-medium cookie-heading">Permitir cookies de preferencias</span>
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="cookie-modal-footer px-6 py-4 flex flex-col sm:flex-row gap-3">
+          <button (click)="saveCustomPreferences()" class="ts-btn ts-btn-primary flex-1 justify-center">
+            Guardar preferencias
+          </button>
+          <button (click)="acceptAll()" class="ts-btn ts-btn-outline flex-1 justify-center">
+            Aceptar todas
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+}

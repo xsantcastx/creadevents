@@ -1,0 +1,60 @@
+rules_version = '2';
+
+// Firebase Storage Security Rules
+service firebase.storage {
+  match /b/{bucket}/o {
+    
+    // Helper functions
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    function isAdmin() {
+      return isAuthenticated() && 
+             firestore.get(/databases/(default)/documents/users/$(request.auth.uid)).data.role == 'admin';
+    }
+    
+    function isValidImage() {
+      return request.resource.contentType.matches('image/.*') &&
+             request.resource.size < 10 * 1024 * 1024; // 10MB max (matches frontend validation)
+    }
+    
+    // Product images - Admin can write, everyone can read
+    // Supports both cover images (2 levels) and gallery images (deeper nesting)
+    match /products/{grosor}/{allPaths=**} {
+      allow read: if true;
+      allow write: if isAdmin() && isValidImage();
+      allow delete: if isAdmin();
+    }
+    
+    // Gallery images - Admin can write, everyone can read
+    // Updated to match single-level path: gallery/{imageName}
+    match /gallery/{imageName} {
+      allow read: if true;
+      allow write: if isAdmin() && isValidImage();
+      allow delete: if isAdmin();
+    }
+    
+    // Legacy gallery with category path (kept for backward compatibility)
+    match /gallery/{category}/{imageName} {
+      allow read: if true;
+      allow write: if isAdmin() && isValidImage();
+      allow delete: if isAdmin();
+    }
+    
+    // User profile images - Users can manage their own
+    match /users/{userId}/{imageName} {
+      allow read: if true;
+      allow write: if isAuthenticated() && 
+                     (request.auth.uid == userId || isAdmin()) &&
+                     isValidImage();
+      allow delete: if isAuthenticated() && 
+                      (request.auth.uid == userId || isAdmin());
+    }
+    
+    // Deny all other paths
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}

@@ -1,19 +1,12 @@
-<header
-  class="fixed inset-x-0 top-0 z-50 transition-all duration-300"
-  [class.bg-white/90]="scrolled"
-  [class.text-neutral-900]="scrolled"
-  [class.backdrop-blur]="scrolled"
-  [class.text-white]="!scrolled"
-  [class.shadow-sm]="scrolled"
->
+<header class="fixed inset-x-0 top-0 z-50 transition-all duration-300" [ngClass]="scrolled ? 'bg-white/90 text-neutral-900 backdrop-blur shadow-sm' : 'text-white'">
   <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
     <div class="flex h-16 items-center justify-between">
       <!-- Logo -->
       <a routerLink="/" class="flex items-center gap-3">
         <img [src]="logoSrc" alt="TopStone" class="h-8 w-auto" />
-        <span class="font-serif text-xl font-semibold transition-colors group-hover:text-ts-accent"
-              [class.text-neutral-900]="scrolled"
-              [class.text-white]="!scrolled">TopStone</span>
+        <span class="font-serif text-xl font-semibold transition-colors group-hover:text-ts-accent text-inherit">
+          TopStone
+        </span>
       </a>
 
       <!-- Mobile hamburger -->
@@ -22,8 +15,7 @@
         [class.bg-white/10]="!scrolled"
         [class.bg-neutral-100]="scrolled"
         (click)="mobileOpen = !mobileOpen" 
-        aria-label="Abrir menú"
-      >
+        aria-label="Abrir menú">
         <div class="w-5 h-0.5 mb-1 transition-colors" [class.bg-neutral-900]="scrolled" [class.bg-white]="!scrolled"></div>
         <div class="w-5 h-0.5 mb-1 transition-colors" [class.bg-neutral-900]="scrolled" [class.bg-white]="!scrolled"></div>
         <div class="w-5 h-0.5 transition-colors" [class.bg-neutral-900]="scrolled" [class.bg-white]="!scrolled"></div>
@@ -33,23 +25,26 @@
       <nav class="hidden md:flex items-center gap-8 font-sans text-sm">
         <a routerLink="/" routerLinkActive="text-ts-accent" [routerLinkActiveOptions]="{exact: true}" 
            class="hover:text-ts-accent transition-colors">
-          Home
+          {{ 'nav.home' | translate }}
         </a>
 
         <!-- Products mega menu with robust hover controls -->
         <div #productsGroup class="relative"
-             (mouseenter)="openMega()" (mouseleave)="closeMegaDelayed()">
+             (mouseenter)="openMega()" (mouseleave)="closeMegaDelayed($event)"
+             (focusin)="openMega()" (focusout)="handleMegaFocusOut($event)">
           <div class="inline-flex items-center gap-1 py-8 px-4 relative z-[125]">
             <!-- IMPORTANT: This link is clean (no click handlers) so it ALWAYS navigates -->
             <a routerLink="/productos"
                routerLinkActive="text-ts-accent"
-               class="hover:text-ts-accent transition-colors">Productos</a>
+               class="hover:text-ts-accent transition-colors">{{ 'nav.products' | translate }}</a>
 
             <!-- Caret only controls the panel; doesn't interfere with link clicks -->
-            <button type="button"
+            <button #megaTrigger type="button"
                     class="p-1 rounded-md ring-1 ring-transparent hover:ring-neutral-300"
                     [attr.aria-expanded]="showMega" aria-haspopup="true"
-                    (click)="toggleMega($event)">
+                    aria-controls="mega-products"
+                    (click)="toggleMega($event)"
+                    (keydown)="onMegaTriggerKeydown($event)">
               <svg viewBox="0 0 20 20" class="h-4 w-4" aria-hidden="true">
                 <path d="M5 7l5 6 5-6" fill="currentColor"></path>
               </svg>
@@ -58,16 +53,19 @@
 
           <!-- Massive hover detection area -->
           <div class="absolute inset-0 -inset-x-8 h-20 -top-4"
-               (mouseenter)="openMega()" (mouseleave)="closeMegaDelayed()"></div>
+               (mouseenter)="openMega()" (mouseleave)="closeMegaDelayed($event)"></div>
 
           <!-- Mega panel with its own hover detection -->
           <div #mega
                class="absolute left-1/2 -translate-x-1/2 top-full z-[110]"
                [class.hidden]="!showMega"
-               (mouseenter)="openMega()" (mouseleave)="closeMegaDelayed()">
-            <div class="w-[min(100vw-2rem,960px)] grid grid-cols-4 gap-6
+               (mouseenter)="openMega()" (mouseleave)="closeMegaDelayed($event)">
+            <div id="mega-products"
+                 class="w-[min(100vw-2rem,960px)] grid grid-cols-4 gap-6
                         rounded-2xl bg-white text-neutral-900 shadow-xl ring-1 ring-neutral-200 p-6"
-                 role="menu" aria-label="Productos">
+                 role="menu" aria-label="Productos"
+                 tabindex="-1"
+                 (keydown)="onMegaKeydown($event)">
             <!-- 12mm Column -->
             <div>
               <h4 class="font-serif font-semibold mb-3 text-ts-accent">12mm</h4>
@@ -77,7 +75,8 @@
                   <li>
                     <a [routerLink]="['/productos/12mm', producto.slug]" 
                        class="block hover:text-ts-accent transition-colors text-sm"
-                       (mouseenter)="onProductHover('12mm', producto.slug)">
+                       role="menuitem"
+                       (mouseenter)="onProductHover('12mm', producto.slug, producto.imageUrl)">
                       {{producto.name}}
                     </a>
                   </li>
@@ -94,7 +93,8 @@
                   <li>
                     <a [routerLink]="['/productos/15mm', producto.slug]" 
                        class="block hover:text-ts-accent transition-colors text-sm"
-                       (mouseenter)="onProductHover('15mm', producto.slug)">
+                       role="menuitem"
+                       (mouseenter)="onProductHover('15mm', producto.slug, producto.imageUrl)">
                       {{producto.name}}
                     </a>
                   </li>
@@ -111,7 +111,8 @@
                   <li>
                     <a [routerLink]="['/productos/20mm', producto.slug]" 
                        class="block hover:text-ts-accent transition-colors text-sm"
-                       (mouseenter)="onProductHover('20mm', producto.slug)">
+                       role="menuitem"
+                       (mouseenter)="onProductHover('20mm', producto.slug, producto.imageUrl)">
                       {{producto.name}}
                     </a>
                   </li>
@@ -132,36 +133,143 @@
 
         <a routerLink="/galeria" routerLinkActive="text-ts-accent" 
            class="hover:text-ts-accent transition-colors">
-          Galería
+          {{ 'nav.gallery' | translate }}
         </a>
         <a routerLink="/datos-tecnicos" routerLinkActive="text-ts-accent" 
            class="hover:text-ts-accent transition-colors">
-          Datos técnicos
+          {{ 'nav.technical' | translate }}
         </a>
         <a routerLink="/contacto" routerLinkActive="text-ts-accent" 
            class="hover:text-ts-accent transition-colors">
-          Contacto
+          {{ 'nav.contact' | translate }}
         </a>
       </nav>
 
-      <!-- Cart Button -->
-      <a routerLink="/cart" 
-         class="hidden md:flex items-center justify-center w-10 h-10 rounded-lg hover:bg-gray-100 transition-colors relative">
-        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
-                d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-2.5 5M7 13h10m0 0v6a1 1 0 01-1 1H8a1 1 0 01-1-1v-6m8 0V9a1 1 0 00-1-1H8a1 1 0 00-1 1v4.01"/>
-        </svg>
-        <span *ngIf="totalItems() > 0" class="absolute -top-2 -right-2 bg-ts-accent text-black text-xs rounded-full w-5 h-5 flex items-center justify-center font-semibold">
-          {{totalItems()}}
-        </span>
-      </a>
+      <!-- Actions: Social, Language, Account, Cart -->
+      <div class="hidden md:flex items-center gap-4">
+        <div class="flex items-center gap-2">
+          <a href="https://www.linkedin.com" target="_blank" rel="noopener noreferrer"
+             [ngClass]="scrolled ? 'nav-icon-btn nav-icon-btn--light' : 'nav-icon-btn nav-icon-btn--dark'"
+             aria-label="LinkedIn">
+            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+            </svg>
+          </a>
+          
+          <a href="https://www.instagram.com" target="_blank" rel="noopener noreferrer"
+             [ngClass]="scrolled ? 'nav-icon-btn nav-icon-btn--light' : 'nav-icon-btn nav-icon-btn--dark'"
+             aria-label="Instagram">
+            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+            </svg>
+          </a>
+        </div>
+
+        <span class="nav-divider" [ngClass]="scrolled ? 'nav-divider--light' : 'nav-divider--dark'"></span>
+
+        <div class="flex items-center">
+          <app-language-selector />
+        </div>
+
+        <span class="nav-divider" [ngClass]="scrolled ? 'nav-divider--light' : 'nav-divider--dark'"></span>
+
+        <div class="flex items-center gap-3">
+          @if (user$ | async; as user) {
+            <!-- Logged In - User Dropdown -->
+            <div class="relative">
+              <button 
+                (click)="toggleUserMenu($event)"
+                class="flex items-center gap-2 px-3 py-2 rounded-lg transition-colors"
+                [ngClass]="{
+                  'text-neutral-900 bg-white hover:bg-neutral-200': scrolled && !showUserMenu,
+                  'text-neutral-900 bg-neutral-200 hover:bg-neutral-300': scrolled && showUserMenu,
+                  'text-white bg-neutral-800 hover:bg-neutral-700': !scrolled && !showUserMenu,
+                  'text-white bg-neutral-700 hover:bg-neutral-600': !scrolled && showUserMenu
+                }">
+                <!-- User Avatar Circle -->
+                <div class="w-8 h-8 rounded-full bg-ts-accent text-white flex items-center justify-center text-sm font-semibold">
+                  {{ (userProfile$ | async)?.displayName?.charAt(0)?.toUpperCase() || 'U' }}
+                </div>
+                <!-- Chevron -->
+                <svg class="w-4 h-4 transition-transform" [class.rotate-180]="showUserMenu" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                </svg>
+              </button>
+
+              <!-- Dropdown Menu -->
+              @if (showUserMenu) {
+                <div class="absolute right-0 mt-2 w-56 menu-surface text-neutral-900 rounded-xl shadow-xl ring-1 ring-black/5 py-2 z-[130]">
+                  <!-- User Info Header -->
+                  <div class="px-4 py-3 border-b border-gray-100">
+                    <p class="text-sm font-semibold text-gray-900">{{ (userProfile$ | async)?.displayName || user.email }}</p>
+                    <p class="text-xs text-gray-500 truncate">{{ user.email }}</p>
+                  </div>
+
+                  <!-- Menu Items -->
+                  <div class="py-1">
+                    @if (userProfile$ | async; as profile) {
+                      @if (profile.role === 'admin') {
+                        <a routerLink="/admin" (click)="closeUserMenu()"
+                           class="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors">
+                          <svg class="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+                          </svg>
+                          <span class="font-medium">Admin Panel</span>
+                        </a>
+                        <div class="border-t border-gray-100 my-1"></div>
+                      }
+                    }
+                    
+                    <a routerLink="/client/profile" (click)="closeUserMenu()"
+                       class="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors">
+                      <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                      </svg>
+                      <span>{{ 'client.my_account' | translate }}</span>
+                    </a>
+
+                    <a routerLink="/client/orders" (click)="closeUserMenu()"
+                       class="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors">
+                      <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                      </svg>
+                      <span>{{ 'client.my_orders' | translate }}</span>
+                    </a>
+                  </div>
+
+                  <!-- Logout -->
+                  <div class="border-t border-gray-100 mt-1 pt-1">
+                    <button (click)="logout()"
+                            class="flex items-center gap-3 w-full px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors text-left">
+                      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
+                      </svg>
+                      <span>{{ 'client.logout' | translate }}</span>
+                    </button>
+                  </div>
+                </div>
+              }
+            </div>
+          } @else {
+            <!-- Not Logged In -->
+            <a routerLink="/client/login" 
+               class="ts-btn ts-btn-primary ts-btn-sm">
+              {{ 'client.login' | translate }}
+            </a>
+          }
+
+          <div class="flex items-center">
+            <app-cart-button />
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </header>
 
 <!-- Mobile overlay -->
 <div *ngIf="mobileOpen" 
-     class="md:hidden fixed inset-0 z-40 bg-black/60 backdrop-blur-sm" 
+     class="md:hidden fixed inset-0 z-40 modal-overlay" 
      (click)="closeMobile()"></div>
 
 <!-- Mobile drawer -->
@@ -188,13 +296,13 @@
     <div class="flex flex-col space-y-4">
       <a routerLink="/" (click)="closeMobile()" 
          class="text-lg font-medium hover:text-ts-accent transition-colors">
-        Home
+        {{ 'nav.home' | translate }}
       </a>
       
       <!-- Mobile products accordion -->
       <details class="group">
         <summary class="text-lg font-medium cursor-pointer hover:text-ts-accent transition-colors">
-          Productos
+          {{ 'nav.products' | translate }}
         </summary>
         <div class="mt-3 pl-4 space-y-3">
           <div>
@@ -238,16 +346,58 @@
       
       <a routerLink="/galeria" (click)="closeMobile()" 
          class="text-lg font-medium hover:text-ts-accent transition-colors">
-        Galería
+        {{ 'nav.gallery' | translate }}
       </a>
       <a routerLink="/datos-tecnicos" (click)="closeMobile()" 
          class="text-lg font-medium hover:text-ts-accent transition-colors">
-        Datos técnicos
+        {{ 'nav.technical' | translate }}
       </a>
       <a routerLink="/contacto" (click)="closeMobile()" 
          class="text-lg font-medium hover:text-ts-accent transition-colors">
-        Contacto
+        {{ 'nav.contact' | translate }}
       </a>
+
+      <!-- Language selector in mobile -->
+      <div class="pt-4 border-t border-gray-200">
+        <app-language-selector />
+      </div>
+
+      <!-- User Menu in mobile -->
+      <div class="pt-4 border-t border-gray-200 space-y-3">
+        @if (user$ | async; as user) {
+          <!-- Logged In -->
+          @if (userProfile$ | async; as profile) {
+            @if (profile.role === 'admin') {
+              <a routerLink="/admin" (click)="closeMobile()" 
+                 class="block text-lg font-medium hover:text-ts-accent transition-colors">
+                Admin Panel
+              </a>
+            }
+          }
+          <a routerLink="/client/profile" (click)="closeMobile()" 
+             class="block text-lg font-medium hover:text-ts-accent transition-colors">
+            {{ 'client.my_account' | translate }}
+          </a>
+          <a routerLink="/client/orders" (click)="closeMobile()" 
+             class="block text-lg font-medium hover:text-ts-accent transition-colors">
+            {{ 'client.my_orders' | translate }}
+          </a>
+          <button (click)="logout()" 
+                  class="block w-full text-left text-lg font-medium hover:text-ts-accent transition-colors">
+            {{ 'client.logout' | translate }}
+          </button>
+        } @else {
+          <!-- Not Logged In -->
+          <a routerLink="/client/login" (click)="closeMobile()" 
+             class="ts-btn ts-btn-primary w-full justify-center">
+            {{ 'client.login' | translate }}
+          </a>
+          <a routerLink="/client/register" (click)="closeMobile()" 
+             class="block text-lg font-medium hover:text-ts-accent transition-colors text-center">
+            {{ 'client.register' | translate }}
+          </a>
+        }
+      </div>
     </div>
   </nav>
 </aside>
