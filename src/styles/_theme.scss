@@ -1,0 +1,29 @@
+@use 'sass:map';
+
+$themes: (
+  light: (
+    bg-surface: #f5f3ef,
+    bg-elevated: #ffffff,
+    text: #111827,
+    muted: #6b7280,
+    primary: #b08968,
+    on-primary: #ffffff,
+    border: #d6ccc2,
+    overlay: #1f2937
+  )
+);
+
+@mixin apply-theme($theme-name) {
+  $theme: map.get($themes, $theme-name);
+
+  :root {
+    --bg-surface: #{map.get($theme, bg-surface)};
+    --bg-elevated: #{map.get($theme, bg-elevated)};
+    --text: #{map.get($theme, text)};
+    --muted: #{map.get($theme, muted)};
+    --primary: #{map.get($theme, primary)};
+    --on-primary: #{map.get($theme, on-primary)};
+    --border: #{map.get($theme, border)};
+    --overlay: #{map.get($theme, overlay)};
+  }
+}

@@ -1,93 +1,205 @@
 import { Component, OnInit, PLATFORM_ID, inject } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { RouterLink } from '@angular/router';
-import { DataService, Producto } from '../../core/services/data.service';
+import { FormsModule } from '@angular/forms';
+import { TranslateModule } from '@ngx-translate/core';
+import { ProductsService } from '../../services/products.service';
+import { MediaService } from '../../services/media.service';
+import { CategoryService } from '../../services/category.service';
+import { MaterialService } from '../../services/material.service';
 import { CartService } from '../../services/cart.service';
 import { Product } from '../../models/product';
+import { Category, Material } from '../../models/catalog';
+import { Media } from '../../models/media';
 
 @Component({
   selector: 'app-productos-page',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, RouterLink, FormsModule, TranslateModule],
   templateUrl: './productos.page.html',
   styleUrl: './productos.page.scss'
 })
 export class ProductosPageComponent implements OnInit {
   private platformId = inject(PLATFORM_ID);
+  private productsService = inject(ProductsService);
+  private mediaService = inject(MediaService);
+  private categoryService = inject(CategoryService);
+  private materialService = inject(MaterialService);
+  private cartService = inject(CartService);
   
-  productos12mm: Producto[] = [];
-  productos15mm: Producto[] = [];
-  productos20mm: Producto[] = [];
+  // Firestore products
+  allProducts: Product[] = [];
+  filteredProducts: Product[] = [];
   
-  // Fallback data for immediate display and SSR
-  fallbackData = {
-    productos12mm: [
-      { nombre: 'Saint Laurent', slug: 'saint-laurent', grosor: '12mm' as const, medida: '160x320cm', cover: 'assets/productos/12mm/saint-laurent.jpg' },
-      { nombre: 'Black Gold', slug: 'black-gold', grosor: '12mm' as const, medida: '160x320cm', cover: 'assets/productos/12mm/black-gold.jpg' },
-      { nombre: 'Arenaria Ivory', slug: 'arenaria-ivory', grosor: '12mm' as const, medida: '160x320cm', cover: 'assets/productos/12mm/arenaria-ivory.jpg' },
-      { nombre: 'Calacatta Gold', slug: 'calacatta-gold', grosor: '12mm' as const, medida: '160x320cm', cover: 'assets/productos/12mm/calacatta-gold.jpg' }
-    ],
-    productos15mm: [
-      { nombre: 'Statuario Elegance', slug: 'statuario-elegance', grosor: '15mm' as const, medida: '160x320cm', cover: 'assets/productos/15mm/statuario-elegance.jpg' },
-      { nombre: 'Laponia Black', slug: 'laponia-black', grosor: '15mm' as const, medida: '160x320cm', cover: 'assets/productos/15mm/laponia-black.jpg' },
-      { nombre: 'Patagonia Natural', slug: 'patagonia-natural', grosor: '15mm' as const, medida: '160x320cm', cover: 'assets/productos/15mm/patagonia-natural.jpg' }
-    ],
-    productos20mm: [
-      { nombre: 'Saint Laurent', slug: 'saint-laurent-20', grosor: '20mm' as const, medida: '160x320cm', cover: 'assets/productos/20mm/saint-laurent.jpg' },
-      { nombre: 'Black Gold', slug: 'black-gold-20', grosor: '20mm' as const, medida: '160x320cm', cover: 'assets/productos/20mm/black-gold.jpg' },
-      { nombre: 'Limestone Ivory', slug: 'limestone-ivory-20', grosor: '20mm' as const, medida: '160x320cm', cover: 'assets/productos/20mm/limestone-ivory.jpg' }
-    ]
-  };
+  // Products by thickness for display
+  productos12mm: Product[] = [];
+  productos15mm: Product[] = [];
+  productos20mm: Product[] = [];
+  
+  // Filter options
+  categories: Category[] = [];
+  materials: Material[] = [];
+  selectedCategoryId = '';
+  selectedMaterialId = '';
+  searchTerm = '';
+  
+  // Loading state
+  isLoading = true;
 
-  constructor(
-    private dataService: DataService,
-    private cartService: CartService
-  ) {}
-
-  addToCart(producto: Producto, event: Event) {
-    event.preventDefault();
-    event.stopPropagation();
+  async ngOnInit() {
+    // Load filter options
+    await this.loadFilterOptions();
     
-    // Convert Producto to Product interface
-    const product: Product = {
-      id: `${producto.grosor}-${producto.slug}`,
-      name: producto.nombre,
-      thickness: producto.grosor as '12mm'|'15mm'|'20mm',
-      category: producto.medida,
-      imageUrl: producto.cover,
-      sku: producto.slug
-    };
-    
-    this.cartService.add(product, 1);
-  }
-
-  ngOnInit() {
-    // Set fallback data immediately
-    this.productos12mm = this.fallbackData.productos12mm;
-    this.productos15mm = this.fallbackData.productos15mm;
-    this.productos20mm = this.fallbackData.productos20mm;
-    
-    // Load real data if in browser
+    // Load products if in browser
     if (isPlatformBrowser(this.platformId)) {
-      this.loadProductos();
+      await this.loadProducts();
     }
   }
 
-  private loadProductos() {
-    this.dataService.getProductos().subscribe({
-      next: (data) => {
-        const productos12 = this.dataService.getProductosByGrosor(data.items, '12mm');
-        const productos15 = this.dataService.getProductosByGrosor(data.items, '15mm');
-        const productos20 = this.dataService.getProductosByGrosor(data.items, '20mm');
+  private async loadFilterOptions() {
+    try {
+      this.categoryService.getActiveCategories().subscribe({
+        next: (categories) => {
+          this.categories = categories;
+        },
+        error: (err) => console.error('Error loading categories:', err)
+      });
+
+      this.materialService.getActiveMaterials().subscribe({
+        next: (materials) => {
+          this.materials = materials;
+        },
+        error: (err) => console.error('Error loading materials:', err)
+      });
+    } catch (error) {
+      console.error('Error loading filter options:', error);
+    }
+  }
+
+  private async loadProducts() {
+    this.isLoading = true;
+
+    try {
+      // Get all published products from Firestore
+      this.productsService.getAllProducts().subscribe({
+        next: async (products) => {
+          // Filter only published products
+          const publishedProducts = products.filter(p => p.status === 'published');
+          
+          // Load cover images from media
+          this.allProducts = await this.loadProductCovers(publishedProducts);
+          
+          // Apply filters
+          this.applyFilters();
+          
+          this.isLoading = false;
+        },
+        error: (error) => {
+          console.error('Error loading products:', error);
+          this.isLoading = false;
+        }
+      });
+    } catch (error) {
+      console.error('Error in loadProducts:', error);
+      this.isLoading = false;
+    }
+  }
+
+  private async loadProductCovers(products: Product[]): Promise<Product[]> {
+    const productsWithCovers = await Promise.all(
+      products.map(async (product) => {
+        if (product.coverImage) {
+          try {
+            // Check if coverImage is a media ID or a URL
+            const isMediaId = !product.coverImage.includes('http');
+            
+            if (isMediaId) {
+              const media = await this.mediaService.getMediaById(product.coverImage);
+              if (media) {
+                return { ...product, imageUrl: media.url };
+              }
+            } else {
+              // Already a URL (legacy products)
+              return { ...product, imageUrl: product.coverImage };
+            }
+          } catch (error) {
+            console.error('Error loading cover for product:', product.name, error);
+          }
+        }
         
-        if (productos12.length > 0) this.productos12mm = productos12;
-        if (productos15.length > 0) this.productos15mm = productos15;
-        if (productos20.length > 0) this.productos20mm = productos20;
-      },
-      error: () => {
-        console.log('Using fallback product data');
-        // Fallback data is already set
-      }
-    });
+        // No cover image or error loading it
+        return { ...product, imageUrl: '' };
+      })
+    );
+
+    return productsWithCovers;
+  }
+
+  applyFilters() {
+    let filtered = [...this.allProducts];
+
+    // Filter by category
+    if (this.selectedCategoryId) {
+      filtered = filtered.filter(p => p.categoryId === this.selectedCategoryId);
+    }
+
+    // Filter by material
+    if (this.selectedMaterialId) {
+      filtered = filtered.filter(p => p.materialId === this.selectedMaterialId);
+    }
+
+    // Filter by search term (search in name and slug)
+    if (this.searchTerm && this.searchTerm.trim()) {
+      const term = this.searchTerm.toLowerCase().trim();
+      filtered = filtered.filter(p => 
+        p.name.toLowerCase().includes(term) ||
+        p.slug.toLowerCase().includes(term) ||
+        (p.search_name && p.search_name.includes(term))
+      );
+    }
+
+    this.filteredProducts = filtered;
+    
+    // Group by thickness
+    this.productos12mm = filtered.filter(p => p.grosor === '12mm' || p.specs?.grosor === '12mm');
+    this.productos15mm = filtered.filter(p => p.grosor === '15mm' || p.specs?.grosor === '15mm');
+    this.productos20mm = filtered.filter(p => p.grosor === '20mm' || p.specs?.grosor === '20mm');
+  }
+
+  onCategoryChange() {
+    this.applyFilters();
+  }
+
+  onMaterialChange() {
+    this.applyFilters();
+  }
+
+  onSearchChange() {
+    this.applyFilters();
+  }
+
+  clearFilters() {
+    this.selectedCategoryId = '';
+    this.selectedMaterialId = '';
+    this.searchTerm = '';
+    this.applyFilters();
+  }
+
+  addToCart(product: Product, event: Event) {
+    event.preventDefault();
+    event.stopPropagation();
+    this.cartService.add(product, 1);
+  }
+
+  get hasFilters(): boolean {
+    return !!(this.selectedCategoryId || this.selectedMaterialId || this.searchTerm);
+  }
+
+  get totalProductsCount(): number {
+    return this.allProducts.length;
+  }
+
+  get filteredProductsCount(): number {
+    return this.filteredProducts.length;
   }
 }

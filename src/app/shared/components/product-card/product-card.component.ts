@@ -27,14 +27,14 @@ export class ProductCardComponent {
   }
 
   getProductRoute(): string[] {
-    if (this.grosorPath && this.product.thickness) {
-      return ['/productos', this.product.thickness, this.product.id];
+    if (this.grosorPath && this.product.grosor) {
+      return ['/productos', this.product.grosor, this.product.slug || this.product.id || ''];
     }
-    return ['/productos', this.product.id];
+    return ['/productos', this.product.slug || this.product.id || ''];
   }
 
-  getAplicaciones(thickness?: string): string {
-    switch (thickness) {
+  getAplicaciones(grosor?: string): string {
+    switch (grosor) {
       case '12mm': return 'cocinas y baños residenciales';
       case '15mm': return 'espacios comerciales y residenciales';
       case '20mm': return 'exteriores y zonas de alto tránsito';

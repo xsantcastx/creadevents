@@ -1,9 +1,338 @@
 @use 'tailwindcss/base';
 @use 'tailwindcss/components';
 @use 'tailwindcss/utilities';
+@use './styles/theme' as theme;
+
+@include theme.apply-theme(light);
+
+body {
+  background-color: var(--bg-surface);
+  color: var(--text);
+}
+
+.menu-surface,
+.mega-panel,
+.language-menu,
+.cookie-banner-surface,
+.admin-footer,
+.ts-surface {
+  background-color: var(--bg-elevated);
+  color: var(--text);
+  border-color: var(--border);
+}
+
+a {
+  color: var(--primary);
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+.admin-footer {
+  position: sticky;
+  bottom: 0;
+  padding: 1.5rem;
+  background-color: var(--bg-elevated);
+  border-top: 1px solid var(--border);
+  z-index: 30;
+}
+
+.modal-overlay {
+  background-color: var(--overlay);
+}
+
+.warning-panel {
+  padding: 1rem;
+  border-radius: 1rem;
+  border: 1px solid color-mix(in srgb, #facc15 45%, var(--border));
+  background: color-mix(in srgb, #fef08a 35%, var(--bg-elevated));
+}
 
 @layer base {
   :root { --ts-accent: #B08968; }
+
+  button,
+  input[type="button"],
+  input[type="submit"] {
+    color: #111827;
+  }
+
+  .body-dark button,
+  .body-dark input[type="button"],
+  .body-dark input[type="submit"] {
+    color: var(--ts-ink);
+  }
+
+  button[data-variant="inverse"],
+  input[type="button"][data-variant="inverse"],
+  input[type="submit"][data-variant="inverse"] {
+    color: #f9fafb;
+  }
+
+  button[class*="bg-white"]:not([class*="text-"]),
+  button[class*="bg-neutral-100"]:not([class*="text-"]),
+  button[class*="bg-gray-100"]:not([class*="text-"]),
+  a[class*="bg-white"]:not([class*="text-"]),
+  a[class*="bg-neutral-100"]:not([class*="text-"]),
+  a[class*="bg-gray-100"]:not([class*="text-"]) {
+    color: #111827;
+  }
+}
+
+@layer components {
+  /* Surface Styles */
+  .ts-surface {
+    @apply bg-white text-ts-bg shadow-lg;
+  }
+
+  .ts-surface-dark {
+    @apply bg-ts-bg text-white shadow-xl;
+  }
+
+  .ts-header {
+    @apply bg-ts-bg text-white shadow-lg;
+  }
+
+  /* Navigation Links */
+  .ts-nav-link {
+    @apply text-white/80 hover:text-white font-medium transition-colors;
+  }
+
+  .ts-nav-link-dark {
+    @apply text-ts-bg hover:text-ts-accent font-semibold transition-colors;
+  }
+
+  /* Reusable Button System */
+  .ts-btn {
+    @apply inline-flex items-center justify-center gap-2 font-semibold tracking-tight;
+    @apply rounded-xl transition-all duration-200 px-5 py-3;
+    @apply focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ts-accent;
+    letter-spacing: 0.01em;
+    border: 1px solid transparent;
+    background: linear-gradient(135deg, #111827, #1f2937);
+    color: #f9fafb;
+    box-shadow: 0 18px 35px -24px rgba(15, 23, 42, 0.35);
+    cursor: pointer;
+  }
+
+  .ts-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 24px 48px -24px rgba(15, 23, 42, 0.45);
+  }
+
+  .ts-btn:active {
+    transform: translateY(0);
+    box-shadow: 0 16px 32px -24px rgba(15, 23, 42, 0.4);
+  }
+
+  .ts-btn-primary {
+    background: linear-gradient(135deg, #b08968 0%, #a78059 100%);
+    color: var(--on-primary);
+    box-shadow: 0 20px 44px -24px rgba(176, 137, 104, 0.55);
+  }
+
+  .ts-btn-primary:hover {
+    filter: brightness(1.05);
+    box-shadow: 0 26px 54px -22px rgba(176, 137, 104, 0.55);
+  }
+
+  .ts-btn-secondary {
+    background: var(--bg-elevated);
+    color: var(--text);
+    border-color: var(--border);
+    box-shadow: 0 20px 35px -25px rgba(17, 24, 39, 0.25);
+  }
+
+  .ts-btn-secondary:hover {
+    background: color-mix(in srgb, var(--text) 6%, var(--bg-elevated));
+    box-shadow: 0 26px 55px -24px rgba(17, 24, 39, 0.3);
+  }
+
+  .ts-btn-ghost {
+    background: color-mix(in srgb, var(--text) 8%, var(--bg-elevated));
+    color: var(--text);
+    border-color: color-mix(in srgb, var(--text) 12%, var(--bg-elevated));
+    box-shadow: none;
+  }
+
+  .ts-btn-ghost:hover {
+    background: color-mix(in srgb, var(--text) 12%, var(--bg-elevated));
+  }
+
+  .ts-btn-danger {
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+    color: var(--on-primary);
+    box-shadow: 0 20px 44px -24px rgba(239, 68, 68, 0.45);
+  }
+
+  .ts-btn-danger:hover {
+    filter: brightness(1.05);
+  }
+
+  .ts-btn-success {
+    background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+    color: var(--on-primary);
+    box-shadow: 0 20px 44px -24px rgba(34, 197, 94, 0.45);
+  }
+
+  .ts-btn-success:hover {
+    filter: brightness(1.05);
+  }
+
+  a.ts-btn {
+    text-decoration: none;
+  }
+
+  .ts-btn-outline {
+    background: var(--bg-elevated);
+    color: var(--text);
+    border-color: var(--border);
+    box-shadow: none;
+  }
+
+  .ts-btn-outline:hover {
+    background: color-mix(in srgb, var(--text) 6%, var(--bg-elevated));
+  }
+
+  .ts-btn-icon {
+    @apply inline-flex items-center justify-center;
+    padding: 0.6rem;
+    border-radius: 0.9rem;
+    border: 1px solid color-mix(in srgb, var(--text) 14%, var(--bg-elevated));
+    background: color-mix(in srgb, var(--text) 4%, var(--bg-elevated));
+    color: var(--text);
+    transition: all 0.2s ease;
+  }
+
+  .ts-btn-icon:hover {
+    background: color-mix(in srgb, var(--text) 10%, var(--bg-elevated));
+    transform: translateY(-1px);
+  }
+
+  .ts-btn-icon:active {
+    transform: translateY(0);
+  }
+
+  .ts-btn-icon.is-danger {
+    background: color-mix(in srgb, #dc2626 12%, var(--bg-elevated));
+    color: #b91c1c;
+    border-color: color-mix(in srgb, #dc2626 22%, var(--bg-elevated));
+  }
+
+  .ts-btn-icon.is-danger:hover {
+    background: color-mix(in srgb, #dc2626 18%, var(--bg-elevated));
+  }
+
+  .ts-btn-icon.is-success {
+    background: color-mix(in srgb, #16a34a 12%, var(--bg-elevated));
+    color: #15803d;
+    border-color: color-mix(in srgb, #16a34a 22%, var(--bg-elevated));
+  }
+
+  .ts-btn-icon.is-success:hover {
+    background: color-mix(in srgb, #16a34a 18%, var(--bg-elevated));
+  }
+
+  .ts-btn-icon.is-info {
+    background: color-mix(in srgb, #2563eb 12%, var(--bg-elevated));
+    color: #1d4ed8;
+    border-color: color-mix(in srgb, #2563eb 22%, var(--bg-elevated));
+  }
+
+  .ts-btn-icon.is-info:hover {
+    background: color-mix(in srgb, #2563eb 18%, var(--bg-elevated));
+  }
+  .ts-btn-sm {
+    @apply px-4 py-2 text-sm;
+  }
+
+  .ts-btn-lg {
+    @apply px-6 py-4 text-base;
+  }
+
+
+  /* Form Field Styles */
+  .form-field {
+    @apply w-full px-4 py-3 rounded-xl border border-gray-300
+      bg-white text-gray-900 placeholder:text-gray-400
+      focus:border-ts-accent focus:ring-2 focus:ring-ts-accent/40
+      focus-visible:outline-none transition-colors;
+  }
+
+  .form-label {
+    @apply block text-sm font-semibold text-ts-bg mb-2;
+  }
+
+  .helper-text {
+    @apply text-xs text-gray-500 mt-1 leading-snug;
+  }
+
+  .error-text {
+    @apply text-xs text-red-600 mt-1 leading-snug font-medium;
+  }
+
+  /* Tab Styles */
+  .tab-button {
+    @apply inline-flex items-center justify-center gap-2 px-6 py-3
+      rounded-xl font-semibold transition-all;
+  }
+
+  .tab-button-inactive {
+    @apply bg-white border-2 border-gray-300 text-gray-700
+      hover:bg-gray-50 hover:border-gray-400;
+  }
+
+  .tab-button-active {
+    @apply bg-ts-accent border-2 border-ts-accent text-white
+      shadow-sm;
+  }
+
+  /* Action Buttons (Edit/Delete in tables) */
+  .btn-edit {
+    @apply inline-flex items-center justify-center gap-1.5 px-3 py-2
+      rounded-lg font-medium text-sm text-white bg-blue-600
+      hover:bg-blue-700 focus-visible:outline focus-visible:outline-2
+      focus-visible:outline-offset-2 focus-visible:outline-blue-600
+      transition-colors shadow-sm;
+  }
+
+  .btn-delete {
+    @apply inline-flex items-center justify-center gap-1.5 px-3 py-2
+      rounded-lg font-medium text-sm text-white bg-red-600
+      hover:bg-red-700 focus-visible:outline focus-visible:outline-2
+      focus-visible:outline-offset-2 focus-visible:outline-red-600
+      transition-colors shadow-sm;
+  }
+
+  .btn-view {
+    @apply inline-flex items-center justify-center gap-1.5 px-3 py-2
+      rounded-lg font-medium text-sm text-white bg-gray-600
+      hover:bg-gray-700 focus-visible:outline focus-visible:outline-2
+      focus-visible:outline-offset-2 focus-visible:outline-gray-600
+      transition-colors shadow-sm;
+  }
+
+  .btn-icon {
+    @apply inline-flex items-center justify-center w-8 h-8
+      rounded-lg transition-colors;
+  }
+
+  .btn-icon-edit {
+    @apply btn-icon text-white bg-blue-600 hover:bg-blue-700
+      focus-visible:outline focus-visible:outline-2
+      focus-visible:outline-offset-2 focus-visible:outline-blue-600;
+  }
+
+  .btn-icon-delete {
+    @apply btn-icon text-white bg-red-600 hover:bg-red-700
+      focus-visible:outline focus-visible:outline-2
+      focus-visible:outline-offset-2 focus-visible:outline-red-600;
+  }
+}
+
+@layer utilities {
+  /* Custom utilities can go here */
 }
 
 /* DO NOT CLIP THE HEADER */
@@ -34,57 +363,55 @@ header {
   border-radius: 9999px;
   font-size: 0.875rem;
   font-weight: 500;
-  background-color: rgb(245 245 245);
-  color: rgb(23 23 23);
+  background-color: color-mix(in srgb, var(--text) 6%, var(--bg-elevated));
+  color: var(--text);
   text-decoration: none;
   transition: all 0.2s ease-out;
 }
 
 .ts-tab:hover {
-  background-color: rgb(229 229 229);
+  background-color: color-mix(in srgb, var(--text) 10%, var(--bg-elevated));
 }
 
 .ts-tab-active {
-  background-color: rgb(23 23 23) !important;
-  color: rgb(255 255 255) !important;
+  background-color: var(--text) !important;
+  color: var(--bg-elevated) !important;
 }
 
 .ts-tab-active:hover {
-  background-color: rgb(23 23 23) !important;
+  background-color: var(--text) !important;
 }
 
 .pill-light {
-  background-color: rgba(255, 255, 255, 0.95);
-  color: rgb(17 24 39);
-  border-color: rgb(156 163 175);
-  backdrop-filter: blur(8px);
+  background-color: var(--bg-elevated);
+  color: var(--text);
+  border: 1px solid var(--border);
   font-weight: 500;
 }
 
 .pill-light:hover {
-  background-color: rgb(255 255 255);
-  box-shadow: 0 2px 4px 0 rgb(0 0 0 / 0.1);
-  border-color: rgb(107 114 128);
+  background-color: color-mix(in srgb, var(--text) 6%, var(--bg-elevated));
+  box-shadow: 0 2px 4px 0 color-mix(in srgb, #000000 10%, transparent);
+  border-color: color-mix(in srgb, var(--text) 18%, var(--bg-elevated));
 }
 
 .pill-dark {
-  background-color: rgba(0, 0, 0, 0.7);
-  color: rgb(255 255 255);
-  border-color: rgba(255, 255, 255, 0.3);
-  backdrop-filter: blur(8px);
+  background-color: color-mix(in srgb, var(--overlay) 80%, #000000 20%);
+  color: #f8fafc;
+  border: 1px solid color-mix(in srgb, #f8fafc 24%, var(--overlay));
   font-weight: 500;
 }
 
 .pill-dark:hover {
-  background-color: rgba(0, 0, 0, 0.85);
-  border-color: rgba(255, 255, 255, 0.4);
+  background-color: color-mix(in srgb, var(--overlay) 92%, #000000 8%);
+  border-color: color-mix(in srgb, #f8fafc 32%, var(--overlay));
 }
 
 .pill-active {
-  border-color: var(--ts-accent);
-  color: var(--ts-accent);
-  background-color: rgb(255 255 255);
-  box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  border-color: var(--primary);
+  color: var(--primary);
+  background-color: var(--bg-elevated);
+  box-shadow: 0 1px 2px 0 color-mix(in srgb, #000000 5%, transparent);
   font-weight: 600;
 }
 
@@ -171,14 +498,60 @@ a, button, input, textarea, select {
   transition: all 0.25s ease-out;
 }
 
+/* Enhanced form controls for better readability */
+input,
+textarea,
+select {
+  color: #111827 !important; /* gray-900 - dark text for inputs */
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: #9CA3AF !important; /* gray-400 - readable placeholder */
+  opacity: 1;
+}
+
+label {
+  color: #1F2937 !important; /* gray-800 - dark labels */
+}
+
 /* Enhanced button styles */
 button {
   cursor: pointer;
+  color: inherit; /* Keep button text color as defined */
 }
 
 button:disabled {
   cursor: not-allowed;
   opacity: 0.6;
+}
+
+/* Form field focus states for better visibility */
+input:focus,
+textarea:focus,
+select:focus {
+  outline: 2px solid var(--ts-accent);
+  outline-offset: 2px;
+  border-color: var(--ts-accent);
+}
+
+/* Ensure button text is readable */
+button.bg-ts-accent,
+button[class*="bg-blue"],
+button[class*="bg-red"],
+button[class*="bg-green"] {
+  color: white !important;
+}
+
+/* Ensure disabled button text is still visible */
+button:disabled {
+  opacity: 0.5;
+}
+
+/* Help text should be readable but subtle */
+.text-xs,
+.text-sm {
+  opacity: 0.9;
 }
 
 /* Custom scrollbar for webkit browsers */

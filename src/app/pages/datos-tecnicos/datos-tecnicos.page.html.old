@@ -1,0 +1,537 @@
+<!-- Enhanced Header -->
+<section class="relative py-24 lg:py-32 bg-gradient-to-b from-ts-paper to-white overflow-hidden">
+  <div class="absolute inset-0 bg-gradient-to-r from-ts-bg/5 to-ts-accent/5"></div>
+  <div class="relative max-w-7xl mx-auto px-6 text-center">
+    <div class="animate-fade-up">
+      <h1 class="font-serif text-5xl lg:text-7xl text-ts-bg mb-6 leading-tight">
+        {{ 'technical.title' | translate }}
+      </h1>
+      <p class="text-xl lg:text-2xl text-gray-700 max-w-3xl mx-auto leading-relaxed">
+        {{ 'technical.subtitle' | translate }}
+      </p>
+      <div class="mt-8 flex items-center justify-center gap-4 text-gray-600">
+        <div class="w-16 h-px bg-ts-accent"></div>
+        <span class="text-sm font-medium tracking-wider uppercase">{{ 'technical.complete_documentation' | translate }}</span>
+        <div class="w-16 h-px bg-ts-accent"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Premium Technical Content -->
+@if (datosTecnicos) {
+  <section class="py-16 bg-white min-h-screen">
+    <div class="max-w-5xl mx-auto px-6">
+      
+      <!-- Quick Navigation with Enhanced Pills -->
+      <div class="mb-12 bg-gradient-to-r from-ts-paper to-white rounded-2xl p-6 shadow-sm">
+        <h2 class="text-xl font-medium text-ts-bg mb-4">{{ 'technical.quick_nav' | translate }}</h2>
+        <div class="flex flex-wrap gap-3">
+          <button 
+            (click)="openAccordionExclusive('especificaciones')"
+            [class.bg-ts-accent]="acordeonesAbiertos['especificaciones']"
+            [class.text-white]="acordeonesAbiertos['especificaciones']"
+            [class.bg-white]="!acordeonesAbiertos['especificaciones']"
+            [class.text-ts-bg]="!acordeonesAbiertos['especificaciones']"
+            class="px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 hover:scale-105 border border-gray-200 flex items-center gap-2">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v1a2 2 0 002 2h2m0 0h2a2 2 0 012-2V7a2 2 0 00-2-2H9m0 0v10m0-10h2v10"></path>
+            </svg>
+            {{ 'technical.specifications' | translate }}
+          </button>
+          <button 
+            (click)="openAccordionExclusive('acabados')"
+            [class.bg-ts-accent]="acordeonesAbiertos['acabados']"
+            [class.text-white]="acordeonesAbiertos['acabados']"
+            [class.bg-white]="!acordeonesAbiertos['acabados']"
+            [class.text-ts-bg]="!acordeonesAbiertos['acabados']"
+            class="px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 hover:scale-105 border border-gray-200 flex items-center gap-2">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zM21 5a2 2 0 00-2-2h-4a2 2 0 00-2 2v6a2 2 0 002 2h4a2 2 0 002-2V5z"></path>
+            </svg>
+            {{ 'technical.surface_finishes' | translate }}
+          </button>
+          <button 
+            (click)="openAccordionExclusive('fichas')"
+            [class.bg-ts-accent]="acordeonesAbiertos['fichas']"
+            [class.text-white]="acordeonesAbiertos['fichas']"
+            [class.bg-white]="!acordeonesAbiertos['fichas']"
+            [class.text-ts-bg]="!acordeonesAbiertos['fichas']"
+            class="px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 hover:scale-105 border border-gray-200 flex items-center gap-2">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+            </svg>
+            {{ 'technical.datasheets' | translate }}
+          </button>
+          <button 
+            (click)="openAccordionExclusive('packing')"
+            [class.bg-ts-accent]="acordeonesAbiertos['packing']"
+            [class.text-white]="acordeonesAbiertos['packing']"
+            [class.bg-white]="!acordeonesAbiertos['packing']"
+            [class.text-ts-bg]="!acordeonesAbiertos['packing']"
+            class="px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 hover:scale-105 border border-gray-200 flex items-center gap-2">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10"></path>
+            </svg>
+            {{ 'technical.packaging' | translate }}
+          </button>
+          <button 
+            (click)="openAccordionExclusive('bordes')"
+            [class.bg-ts-accent]="acordeonesAbiertos['bordes']"
+            [class.text-white]="acordeonesAbiertos['bordes']"
+            [class.bg-white]="!acordeonesAbiertos['bordes']"
+            [class.text-ts-bg]="!acordeonesAbiertos['bordes']"
+            class="px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 hover:scale-105 border border-gray-200 flex items-center gap-2">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6z"></path>
+            </svg>
+            {{ 'technical.edge_finishes' | translate }}
+          </button>
+          <button 
+            (click)="openAccordionExclusive('fijaciones')"
+            [class.bg-ts-accent]="acordeonesAbiertos['fijaciones']"
+            [class.text-white]="acordeonesAbiertos['fijaciones']"
+            [class.bg-white]="!acordeonesAbiertos['fijaciones']"
+            [class.text-ts-bg]="!acordeonesAbiertos['fijaciones']"
+            class="px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 hover:scale-105 border border-gray-200 flex items-center gap-2">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+            </svg>
+            {{ 'technical.facade_systems' | translate }}
+          </button>
+          <button 
+            (click)="openAccordionExclusive('mantenimiento')"
+            [class.bg-ts-accent]="acordeonesAbiertos['mantenimiento']"
+            [class.text-white]="acordeonesAbiertos['mantenimiento']"
+            [class.bg-white]="!acordeonesAbiertos['mantenimiento']"
+            [class.text-ts-bg]="!acordeonesAbiertos['mantenimiento']"
+            class="px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 hover:scale-105 border border-gray-200 flex items-center gap-2">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+            </svg>
+            {{ 'technical.maintenance' | translate }}
+          </button>
+        </div>
+      </div>
+    
+      <!-- Especificaciones Técnicas -->
+      <div class="mb-6 bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden transition-all duration-300">
+        <button 
+          (click)="toggleAcordeon('especificaciones')"
+          class="w-full p-6 text-left flex items-center justify-between hover:bg-gray-50 transition-all duration-300 group">
+          <div class="flex items-center gap-4">
+            <div class="w-12 h-12 bg-ts-accent/10 rounded-full flex items-center justify-center group-hover:bg-ts-accent/20 transition-colors">
+              <svg class="w-6 h-6 text-ts-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+              </svg>
+            </div>
+            <h2 class="font-serif text-2xl text-ts-bg">Especificaciones Técnicas</h2>
+          </div>
+          <svg 
+            class="w-6 h-6 transition-transform duration-300"
+            [class.rotate-180]="acordeonesAbiertos['especificaciones']"
+            fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+          </svg>
+        </button>
+        
+        @if (acordeonesAbiertos['especificaciones']) {
+          <div class="px-6 pb-6 border-t border-gray-100 animate-fade-in">
+            <div class="grid md:grid-cols-2 gap-4 mt-6">
+              @for (item of getObjectEntries(datosTecnicos.especificacionesTecnicas); track item.key) {
+                <div class="flex justify-between items-center p-4 bg-gray-50 rounded-xl border border-gray-200">
+                  <span class="font-medium text-gray-800">{{formatearTexto(item.key) | titlecase}}:</span>
+                  <span class="text-ts-accent font-semibold">{{item.value}}</span>
+                </div>
+              }
+            </div>
+          </div>
+        }
+      </div>
+
+      <!-- Acabados de Superficie -->
+      <div class="mb-6 bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden transition-all duration-300">
+        <button 
+          (click)="toggleAcordeon('acabados')"
+          class="w-full p-6 text-left flex items-center justify-between hover:bg-gray-50 transition-all duration-300 group">
+          <div class="flex items-center gap-4">
+            <div class="w-12 h-12 bg-ts-accent/10 rounded-full flex items-center justify-center group-hover:bg-ts-accent/20 transition-colors">
+              <svg class="w-6 h-6 text-ts-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+              </svg>
+            </div>
+            <h2 class="font-serif text-2xl text-ts-bg">Acabados de Superficie</h2>
+          </div>
+          <svg 
+            class="w-6 h-6 transition-transform duration-300"
+            [class.rotate-180]="acordeonesAbiertos['acabados']"
+            fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+          </svg>
+        </button>
+        
+        @if (acordeonesAbiertos['acabados']) {
+          <div class="px-6 pb-6 border-t border-gray-100 animate-fade-in">
+            <div class="grid md:grid-cols-3 gap-6 mt-6">
+              @for (acabado of datosTecnicos.acabadosSuperficie; track acabado.nombre) {
+                <div class="group">
+                  <div class="relative overflow-hidden rounded-xl mb-4">
+                    <img 
+                      [src]="acabado.imagen" 
+                      [alt]="acabado.nombre" 
+                      class="w-full h-48 object-cover transition-transform duration-500 group-hover:scale-110"
+                      (error)="$event.target.src='/assets/productos/placeholder.jpg'">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                  </div>
+                  <h3 class="font-semibold text-lg mb-2 text-ts-bg">{{acabado.nombre}}</h3>
+                  <p class="text-sm text-gray-600 leading-relaxed">{{acabado.descripcion}}</p>
+                </div>
+              }
+            </div>
+          </div>
+        }
+      </div>
+
+      <!-- Fichas Técnicas -->
+      <div class="mb-6 bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden transition-all duration-300">
+        <button 
+          (click)="toggleAcordeon('fichas')"
+          class="w-full p-6 text-left flex items-center justify-between hover:bg-gray-50 transition-all duration-300 group">
+          <div class="flex items-center gap-4">
+            <div class="w-12 h-12 bg-ts-accent/10 rounded-full flex items-center justify-center group-hover:bg-ts-accent/20 transition-colors">
+              <svg class="w-6 h-6 text-ts-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+              </svg>
+            </div>
+            <h2 class="font-serif text-2xl text-ts-bg">Fichas Técnicas</h2>
+          </div>
+          <svg 
+            class="w-6 h-6 transition-transform duration-300"
+            [class.rotate-180]="acordeonesAbiertos['fichas']"
+            fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+          </svg>
+        </button>
+        
+        @if (acordeonesAbiertos['fichas']) {
+          <div class="px-6 pb-6 border-t border-gray-100 animate-fade-in">
+            <div class="space-y-4 mt-6">
+              @for (ficha of datosTecnicos.fichasTecnicas; track ficha.nombre) {
+                <div class="flex items-center justify-between p-5 bg-gray-50 rounded-xl border border-gray-200 hover:shadow-md transition-all duration-300">
+                  <div class="flex-1">
+                    <h3 class="font-semibold text-lg text-gray-900 mb-1">{{ficha.nombre}}</h3>
+                    <p class="text-sm text-gray-600">{{ficha.descripcion}}</p>
+                  </div>
+                  <div class="flex items-center gap-4">
+                    <span class="text-sm text-gray-600 bg-gray-200 px-3 py-1 rounded-full font-medium">{{ficha.tamano}}</span>
+                    <a 
+                      [href]="ficha.url" 
+                      target="_blank" 
+                      class="inline-flex items-center gap-2 px-5 py-2.5 bg-ts-accent text-white rounded-xl hover:bg-ts-accent/90 transition-all duration-300 transform hover:scale-105 shadow-sm font-medium">
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                      </svg>
+                      Descargar
+                    </a>
+                  </div>
+                </div>
+              }
+            </div>
+          </div>
+        }
+      </div>
+
+      <!-- Información de Packing -->
+      <div class="mb-6 bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden transition-all duration-300">
+        <button 
+          (click)="toggleAcordeon('packing')"
+          class="w-full p-6 text-left flex items-center justify-between hover:bg-gray-50 transition-all duration-300 group">
+          <div class="flex items-center gap-4">
+            <div class="w-12 h-12 bg-ts-accent/10 rounded-full flex items-center justify-center group-hover:bg-ts-accent/20 transition-colors">
+              <svg class="w-6 h-6 text-ts-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
+              </svg>
+            </div>
+            <h2 class="font-serif text-2xl text-ts-bg">Información de Embalaje</h2>
+          </div>
+          <svg 
+            class="w-6 h-6 transition-transform duration-300"
+            [class.rotate-180]="acordeonesAbiertos['packing']"
+            fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+          </svg>
+        </button>
+        
+        @if (acordeonesAbiertos['packing']) {
+          <div class="px-6 pb-6 border-t border-gray-100 animate-fade-in">
+            <div class="overflow-x-auto mt-6">
+              <table class="w-full text-sm bg-white rounded-xl overflow-hidden border border-gray-200">
+                <thead>
+                  <tr class="border-b border-gray-200 bg-gray-50">
+                    <th class="text-left py-4 px-6 font-semibold text-gray-900">Grosor</th>
+                    <th class="text-left py-4 px-6 font-semibold text-gray-900">Piezas/Pallet</th>
+                    <th class="text-left py-4 px-6 font-semibold text-gray-900">Peso Aprox.</th>
+                    <th class="text-left py-4 px-6 font-semibold text-gray-900">Dimensiones Pallet</th>
+                    <th class="text-left py-4 px-6 font-semibold text-gray-900">Volumen</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @for (pack of datosTecnicos.packing; track pack.grosor) {
+                    <tr class="border-b border-gray-100 hover:bg-gray-50 transition-colors">
+                      <td class="py-4 px-6 font-medium text-ts-accent">{{pack.grosor}}</td>
+                      <td class="py-4 px-6 text-gray-700">{{pack.piezasPorPallet}}</td>
+                      <td class="py-4 px-6 text-gray-700">{{pack.pesoAprox}}</td>
+                      <td class="py-4 px-6 text-gray-700">{{pack.dimensionesPallet}}</td>
+                      <td class="py-4 px-6 text-gray-700">{{pack.volumen}}</td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+          </div>
+        }
+      </div>
+
+    </div>
+  </section>
+}
+
+<!-- Premium Technical Content -->
+@if (datosTecnicos) {
+  <section class="py-16 bg-white min-h-screen">
+    <div class="max-w-5xl mx-auto px-6">
+      
+      <!-- Quick Navigation -->
+      <div class="mb-12 bg-gradient-to-r from-ts-paper to-white rounded-2xl p-6 shadow-sm">
+        <h2 class="text-xl font-medium text-ts-bg mb-4">Navegación Rápida</h2>
+        <div class="flex flex-wrap gap-3">
+          <button 
+            (click)="openAccordionExclusive('especificaciones')"
+            [class]="{
+              'bg-ts-accent text-ts-bg': acordeonesAbiertos['especificaciones'],
+              'bg-white text-ts-bg border border-gray-200 hover:bg-ts-accent hover:text-ts-bg': !acordeonesAbiertos['especificaciones']
+            }"
+            class="px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 hover:scale-105">
+            Especificaciones
+          </button>
+          <button 
+            (click)="openAccordionExclusive('acabados')"
+            [class]="{
+              'bg-ts-accent text-ts-bg': acordeonesAbiertos['acabados'],
+              'bg-white text-ts-bg border border-gray-200 hover:bg-ts-accent hover:text-ts-bg': !acordeonesAbiertos['acabados']
+            }"
+            class="px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 hover:scale-105">
+            Acabados
+          </button>
+          <button 
+            (click)="openAccordionExclusive('fichas')"
+            [class]="{
+              'bg-ts-accent text-ts-bg': acordeonesAbiertos['fichas'],
+              'bg-white text-ts-bg border border-gray-200 hover:bg-ts-accent hover:text-ts-bg': !acordeonesAbiertos['fichas']
+            }"
+            class="px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 hover:scale-105">
+            Fichas PDF
+          </button>
+          <button 
+            (click)="openAccordionExclusive('packing')"
+            [class]="{
+              'bg-ts-accent text-ts-bg': acordeonesAbiertos['packing'],
+              'bg-white text-ts-bg border border-gray-200 hover:bg-ts-accent hover:text-ts-bg': !acordeonesAbiertos['packing']
+            }"
+            class="px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 hover:scale-105">
+            Embalaje
+          </button>
+          <button 
+            (click)="openAccordionExclusive('mantenimiento')"
+            [class]="{
+              'bg-ts-accent text-ts-bg': acordeonesAbiertos['mantenimiento'],
+              'bg-white text-ts-bg border border-gray-200 hover:bg-ts-accent hover:text-ts-bg': !acordeonesAbiertos['mantenimiento']
+            }"
+            class="px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 hover:scale-105">
+            Mantenimiento
+          </button>
+        </div>
+      </div>
+    
+      <!-- Especificaciones Técnicas -->
+      <div class="mb-6 bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden transition-all duration-300">
+        <button 
+          (click)="toggleAcordeon('especificaciones')"
+          class="w-full p-6 text-left flex items-center justify-between hover:bg-gray-50 transition-all duration-300 group">
+          <div class="flex items-center gap-4">
+            <div class="w-12 h-12 bg-ts-accent/10 rounded-full flex items-center justify-center group-hover:bg-ts-accent/20 transition-colors">
+              <svg class="w-6 h-6 text-ts-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+              </svg>
+            </div>
+            <h2 class="font-serif text-2xl text-ts-bg">Especificaciones Técnicas</h2>
+          </div>
+          <svg 
+            class="w-6 h-6 transition-transform duration-300"
+            [class.rotate-180]="acordeonesAbiertos['especificaciones']"
+            fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+          </svg>
+        </button>
+        
+        @if (acordeonesAbiertos['especificaciones']) {
+          <div class="px-6 pb-6 border-t border-gray-100 animate-fade-in">
+            <div class="grid md:grid-cols-2 gap-4 mt-6">
+              @for (item of getObjectEntries(datosTecnicos.especificacionesTecnicas); track item.key) {
+                <div class="flex justify-between items-center p-4 bg-gray-50 rounded-xl border border-gray-200">
+                  <span class="font-medium text-gray-800">{{formatearTexto(item.key) | titlecase}}:</span>
+                  <span class="text-ts-accent font-semibold">{{item.value}}</span>
+                </div>
+              }
+            </div>
+          </div>
+        }
+      </div>
+
+      <!-- Acabados de Superficie -->
+      <div class="mb-6 bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden transition-all duration-300">
+        <button 
+          (click)="toggleAcordeon('acabados')"
+          class="w-full p-6 text-left flex items-center justify-between hover:bg-gray-50 transition-all duration-300 group">
+          <div class="flex items-center gap-4">
+            <div class="w-12 h-12 bg-ts-accent/10 rounded-full flex items-center justify-center group-hover:bg-ts-accent/20 transition-colors">
+              <svg class="w-6 h-6 text-ts-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+              </svg>
+            </div>
+            <h2 class="font-serif text-2xl text-ts-bg">Acabados de Superficie</h2>
+          </div>
+          <svg 
+            class="w-6 h-6 transition-transform duration-300"
+            [class.rotate-180]="acordeonesAbiertos['acabados']"
+            fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+          </svg>
+        </button>
+        
+        @if (acordeonesAbiertos['acabados']) {
+          <div class="px-6 pb-6 border-t border-gray-100 animate-fade-in">
+            <div class="grid md:grid-cols-3 gap-6 mt-6">
+              @for (acabado of datosTecnicos.acabadosSuperficie; track acabado.nombre) {
+                <div class="group">
+                  <div class="relative overflow-hidden rounded-xl mb-4">
+                    <img 
+                      [src]="acabado.imagen" 
+                      [alt]="acabado.nombre" 
+                      class="w-full h-48 object-cover transition-transform duration-500 group-hover:scale-110"
+                      (error)="$event.target.src='/assets/productos/placeholder.jpg'">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                  </div>
+                  <h3 class="font-semibold text-lg mb-2 text-ts-bg">{{acabado.nombre}}</h3>
+                  <p class="text-sm text-gray-600 leading-relaxed">{{acabado.descripcion}}</p>
+                </div>
+              }
+            </div>
+          </div>
+        }
+      </div>
+
+      <!-- Fichas Técnicas -->
+      <div class="mb-6 bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden transition-all duration-300">
+        <button 
+          (click)="toggleAcordeon('fichas')"
+          class="w-full p-6 text-left flex items-center justify-between hover:bg-gray-50 transition-all duration-300 group">
+          <div class="flex items-center gap-4">
+            <div class="w-12 h-12 bg-ts-accent/10 rounded-full flex items-center justify-center group-hover:bg-ts-accent/20 transition-colors">
+              <svg class="w-6 h-6 text-ts-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+              </svg>
+            </div>
+            <h2 class="font-serif text-2xl text-ts-bg">Fichas Técnicas</h2>
+          </div>
+          <svg 
+            class="w-6 h-6 transition-transform duration-300"
+            [class.rotate-180]="acordeonesAbiertos['fichas']"
+            fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+          </svg>
+        </button>
+        
+        @if (acordeonesAbiertos['fichas']) {
+          <div class="px-6 pb-6 border-t border-gray-100 animate-fade-in">
+            <div class="space-y-4 mt-6">
+              @for (ficha of datosTecnicos.fichasTecnicas; track ficha.nombre) {
+                <div class="flex items-center justify-between p-5 bg-gray-50 rounded-xl border border-gray-200 hover:shadow-md transition-all duration-300">
+                  <div class="flex-1">
+                    <h3 class="font-semibold text-lg text-gray-900 mb-1">{{ficha.nombre}}</h3>
+                    <p class="text-sm text-gray-600">{{ficha.descripcion}}</p>
+                  </div>
+                  <div class="flex items-center gap-4">
+                    <span class="text-sm text-gray-600 bg-gray-200 px-3 py-1 rounded-full font-medium">{{ficha.tamano}}</span>
+                    <a 
+                      [href]="ficha.url" 
+                      target="_blank" 
+                      class="inline-flex items-center gap-2 px-5 py-2.5 bg-ts-accent text-white rounded-xl hover:bg-ts-accent/90 transition-all duration-300 transform hover:scale-105 shadow-sm font-medium">
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                      </svg>
+                      Descargar
+                    </a>
+                  </div>
+                </div>
+              }
+            </div>
+          </div>
+        }
+      </div>
+
+      <!-- Información de Packing -->
+      <div class="mb-6 bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden transition-all duration-300">
+        <button 
+          (click)="toggleAcordeon('packing')"
+          class="w-full p-6 text-left flex items-center justify-between hover:bg-gray-50 transition-all duration-300 group">
+          <div class="flex items-center gap-4">
+            <div class="w-12 h-12 bg-ts-accent/10 rounded-full flex items-center justify-center group-hover:bg-ts-accent/20 transition-colors">
+              <svg class="w-6 h-6 text-ts-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
+              </svg>
+            </div>
+            <h2 class="font-serif text-2xl text-ts-bg">Información de Embalaje</h2>
+          </div>
+          <svg 
+            class="w-6 h-6 transition-transform duration-300"
+            [class.rotate-180]="acordeonesAbiertos['packing']"
+            fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+          </svg>
+        </button>
+        
+        @if (acordeonesAbiertos['packing']) {
+          <div class="px-6 pb-6 border-t border-gray-100 animate-fade-in">
+            <div class="overflow-x-auto mt-6">
+              <table class="w-full text-sm bg-white rounded-xl overflow-hidden border border-gray-200">
+                <thead>
+                  <tr class="border-b border-gray-200 bg-gray-50">
+                    <th class="text-left py-4 px-6 font-semibold text-gray-900">Grosor</th>
+                    <th class="text-left py-4 px-6 font-semibold text-gray-900">Piezas/Pallet</th>
+                    <th class="text-left py-4 px-6 font-semibold text-gray-900">Peso Aprox.</th>
+                    <th class="text-left py-4 px-6 font-semibold text-gray-900">Dimensiones Pallet</th>
+                    <th class="text-left py-4 px-6 font-semibold text-gray-900">Volumen</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @for (pack of datosTecnicos.packing; track pack.grosor) {
+                    <tr class="border-b border-gray-100 hover:bg-gray-50 transition-colors">
+                      <td class="py-4 px-6 font-medium text-ts-accent">{{pack.grosor}}</td>
+                      <td class="py-4 px-6 text-gray-700">{{pack.piezasPorPallet}}</td>
+                      <td class="py-4 px-6 text-gray-700">{{pack.pesoAprox}}</td>
+                      <td class="py-4 px-6 text-gray-700">{{pack.dimensionesPallet}}</td>
+                      <td class="py-4 px-6 text-gray-700">{{pack.volumen}}</td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+          </div>
+        }
+      </div>
+
+    </div>
+  </section>
+}

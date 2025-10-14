@@ -1,7 +1,7 @@
 import { Component, OnInit, PLATFORM_ID, inject } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
-import { DataService, Producto } from '../../../core/services/data.service';
+import { ProductsService } from '../../../services/products.service';
 import { Product } from '../../../models/product';
 import { ProductCardComponent } from '../../../shared/components/product-card/product-card.component';
 
@@ -116,8 +116,16 @@ import { ProductCardComponent } from '../../../shared/components/product-card/pr
 
 
       <!-- Products Grid -->
+      <div *ngIf="isLoading" class="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+        <div *ngFor="let i of [1,2,3,4,5,6,7,8]" class="animate-pulse">
+          <div class="bg-neutral-200 aspect-square rounded-2xl mb-4"></div>
+          <div class="h-4 bg-neutral-200 rounded w-3/4 mb-2"></div>
+          <div class="h-3 bg-neutral-200 rounded w-1/2"></div>
+        </div>
+      </div>
+
       <div [class]="viewMode === 'grid' ? 'grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8' : 'space-y-6'"
-           *ngIf="productosFiltrados.length > 0">
+           *ngIf="!isLoading && productosFiltrados.length > 0">
         <ts-product-card 
           *ngFor="let producto of productosFiltrados" 
           [product]="producto"
@@ -127,7 +135,7 @@ import { ProductCardComponent } from '../../../shared/components/product-card/pr
       </div>
       
       <!-- Empty State -->
-      <div *ngIf="productosFiltrados.length === 0" class="text-center py-16">
+      <div *ngIf="!isLoading && productosFiltrados.length === 0" class="text-center py-16">
         <div class="w-24 h-24 mx-auto mb-6 rounded-full bg-neutral-100 flex items-center justify-center">
           <svg class="w-12 h-12 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
@@ -176,68 +184,40 @@ import { ProductCardComponent } from '../../../shared/components/product-card/pr
 })
 export class GrosorComponent implements OnInit {
   private platformId = inject(PLATFORM_ID);
+  private route = inject(ActivatedRoute);
+  private productsService = inject(ProductsService);
   
   grosor = '';
-  productos: Producto[] = [];
   productosFiltrados: Product[] = [];
   viewMode: 'grid' | 'list' = 'grid';
-
-  // Fallback data for immediate display - converted to Product interface
-  fallbackData: Record<string, Product[]> = {
-    '12mm': [
-      { id: '12mm-saint-laurent', name: 'Saint Laurent', thickness: '12mm', category: '160×320cm', imageUrl: 'assets/productos/12mm/saint-laurent.jpg' },
-      { id: '12mm-black-gold', name: 'Black Gold', thickness: '12mm', category: '160×320cm', imageUrl: 'assets/productos/12mm/black-gold.jpg' },
-      { id: '12mm-arenaria-ivory', name: 'Arenaria Ivory', thickness: '12mm', category: '160×320cm', imageUrl: 'assets/productos/12mm/arenaria-ivory.jpg' },
-      { id: '12mm-calacatta-gold', name: 'Calacatta Gold', thickness: '12mm', category: '160×320cm', imageUrl: 'assets/productos/12mm/calacatta-gold.jpg' }
-    ],
-    '15mm': [
-      { id: '15mm-statuario-elegance', name: 'Statuario Elegance', thickness: '15mm', category: '160×320cm', imageUrl: 'assets/productos/15mm/statuario-elegance.jpg' },
-      { id: '15mm-laponia-black', name: 'Laponia Black', thickness: '15mm', category: '160×320cm', imageUrl: 'assets/productos/15mm/laponia-black.jpg' },
-      { id: '15mm-patagonia-natural', name: 'Patagonia Natural', thickness: '15mm', category: '160×320cm', imageUrl: 'assets/productos/15mm/patagonia-natural.jpg' }
-    ],
-    '20mm': [
-      { id: '20mm-saint-laurent', name: 'Saint Laurent', thickness: '20mm', category: '160×320cm', imageUrl: 'assets/productos/20mm/saint-laurent.jpg' },
-      { id: '20mm-black-gold', name: 'Black Gold', thickness: '20mm', category: '160×320cm', imageUrl: 'assets/productos/20mm/black-gold.jpg' },
-      { id: '20mm-limestone-ivory', name: 'Limestone Ivory', thickness: '20mm', category: '160×320cm', imageUrl: 'assets/productos/20mm/limestone-ivory.jpg' }
-    ]
-  };
-
-  constructor(
-    private route: ActivatedRoute,
-    private dataService: DataService
-  ) {}
+  isLoading = true;
 
   ngOnInit() {
-    this.grosor = this.route.snapshot.paramMap.get('grosor') || '';
-    
-    // Set fallback data immediately
-    this.productosFiltrados = this.fallbackData[this.grosor] || [];
-    
-    // Load real data if in browser
-    if (isPlatformBrowser(this.platformId)) {
-      this.loadProductos();
-    }
+    // Watch for route parameter changes to reload products when switching grosor
+    this.route.paramMap.subscribe(params => {
+      this.grosor = params.get('grosor') || '';
+      
+      // Load real products from Firestore
+      if (isPlatformBrowser(this.platformId)) {
+        this.loadProducts();
+      }
+    });
   }
 
-  private loadProductos() {
-    this.dataService.getProductos().subscribe({
-      next: (data) => {
-        this.productos = data.items;
-        const filtered = this.dataService.getProductosByGrosor(this.productos, this.grosor);
-        if (filtered.length > 0) {
-          // Convert to Product interface
-          this.productosFiltrados = filtered.map(p => ({
-            id: `${p.grosor}-${p.slug}`,
-            name: p.nombre,
-            thickness: p.grosor as '12mm'|'15mm'|'20mm',
-            category: p.medida,
-            imageUrl: p.cover
-          }));
-        }
+  private loadProducts() {
+    this.isLoading = true;
+    this.productsService.getProductsByGrosor(this.grosor).subscribe({
+      next: (products) => {
+        // Filter only published and active products
+        this.productosFiltrados = products
+          .filter(p => p.status === 'published' && p.active !== false)
+          .sort((a, b) => a.name.localeCompare(b.name));
+        this.isLoading = false;
       },
-      error: () => {
-        // Keep fallback data on error
-        console.log('Using fallback product data for grosor:', this.grosor);
+      error: (error) => {
+        console.error('Error loading products:', error);
+        this.productosFiltrados = [];
+        this.isLoading = false;
       }
     });
   }
