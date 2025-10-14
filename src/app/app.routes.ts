@@ -6,17 +6,17 @@ export const routes: Routes = [
   {
     path: '',
     loadComponent: () => import('./pages/home/home.page').then(m => m.HomePageComponent),
-    title: 'TopStone | Superficies Porcelánicas de Gran Formato'
+    title: 'TheLuxMining | Premium Bitcoin Mining Hardware'
   },
   {
     path: 'productos',
     loadComponent: () => import('./pages/productos/productos.page').then(m => m.ProductosPageComponent),
-    title: 'TopStone | Productos'
+    title: 'TheLuxMining | Mining Products'
   },
   {
     path: 'productos/:grosor',
     loadComponent: () => import('./pages/productos/grosor/grosor.component').then(m => m.GrosorComponent),
-    title: 'TopStone | Productos por Grosor'
+    title: 'TheLuxMining | Mining Hardware by Series'
   },
   {
     path: 'productos/:grosor/:slug',

@@ -18,8 +18,8 @@ import { RouterModule } from '@angular/router';
               <span class="font-serif text-xl font-semibold text-ts-ink">TopStone</span>
             </div>
             <p class="text-ts-ink-soft mb-6 max-w-md">
-              Superficies porcelánicas de gran formato que transforman espacios con diseño, 
-              resistencia y versatilidad excepcionales.
+              Premium Bitcoin mining hardware solutions delivering enterprise-grade performance, 
+              efficiency, and reliability for professional mining operations.
             </p>
             <div class="flex gap-4">
               <a href="#" class="w-10 h-10 bg-ts-accent/20 rounded-full flex items-center justify-center text-ts-accent hover:bg-ts-accent hover:text-ts-bg transition-colors">
