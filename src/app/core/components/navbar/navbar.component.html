@@ -1,4 +1,4 @@
-<header class="fixed inset-x-0 top-0 z-50 transition-all duration-300 border-b" [ngClass]="scrolled ? 'bg-white text-neutral-900 shadow-sm border-neutral-200' : 'bg-neutral-900 text-white border-neutral-800'">
+<header class="fixed inset-x-0 top-0 z-50 transition-all duration-300" [ngClass]="scrolled ? 'bg-white/90 text-neutral-900 backdrop-blur shadow-sm' : 'text-white'">
   <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
     <div class="flex h-16 items-center justify-between">
       <!-- Logo -->
@@ -11,8 +11,9 @@
 
       <!-- Mobile hamburger -->
       <button 
-        class="md:hidden p-2 rounded-lg transition-colors border"
-        [ngClass]="scrolled ? 'bg-white border-neutral-200 text-neutral-900' : 'bg-neutral-800 border-neutral-700 text-white'"
+        class="md:hidden p-2 rounded-lg transition-colors"
+        [class.bg-white/10]="!scrolled"
+        [class.bg-neutral-100]="scrolled"
         (click)="mobileOpen = !mobileOpen" 
         aria-label="Abrir menú">
         <div class="w-5 h-0.5 mb-1 transition-colors" [class.bg-neutral-900]="scrolled" [class.bg-white]="!scrolled"></div>
@@ -56,12 +57,12 @@
 
           <!-- Mega panel with its own hover detection -->
           <div #mega
-               class="absolute left-1/2 -translate-x-1/2 top-full z-[120]"
+               class="absolute left-1/2 -translate-x-1/2 top-full z-[110]"
                [class.hidden]="!showMega"
                (mouseenter)="openMega()" (mouseleave)="closeMegaDelayed($event)">
             <div id="mega-products"
                  class="w-[min(100vw-2rem,960px)] grid grid-cols-4 gap-6
-                        rounded-2xl menu-surface mega-panel shadow-2xl p-6"
+                        rounded-2xl bg-white text-neutral-900 shadow-xl ring-1 ring-neutral-200 p-6"
                  role="menu" aria-label="Productos"
                  tabindex="-1"
                  (keydown)="onMegaKeydown($event)">
@@ -73,7 +74,7 @@
                 @for (producto of productos12mm; track producto.slug) {
                   <li>
                     <a [routerLink]="['/productos/12mm', producto.slug]" 
-                       class="mega-link text-sm"
+                       class="block hover:text-ts-accent transition-colors text-sm"
                        role="menuitem"
                        (mouseenter)="onProductHover('12mm', producto.slug, producto.imageUrl)">
                       {{producto.name}}
@@ -91,7 +92,7 @@
                 @for (producto of productos15mm; track producto.slug) {
                   <li>
                     <a [routerLink]="['/productos/15mm', producto.slug]" 
-                       class="mega-link text-sm"
+                       class="block hover:text-ts-accent transition-colors text-sm"
                        role="menuitem"
                        (mouseenter)="onProductHover('15mm', producto.slug, producto.imageUrl)">
                       {{producto.name}}
@@ -109,7 +110,7 @@
                 @for (producto of productos20mm; track producto.slug) {
                   <li>
                     <a [routerLink]="['/productos/20mm', producto.slug]" 
-                       class="mega-link text-sm"
+                       class="block hover:text-ts-accent transition-colors text-sm"
                        role="menuitem"
                        (mouseenter)="onProductHover('20mm', producto.slug, producto.imageUrl)">
                       {{producto.name}}
