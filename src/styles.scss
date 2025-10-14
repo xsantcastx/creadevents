@@ -29,6 +29,24 @@ body {
   overflow-x: hidden;
 }
 
+/* Ensure all text is readable on dark background */
+h1, h2, h3, h4, h5, h6 {
+  color: #f5f5f7 !important;
+}
+
+p, span, div {
+  color: inherit;
+}
+
+/* Ensure links are visible */
+a {
+  color: var(--primary);
+}
+
+a:not([class*="text-"]):not([class*="bg-"]) {
+  color: var(--primary);
+}
+
 body::before {
   content: '';
   position: fixed;
@@ -164,7 +182,7 @@ a:hover {
   button,
   input[type="button"],
   input[type="submit"] {
-    color: #111827;
+    color: #f5f5f7; /* Light text for buttons on dark theme */
   }
 
   .body-dark button,
@@ -617,7 +635,8 @@ a, button, input, textarea, select {
 input,
 textarea,
 select {
-  color: #111827 !important; /* gray-900 - dark text for inputs */
+  color: #f5f5f7 !important; /* Light text for dark theme */
+  background-color: rgba(19, 21, 26, 0.8) !important; /* Dark background for inputs */
 }
 
 input::placeholder,
@@ -627,7 +646,7 @@ textarea::placeholder {
 }
 
 label {
-  color: #1F2937 !important; /* gray-800 - dark labels */
+  color: #f5f5f7 !important; /* Light labels for dark theme */
 }
 
 /* Enhanced button styles */
@@ -667,6 +686,15 @@ button:disabled {
 .text-xs,
 .text-sm {
   opacity: 0.9;
+}
+
+/* Container styling */
+.container {
+  margin: 0 auto;
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+  max-width: 1280px;
+  color: var(--ts-ink); /* Ensure container text is light */
 }
 
 /* Custom scrollbar for webkit browsers */
@@ -744,4 +772,133 @@ img {
     --ts-paper: #FFFFFF;
     --ts-line: #808080;
   }
+}
+
+/* Bitcoin Theme Utility Classes */
+.text-bitcoin-orange {
+  color: #f7931a !important;
+}
+
+.text-bitcoin-gold {
+  color: #ffb81c !important;
+}
+
+.text-bitcoin-gray {
+  color: #9ca3af !important;
+}
+
+.text-luxury-gold {
+  color: #d4af37 !important;
+}
+
+.bg-bitcoin-dark {
+  background-color: #0a0b0d !important;
+}
+
+.border-bitcoin-orange {
+  border-color: #f7931a !important;
+}
+
+.border-bitcoin-gray {
+  border-color: #4b5563 !important;
+}
+
+.shadow-bitcoin {
+  box-shadow: 0 4px 12px rgba(247, 147, 26, 0.2) !important;
+}
+
+.shadow-bitcoin-lg {
+  box-shadow: 0 10px 25px rgba(247, 147, 26, 0.3) !important;
+}
+
+.text-bitcoin-dark {
+  color: #0a0b0d !important;
+}
+
+.text-white {
+  color: #ffffff !important;
+}
+
+/* Additional text readability fixes */
+article, section, main, aside, header, nav {
+  color: var(--ts-ink);
+}
+
+/* Ensure readable text in cards and surfaces */
+.card, [class*='card'], 
+.surface, [class*='surface'],
+.panel, [class*='panel'] {
+  color: var(--ts-ink);
+}
+
+/* List items */
+li {
+  color: inherit;
+}
+
+/* Table text */
+table, th, td {
+  color: var(--ts-ink);
+}
+
+/* Specific utility for light text */
+.text-light {
+  color: #f5f5f7 !important;
+}
+
+/* Override any remaining dark text */
+.text-gray-900, .text-gray-800, .text-gray-700 {
+  color: #f5f5f7 !important;
+}
+
+/* ========================================
+   HIGH-QUALITY IMAGE RENDERING
+   ======================================== */
+
+/* Global image optimization for crisp, sharp images */
+img {
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: crisp-edges;
+  image-rendering: -moz-crisp-edges;
+  -ms-interpolation-mode: nearest-neighbor;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Prevent pixelation during transitions and animations */
+img, 
+picture,
+video {
+  will-change: transform;
+  transform: translate3d(0, 0, 0);
+}
+
+/* Smooth rendering for hero and product images */
+.object-cover,
+.object-contain {
+  image-rendering: auto;
+  image-rendering: high-quality;
+  image-rendering: -webkit-optimize-contrast;
+}
+
+/* Remove blur from scaled images */
+img[loading="eager"],
+img[loading="lazy"] {
+  filter: none;
+  -webkit-filter: none;
+}
+
+/* Hardware acceleration for better performance */
+.animate-ken-burns img,
+[class*="transition"] img,
+[class*="hover"] img {
+  will-change: transform, opacity;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  perspective: 1000px;
+  -webkit-perspective: 1000px;
 }

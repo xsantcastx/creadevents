@@ -8,11 +8,12 @@ import {
   AdminDashboardService,
   AdminDashboardSnapshot
 } from '../../../services/admin-dashboard.service';
+import { AdminQuickActionsComponent } from '../../../shared/components/admin-quick-actions/admin-quick-actions.component';
 
 @Component({
   selector: 'app-admin-dashboard',
   standalone: true,
-  imports: [CommonModule, RouterLink, TranslateModule],
+  imports: [CommonModule, RouterLink, TranslateModule, AdminQuickActionsComponent],
   templateUrl: './dashboard.page.html',
   styleUrl: './dashboard.page.scss'
 })
@@ -78,10 +79,10 @@ export class AdminDashboardComponent implements OnInit {
 
   getActivityColor(type: AdminActivityItem['type']): string {
     const colors: Record<AdminActivityItem['type'], string> = {
-      order: 'bg-blue-100 text-blue-600',
-      product: 'bg-green-100 text-green-600',
-      gallery: 'bg-purple-100 text-purple-600',
-      user: 'bg-orange-100 text-orange-600'
+      order: 'bg-bitcoin-orange/20 text-bitcoin-orange border border-bitcoin-orange/30',
+      product: 'bg-bitcoin-gold/20 text-bitcoin-gold border border-bitcoin-gold/30',
+      gallery: 'bg-luxury-gold/20 text-luxury-gold border border-luxury-gold/30',
+      user: 'bg-bitcoin-orange/20 text-bitcoin-orange border border-bitcoin-orange/30'
     };
     return colors[type];
   }

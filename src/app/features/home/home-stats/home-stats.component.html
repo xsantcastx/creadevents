@@ -1,0 +1,69 @@
+<section class="stats-section">
+  <div class="container">
+    <div class="stats-grid">
+      <!-- Miners Deployed -->
+      <div class="stat-card">
+        <div class="stat-icon">
+          <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z"></path>
+          </svg>
+        </div>
+        <div class="stat-number">
+          {{ minersDeployed() }}+
+        </div>
+        <div class="stat-label">
+          {{ 'home.stats.miners_deployed' | translate }}
+        </div>
+        <p class="stat-description">Professional mining units delivered worldwide</p>
+      </div>
+
+      <!-- Customer Satisfaction -->
+      <div class="stat-card">
+        <div class="stat-icon">
+          <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+          </svg>
+        </div>
+        <div class="stat-number">
+          {{ customerSatisfaction() }}%
+        </div>
+        <div class="stat-label">
+          {{ 'home.stats.customer_satisfaction' | translate }}
+        </div>
+        <p class="stat-description">Verified customer happiness rating</p>
+      </div>
+
+      <!-- Uptime Guarantee -->
+      <div class="stat-card">
+        <div class="stat-icon">
+          <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+          </svg>
+        </div>
+        <div class="stat-number">
+          {{ uptimeGuarantee() }}%
+        </div>
+        <div class="stat-label">
+          {{ 'home.stats.uptime_guarantee' | translate }}
+        </div>
+        <p class="stat-description">Industry-leading reliability standards</p>
+      </div>
+
+      <!-- Years of Excellence -->
+      <div class="stat-card">
+        <div class="stat-icon">
+          <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+          </svg>
+        </div>
+        <div class="stat-number">
+          {{ yearsExperience() }}+
+        </div>
+        <div class="stat-label">
+          {{ 'home.stats.years_experience' | translate }}
+        </div>
+        <p class="stat-description">Years powering the Bitcoin revolution</p>
+      </div>
+    </div>
+  </div>
+</section>

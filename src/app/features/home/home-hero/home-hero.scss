@@ -1,6 +1,8 @@
 .hero {
   padding-top: 6rem;
   padding-bottom: 5rem;
+  background: linear-gradient(135deg, #0a0b0d 0%, #13151a 100%);
+  position: relative;
 }
 
 .hero__content {
@@ -8,6 +10,8 @@
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 3rem;
   align-items: center;
+  position: relative;
+  z-index: 1;
 }
 
 .hero__copy h1 {
@@ -20,14 +24,17 @@
 .hero__copy p {
   margin-bottom: 1.5rem;
   max-width: 34rem;
+  font-size: 1.125rem;
+  color: #9ca3af;
+  line-height: 1.7;
 }
 
 .hero__etiqueta {
   text-transform: uppercase;
   letter-spacing: 0.25rem;
   font-size: 0.75rem;
-  margin-bottom: 1.25rem;
-  color: var(--color-muted);
+  color: var(--color-bitcoin-orange);
+  font-weight: 600;
 }
 
 .hero__actions {
@@ -48,27 +55,29 @@
 }
 
 .btn--primary {
-  background-color: var(--color-primary);
-  color: #fff;
+  background: linear-gradient(135deg, #f7931a 0%, #ffb81c 100%);
+  color: #0a0b0d;
+  box-shadow: 0 4px 12px rgba(247, 147, 26, 0.3);
 }
 
 .btn--primary:hover {
   transform: translateY(-2px);
-  box-shadow: 0 12px 20px rgba(59, 47, 39, 0.2);
+  box-shadow: 0 12px 25px rgba(247, 147, 26, 0.4);
 }
 
 .btn--ghost {
-  border-color: var(--color-primary);
-  color: var(--color-primary);
+  border-color: var(--color-bitcoin-orange);
+  color: var(--color-bitcoin-orange);
 }
 
 .btn--ghost:hover {
   transform: translateY(-2px);
+  background: rgba(247, 147, 26, 0.1);
 }
 
 .hero__visual {
   width: 100%;
-  min-height: 420px;
+  min-height: 450px;
   border-radius: 28px;
   background: linear-gradient(135deg, rgba(247, 147, 26, 0.3) 0%, rgba(212, 175, 55, 0.2) 100%),
     linear-gradient(to bottom, rgba(10, 11, 13, 0.6), rgba(19, 21, 26, 0.8));
@@ -102,12 +111,86 @@
   box-shadow: 0 4px 12px rgba(247, 147, 26, 0.3);
 }
 
+/* Bitcoin-themed effects */
+.bitcoin-gradient-text {
+  background: linear-gradient(135deg, #f7931a 0%, #ffb81c 50%, #d4af37 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  background-size: 200% auto;
+  animation: shine 3s linear infinite;
+}
+
+.bitcoin-glow {
+  filter: drop-shadow(0 0 10px rgba(247, 147, 26, 0.5));
+  animation: glow-pulse 2s ease-in-out infinite;
+}
+
+.text-bitcoin-gold {
+  color: #ffb81c;
+}
+
+.text-bitcoin-orange {
+  color: #f7931a;
+}
+
+.text-bitcoin-gray {
+  color: #9ca3af;
+}
+
+.bg-bitcoin-dark {
+  background-color: #0a0b0d;
+}
+
+.shadow-bitcoin {
+  box-shadow: 0 4px 6px rgba(247, 147, 26, 0.2);
+}
+
+.border-bitcoin-gray {
+  border-color: #4b5563;
+}
+
+.border-bitcoin-orange {
+  border-color: #f7931a;
+}
+
+.border-luxury-gold {
+  border-color: #d4af37;
+}
+
+.bg-bitcoin-orange {
+  background-color: #f7931a;
+}
+
+.bg-luxury-gold {
+  background-color: #d4af37;
+}
+
+.text-luxury-gold {
+  color: #d4af37;
+}
+
 @keyframes pulseGlow {
   0%, 100% {
     opacity: 0.5;
   }
   50% {
     opacity: 1;
+  }
+}
+
+@keyframes shine {
+  to {
+    background-position: 200% center;
+  }
+}
+
+@keyframes glow-pulse {
+  0%, 100% {
+    filter: drop-shadow(0 0 10px rgba(247, 147, 26, 0.3));
+  }
+  50% {
+    filter: drop-shadow(0 0 20px rgba(247, 147, 26, 0.6));
   }
 }
 

@@ -1,20 +1,20 @@
-<div class="min-h-screen bg-gradient-to-b from-ts-paper to-white">
+<div class="min-h-screen bg-gradient-to-b from-[#0a0b0d] to-[#13151a]">
   
   <!-- Admin Header -->
-  <div class="bg-ts-bg text-white shadow-lg">
+  <div class="bg-gradient-to-r from-bitcoin-dark via-[#13151a] to-bitcoin-dark border-b border-bitcoin-orange/20 shadow-bitcoin">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
       <div class="flex items-center justify-between">
         <div class="flex items-center gap-4">
-          <a routerLink="/admin" class="hover:opacity-80 transition-opacity">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <a routerLink="/admin" class="hover:text-bitcoin-orange transition-colors">
+            <svg class="w-6 h-6 text-bitcoin-gray hover:text-bitcoin-orange" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
             </svg>
           </a>
-          <h1 class="text-xl font-bold">{{ 'admin.gallery' | translate }}</h1>
+          <h1 class="text-xl font-bold bitcoin-gradient-text">{{ 'admin.gallery.title' | translate }}</h1>
         </div>
         <div class="flex items-center gap-4">
-          <a routerLink="/admin" class="text-sm hover:text-white/80">{{ 'admin.title' | translate }}</a>
-          <button (click)="logout()" class="px-4 py-2 bg-red-500/20 hover:bg-red-500/30 text-red-100 rounded-xl transition-all">
+          <a routerLink="/admin" class="text-sm text-bitcoin-gray hover:text-bitcoin-orange transition-colors">{{ 'admin.title' | translate }}</a>
+          <button (click)="logout()" class="px-4 py-2 bg-red-500/20 hover:bg-red-500/30 border border-red-500/30 text-red-100 rounded-xl transition-all">
             {{ 'client.logout' | translate }}
           </button>
         </div>
@@ -24,22 +24,25 @@
 
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
     
+    <!-- Quick Actions -->
+    <app-admin-quick-actions currentPage="/admin/gallery"></app-admin-quick-actions>
+    
     <!-- Success/Error Messages -->
     @if (successMessage) {
-      <div class="mb-6 p-4 bg-green-50 border border-green-200 rounded-xl flex items-start gap-3">
-        <svg class="w-5 h-5 text-green-600 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <div class="mb-6 p-4 bg-bitcoin-gold/20 border border-bitcoin-gold/30 rounded-xl flex items-start gap-3">
+        <svg class="w-5 h-5 text-bitcoin-gold mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
         </svg>
-        <p class="text-sm text-green-700">{{ successMessage | translate }}</p>
+        <p class="text-sm text-bitcoin-gold">{{ successMessage | translate }}</p>
       </div>
     }
 
     @if (errorMessage) {
-      <div class="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl flex items-start gap-3">
-        <svg class="w-5 h-5 text-red-600 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <div class="mb-6 p-4 bg-red-500/20 border border-red-500/30 rounded-xl flex items-start gap-3">
+        <svg class="w-5 h-5 text-red-400 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
         </svg>
-        <p class="text-sm text-red-700">{{ errorMessage | translate }}</p>
+        <p class="text-sm text-red-400">{{ errorMessage | translate }}</p>
       </div>
     }
 
@@ -49,21 +52,25 @@
       <div class="flex items-center gap-3 overflow-x-auto pb-2">
         <button
           (click)="selectedTag = 'all'"
-          [class.bg-ts-accent]="selectedTag === 'all'"
+          [class.bg-bitcoin-orange]="selectedTag === 'all'"
           [class.text-white]="selectedTag === 'all'"
-          [class.bg-gray-100]="selectedTag !== 'all'"
-          [class.text-gray-700]="selectedTag !== 'all'"
-          class="px-4 py-2 rounded-xl font-medium transition-all whitespace-nowrap">
+          [class.border-bitcoin-orange]="selectedTag === 'all'"
+          [class.bg-bitcoin-dark/40]="selectedTag !== 'all'"
+          [class.text-bitcoin-gray]="selectedTag !== 'all'"
+          [class.border-bitcoin-gray/20]="selectedTag !== 'all'"
+          class="px-4 py-2 rounded-xl font-medium transition-all whitespace-nowrap border">
           All Media ({{ getTagCount('all') }})
         </button>
         @for (tag of availableTags; track tag) {
           <button
             (click)="selectedTag = tag"
-            [class.bg-ts-accent]="selectedTag === tag"
+            [class.bg-bitcoin-orange]="selectedTag === tag"
             [class.text-white]="selectedTag === tag"
-            [class.bg-gray-100]="selectedTag !== tag"
-            [class.text-gray-700]="selectedTag !== tag"
-            class="px-4 py-2 rounded-xl font-medium transition-all whitespace-nowrap capitalize">
+            [class.border-bitcoin-orange]="selectedTag === tag"
+            [class.bg-bitcoin-dark/40]="selectedTag !== tag"
+            [class.text-bitcoin-gray]="selectedTag !== tag"
+            [class.border-bitcoin-gray/20]="selectedTag !== tag"
+            class="px-4 py-2 rounded-xl font-medium transition-all whitespace-nowrap capitalize border">
             {{ tag }} ({{ getTagCount(tag) }})
           </button>
         }
@@ -76,47 +83,47 @@
             type="text"
             [(ngModel)]="searchTerm"
             placeholder="Search media by alt text or tags..."
-            class="w-full px-4 py-3 pl-10 border border-gray-300 rounded-xl focus:ring-2 focus:ring-ts-accent focus:border-transparent placeholder:text-gray-400 text-gray-900">
-          <svg class="w-5 h-5 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            class="w-full px-4 py-3 pl-10 bg-bitcoin-dark/40 border border-bitcoin-gray/20 rounded-xl focus:ring-2 focus:ring-bitcoin-orange focus:border-bitcoin-orange placeholder:text-bitcoin-gray/50 text-bitcoin-gray">
+          <svg class="w-5 h-5 text-bitcoin-gray/50 absolute left-3 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
           </svg>
         </div>
         
         <button
           (click)="openUploadModal()"
-          class="px-4 py-3 bg-ts-accent text-white font-semibold rounded-xl hover:bg-ts-accent/90 transition-all flex items-center gap-2 whitespace-nowrap">
+          class="px-4 py-3 bg-bitcoin-orange/30 hover:bg-bitcoin-orange/40 text-bitcoin-orange border border-bitcoin-orange/30 font-semibold rounded-xl transition-all flex items-center gap-2 whitespace-nowrap">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
           </svg>
-          <span class="text-white">Upload Image</span>
+          <span>Upload Image</span>
         </button>
       </div>
     </div>
 
     @if (isLoading) {
       <!-- Loading State -->
-      <div class="bg-white rounded-2xl shadow-lg p-12 border border-gray-100">
+      <div class="bg-bitcoin-dark/40 backdrop-blur-sm rounded-2xl shadow-bitcoin p-12 border border-bitcoin-gray/20">
         <div class="flex flex-col items-center justify-center gap-4">
-          <svg class="animate-spin h-10 w-10 text-ts-accent" fill="none" viewBox="0 0 24 24">
+          <svg class="animate-spin h-10 w-10 text-bitcoin-orange" fill="none" viewBox="0 0 24 24">
             <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
             <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
           </svg>
-          <p class="text-gray-600">{{ 'common.loading' | translate }}</p>
+          <p class="text-bitcoin-gray">{{ 'common.loading' | translate }}</p>
         </div>
       </div>
     } @else {
       
       @if (filteredMedia.length === 0) {
         <!-- Empty State -->
-        <div class="bg-white rounded-2xl shadow-lg p-12 border border-gray-100">
+        <div class="bg-bitcoin-dark/40 backdrop-blur-sm rounded-2xl shadow-bitcoin p-12 border border-bitcoin-gray/20">
           <div class="flex flex-col items-center justify-center gap-4">
-            <svg class="w-16 h-16 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg class="w-16 h-16 text-bitcoin-gray/30" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
             </svg>
-            <p class="text-gray-500">{{ searchTerm ? 'No media found matching your search' : 'admin.no_images' | translate }}</p>
+            <p class="text-bitcoin-gray/70">{{ searchTerm ? 'No media found matching your search' : 'admin.no_images' | translate }}</p>
             <button
               (click)="openUploadModal()"
-              class="px-6 py-3 bg-ts-accent text-white rounded-xl hover:bg-ts-accent/90 transition-all">
+              class="px-6 py-3 bg-bitcoin-orange/30 hover:bg-bitcoin-orange/40 text-bitcoin-orange border border-bitcoin-orange/30 rounded-xl transition-all">
               {{ 'admin.upload_first_image' | translate }}
             </button>
           </div>
@@ -125,19 +132,19 @@
         <!-- Media Grid -->
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           @for (media of filteredMedia; track media.id) {
-            <div class="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden group hover:shadow-xl transition-shadow">
+            <div class="bg-bitcoin-dark/40 backdrop-blur-sm rounded-2xl shadow-bitcoin border border-bitcoin-gray/20 overflow-hidden group hover:border-bitcoin-orange/30 hover:shadow-bitcoin-lg transition-all">
               <!-- Image -->
-              <div class="relative aspect-video bg-gray-100">
+              <div class="relative aspect-video bg-bitcoin-dark/60">
                 <img
                   [src]="media.thumbnailUrl || media.url"
                   [alt]="media.altText || 'Gallery media'"
                   class="w-full h-full object-cover">
                 
                 <!-- Overlay with actions -->
-                <div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-3">
+                <div class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-3">
                   <button
                     (click)="openEditModal(media)"
-                    class="p-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
+                    class="p-3 bg-bitcoin-orange/30 hover:bg-bitcoin-orange/40 text-bitcoin-orange border border-bitcoin-orange/30 rounded-lg transition-colors"
                     [title]="'Edit'">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
@@ -145,7 +152,7 @@
                   </button>
                   <button
                     (click)="openDeleteConfirm(media)"
-                    class="p-3 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors"
+                    class="p-3 bg-red-500/30 hover:bg-red-500/40 text-red-400 border border-red-500/30 rounded-lg transition-colors"
                     [title]="'admin.delete' | translate">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
@@ -160,7 +167,7 @@
                 @if (media.tags.length > 0) {
                   <div class="flex flex-wrap gap-1">
                     @for (tag of media.tags; track tag) {
-                      <span class="px-2 py-1 text-xs font-medium bg-purple-100 text-purple-700 rounded-full capitalize">
+                      <span class="px-2 py-1 text-xs font-medium bg-bitcoin-gold/20 text-bitcoin-gold border border-bitcoin-gold/30 rounded-full capitalize">
                         {{ tag }}
                       </span>
                     }
@@ -169,16 +176,16 @@
                 
                 <!-- Alt Text -->
                 @if (media.altText) {
-                  <p class="text-sm text-gray-700 font-medium line-clamp-2">{{ media.altText }}</p>
+                  <p class="text-sm text-bitcoin-gray font-medium line-clamp-2">{{ media.altText }}</p>
                 }
 
                 <!-- Related Products -->
                 @if (getRelatedProducts(media).length > 0) {
                   <div class="space-y-1">
-                    <p class="text-xs font-medium text-gray-500">Used by products:</p>
+                    <p class="text-xs font-medium text-bitcoin-gray/70">Used by products:</p>
                     <div class="flex flex-wrap gap-1">
                       @for (product of getRelatedProducts(media); track product.id) {
-                        <span class="text-xs px-2 py-1 bg-ts-accent/10 text-ts-accent rounded-full">
+                        <span class="text-xs px-2 py-1 bg-bitcoin-orange/20 text-bitcoin-orange border border-bitcoin-orange/30 rounded-full">
                           {{ product.name }}
                         </span>
                       }
@@ -187,7 +194,7 @@
                 }
 
                 <!-- Metadata -->
-                <div class="flex items-center justify-between text-xs text-gray-500 pt-2 border-t">
+                <div class="flex items-center justify-between text-xs text-bitcoin-gray/70 pt-2 border-t border-bitcoin-gray/20">
                   <span>{{ media.width }}x{{ media.height }}px</span>
                   <span>{{ media.uploadedAt | date:'dd/MM/yyyy' }}</span>
                 </div>
@@ -201,11 +208,11 @@
 
   <!-- Upload Modal -->
   @if (showUploadModal) {
-    <div class="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50" (click)="closeUploadModal()">
-      <div class="bg-white rounded-2xl shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto" (click)="$event.stopPropagation()">
-        <div class="p-6 border-b border-gray-200 flex items-center justify-between sticky top-0 bg-white">
-          <h2 class="text-2xl font-serif font-bold text-ts-bg">{{ 'admin.upload_image' | translate }}</h2>
-          <button (click)="closeUploadModal()" class="p-2 hover:bg-gray-100 rounded-lg transition-colors">
+    <div class="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4 z-50" (click)="closeUploadModal()">
+      <div class="bg-bitcoin-dark/95 backdrop-blur-md border border-bitcoin-orange/20 rounded-2xl shadow-bitcoin-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto" (click)="$event.stopPropagation()">
+        <div class="p-6 border-b border-bitcoin-orange/20 flex items-center justify-between sticky top-0 bg-bitcoin-dark/95 backdrop-blur-md">
+          <h2 class="text-2xl font-serif font-bold bitcoin-gradient-text">{{ 'admin.upload_image' | translate }}</h2>
+          <button (click)="closeUploadModal()" class="p-2 hover:bg-bitcoin-dark/60 text-bitcoin-gray hover:text-bitcoin-orange rounded-lg transition-colors">
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
             </svg>
@@ -216,24 +223,24 @@
           
           <!-- Warning Message -->
           @if (warningMessage) {
-            <div class="p-4 bg-yellow-50 border border-yellow-200 rounded-xl flex items-start gap-3">
-              <svg class="w-5 h-5 text-yellow-600 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div class="p-4 bg-bitcoin-orange/20 border border-bitcoin-orange/30 rounded-xl flex items-start gap-3">
+              <svg class="w-5 h-5 text-bitcoin-orange mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
               </svg>
-              <p class="text-sm text-yellow-800">{{ warningMessage }}</p>
+              <p class="text-sm text-bitcoin-orange">{{ warningMessage }}</p>
             </div>
           }
 
           <!-- Preview -->
           @if (previewUrl) {
-            <div class="rounded-2xl overflow-hidden border border-gray-200">
+            <div class="rounded-2xl overflow-hidden border border-bitcoin-gray/20">
               <img [src]="previewUrl" alt="Preview" class="w-full h-64 object-cover">
             </div>
           }
 
           <!-- File Upload -->
           <div>
-            <label for="imageFile" class="block text-sm font-medium text-gray-700 mb-2">
+            <label for="imageFile" class="block text-sm font-medium text-bitcoin-gray mb-2">
               {{ 'admin.image_file' | translate }}
             </label>
             <input
@@ -241,15 +248,15 @@
               id="imageFile"
               (change)="onCoverSelected($event)"
               accept="image/*"
-              class="w-full px-4 py-3 border border-dashed border-gray-300 rounded-xl focus:ring-2 focus:ring-ts-accent focus:border-transparent bg-gray-50">
-            <p class="mt-2 text-xs text-gray-500">
+              class="w-full px-4 py-3 border border-dashed border-bitcoin-orange/30 rounded-xl focus:ring-2 focus:ring-bitcoin-orange focus:border-bitcoin-orange bg-bitcoin-dark/40 text-bitcoin-gray">
+            <p class="mt-2 text-xs text-bitcoin-gray/70">
               Recommended: 1600x1200px or larger. Max 10MB. Smaller images are allowed but may appear pixelated.
             </p>
           </div>
 
           <!-- Alt Text -->
           <div>
-            <label for="altText" class="block text-sm font-medium text-gray-900 mb-2">
+            <label for="altText" class="block text-sm font-medium text-bitcoin-gray mb-2">
               Alt Text
             </label>
             <input
@@ -257,64 +264,64 @@
               id="altText"
               formControlName="altText"
               placeholder="Describe the image for accessibility..."
-              class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-ts-accent focus:border-transparent placeholder:text-gray-400 text-gray-900">
-            <p class="mt-2 text-xs text-gray-600">Brief description of the image content</p>
+              class="w-full px-4 py-3 bg-bitcoin-dark/40 border border-bitcoin-gray/20 rounded-xl focus:ring-2 focus:ring-bitcoin-orange focus:border-bitcoin-orange placeholder:text-bitcoin-gray/50 text-bitcoin-gray">
+            <p class="mt-2 text-xs text-bitcoin-gray/70">Brief description of the image content</p>
           </div>
 
           <!-- Tags -->
           <div>
-            <label class="block text-sm font-medium text-gray-900 mb-2">
+            <label class="block text-sm font-medium text-bitcoin-gray mb-2">
               Tags *
             </label>
             <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
               @for (tag of availableTags; track tag) {
-                <label class="flex items-center gap-2 p-3 border border-gray-200 rounded-xl hover:bg-gray-50 cursor-pointer transition-colors">
+                <label class="flex items-center gap-2 p-3 bg-bitcoin-dark/40 border border-bitcoin-gray/20 rounded-xl hover:bg-bitcoin-dark/60 hover:border-bitcoin-orange/30 cursor-pointer transition-all">
                   <input
                     type="checkbox"
                     [checked]="isTagSelected(tag, false)"
                     (change)="toggleTag(tag, $any($event.target).checked, false)"
-                    class="rounded border-gray-300 text-ts-accent focus:ring-ts-accent">
-                  <span class="text-sm text-gray-900">{{ 'gallery.tags.' + tag | translate }}</span>
+                    class="rounded border-bitcoin-gray/30 text-bitcoin-orange focus:ring-bitcoin-orange bg-bitcoin-dark/60">
+                  <span class="text-sm text-bitcoin-gray">{{ 'gallery.tags.' + tag | translate }}</span>
                 </label>
               }
             </div>
-            <p class="mt-2 text-xs text-gray-600">Select at least one tag to categorize the media</p>
+            <p class="mt-2 text-xs text-bitcoin-gray/70">Select at least one tag to categorize the media</p>
           </div>
 
           <!-- Related Products -->
           <div>
-            <label class="block text-sm font-medium text-gray-900 mb-2">
+            <label class="block text-sm font-medium text-bitcoin-gray mb-2">
               Related Products
             </label>
-            <div class="max-h-64 overflow-y-auto border border-gray-200 rounded-xl bg-gray-50 p-3 space-y-2">
+            <div class="max-h-64 overflow-y-auto border border-bitcoin-gray/20 rounded-xl bg-bitcoin-dark/40 p-3 space-y-2">
               @if (products.length === 0) {
-                <p class="text-xs text-gray-600">No products available</p>
+                <p class="text-xs text-bitcoin-gray/70">No products available</p>
               } @else {
                 @for (product of products; track product.id) {
-                  <label class="flex items-center gap-2 p-2 hover:bg-white rounded-lg cursor-pointer transition-colors">
+                  <label class="flex items-center gap-2 p-2 hover:bg-bitcoin-dark/60 rounded-lg cursor-pointer transition-colors">
                     <input
                       type="checkbox"
                       [checked]="isProductSelected(product.id || '', false)"
                       (change)="toggleRelatedProduct(product.id || '', $any($event.target).checked, false)"
-                      class="rounded border-gray-300 text-ts-accent focus:ring-ts-accent">
-                    <span class="text-sm truncate text-gray-900">{{ product.name }}</span>
+                      class="rounded border-bitcoin-gray/30 text-bitcoin-orange focus:ring-bitcoin-orange bg-bitcoin-dark/60">
+                    <span class="text-sm truncate text-bitcoin-gray">{{ product.name }}</span>
                   </label>
                 }
               }
             </div>
-            <p class="mt-2 text-xs text-gray-600">Link this media to specific products (optional)</p>
+            <p class="mt-2 text-xs text-bitcoin-gray/70">Link this media to specific products (optional)</p>
           </div>
 
           <!-- Upload Progress -->
           @if (isUploading && uploadProgress > 0) {
             <div class="space-y-2">
               <div class="flex items-center justify-between text-sm">
-                <span class="text-gray-700 font-medium">Uploading...</span>
-                <span class="text-ts-accent font-semibold">{{ uploadProgress }}%</span>
+                <span class="text-bitcoin-gray font-medium">Uploading...</span>
+                <span class="text-bitcoin-orange font-semibold">{{ uploadProgress }}%</span>
               </div>
-              <div class="w-full bg-gray-200 rounded-full h-2.5 overflow-hidden">
+              <div class="w-full bg-bitcoin-dark/60 rounded-full h-2.5 overflow-hidden border border-bitcoin-gray/20">
                 <div 
-                  class="bg-ts-accent h-2.5 rounded-full transition-all duration-300 ease-out"
+                  class="bg-gradient-to-r from-bitcoin-orange to-bitcoin-gold h-2.5 rounded-full transition-all duration-300 ease-out"
                   [style.width.%]="uploadProgress">
                 </div>
               </div>
@@ -326,23 +333,23 @@
             <button
               type="submit"
               [disabled]="isSaving"
-              class="flex-1 py-3 px-6 bg-ts-accent text-white rounded-xl font-semibold hover:bg-ts-accent/90 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2">
+              class="flex-1 py-3 px-6 bg-bitcoin-orange/30 hover:bg-bitcoin-orange/40 text-bitcoin-orange border border-bitcoin-orange/30 rounded-xl font-semibold transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2">
               @if (isSaving) {
-                <svg class="animate-spin h-5 w-5 text-white" fill="none" viewBox="0 0 24 24">
+                <svg class="animate-spin h-5 w-5 text-bitcoin-orange" fill="none" viewBox="0 0 24 24">
                   <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                   <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                 </svg>
-                <span class="text-white">Uploading...</span>
+                <span>Uploading...</span>
               } @else {
-                <span class="text-white">Upload Image</span>
+                <span>Upload Image</span>
               }
             </button>
             <button
               type="button"
               (click)="closeUploadModal()"
               [disabled]="isSaving"
-              class="flex-1 py-3 px-6 border-2 border-gray-300 text-gray-700 font-semibold rounded-xl hover:bg-gray-50 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed">
-              <span class="text-gray-700">Cancel</span>
+              class="flex-1 py-3 px-6 bg-bitcoin-dark/40 hover:bg-bitcoin-dark/60 border border-bitcoin-gray/20 text-bitcoin-gray font-semibold rounded-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed">
+              <span>Cancel</span>
             </button>
           </div>
         </form>
@@ -352,11 +359,11 @@
 
   <!-- Edit Modal -->
   @if (showEditModal && mediaToEdit) {
-    <div class="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50" (click)="closeEditModal()">
-      <div class="bg-white rounded-2xl shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto" (click)="$event.stopPropagation()">
-        <div class="p-6 border-b border-gray-200 flex items-center justify-between sticky top-0 bg-white">
-          <h2 class="text-2xl font-serif font-bold text-ts-bg">Edit Media</h2>
-          <button (click)="closeEditModal()" class="p-2 hover:bg-gray-100 rounded-lg transition-colors">
+    <div class="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4 z-50" (click)="closeEditModal()">
+      <div class="bg-bitcoin-dark/95 backdrop-blur-md border border-bitcoin-orange/20 rounded-2xl shadow-bitcoin-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto" (click)="$event.stopPropagation()">
+        <div class="p-6 border-b border-bitcoin-orange/20 flex items-center justify-between sticky top-0 bg-bitcoin-dark/95 backdrop-blur-md">
+          <h2 class="text-2xl font-serif font-bold bitcoin-gradient-text">Edit Media</h2>
+          <button (click)="closeEditModal()" class="p-2 hover:bg-bitcoin-dark/60 text-bitcoin-gray hover:text-bitcoin-orange rounded-lg transition-colors">
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
             </svg>

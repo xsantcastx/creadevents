@@ -10,11 +10,12 @@ import { MediaService } from '../../../services/media.service';
 import { ProductsService } from '../../../services/products.service';
 import { Product } from '../../../models/product';
 import { Media, MediaTag, GALLERY_TAGS, MediaCreateInput } from '../../../models/media';
+import { AdminQuickActionsComponent } from '../../../shared/components/admin-quick-actions/admin-quick-actions.component';
 
 @Component({
   selector: 'app-gallery-admin',
   standalone: true,
-  imports: [CommonModule, RouterLink, ReactiveFormsModule, FormsModule, TranslateModule],
+  imports: [CommonModule, RouterLink, ReactiveFormsModule, FormsModule, TranslateModule, AdminQuickActionsComponent],
   templateUrl: './gallery-admin.page.html',
   styleUrl: './gallery-admin.page.scss'
 })

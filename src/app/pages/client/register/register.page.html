@@ -1,26 +1,26 @@
-<div class="min-h-screen bg-gradient-to-b from-ts-paper to-white py-16 px-4">
+<div class="min-h-screen bg-gradient-to-b from-[#0a0b0d] to-[#13151a] py-16 px-4">
   <div class="max-w-2xl mx-auto">
     
     <!-- Header -->
     <div class="text-center mb-8">
-      <h1 class="font-serif text-4xl lg:text-5xl text-ts-bg mb-4">
+      <h1 class="font-serif text-4xl lg:text-5xl bitcoin-gradient-text mb-4">
         {{ 'client.register' | translate }}
       </h1>
-      <p class="text-gray-600">
+      <p class="text-bitcoin-gray">
         {{ 'client.register_subtitle' | translate }}
       </p>
     </div>
 
     <!-- Registration Form Card -->
-    <div class="bg-white rounded-2xl shadow-lg p-8 border border-gray-100">
+    <div class="bg-bitcoin-dark/40 backdrop-blur-md border border-bitcoin-orange/20 rounded-2xl shadow-bitcoin-lg p-8">
       
       <!-- Error Message -->
       @if (errorMessage) {
-        <div class="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl flex items-start gap-3">
-          <svg class="w-5 h-5 text-red-600 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <div class="mb-6 p-4 bg-red-500/20 border border-red-500/30 rounded-xl flex items-start gap-3">
+          <svg class="w-5 h-5 text-red-400 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
           </svg>
-          <p class="text-sm text-red-700">{{ errorMessage | translate }}</p>
+          <p class="text-sm text-red-300">{{ errorMessage | translate }}</p>
         </div>
       }
 
@@ -31,18 +31,18 @@
         <div class="grid md:grid-cols-2 gap-6">
           <!-- Name Field -->
           <div>
-            <label for="displayName" class="block text-sm font-medium text-gray-700 mb-2">
+            <label for="displayName" class="block text-sm font-medium text-bitcoin-gray mb-2">
               {{ 'client.name' | translate }} *
             </label>
             <input
               type="text"
               id="displayName"
               formControlName="displayName"
-              class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-ts-accent focus:border-transparent transition-all"
+              class="w-full px-4 py-3 bg-bitcoin-dark/60 border border-bitcoin-gray/20 text-bitcoin-gray placeholder-bitcoin-gray/50 rounded-xl focus:ring-2 focus:ring-bitcoin-orange focus:border-bitcoin-orange transition-all"
               [class.border-red-500]="displayName?.invalid && displayName?.touched"
               placeholder="Juan Pérez">
             @if (displayName?.invalid && displayName?.touched) {
-              <p class="mt-2 text-sm text-red-600">
+              <p class="mt-2 text-sm text-red-400">
                 @if (displayName?.errors?.['required']) {
                   {{ 'client.errors.name_required' | translate }}
                 }
@@ -55,14 +55,14 @@
 
           <!-- Company Field -->
           <div>
-            <label for="company" class="block text-sm font-medium text-gray-700 mb-2">
+            <label for="company" class="block text-sm font-medium text-bitcoin-gray mb-2">
               {{ 'client.company' | translate }}
             </label>
             <input
               type="text"
               id="company"
               formControlName="company"
-              class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-ts-accent focus:border-transparent transition-all"
+              class="w-full px-4 py-3 bg-bitcoin-dark/60 border border-bitcoin-gray/20 text-bitcoin-gray placeholder-bitcoin-gray/50 rounded-xl focus:ring-2 focus:ring-bitcoin-orange focus:border-bitcoin-orange transition-all"
               placeholder="Mi Empresa S.L.">
           </div>
         </div>
@@ -71,18 +71,18 @@
         <div class="grid md:grid-cols-2 gap-6">
           <!-- Email Field -->
           <div>
-            <label for="email" class="block text-sm font-medium text-gray-700 mb-2">
+            <label for="email" class="block text-sm font-medium text-bitcoin-gray mb-2">
               {{ 'client.email' | translate }} *
             </label>
             <input
               type="email"
               id="email"
               formControlName="email"
-              class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-ts-accent focus:border-transparent transition-all"
+              class="w-full px-4 py-3 bg-bitcoin-dark/60 border border-bitcoin-gray/20 text-bitcoin-gray placeholder-bitcoin-gray/50 rounded-xl focus:ring-2 focus:ring-bitcoin-orange focus:border-bitcoin-orange transition-all"
               [class.border-red-500]="email?.invalid && email?.touched"
               placeholder="ejemplo@empresa.com">
             @if (email?.invalid && email?.touched) {
-              <p class="mt-2 text-sm text-red-600">
+              <p class="mt-2 text-sm text-red-400">
                 @if (email?.errors?.['required']) {
                   {{ 'client.errors.email_required' | translate }}
                 }
@@ -95,14 +95,14 @@
 
           <!-- Phone Field -->
           <div>
-            <label for="phone" class="block text-sm font-medium text-gray-700 mb-2">
+            <label for="phone" class="block text-sm font-medium text-bitcoin-gray mb-2">
               {{ 'client.phone' | translate }}
             </label>
             <input
               type="tel"
               id="phone"
               formControlName="phone"
-              class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-ts-accent focus:border-transparent transition-all"
+              class="w-full px-4 py-3 bg-bitcoin-dark/60 border border-bitcoin-gray/20 text-bitcoin-gray placeholder-bitcoin-gray/50 rounded-xl focus:ring-2 focus:ring-bitcoin-orange focus:border-bitcoin-orange transition-all"
               placeholder="+34 600 000 000">
           </div>
         </div>
@@ -111,7 +111,7 @@
         <div class="grid md:grid-cols-2 gap-6">
           <!-- Password Field -->
           <div>
-            <label for="password" class="block text-sm font-medium text-gray-700 mb-2">
+            <label for="password" class="block text-sm font-medium text-bitcoin-gray mb-2">
               {{ 'client.password' | translate }} *
             </label>
             <div class="relative">
@@ -120,13 +120,13 @@
                 id="password"
                 formControlName="password"
                 autocomplete="new-password"
-                class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-ts-accent focus:border-transparent transition-all pr-12"
+                class="w-full px-4 py-3 bg-bitcoin-dark/60 border border-bitcoin-gray/20 text-bitcoin-gray placeholder-bitcoin-gray/50 rounded-xl focus:ring-2 focus:ring-bitcoin-orange focus:border-bitcoin-orange transition-all pr-12"
                 [class.border-red-500]="password?.invalid && password?.touched"
                 placeholder="••••••••">
               <button
                 type="button"
                 (click)="togglePasswordVisibility()"
-                class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 transition-colors">
+                class="absolute right-3 top-1/2 -translate-y-1/2 text-bitcoin-gray/70 hover:text-bitcoin-orange transition-colors">
                 @if (showPassword) {
                   <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"></path>
@@ -140,7 +140,7 @@
               </button>
             </div>
             @if (password?.invalid && password?.touched) {
-              <p class="mt-2 text-sm text-red-600">
+              <p class="mt-2 text-sm text-red-400">
                 @if (password?.errors?.['required']) {
                   {{ 'client.errors.password_required' | translate }}
                 }
@@ -153,7 +153,7 @@
 
           <!-- Confirm Password Field -->
           <div>
-            <label for="confirmPassword" class="block text-sm font-medium text-gray-700 mb-2">
+            <label for="confirmPassword" class="block text-sm font-medium text-bitcoin-gray mb-2">
               {{ 'client.confirm_password' | translate }} *
             </label>
             <div class="relative">
@@ -161,13 +161,13 @@
                 [type]="showConfirmPassword ? 'text' : 'password'"
                 id="confirmPassword"
                 formControlName="confirmPassword"
-                class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-ts-accent focus:border-transparent transition-all pr-12"
+                class="w-full px-4 py-3 bg-bitcoin-dark/60 border border-bitcoin-gray/20 text-bitcoin-gray placeholder-bitcoin-gray/50 rounded-xl focus:ring-2 focus:ring-bitcoin-orange focus:border-bitcoin-orange transition-all pr-12"
                 [class.border-red-500]="(confirmPassword?.invalid && confirmPassword?.touched) || (registerForm.errors?.['passwordMismatch'] && confirmPassword?.touched)"
                 placeholder="••••••••">
               <button
                 type="button"
                 (click)="toggleConfirmPasswordVisibility()"
-                class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 transition-colors">
+                class="absolute right-3 top-1/2 -translate-y-1/2 text-bitcoin-gray/70 hover:text-bitcoin-orange transition-colors">
                 @if (showConfirmPassword) {
                   <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"></path>
@@ -181,12 +181,12 @@
               </button>
             </div>
             @if (confirmPassword?.invalid && confirmPassword?.touched) {
-              <p class="mt-2 text-sm text-red-600">
+              <p class="mt-2 text-sm text-red-400">
                 {{ 'client.errors.password_required' | translate }}
               </p>
             }
             @if (registerForm.errors?.['passwordMismatch'] && confirmPassword?.touched) {
-              <p class="mt-2 text-sm text-red-600">
+              <p class="mt-2 text-sm text-red-400">
                 {{ 'client.errors.passwords_dont_match' | translate }}
               </p>
             }
@@ -197,7 +197,7 @@
         <button
           type="submit"
           [disabled]="isLoading"
-          class="w-full py-3 px-6 bg-ts-accent text-white rounded-xl font-medium hover:bg-ts-accent/90 transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none flex items-center justify-center gap-2">
+          class="w-full py-3 px-6 bg-bitcoin-orange/30 hover:bg-bitcoin-orange/40 text-white rounded-xl font-medium border border-bitcoin-orange/30 hover:border-bitcoin-orange/50 shadow-bitcoin transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2">
           @if (isLoading) {
             <svg class="animate-spin h-5 w-5" fill="none" viewBox="0 0 24 24">
               <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
@@ -212,16 +212,16 @@
 
       <!-- Divider -->
       <div class="my-6 flex items-center gap-4">
-        <div class="flex-1 h-px bg-gray-200"></div>
-        <span class="text-sm text-gray-500">{{ 'client.or' | translate }}</span>
-        <div class="flex-1 h-px bg-gray-200"></div>
+        <div class="flex-1 h-px bg-bitcoin-orange/20"></div>
+        <span class="text-sm text-bitcoin-gray">{{ 'client.or' | translate }}</span>
+        <div class="flex-1 h-px bg-bitcoin-orange/20"></div>
       </div>
 
       <!-- Login Link -->
       <div class="text-center">
-        <p class="text-gray-600">
+        <p class="text-bitcoin-gray">
           {{ 'client.already_have_account' | translate }}
-          <a routerLink="/client/login" class="text-ts-accent hover:underline font-medium">
+          <a routerLink="/client/login" class="text-bitcoin-orange hover:text-bitcoin-gold font-medium transition-colors">
             {{ 'client.login' | translate }}
           </a>
         </p>
@@ -230,7 +230,7 @@
 
     <!-- Back to Home -->
     <div class="text-center mt-6">
-      <a routerLink="/" class="text-gray-600 hover:text-ts-accent transition-colors inline-flex items-center gap-2">
+      <a routerLink="/" class="text-bitcoin-gray/70 hover:text-bitcoin-orange transition-colors inline-flex items-center gap-2">
         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
         </svg>

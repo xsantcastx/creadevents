@@ -1,0 +1,261 @@
+{
+  "home": {
+    "hero": {
+      "title": "Mina Tu Futuro",
+      "subtitle": "Soluciones de Minería Bitcoin de Nivel Empresarial",
+      "description": "Únete a la revolución. Maximiza tus ganancias con mineros ASIC de última generación diseñados para el máximo rendimiento y eficiencia incomparable.",
+      "cta_primary": "Explorar Mineros",
+      "cta_secondary": "Solicitar Cotización"
+    },
+    "featured": {
+      "title": "Hardware de Minería Destacado",
+      "subtitle": "Descubre nuestras últimas soluciones de minería Bitcoin",
+      "latest": "Productos Recientes",
+      "flagship": "Mineros Insignia",
+      "professional": "Serie Profesional",
+      "enterprise": "Soluciones Empresariales",
+      "view_all": "Ver Todos"
+    },
+    "why_choose": {
+      "title": "¿Por Qué Elegir TheLuxMining?",
+      "subtitle": "Tu Éxito Es Nuestra Misión",
+      "hashrate": {
+        "title": "Tasa de Hash Máxima",
+        "description": "Rendimiento líder en la industria con tecnología ASIC de vanguardia, maximizando tu rentabilidad en minería Bitcoin."
+      },
+      "efficiency": {
+        "title": "Eficiencia Superior",
+        "description": "Consumo de energía optimizado con sistemas de enfriamiento avanzados, entregando la mejor relación J/TH del mercado."
+      },
+      "roi": {
+        "title": "ROI Máximo",
+        "description": "Confiabilidad de nivel empresarial y garantías de tiempo de actividad, asegurando retornos consistentes en tu inversión minera."
+      }
+    },
+    "cta": {
+      "gallery": {
+        "title": "Explora Configuraciones de Minería",
+        "button": "Ver Galería"
+      },
+      "contact": {
+        "title": "¿Listo para Comenzar a Minar?",
+        "button": "Obtener Cotización Personalizada"
+      }
+    },
+    "stats": {
+      "miners_deployed": "Mineros Desplegados Mundialmente",
+      "customer_satisfaction": "Satisfacción del Cliente",
+      "uptime_guarantee": "Garantía de Tiempo Activo",
+      "years_experience": "Años de Excelencia"
+    }
+  },
+  "nav": {
+    "home": "Inicio",
+    "products": "Productos",
+    "gallery": "Galería",
+    "technical": "Especificaciones Técnicas",
+    "contact": "Contacto",
+    "login": "Iniciar Sesión",
+    "cart": "Carrito"
+  },
+  "footer": {
+    "rights": "Todos los derechos reservados",
+    "privacy": "Política de Privacidad",
+    "terms": "Términos y Condiciones",
+    "description": "Soluciones premium de hardware de minería Bitcoin que ofrecen rendimiento, eficiencia y confiabilidad de nivel empresarial para operaciones mineras profesionales.",
+    "quick_links": "Enlaces Rápidos",
+    "products_title": "Productos",
+    "contact_info": "Contacto",
+    "phone": "Teléfono",
+    "email": "Correo",
+    "address": "Dirección",
+    "business_hours": "Horario de Atención"
+  },
+  "products": {
+    "title": "Hardware de Minería",
+    "subtitle": "Equipo Profesional",
+    "specs": "Especificaciones",
+    "hashrate": "Tasa de Hash",
+    "power": "Consumo de Energía",
+    "efficiency": "Eficiencia",
+    "add_to_cart": "Agregar al Carrito",
+    "request_quote": "Solicitar Cotización",
+    "filterBy": "Filtrar por",
+    "thickness": "Grosor"
+  },
+  "common": {
+    "loading": "Cargando...",
+    "search": "Buscar..."
+  },
+  "client": {
+    "logout": "Cerrar Sesión",
+    "pending": "Pendiente",
+    "name": "Nombre",
+    "email": "Correo",
+    "phone": "Teléfono"
+  },
+  "gallery": {
+    "tags": {
+      "kitchens": "Cocinas",
+      "bathrooms": "Baños",
+      "modern": "Moderno",
+      "classic": "Clásico",
+      "luxury": "Lujo"
+    }
+  },
+  "admin": {
+    "title": "Panel de Administración",
+    "welcome": "Bienvenido",
+    "dashboard": {
+      "title": "Panel de Control"
+    },
+    "products": {
+      "title": "Productos"
+    },
+    "orders": {
+      "title": "Pedidos"
+    },
+    "gallery": {
+      "title": "Galería"
+    },
+    "users": {
+      "title": "Usuarios"
+    },
+    "total_products": "Total de Productos",
+    "total_orders": "Total de Pedidos",
+    "gallery_images": "Imágenes de Galería",
+    "total_users": "Total de Usuarios",
+    "quick_actions": "Acciones Rápidas",
+    "add_product": "Agregar Producto",
+    "upload_image": "Subir Imagen",
+    "manage_products": "Gestionar Productos",
+    "manage_orders": "Gestionar Pedidos",
+    "manage_gallery": "Gestionar Galería",
+    "manage_users": "Gestionar Usuarios",
+    "recent_activity": "Actividad Reciente",
+    "no_recent_activity": "Sin actividad reciente",
+    "seed_missing": "No se encontraron productos",
+    "seed_missing_hint": "Parece que aún no has inicializado tu base de datos",
+    "run_seed": "Ejecutar Script de Inicialización",
+    "product_image": "Imagen",
+    "product_name": "Nombre",
+    "product_category": "Categoría",
+    "product_thickness": "Grosor",
+    "product_price": "Precio",
+    "actions": "Acciones",
+    "no_products": "No se encontraron productos",
+    "status_draft": "Borrador",
+    "status_published": "Publicado",
+    "status_archived": "Archivado",
+    "edit": "Editar",
+    "delete": "Eliminar",
+    "edit_product": "Editar Producto",
+    "product_wizard_hint": "Completa los detalles del producto a continuación",
+    "catalog_title": "Seleccionar del Catálogo",
+    "catalog_hint": "Busca y selecciona un material existente de nuestro catálogo",
+    "catalog_search_placeholder": "Buscar en catálogo...",
+    "catalog_empty": "No se encontraron elementos en el catálogo",
+    "manual_selection": "Selección Manual",
+    "manual_selection_hint": "O selecciona material y categoría manualmente",
+    "product_material": "Material",
+    "select_material": "Seleccionar material...",
+    "select_category": "Seleccionar categoría...",
+    "size": "Tamaño",
+    "refresh_autofill": "Actualizar Auto-completado",
+    "auto_fill_hint": "El auto-completado rellenará los campos según tu selección",
+    "template_warnings": "Advertencias de Plantilla",
+    "template_warning_hint": "Revisa estas advertencias antes de publicar",
+    "product_description": "Descripción",
+    "unlock": "Desbloquear",
+    "lock": "Bloquear",
+    "description_locked": "La descripción está bloqueada y no se auto-completará",
+    "seo_settings": "Configuración SEO",
+    "seo_title": "Título SEO",
+    "seo_description": "Descripción SEO",
+    "finish": "Acabado",
+    "usage": "Uso",
+    "price": "Precio",
+    "stock": "Existencias",
+    "cover_image": "Imagen de Portada",
+    "cover_required_notice": "Se requiere una imagen de portada para publicar",
+    "cover_required": "Imagen de Portada Requerida",
+    "cover_placeholder": "Subir imagen de portada",
+    "cancel": "Cancelar",
+    "back": "Atrás",
+    "next": "Siguiente",
+    "save_draft": "Guardar como Borrador",
+    "publish": "Publicar",
+    "delete_product": "Eliminar Producto",
+    "confirm_delete": "¿Estás seguro de que quieres eliminar este elemento?",
+    "save": "Guardar",
+    "no_images": "No se encontraron imágenes",
+    "upload_first_image": "Sube tu primera imagen",
+    "image_file": "Archivo de Imagen",
+    "delete_image": "Eliminar Imagen",
+    "search_orders": "Buscar pedidos...",
+    "all_orders": "Todos los Pedidos",
+    "pending": "Pendiente",
+    "processing": "Procesando",
+    "shipped": "Enviado",
+    "delivered": "Entregado",
+    "cancelled": "Cancelado",
+    "no_orders": "No se encontraron pedidos",
+    "order_number": "Pedido #",
+    "date": "Fecha",
+    "customer": "Cliente",
+    "status": "Estado",
+    "total": "Total",
+    "view_detail": "Ver Detalles",
+    "update_status": "Actualizar Estado",
+    "customer_info": "Información del Cliente",
+    "shipping_info": "Información de Envío",
+    "tracking": "Seguimiento",
+    "order_items": "Artículos del Pedido",
+    "notes": "Notas",
+    "new_status": "Nuevo Estado",
+    "users_description": "Gestionar cuentas de usuario y permisos",
+    "search_users": "Buscar Usuarios",
+    "search_users_placeholder": "Buscar por nombre o correo...",
+    "filter_by_role": "Filtrar por Rol",
+    "all_roles": "Todos los Roles",
+    "role_admin": "Administrador",
+    "role_client": "Cliente",
+    "user": "Usuario",
+    "company": "Empresa",
+    "role": "Rol",
+    "created_at": "Creado",
+    "loading_users": "Cargando usuarios...",
+    "disabled": "Deshabilitado",
+    "active": "Activo",
+    "change_role": "Cambiar Rol",
+    "enable_user": "Habilitar Usuario",
+    "disable_user": "Deshabilitar Usuario",
+    "no_users_found": "No se encontraron usuarios",
+    "change_role_for": "Cambiar rol para",
+    "new_role": "Nuevo Rol",
+    "confirm": "Confirmar",
+    "catalog": {
+      "title": "Gestión de Catálogo",
+      "subtitle": "Gestionar materiales, categorías y atributos de productos",
+      "categories": "Categorías",
+      "materials": "Materiales",
+      "families": "Familias",
+      "sizes": "Tamaños",
+      "new_category": "Nueva Categoría",
+      "no_categories": "No se encontraron categorías",
+      "inactive": "Inactivo",
+      "slug": "Slug",
+      "order": "Orden",
+      "edit_category": "Editar Categoría",
+      "saving": "Guardando...",
+      "edit_material": "Editar Material",
+      "new_material": "Nuevo Material",
+      "edit_size": "Editar Tamaño",
+      "new_size": "Nuevo Tamaño",
+      "confirm_delete_title": "Confirmar Eliminación",
+      "confirm_delete_message": "¿Estás seguro de que quieres eliminar",
+      "confirm_delete_warning": "Esta acción no se puede deshacer.",
+      "deleting": "Eliminando..."
+    }
+  }
+}

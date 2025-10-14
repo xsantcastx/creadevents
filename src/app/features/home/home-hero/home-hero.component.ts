@@ -8,7 +8,7 @@ import { TranslateModule } from '@ngx-translate/core';
   standalone: true,
   imports: [CommonModule, RouterLink, TranslateModule],
   template: `
-    <section class="relative h-[70vh] min-h-[500px] overflow-hidden">
+    <section class="relative h-[50vh] min-h-[400px] max-h-[600px] overflow-hidden">
       <!-- Animated background images -->
       <div class="absolute inset-0">
         @for (image of heroImages; track image.src; let i = $index) {
@@ -21,35 +21,40 @@ import { TranslateModule } from '@ngx-translate/core';
               <img 
                 [src]="image.src" 
                 [alt]="image.alt"
-                class="w-full h-full object-cover"
+                class="w-full h-full object-cover image-rendering-crisp"
                 loading="eager"
+                fetchpriority="high"
+                decoding="async"
               />
             </div>
-            <div class="absolute inset-0 bg-gradient-to-b from-black/40 via-black/30 to-black/60"></div>
+            <div class="absolute inset-0 bg-gradient-to-b from-black/60 via-black/50 to-black/70"></div>
           </div>
         }
       </div>
       
-      <!-- Hero content -->
-      <div class="relative h-full flex flex-col items-start justify-end max-w-7xl mx-auto px-6 pb-16 z-10">
-        <h1 class="font-serif text-5xl md:text-6xl lg:text-7xl tracking-tight text-white mb-4 animate-fade-in-up">
-          {{ 'hero.title' | translate }}
-        </h1>
-        <p class="mt-4 max-w-xl text-lg text-white/90 leading-relaxed animate-fade-in-up animation-delay-200">
-          {{ 'hero.subtitle' | translate }}
+      <!-- Hero content - Centered and compact -->
+      <div class="relative h-full flex flex-col items-center justify-center max-w-7xl mx-auto px-6 z-10 text-center">
+        <div class="flex items-center gap-4 mb-6 animate-fade-in-up">
+          <img src="/assets/Logo.jpg" alt="TheLuxMining" class="h-16 w-16 md:h-20 md:w-20 rounded-xl shadow-bitcoin"/>
+          <h1 class="font-serif text-4xl md:text-5xl lg:text-6xl tracking-tight bitcoin-gradient-text">
+            TheLuxMining
+          </h1>
+        </div>
+        <p class="max-w-2xl text-lg md:text-xl text-white/90 leading-relaxed mb-8 animate-fade-in-up animation-delay-200">
+          {{ 'home.hero.subtitle' | translate }}
         </p>
-        <div class="mt-8 flex flex-col sm:flex-row gap-4 animate-fade-in-up animation-delay-400">
+        <div class="flex flex-col sm:flex-row gap-4 animate-fade-in-up animation-delay-400">
           <a 
             routerLink="/productos" 
-            class="px-8 py-4 rounded-full bg-ts-accent text-black font-semibold hover:bg-ts-accent/90 transition-all hover:scale-105 text-center shadow-lg"
+            class="px-8 py-3.5 rounded-full bg-bitcoin-orange text-bitcoin-dark font-semibold hover:bg-bitcoin-gold transition-all hover:scale-105 text-center shadow-bitcoin"
           >
-            {{ 'hero.cta' | translate }}
+            {{ 'home.hero.cta_primary' | translate }}
           </a>
           <a 
-            routerLink="/galeria" 
-            class="px-8 py-4 rounded-full ring-2 ring-white/40 text-white hover:bg-white/10 transition-all hover:scale-105 text-center backdrop-blur-sm"
+            routerLink="/contacto" 
+            class="px-8 py-3.5 rounded-full ring-2 ring-bitcoin-gold/60 text-bitcoin-gold hover:bg-bitcoin-orange/10 transition-all hover:scale-105 text-center backdrop-blur-sm"
           >
-            {{ 'nav.gallery' | translate }}
+            {{ 'home.hero.cta_secondary' | translate }}
           </a>
         </div>
 
@@ -59,20 +64,13 @@ import { TranslateModule } from '@ngx-translate/core';
             <button
               (click)="setCurrentImage(i)"
               class="w-2 h-2 rounded-full transition-all"
-              [class.bg-white]="currentImageIndex === i"
+              [class.bg-bitcoin-orange]="currentImageIndex === i"
               [class.w-8]="currentImageIndex === i"
               [class.bg-white/40]="currentImageIndex !== i"
               [attr.aria-label]="'Image ' + (i + 1)"
             ></button>
           }
         </div>
-      </div>
-
-      <!-- Scroll indicator -->
-      <div class="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce">
-        <svg class="w-6 h-6 text-white/60" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
-        </svg>
       </div>
     </section>
   `,
@@ -113,16 +111,33 @@ import { TranslateModule } from '@ngx-translate/core';
     .animation-delay-400 {
       animation-delay: 0.4s;
     }
+
+    /* High-quality image rendering */
+    .image-rendering-crisp {
+      image-rendering: -webkit-optimize-contrast;
+      image-rendering: crisp-edges;
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+      transform: translateZ(0);
+      -webkit-transform: translateZ(0);
+      will-change: transform;
+    }
+
+    /* Prevent blur during animations */
+    img {
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
   `]
 })
 export class HomeHeroComponent implements OnInit, OnDestroy {
   private platformId = inject(PLATFORM_ID);
   
   heroImages = [
-    { src: 'assets/hero.jpg', alt: 'TopStone - Luxury Surfaces' },
-    { src: 'assets/hero2.jpg', alt: 'TopStone - Modern Design' },
-    { src: 'assets/Bathroom.jpeg', alt: 'TopStone - Bathroom Applications' },
-    { src: 'assets/Bathroom2.jpeg', alt: 'TopStone - Premium Quality' }
+    { src: 'assets/productos/BitMiners/Imagen de WhatsApp 2025-10-14 a las 14.39.54_0e43661e.jpg', alt: 'TheLuxMining - Bitcoin Mining Hardware' },
+    { src: 'assets/productos/BitMiners/Imagen de WhatsApp 2025-10-14 a las 14.39.54_f27c4bda.jpg', alt: 'TheLuxMining - Professional Mining Solutions' },
+    { src: 'assets/productos/BitMiners/Imagen de WhatsApp 2025-10-14 a las 14.39.55_3906c73d.jpg', alt: 'TheLuxMining - Enterprise Mining Rigs' },
+    { src: 'assets/productos/BitMiners/Imagen de WhatsApp 2025-10-14 a las 14.39.55_c2d9c2de.jpg', alt: 'TheLuxMining - High-Performance ASICs' }
   ];
 
   currentImageIndex = 0;

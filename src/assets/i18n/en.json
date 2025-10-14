@@ -1,0 +1,261 @@
+{
+  "home": {
+    "hero": {
+      "title": "Mine Your Future",
+      "subtitle": "Enterprise-Grade Bitcoin Mining Solutions",
+      "description": "Join the revolution. Maximize your profits with cutting-edge ASIC miners engineered for peak performance and unmatched efficiency.",
+      "cta_primary": "Explore Miners",
+      "cta_secondary": "Request Quote"
+    },
+    "featured": {
+      "title": "Featured Mining Hardware",
+      "subtitle": "Discover our latest Bitcoin mining solutions",
+      "latest": "Latest Products",
+      "flagship": "Flagship Miners",
+      "professional": "Professional Series",
+      "enterprise": "Enterprise Solutions",
+      "view_all": "View All"
+    },
+    "why_choose": {
+      "title": "Why Choose TheLuxMining?",
+      "subtitle": "Your Success Is Our Mission",
+      "hashrate": {
+        "title": "Peak Hash Rate",
+        "description": "Industry-leading hash rate performance with cutting-edge ASIC technology, maximizing your Bitcoin mining profitability."
+      },
+      "efficiency": {
+        "title": "Superior Efficiency",
+        "description": "Optimized power consumption with advanced cooling systems, delivering the best J/TH ratio in the market."
+      },
+      "roi": {
+        "title": "Maximum ROI",
+        "description": "Enterprise-grade reliability and uptime guarantees, ensuring consistent returns on your mining investment."
+      }
+    },
+    "cta": {
+      "gallery": {
+        "title": "Explore Mining Setups",
+        "button": "View Gallery"
+      },
+      "contact": {
+        "title": "Ready to Start Mining?",
+        "button": "Get Custom Quote"
+      }
+    },
+    "stats": {
+      "miners_deployed": "Miners Deployed Worldwide",
+      "customer_satisfaction": "Customer Satisfaction",
+      "uptime_guarantee": "Uptime Guarantee",
+      "years_experience": "Years of Excellence"
+    }
+  },
+  "nav": {
+    "home": "Home",
+    "products": "Products",
+    "gallery": "Gallery",
+    "technical": "Technical Specs",
+    "contact": "Contact",
+    "login": "Login",
+    "cart": "Cart"
+  },
+  "footer": {
+    "rights": "All rights reserved",
+    "privacy": "Privacy Policy",
+    "terms": "Terms & Conditions",
+    "description": "Premium Bitcoin mining hardware solutions delivering enterprise-grade performance, efficiency, and reliability for professional mining operations.",
+    "quick_links": "Quick Links",
+    "products_title": "Products",
+    "contact_info": "Contact",
+    "phone": "Phone",
+    "email": "Email",
+    "address": "Address",
+    "business_hours": "Business Hours"
+  },
+  "products": {
+    "title": "Mining Hardware",
+    "subtitle": "Professional Equipment",
+    "specs": "Specifications",
+    "hashrate": "Hash Rate",
+    "power": "Power Consumption",
+    "efficiency": "Efficiency",
+    "add_to_cart": "Add to Cart",
+    "request_quote": "Request Quote",
+    "filterBy": "Filter by",
+    "thickness": "Thickness"
+  },
+  "common": {
+    "loading": "Loading...",
+    "search": "Search..."
+  },
+  "client": {
+    "logout": "Logout",
+    "pending": "Pending",
+    "name": "Name",
+    "email": "Email",
+    "phone": "Phone"
+  },
+  "gallery": {
+    "tags": {
+      "kitchens": "Kitchens",
+      "bathrooms": "Bathrooms",
+      "modern": "Modern",
+      "classic": "Classic",
+      "luxury": "Luxury"
+    }
+  },
+  "admin": {
+    "title": "Admin Panel",
+    "welcome": "Welcome",
+    "dashboard": {
+      "title": "Dashboard"
+    },
+    "products": {
+      "title": "Products"
+    },
+    "orders": {
+      "title": "Orders"
+    },
+    "gallery": {
+      "title": "Gallery"
+    },
+    "users": {
+      "title": "Users"
+    },
+    "total_products": "Total Products",
+    "total_orders": "Total Orders",
+    "gallery_images": "Gallery Images",
+    "total_users": "Total Users",
+    "quick_actions": "Quick Actions",
+    "add_product": "Add Product",
+    "upload_image": "Upload Image",
+    "manage_products": "Manage Products",
+    "manage_orders": "Manage Orders",
+    "manage_gallery": "Manage Gallery",
+    "manage_users": "Manage Users",
+    "recent_activity": "Recent Activity",
+    "no_recent_activity": "No recent activity",
+    "seed_missing": "No products found",
+    "seed_missing_hint": "It looks like you haven't seeded your database yet",
+    "run_seed": "Run Seed Script",
+    "product_image": "Image",
+    "product_name": "Name",
+    "product_category": "Category",
+    "product_thickness": "Thickness",
+    "product_price": "Price",
+    "actions": "Actions",
+    "no_products": "No products found",
+    "status_draft": "Draft",
+    "status_published": "Published",
+    "status_archived": "Archived",
+    "edit": "Edit",
+    "delete": "Delete",
+    "edit_product": "Edit Product",
+    "product_wizard_hint": "Fill in the product details below",
+    "catalog_title": "Select from Catalog",
+    "catalog_hint": "Search and select an existing material from our catalog",
+    "catalog_search_placeholder": "Search catalog...",
+    "catalog_empty": "No items found in catalog",
+    "manual_selection": "Manual Selection",
+    "manual_selection_hint": "Or select material and category manually",
+    "product_material": "Material",
+    "select_material": "Select material...",
+    "select_category": "Select category...",
+    "size": "Size",
+    "refresh_autofill": "Refresh Auto-fill",
+    "auto_fill_hint": "Auto-fill will populate fields based on your selection",
+    "template_warnings": "Template Warnings",
+    "template_warning_hint": "Review these warnings before publishing",
+    "product_description": "Description",
+    "unlock": "Unlock",
+    "lock": "Lock",
+    "description_locked": "Description is locked and will not be auto-filled",
+    "seo_settings": "SEO Settings",
+    "seo_title": "SEO Title",
+    "seo_description": "SEO Description",
+    "finish": "Finish",
+    "usage": "Usage",
+    "price": "Price",
+    "stock": "Stock",
+    "cover_image": "Cover Image",
+    "cover_required_notice": "A cover image is required to publish",
+    "cover_required": "Cover Image Required",
+    "cover_placeholder": "Upload a cover image",
+    "cancel": "Cancel",
+    "back": "Back",
+    "next": "Next",
+    "save_draft": "Save as Draft",
+    "publish": "Publish",
+    "delete_product": "Delete Product",
+    "confirm_delete": "Are you sure you want to delete this item?",
+    "save": "Save",
+    "no_images": "No images found",
+    "upload_first_image": "Upload your first image",
+    "image_file": "Image File",
+    "delete_image": "Delete Image",
+    "search_orders": "Search orders...",
+    "all_orders": "All Orders",
+    "pending": "Pending",
+    "processing": "Processing",
+    "shipped": "Shipped",
+    "delivered": "Delivered",
+    "cancelled": "Cancelled",
+    "no_orders": "No orders found",
+    "order_number": "Order #",
+    "date": "Date",
+    "customer": "Customer",
+    "status": "Status",
+    "total": "Total",
+    "view_detail": "View Details",
+    "update_status": "Update Status",
+    "customer_info": "Customer Information",
+    "shipping_info": "Shipping Information",
+    "tracking": "Tracking",
+    "order_items": "Order Items",
+    "notes": "Notes",
+    "new_status": "New Status",
+    "users_description": "Manage user accounts and permissions",
+    "search_users": "Search Users",
+    "search_users_placeholder": "Search by name or email...",
+    "filter_by_role": "Filter by Role",
+    "all_roles": "All Roles",
+    "role_admin": "Administrator",
+    "role_client": "Client",
+    "user": "User",
+    "company": "Company",
+    "role": "Role",
+    "created_at": "Created",
+    "loading_users": "Loading users...",
+    "disabled": "Disabled",
+    "active": "Active",
+    "change_role": "Change Role",
+    "enable_user": "Enable User",
+    "disable_user": "Disable User",
+    "no_users_found": "No users found",
+    "change_role_for": "Change role for",
+    "new_role": "New Role",
+    "confirm": "Confirm",
+    "catalog": {
+      "title": "Catalog Management",
+      "subtitle": "Manage materials, categories, and product attributes",
+      "categories": "Categories",
+      "materials": "Materials",
+      "families": "Families",
+      "sizes": "Sizes",
+      "new_category": "New Category",
+      "no_categories": "No categories found",
+      "inactive": "Inactive",
+      "slug": "Slug",
+      "order": "Order",
+      "edit_category": "Edit Category",
+      "saving": "Saving...",
+      "edit_material": "Edit Material",
+      "new_material": "New Material",
+      "edit_size": "Edit Size",
+      "new_size": "New Size",
+      "confirm_delete_title": "Confirm Delete",
+      "confirm_delete_message": "Are you sure you want to delete",
+      "confirm_delete_warning": "This action cannot be undone.",
+      "deleting": "Deleting..."
+    }
+  }
+}

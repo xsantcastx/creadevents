@@ -1,12 +1,12 @@
 <!-- Productos Overview Page -->
-<section class="bg-ts-paper min-h-screen">
+<section class="bg-gradient-to-b from-[#0a0b0d] to-[#13151a] min-h-screen">
   <!-- Hero Section -->
-  <div class="relative py-24 lg:py-32 bg-gradient-to-b from-ts-paper to-white overflow-hidden">
+  <div class="relative py-24 lg:py-32 bg-gradient-to-b from-[#0a0b0d] to-bitcoin-dark overflow-hidden">
     <div class="max-w-7xl mx-auto px-6 text-center">
-      <h1 class="font-serif text-5xl lg:text-6xl text-ts-bg mb-6">
+      <h1 class="font-serif text-5xl lg:text-6xl bitcoin-gradient-text mb-6">
         Nuestros Productos
       </h1>
-      <p class="text-xl text-neutral-600 max-w-3xl mx-auto leading-relaxed">
+      <p class="text-xl text-bitcoin-gray max-w-3xl mx-auto leading-relaxed">
         Superficies porcelánicas de gran formato disponibles en diferentes grosores.
         Cada colección está diseñada para adaptarse a las necesidades específicas de tu proyecto.
       </p>
@@ -15,17 +15,17 @@
 
   <!-- Filters Section -->
   <div class="max-w-7xl mx-auto px-6 pb-12">
-    <div class="bg-white rounded-2xl shadow-sm p-6 mb-12">
+    <div class="bg-bitcoin-dark/40 backdrop-blur-md border border-bitcoin-orange/20 rounded-2xl shadow-bitcoin-lg p-6 mb-12">
       <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 items-end">
         <!-- Category Filter -->
         <div>
-          <label for="categoryFilter" class="block text-sm font-medium text-neutral-700 mb-2">
+          <label for="categoryFilter" class="block text-sm font-medium text-bitcoin-gray mb-2">
             Categoría
           </label>
           <select id="categoryFilter"
                   [(ngModel)]="selectedCategoryId"
                   (change)="onCategoryChange()"
-                  class="w-full px-4 py-2.5 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-ts-accent focus:border-transparent transition-all">
+                  class="w-full px-4 py-2.5 bg-bitcoin-dark/60 border border-bitcoin-gray/20 text-bitcoin-gray rounded-lg focus:ring-2 focus:ring-bitcoin-orange focus:border-bitcoin-orange transition-all">
             <option value="">Todas las categorías</option>
             @for (category of categories; track category.id) {
               <option [value]="category.id">{{ category.name }}</option>
@@ -35,13 +35,13 @@
 
         <!-- Material Filter -->
         <div>
-          <label for="materialFilter" class="block text-sm font-medium text-neutral-700 mb-2">
+          <label for="materialFilter" class="block text-sm font-medium text-bitcoin-gray mb-2">
             Material
           </label>
           <select id="materialFilter"
                   [(ngModel)]="selectedMaterialId"
                   (change)="onMaterialChange()"
-                  class="w-full px-4 py-2.5 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-ts-accent focus:border-transparent transition-all">
+                  class="w-full px-4 py-2.5 bg-bitcoin-dark/60 border border-bitcoin-gray/20 text-bitcoin-gray rounded-lg focus:ring-2 focus:ring-bitcoin-orange focus:border-bitcoin-orange transition-all">
             <option value="">Todos los materiales</option>
             @for (material of materials; track material.id) {
               <option [value]="material.id">{{ material.name }}</option>
@@ -51,7 +51,7 @@
 
         <!-- Search Filter -->
         <div>
-          <label for="searchFilter" class="block text-sm font-medium text-neutral-700 mb-2">
+          <label for="searchFilter" class="block text-sm font-medium text-bitcoin-gray mb-2">
             Buscar
           </label>
           <input type="text"
@@ -59,14 +59,14 @@
                  [(ngModel)]="searchTerm"
                  (input)="onSearchChange()"
                  placeholder="Nombre del producto..."
-                 class="w-full px-4 py-2.5 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-ts-accent focus:border-transparent transition-all"/>
+                 class="w-full px-4 py-2.5 bg-bitcoin-dark/60 border border-bitcoin-gray/20 text-bitcoin-gray placeholder-bitcoin-gray/50 rounded-lg focus:ring-2 focus:ring-bitcoin-orange focus:border-bitcoin-orange transition-all"/>
         </div>
 
         <!-- Clear Filters Button -->
         <div>
           @if (hasFilters) {
             <button (click)="clearFilters()"
-                    class="w-full px-4 py-2.5 bg-neutral-100 text-neutral-700 rounded-lg font-medium hover:bg-neutral-200 transition-colors">
+                    class="w-full px-4 py-2.5 bg-bitcoin-dark/60 hover:bg-bitcoin-dark/80 border border-bitcoin-gray/20 text-bitcoin-gray rounded-lg font-medium transition-colors">
               Limpiar filtros
             </button>
           }
@@ -74,12 +74,12 @@
       </div>
 
       <!-- Results Count -->
-      <div class="mt-4 pt-4 border-t border-neutral-200">
-        <p class="text-sm text-neutral-600">
+      <div class="mt-4 pt-4 border-t border-bitcoin-orange/20">
+        <p class="text-sm text-bitcoin-gray/70">
           @if (isLoading) {
             Cargando productos...
           } @else {
-            Mostrando <strong>{{ filteredProductsCount }}</strong> de <strong>{{ totalProductsCount }}</strong> productos
+            Mostrando <strong class="text-bitcoin-orange">{{ filteredProductsCount }}</strong> de <strong class="text-bitcoin-orange">{{ totalProductsCount }}</strong> productos
           }
         </p>
       </div>
@@ -89,12 +89,12 @@
   <!-- Loading State -->
   @if (isLoading) {
     <div class="max-w-7xl mx-auto px-6 pb-20 text-center">
-      <div class="inline-flex items-center gap-3 px-6 py-4 bg-white rounded-full shadow-sm">
-        <svg class="animate-spin h-5 w-5 text-ts-accent" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+      <div class="inline-flex items-center gap-3 px-6 py-4 bg-bitcoin-dark/60 backdrop-blur-md border border-bitcoin-orange/20 rounded-full shadow-bitcoin">
+        <svg class="animate-spin h-5 w-5 text-bitcoin-orange" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
           <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
           <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
         </svg>
-        <span class="text-neutral-700 font-medium">Cargando productos...</span>
+        <span class="text-bitcoin-gray font-medium">Cargando productos...</span>
       </div>
     </div>
   }
@@ -102,15 +102,15 @@
   <!-- Empty State -->
   @if (!isLoading && filteredProducts.length === 0) {
     <div class="max-w-7xl mx-auto px-6 pb-20 text-center">
-      <div class="bg-white rounded-2xl shadow-sm p-12">
-        <svg class="w-16 h-16 text-neutral-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <div class="bg-bitcoin-dark/40 backdrop-blur-md border border-bitcoin-orange/20 rounded-2xl shadow-bitcoin-lg p-12">
+        <svg class="w-16 h-16 text-bitcoin-gray/50 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"/>
         </svg>
-        <h3 class="font-serif text-2xl text-neutral-800 mb-2">No se encontraron productos</h3>
-        <p class="text-neutral-600 mb-6">Intenta ajustar los filtros para ver más resultados</p>
+        <h3 class="font-serif text-2xl bitcoin-gradient-text mb-2">No se encontraron productos</h3>
+        <p class="text-bitcoin-gray/70 mb-6">Intenta ajustar los filtros para ver más resultados</p>
         @if (hasFilters) {
           <button (click)="clearFilters()"
-                  class="px-6 py-3 bg-ts-accent text-black rounded-full font-semibold hover:bg-ts-accent/90 transition-colors">
+                  class="px-6 py-3 bg-bitcoin-orange/30 hover:bg-bitcoin-orange/40 border border-bitcoin-orange/30 text-bitcoin-orange rounded-full font-semibold transition-colors">
             Limpiar filtros
           </button>
         }
@@ -127,11 +127,11 @@
       <section class="mb-20">
         <div class="flex items-center justify-between mb-8">
           <div>
-            <h2 class="font-serif text-4xl text-ts-bg mb-2">12mm</h2>
-            <p class="text-lg text-neutral-600">160×320cm · Ideal para revestimientos interiores y exteriores</p>
+            <h2 class="font-serif text-4xl bitcoin-gradient-text mb-2">12mm</h2>
+            <p class="text-lg text-bitcoin-gray">160×320cm · Ideal para revestimientos interiores y exteriores</p>
           </div>
           <a routerLink="/productos/12mm" 
-             class="inline-flex items-center gap-2 px-6 py-3 bg-ts-accent text-black rounded-full font-semibold hover:bg-ts-accent/90 transition-colors">
+             class="inline-flex items-center gap-2 px-6 py-3 bg-bitcoin-orange/30 hover:bg-bitcoin-orange/40 border border-bitcoin-orange/30 text-bitcoin-orange rounded-full font-semibold transition-colors shadow-bitcoin">
             Ver toda la colección
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
@@ -141,15 +141,15 @@
         
         <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
           @for (producto of productos12mm; track producto.slug) {
-            <article class="group rounded-2xl overflow-hidden bg-white shadow-sm hover:shadow-xl transition-all duration-300">
-              <div class="aspect-[4/3] overflow-hidden bg-neutral-100">
+            <article class="group rounded-2xl overflow-hidden bg-bitcoin-dark/40 backdrop-blur-sm border border-bitcoin-gray/20 shadow-bitcoin hover:shadow-bitcoin-lg hover:border-bitcoin-orange/30 transition-all duration-300">
+              <div class="aspect-[4/3] overflow-hidden bg-bitcoin-dark/60">
                 @if (producto.imageUrl) {
                   <img [src]="producto.imageUrl" 
                        [alt]="producto.name"
                        class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                        loading="lazy"/>
                 } @else {
-                  <div class="w-full h-full flex items-center justify-center text-neutral-400">
+                  <div class="w-full h-full flex items-center justify-center text-bitcoin-gray/50">
                     <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
                     </svg>
@@ -157,20 +157,20 @@
                 }
               </div>
               <div class="p-6">
-                <h3 class="font-serif text-xl text-ts-bg mb-2">{{producto.name}}</h3>
-                <p class="text-sm text-neutral-600 mb-4">
+                <h3 class="font-serif text-xl text-bitcoin-gray mb-2">{{producto.name}}</h3>
+                <p class="text-sm text-bitcoin-gray/70 mb-4">
                   {{producto.specs?.size || producto.size || '160×320cm'}} · {{producto.grosor}}
                 </p>
                 @if (producto.price) {
-                  <p class="text-lg font-semibold text-ts-bg mb-4">{{producto.price | currency:'USD':'symbol':'1.2-2'}}</p>
+                  <p class="text-lg font-semibold text-bitcoin-gold mb-4">{{producto.price | currency:'USD':'symbol':'1.2-2'}}</p>
                 }
                 <div class="flex items-center justify-between">
                   <a [routerLink]="['/productos', producto.grosor, producto.slug]" 
-                     class="text-ts-accent hover:underline font-medium transition-colors">
+                     class="text-bitcoin-orange hover:text-bitcoin-gold font-medium transition-colors">
                     Ver detalles →
                   </a>
                   <button (click)="addToCart(producto, $event)"
-                          class="px-4 py-2 bg-ts-accent text-black rounded-lg font-medium hover:bg-ts-accent/90 transition-colors">
+                          class="px-4 py-2 bg-bitcoin-orange/30 hover:bg-bitcoin-orange/40 border border-bitcoin-orange/30 text-bitcoin-orange rounded-lg font-medium transition-colors">
                     Añadir
                   </button>
                 </div>
@@ -186,11 +186,11 @@
       <section class="mb-20">
         <div class="flex items-center justify-between mb-8">
           <div>
-            <h2 class="font-serif text-4xl text-ts-bg mb-2">15mm</h2>
-            <p class="text-lg text-neutral-600">160×320cm · Perfectas para pavimentos y encimeras</p>
+            <h2 class="font-serif text-4xl bitcoin-gradient-text mb-2">15mm</h2>
+            <p class="text-lg text-bitcoin-gray">160×320cm · Perfectas para pavimentos y encimeras</p>
           </div>
           <a routerLink="/productos/15mm" 
-             class="inline-flex items-center gap-2 px-6 py-3 bg-ts-accent text-black rounded-full font-semibold hover:bg-ts-accent/90 transition-colors">
+             class="inline-flex items-center gap-2 px-6 py-3 bg-bitcoin-orange/30 hover:bg-bitcoin-orange/40 border border-bitcoin-orange/30 text-bitcoin-orange rounded-full font-semibold transition-colors shadow-bitcoin">
             Ver toda la colección
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
@@ -200,15 +200,15 @@
         
         <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
           @for (producto of productos15mm; track producto.slug) {
-            <article class="group rounded-2xl overflow-hidden bg-white shadow-sm hover:shadow-xl transition-all duration-300">
-              <div class="aspect-[4/3] overflow-hidden bg-neutral-100">
+            <article class="group rounded-2xl overflow-hidden bg-bitcoin-dark/40 backdrop-blur-sm border border-bitcoin-gray/20 shadow-bitcoin hover:shadow-bitcoin-lg hover:border-bitcoin-orange/30 transition-all duration-300">
+              <div class="aspect-[4/3] overflow-hidden bg-bitcoin-dark/60">
                 @if (producto.imageUrl) {
                   <img [src]="producto.imageUrl" 
                        [alt]="producto.name"
                        class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                        loading="lazy"/>
                 } @else {
-                  <div class="w-full h-full flex items-center justify-center text-neutral-400">
+                  <div class="w-full h-full flex items-center justify-center text-bitcoin-gray/50">
                     <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
                     </svg>
@@ -216,20 +216,20 @@
                 }
               </div>
               <div class="p-6">
-                <h3 class="font-serif text-xl text-ts-bg mb-2">{{producto.name}}</h3>
-                <p class="text-sm text-neutral-600 mb-4">
+                <h3 class="font-serif text-xl text-bitcoin-gray mb-2">{{producto.name}}</h3>
+                <p class="text-sm text-bitcoin-gray/70 mb-4">
                   {{producto.specs?.size || producto.size || '160×320cm'}} · {{producto.grosor}}
                 </p>
                 @if (producto.price) {
-                  <p class="text-lg font-semibold text-ts-bg mb-4">{{producto.price | currency:'USD':'symbol':'1.2-2'}}</p>
+                  <p class="text-lg font-semibold text-bitcoin-gold mb-4">{{producto.price | currency:'USD':'symbol':'1.2-2'}}</p>
                 }
                 <div class="flex items-center justify-between">
                   <a [routerLink]="['/productos', producto.grosor, producto.slug]" 
-                     class="text-ts-accent hover:underline font-medium transition-colors">
+                     class="text-bitcoin-orange hover:text-bitcoin-gold font-medium transition-colors">
                     Ver detalles →
                   </a>
                   <button (click)="addToCart(producto, $event)"
-                          class="px-4 py-2 bg-ts-accent text-black rounded-lg font-medium hover:bg-ts-accent/90 transition-colors">
+                          class="px-4 py-2 bg-bitcoin-orange/30 hover:bg-bitcoin-orange/40 border border-bitcoin-orange/30 text-bitcoin-orange rounded-lg font-medium transition-colors">
                     Añadir
                   </button>
                 </div>
@@ -245,11 +245,11 @@
       <section class="mb-20">
         <div class="flex items-center justify-between mb-8">
           <div>
-            <h2 class="font-serif text-4xl text-ts-bg mb-2">20mm</h2>
-            <p class="text-lg text-neutral-600">160×320cm · Ideales para exteriores y zonas de alto tránsito</p>
+            <h2 class="font-serif text-4xl bitcoin-gradient-text mb-2">20mm</h2>
+            <p class="text-lg text-bitcoin-gray">160×320cm · Ideales para exteriores y zonas de alto tránsito</p>
           </div>
           <a routerLink="/productos/20mm" 
-             class="inline-flex items-center gap-2 px-6 py-3 bg-ts-accent text-black rounded-full font-semibold hover:bg-ts-accent/90 transition-colors">
+             class="inline-flex items-center gap-2 px-6 py-3 bg-bitcoin-orange/30 hover:bg-bitcoin-orange/40 border border-bitcoin-orange/30 text-bitcoin-orange rounded-full font-semibold transition-colors shadow-bitcoin">
             Ver toda la colección
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
@@ -259,15 +259,15 @@
         
         <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
           @for (producto of productos20mm; track producto.slug) {
-            <article class="group rounded-2xl overflow-hidden bg-white shadow-sm hover:shadow-xl transition-all duration-300">
-              <div class="aspect-[4/3] overflow-hidden bg-neutral-100">
+            <article class="group rounded-2xl overflow-hidden bg-bitcoin-dark/40 backdrop-blur-sm border border-bitcoin-gray/20 shadow-bitcoin hover:shadow-bitcoin-lg hover:border-bitcoin-orange/30 transition-all duration-300">
+              <div class="aspect-[4/3] overflow-hidden bg-bitcoin-dark/60">
                 @if (producto.imageUrl) {
                   <img [src]="producto.imageUrl" 
                        [alt]="producto.name"
                        class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                        loading="lazy"/>
                 } @else {
-                  <div class="w-full h-full flex items-center justify-center text-neutral-400">
+                  <div class="w-full h-full flex items-center justify-center text-bitcoin-gray/50">
                     <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
                     </svg>
@@ -275,20 +275,20 @@
                 }
               </div>
               <div class="p-6">
-                <h3 class="font-serif text-xl text-ts-bg mb-2">{{producto.name}}</h3>
-                <p class="text-sm text-neutral-600 mb-4">
+                <h3 class="font-serif text-xl text-bitcoin-gray mb-2">{{producto.name}}</h3>
+                <p class="text-sm text-bitcoin-gray/70 mb-4">
                   {{producto.specs?.size || producto.size || '160×320cm'}} · {{producto.grosor}}
                 </p>
                 @if (producto.price) {
-                  <p class="text-lg font-semibold text-ts-bg mb-4">{{producto.price | currency:'USD':'symbol':'1.2-2'}}</p>
+                  <p class="text-lg font-semibold text-bitcoin-gold mb-4">{{producto.price | currency:'USD':'symbol':'1.2-2'}}</p>
                 }
                 <div class="flex items-center justify-between">
                   <a [routerLink]="['/productos', producto.grosor, producto.slug]" 
-                     class="text-ts-accent hover:underline font-medium transition-colors">
+                     class="text-bitcoin-orange hover:text-bitcoin-gold font-medium transition-colors">
                     Ver detalles →
                   </a>
                   <button (click)="addToCart(producto, $event)"
-                          class="px-4 py-2 bg-ts-accent text-black rounded-lg font-medium hover:bg-ts-accent/90 transition-colors">
+                          class="px-4 py-2 bg-bitcoin-orange/30 hover:bg-bitcoin-orange/40 border border-bitcoin-orange/30 text-bitcoin-orange rounded-lg font-medium transition-colors">
                     Añadir
                   </button>
                 </div>
@@ -302,22 +302,22 @@
       <!-- Call to Action -->
       <section class="text-center py-16">
         <div class="max-w-3xl mx-auto">
-          <h2 class="font-serif text-3xl text-ts-bg mb-4">
+          <h2 class="font-serif text-3xl bitcoin-gradient-text mb-4">
             ¿Necesitas asesoramiento personalizado?
           </h2>
-          <p class="text-lg text-neutral-600 mb-8">
+          <p class="text-lg text-bitcoin-gray mb-8">
             Nuestro equipo de expertos te ayudará a elegir la superficie perfecta para tu proyecto.
           </p>
           <div class="flex flex-col sm:flex-row gap-4 justify-center">
             <a routerLink="/contacto" 
-               class="inline-flex items-center gap-2 px-8 py-4 bg-ts-accent text-black rounded-full font-semibold hover:bg-ts-accent/90 transition-colors">
+               class="inline-flex items-center gap-2 px-8 py-4 bg-bitcoin-orange/30 hover:bg-bitcoin-orange/40 border border-bitcoin-orange/30 text-bitcoin-orange rounded-full font-semibold transition-colors shadow-bitcoin">
               <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-3.582 8-8 8a8.955 8.955 0 01-3.793-.793L3 21l1.793-6.207A8.955 8.955 0 013 12a8 8 0 018-8c4.418 0 8 3.582 8 8z"/>
               </svg>
               Solicitar asesoramiento
             </a>
             <a routerLink="/datos-tecnicos" 
-               class="inline-flex items-center gap-2 px-8 py-4 ring-2 ring-ts-accent text-ts-accent hover:bg-ts-accent hover:text-black rounded-full font-semibold transition-colors">
+               class="inline-flex items-center gap-2 px-8 py-4 bg-bitcoin-dark/60 hover:bg-bitcoin-orange/20 border-2 border-bitcoin-orange/30 text-bitcoin-orange rounded-full font-semibold transition-colors">
               <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25zM6.75 12h.008v.008H6.75V12zm0 3h.008v.008H6.75V15zm0 3h.008v.008H6.75V18z"/>
               </svg>

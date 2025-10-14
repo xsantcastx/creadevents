@@ -3,6 +3,7 @@
     <div class="flex h-16 items-center justify-between">
       <!-- Logo -->
       <a routerLink="/" class="flex items-center gap-3">
+        <img src="/assets/Logo.jpg" alt="TheLuxMining Logo" class="h-10 w-10 rounded-lg shadow-sm" />
         <span class="font-serif text-xl font-semibold transition-colors group-hover:text-ts-accent text-inherit">
           TheLuxMining
         </span>
@@ -27,117 +28,16 @@
           {{ 'nav.home' | translate }}
         </a>
 
-        <!-- Products mega menu with robust hover controls -->
-        <div #productsGroup class="relative"
-             (mouseenter)="openMega()" (mouseleave)="closeMegaDelayed($event)"
-             (focusin)="openMega()" (focusout)="handleMegaFocusOut($event)">
-          <div class="inline-flex items-center gap-1 py-8 px-4 relative z-[125]">
-            <!-- IMPORTANT: This link is clean (no click handlers) so it ALWAYS navigates -->
-            <a routerLink="/productos"
-               routerLinkActive="text-ts-accent"
-               class="hover:text-ts-accent transition-colors">{{ 'nav.products' | translate }}</a>
-
-            <!-- Caret only controls the panel; doesn't interfere with link clicks -->
-            <button #megaTrigger type="button"
-                    class="p-1 rounded-md ring-1 ring-transparent hover:ring-neutral-300"
-                    [attr.aria-expanded]="showMega" aria-haspopup="true"
-                    aria-controls="mega-products"
-                    (click)="toggleMega($event)"
-                    (keydown)="onMegaTriggerKeydown($event)">
-              <svg viewBox="0 0 20 20" class="h-4 w-4" aria-hidden="true">
-                <path d="M5 7l5 6 5-6" fill="currentColor"></path>
-              </svg>
-            </button>
-          </div>
-
-          <!-- Massive hover detection area -->
-          <div class="absolute inset-0 -inset-x-8 h-20 -top-4"
-               (mouseenter)="openMega()" (mouseleave)="closeMegaDelayed($event)"></div>
-
-          <!-- Mega panel with its own hover detection -->
-          <div #mega
-               class="absolute left-1/2 -translate-x-1/2 top-full z-[110]"
-               [class.hidden]="!showMega"
-               (mouseenter)="openMega()" (mouseleave)="closeMegaDelayed($event)">
-            <div id="mega-products"
-                 class="w-[min(100vw-2rem,960px)] grid grid-cols-4 gap-6
-                        rounded-2xl bg-white text-neutral-900 shadow-xl ring-1 ring-neutral-200 p-6"
-                 role="menu" aria-label="Productos"
-                 tabindex="-1"
-                 (keydown)="onMegaKeydown($event)">
-            <!-- 12mm Column -->
-            <div>
-              <h4 class="font-serif font-semibold mb-3 text-ts-accent">12mm</h4>
-              <p class="text-xs text-neutral-500 mb-3">160×320cm</p>
-              <ul class="space-y-2">
-                @for (producto of productos12mm; track producto.slug) {
-                  <li>
-                    <a [routerLink]="['/productos/12mm', producto.slug]" 
-                       class="block hover:text-ts-accent transition-colors text-sm"
-                       role="menuitem"
-                       (mouseenter)="onProductHover('12mm', producto.slug, producto.imageUrl)">
-                      {{producto.name}}
-                    </a>
-                  </li>
-                }
-              </ul>
-            </div>
-
-            <!-- 15mm Column -->
-            <div>
-              <h4 class="font-serif font-semibold mb-3 text-ts-accent">15mm</h4>
-              <p class="text-xs text-neutral-500 mb-3">160×320cm</p>
-              <ul class="space-y-2">
-                @for (producto of productos15mm; track producto.slug) {
-                  <li>
-                    <a [routerLink]="['/productos/15mm', producto.slug]" 
-                       class="block hover:text-ts-accent transition-colors text-sm"
-                       role="menuitem"
-                       (mouseenter)="onProductHover('15mm', producto.slug, producto.imageUrl)">
-                      {{producto.name}}
-                    </a>
-                  </li>
-                }
-              </ul>
-            </div>
-
-            <!-- 20mm Column -->
-            <div>
-              <h4 class="font-serif font-semibold mb-3 text-ts-accent">20mm</h4>
-              <p class="text-xs text-neutral-500 mb-3">160×320cm</p>
-              <ul class="space-y-2">
-                @for (producto of productos20mm; track producto.slug) {
-                  <li>
-                    <a [routerLink]="['/productos/20mm', producto.slug]" 
-                       class="block hover:text-ts-accent transition-colors text-sm"
-                       role="menuitem"
-                       (mouseenter)="onProductHover('20mm', producto.slug, producto.imageUrl)">
-                      {{producto.name}}
-                    </a>
-                  </li>
-                }
-              </ul>
-            </div>
-
-            <!-- Preview Image -->
-            <div class="rounded-xl overflow-hidden bg-neutral-100">
-              <img [src]="hoverPreviewUrl" 
-                   alt="Vista previa del producto" 
-                   class="w-full h-full object-cover aspect-square" 
-                   loading="lazy" />
-            </div>
-            </div>
-          </div>
-        </div>
+        <a routerLink="/productos" routerLinkActive="text-ts-accent" 
+           class="hover:text-ts-accent transition-colors">
+          {{ 'nav.products' | translate }}
+        </a>
 
         <a routerLink="/galeria" routerLinkActive="text-ts-accent" 
            class="hover:text-ts-accent transition-colors">
           {{ 'nav.gallery' | translate }}
         </a>
-        <a routerLink="/datos-tecnicos" routerLinkActive="text-ts-accent" 
-           class="hover:text-ts-accent transition-colors">
-          {{ 'nav.technical' | translate }}
-        </a>
+
         <a routerLink="/contacto" routerLinkActive="text-ts-accent" 
            class="hover:text-ts-accent transition-colors">
           {{ 'nav.contact' | translate }}
@@ -280,6 +180,7 @@
   <!-- Mobile drawer header -->
   <div class="flex items-center justify-between p-6 border-b border-neutral-200">
     <div class="flex items-center gap-3">
+      <img src="/assets/Logo.jpg" alt="TheLuxMining Logo" class="h-10 w-10 rounded-lg shadow-sm" />
       <span class="font-serif text-xl font-semibold text-neutral-900">TheLuxMining</span>
     </div>
     <button (click)="closeMobile()" class="p-2 hover:bg-neutral-100 rounded-lg">
@@ -297,59 +198,16 @@
         {{ 'nav.home' | translate }}
       </a>
       
-      <!-- Mobile products accordion -->
-      <details class="group">
-        <summary class="text-lg font-medium cursor-pointer hover:text-ts-accent transition-colors">
-          {{ 'nav.products' | translate }}
-        </summary>
-        <div class="mt-3 pl-4 space-y-3">
-          <div>
-            <h5 class="font-medium text-sm text-ts-accent mb-2">12mm (160×320cm)</h5>
-            <div class="space-y-1">
-              @for (producto of productos12mm.slice(0, 6); track producto.slug) {
-                <a [routerLink]="['/productos/12mm', producto.slug]" 
-                   (click)="closeMobile()" 
-                   class="block text-sm hover:text-ts-accent transition-colors">
-                  {{producto.name}}
-                </a>
-              }
-            </div>
-          </div>
-          <div>
-            <h5 class="font-medium text-sm text-ts-accent mb-2">15mm (160×320cm)</h5>
-            <div class="space-y-1">
-              @for (producto of productos15mm; track producto.slug) {
-                <a [routerLink]="['/productos/15mm', producto.slug]" 
-                   (click)="closeMobile()" 
-                   class="block text-sm hover:text-ts-accent transition-colors">
-                  {{producto.name}}
-                </a>
-              }
-            </div>
-          </div>
-          <div>
-            <h5 class="font-medium text-sm text-ts-accent mb-2">20mm (160×320cm)</h5>
-            <div class="space-y-1">
-              @for (producto of productos20mm.slice(0, 6); track producto.slug) {
-                <a [routerLink]="['/productos/20mm', producto.slug]" 
-                   (click)="closeMobile()" 
-                   class="block text-sm hover:text-ts-accent transition-colors">
-                  {{producto.name}}
-                </a>
-              }
-            </div>
-          </div>
-        </div>
-      </details>
+      <a routerLink="/productos" (click)="closeMobile()" 
+         class="text-lg font-medium hover:text-ts-accent transition-colors">
+        {{ 'nav.products' | translate }}
+      </a>
       
       <a routerLink="/galeria" (click)="closeMobile()" 
          class="text-lg font-medium hover:text-ts-accent transition-colors">
         {{ 'nav.gallery' | translate }}
       </a>
-      <a routerLink="/datos-tecnicos" (click)="closeMobile()" 
-         class="text-lg font-medium hover:text-ts-accent transition-colors">
-        {{ 'nav.technical' | translate }}
-      </a>
+      
       <a routerLink="/contacto" (click)="closeMobile()" 
          class="text-lg font-medium hover:text-ts-accent transition-colors">
         {{ 'nav.contact' | translate }}

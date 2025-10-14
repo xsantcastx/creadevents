@@ -26,12 +26,24 @@ export const appConfig: ApplicationConfig = {
     provideClientHydration(withEventReplay()),
     provideHttpClient(withFetch()),
     provideFirebaseApp(() => initializeApp(environment.firebase)),
-    provideFirestore(() => getFirestore()),
-    provideAuth(() => getAuth()),
-    provideStorage(() => getStorage()),
+    provideFirestore(() => {
+      const firestore = getFirestore();
+      return firestore;
+    }),
+    provideAuth(() => {
+      const auth = getAuth();
+      return auth;
+    }),
+    provideStorage(() => {
+      const storage = getStorage();
+      return storage;
+    }),
     // Analytics with browser support check and production-only
     ...(environment.production ? [
-      provideAnalytics(() => getAnalytics()),
+      provideAnalytics(() => {
+        const analytics = getAnalytics();
+        return analytics;
+      }),
       ScreenTrackingService,
       UserTrackingService
     ] : []),

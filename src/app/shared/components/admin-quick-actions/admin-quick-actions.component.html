@@ -1,0 +1,25 @@
+<div class="bg-bitcoin-dark/40 backdrop-blur-sm rounded-2xl shadow-bitcoin p-6 border border-bitcoin-gray/20 mb-6">
+  <div class="flex items-center gap-3 mb-4">
+    <div class="w-8 h-8 bg-gradient-to-br from-bitcoin-orange to-bitcoin-gold rounded-lg flex items-center justify-center">
+      <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+      </svg>
+    </div>
+    <h3 class="text-lg font-semibold bitcoin-gradient-text">{{ 'admin.quick_actions' | translate }}</h3>
+  </div>
+
+  <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+    @for (action of quickActions; track action.route) {
+      <a
+        [routerLink]="action.route"
+        [class]="'flex flex-col items-center gap-2 p-4 rounded-xl border transition-all duration-300 ' + getColorClasses(action.color, isCurrentPage(action.route))"
+        [class.cursor-not-allowed]="isCurrentPage(action.route)"
+        [class.opacity-50]="isCurrentPage(action.route)">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" [attr.d]="action.icon"></path>
+        </svg>
+        <span class="text-xs font-medium text-center">{{ action.label | translate }}</span>
+      </a>
+    }
+  </div>
+</div>

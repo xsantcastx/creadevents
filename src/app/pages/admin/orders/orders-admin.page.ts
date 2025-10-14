@@ -4,6 +4,7 @@ import { RouterLink, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { AuthService } from '../../../services/auth.service';
+import { AdminQuickActionsComponent } from '../../../shared/components/admin-quick-actions/admin-quick-actions.component';
 
 interface OrderItem {
   productId: string;
@@ -42,7 +43,7 @@ interface Order {
 @Component({
   selector: 'app-orders-admin',
   standalone: true,
-  imports: [CommonModule, RouterLink, FormsModule, TranslateModule],
+  imports: [CommonModule, RouterLink, FormsModule, TranslateModule, AdminQuickActionsComponent],
   templateUrl: './orders-admin.page.html',
   styleUrl: './orders-admin.page.scss'
 })
@@ -131,11 +132,11 @@ export class OrdersAdminComponent implements OnInit {
 
   getStatusClass(status: Order['status']): string {
     const classes: Record<Order['status'], string> = {
-      pending: 'bg-yellow-100 text-yellow-800',
-      processing: 'bg-blue-100 text-blue-800',
-      shipped: 'bg-purple-100 text-purple-800',
-      delivered: 'bg-green-100 text-green-800',
-      cancelled: 'bg-red-100 text-red-800'
+      pending: 'bg-yellow-500/30 text-yellow-400 border border-yellow-500/30',
+      processing: 'bg-blue-500/30 text-blue-400 border border-blue-500/30',
+      shipped: 'bg-purple-500/30 text-purple-400 border border-purple-500/30',
+      delivered: 'bg-bitcoin-gold/30 text-bitcoin-gold border border-bitcoin-gold/30',
+      cancelled: 'bg-red-500/30 text-red-400 border border-red-500/30'
     };
     return classes[status];
   }

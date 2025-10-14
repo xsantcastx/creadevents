@@ -4,11 +4,12 @@ import { Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { AuthService, UserProfile } from '../../../services/auth.service';
+import { AdminQuickActionsComponent } from '../../../shared/components/admin-quick-actions/admin-quick-actions.component';
 
 @Component({
   selector: 'app-users-admin',
   standalone: true,
-  imports: [CommonModule, RouterLink, FormsModule, TranslateModule],
+  imports: [CommonModule, RouterLink, FormsModule, TranslateModule, AdminQuickActionsComponent],
   templateUrl: './users-admin.page.html',
   styleUrl: './users-admin.page.scss'
 })
@@ -151,14 +152,14 @@ export class UsersAdminComponent implements OnInit {
 
   getBadgeClass(role: string): string {
     return role === 'admin' 
-      ? 'inline-flex items-center px-3 py-1 text-xs font-semibold rounded-full bg-purple-100 text-purple-800 border border-purple-200' 
-      : 'inline-flex items-center px-3 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800 border border-blue-200';
+      ? 'inline-flex items-center px-3 py-1 text-xs font-semibold rounded-full bg-bitcoin-gold/30 text-bitcoin-gold border border-bitcoin-gold/30' 
+      : 'inline-flex items-center px-3 py-1 text-xs font-semibold rounded-full bg-bitcoin-orange/30 text-bitcoin-orange border border-bitcoin-orange/30';
   }
 
   getStatusBadgeClass(user: UserProfile): string {
     return user.disabled 
-      ? 'inline-flex items-center px-3 py-1 text-xs font-semibold rounded-full bg-red-100 text-red-800 border border-red-200' 
-      : 'inline-flex items-center px-3 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800 border border-green-200';
+      ? 'inline-flex items-center px-3 py-1 text-xs font-semibold rounded-full bg-red-500/30 text-red-400 border border-red-500/30' 
+      : 'inline-flex items-center px-3 py-1 text-xs font-semibold rounded-full bg-bitcoin-gold/30 text-bitcoin-gold border border-bitcoin-gold/30';
   }
 
   getUserInitials(user: UserProfile): string {

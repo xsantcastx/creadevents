@@ -1,20 +1,20 @@
 
-<div class="min-h-screen bg-gradient-to-b from-ts-paper to-white">
+<div class="min-h-screen bg-gradient-to-b from-[#0a0b0d] to-[#13151a]">
   <!-- Admin Header -->
-  <div class="bg-ts-bg text-white shadow-lg">
+  <div class="bg-gradient-to-r from-bitcoin-dark via-[#13151a] to-bitcoin-dark border-b border-bitcoin-orange/20 shadow-bitcoin">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
       <div class="flex items-center justify-between">
         <div class="flex items-center gap-4">
-          <a routerLink="/admin" class="hover:opacity-80 transition-opacity">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <a routerLink="/admin" class="hover:text-bitcoin-orange transition-colors">
+            <svg class="w-6 h-6 text-bitcoin-gray hover:text-bitcoin-orange" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
             </svg>
           </a>
-          <h1 class="text-xl font-bold">{{ 'admin.products' | translate }}</h1>
+          <h1 class="text-xl font-bold bitcoin-gradient-text">{{ 'admin.products.title' | translate }}</h1>
         </div>
         <div class="flex items-center gap-4">
-          <a routerLink="/admin" class="text-sm hover:text-white/80">{{ 'admin.title' | translate }}</a>
-          <button (click)="logout()" class="ts-btn ts-btn-ghost" data-variant="inverse">
+          <a routerLink="/admin" class="text-sm text-bitcoin-gray hover:text-bitcoin-orange transition-colors">{{ 'admin.title' | translate }}</a>
+          <button (click)="logout()" class="px-4 py-2 bg-red-500/20 hover:bg-red-500/30 border border-red-500/30 text-red-100 rounded-xl transition-all duration-300">
             {{ 'client.logout' | translate }}
           </button>
         </div>
@@ -23,38 +23,50 @@
   </div>
 
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    
+    <!-- Quick Actions -->
+    <app-admin-quick-actions currentPage="/admin/products"></app-admin-quick-actions>
+    
     @if (successMessage) {
-      <div class="mb-6 p-4 bg-green-50 border border-green-200 rounded-xl flex items-start gap-3">
-        <svg class="w-5 h-5 text-green-600 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <div class="mb-6 p-4 bg-bitcoin-gold/20 border border-bitcoin-gold/30 rounded-xl flex items-start gap-3">
+        <svg class="w-5 h-5 text-bitcoin-gold mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
         </svg>
-        <p class="text-sm text-green-700">{{ successMessage | translate }}</p>
+        <p class="text-sm text-bitcoin-gold">{{ successMessage | translate }}</p>
       </div>
     }
 
     @if (errorMessage) {
-      <div class="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl flex items-start gap-3">
-        <svg class="w-5 h-5 text-red-600 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <div class="mb-6 p-4 bg-red-500/20 border border-red-500/30 rounded-xl flex items-start gap-3">
+        <svg class="w-5 h-5 text-red-400 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
         </svg>
-        <p class="text-sm text-red-700">{{ errorMessage | translate }}</p>
+        <p class="text-sm text-red-400">{{ errorMessage | translate }}</p>
       </div>
     }
 
     @if ((categories.length === 0 || materials.length === 0) && !isLoading) {
-      <div class="mb-6 p-4 bg-yellow-50 border border-yellow-200 rounded-xl">
+      <div class="mb-6 p-4 bg-bitcoin-orange/20 border border-bitcoin-orange/30 rounded-xl">
         <div class="flex items-start gap-3">
-          <svg class="w-6 h-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg class="w-6 h-6 text-bitcoin-orange" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
           </svg>
           <div>
-            <h4 class="font-semibold text-yellow-800">{{ 'admin.seed_missing' | translate }}</h4>
-            <p class="text-sm text-yellow-700 mt-1">{{ 'admin.seed_missing_hint' | translate }}</p>
-            <a routerLink="/admin/seed" class="inline-flex items-center gap-2 mt-3 px-4 py-2 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 transition-colors">
+            <h4 class="font-semibold text-bitcoin-orange">Setup Required</h4>
+            <p class="text-sm text-bitcoin-gray mt-1">
+              @if (categories.length === 0 && materials.length === 0) {
+                You need to create categories and materials before adding products.
+              } @else if (categories.length === 0) {
+                You need to create at least one category before adding products.
+              } @else {
+                You need to create at least one material before adding products.
+              }
+            </p>
+            <a routerLink="/admin/catalog" class="inline-flex items-center gap-2 mt-3 px-4 py-2 bg-bitcoin-orange/30 hover:bg-bitcoin-orange/40 text-bitcoin-orange border border-bitcoin-orange/30 rounded-lg transition-colors">
               <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
               </svg>
-              {{ 'admin.run_seed' | translate }}
+              Go to Catalog Management
             </a>
           </div>
         </div>
@@ -64,26 +76,26 @@
     <div class="mb-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
       <div class="flex-1 w-full sm:w-auto">
         <div class="relative">
-          <input type="text" [(ngModel)]="searchTerm" [placeholder]="'common.search' | translate" class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-ts-accent focus:border-transparent">
-          <svg class="w-5 h-5 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <input type="text" [(ngModel)]="searchTerm" [placeholder]="'common.search' | translate" class="w-full pl-10 pr-4 py-2 bg-bitcoin-dark/40 border border-bitcoin-gray/20 rounded-xl focus:ring-2 focus:ring-bitcoin-orange focus:border-bitcoin-orange text-bitcoin-gray placeholder-bitcoin-gray/50">
+          <svg class="w-5 h-5 text-bitcoin-gray/50 absolute left-3 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
           </svg>
         </div>
       </div>
       <div class="flex items-center gap-3 w-full sm:w-auto">
-        <select [(ngModel)]="selectedThickness" class="px-4 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-ts-accent focus:border-transparent">
+        <select [(ngModel)]="selectedThickness" class="px-4 py-2 bg-bitcoin-dark/40 border border-bitcoin-gray/20 rounded-xl focus:ring-2 focus:ring-bitcoin-orange focus:border-bitcoin-orange text-bitcoin-gray">
           <option value="all">{{ 'products.filterBy' | translate }}: {{ 'products.thickness' | translate }}</option>
           <option value="12mm">12mm</option>
           <option value="15mm">15mm</option>
           <option value="20mm">20mm</option>
         </select>
-        <a routerLink="/admin/catalog" class="ts-btn ts-btn-outline ts-btn-sm flex items-center gap-2 whitespace-nowrap">
+        <a routerLink="/admin/catalog" class="px-4 py-2 bg-bitcoin-dark/40 hover:bg-bitcoin-dark/60 text-bitcoin-gray hover:text-bitcoin-orange border border-bitcoin-gray/20 hover:border-bitcoin-orange/30 rounded-xl transition-all duration-300 flex items-center gap-2 whitespace-nowrap">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
           </svg>
           {{ 'admin.catalog.title' | translate }}
         </a>
-        <button (click)="openCreateModal()" class="ts-btn ts-btn-primary ts-btn-sm flex items-center gap-2 whitespace-nowrap">
+        <button (click)="openCreateModal()" class="px-4 py-2 bg-bitcoin-orange/30 hover:bg-bitcoin-orange/40 text-bitcoin-orange border border-bitcoin-orange/30 rounded-xl transition-all duration-300 flex items-center gap-2 whitespace-nowrap">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
           </svg>
@@ -93,91 +105,95 @@
     </div>
 
     @if (isLoading) {
-      <div class="bg-white rounded-2xl shadow-lg p-12 border border-gray-100">
+      <div class="bg-bitcoin-dark/40 backdrop-blur-sm rounded-2xl shadow-bitcoin p-12 border border-bitcoin-gray/20">
         <div class="flex flex-col items-center justify-center gap-4">
-          <svg class="animate-spin h-10 w-10 text-ts-accent" fill="none" viewBox="0 0 24 24">
+          <svg class="animate-spin h-10 w-10 text-bitcoin-orange" fill="none" viewBox="0 0 24 24">
             <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
             <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
           </svg>
-          <p class="text-gray-600">{{ 'common.loading' | translate }}</p>
+          <p class="text-bitcoin-gray">{{ 'common.loading' | translate }}</p>
         </div>
       </div>
     } @else {
-      <div class="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
+      <div class="bg-bitcoin-dark/40 backdrop-blur-sm rounded-2xl shadow-bitcoin border border-bitcoin-gray/20 overflow-hidden">
         <div class="overflow-x-auto">
           <table class="w-full">
-            <thead class="bg-gray-50 border-b border-gray-200">
+            <thead class="bg-bitcoin-dark/60 border-b border-bitcoin-orange/20">
               <tr>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ 'admin.product_image' | translate }}</th>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ 'admin.product_name' | translate }}</th>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ 'admin.product_category' | translate }}</th>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ 'admin.product_thickness' | translate }}</th>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ 'admin.product_price' | translate }}</th>
-                <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">{{ 'admin.actions' | translate }}</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-bitcoin-orange uppercase tracking-wider">{{ 'admin.product_image' | translate }}</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-bitcoin-orange uppercase tracking-wider">{{ 'admin.product_name' | translate }}</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-bitcoin-orange uppercase tracking-wider">{{ 'admin.product_category' | translate }}</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-bitcoin-orange uppercase tracking-wider">{{ 'admin.product_thickness' | translate }}</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-bitcoin-orange uppercase tracking-wider">{{ 'admin.product_price' | translate }}</th>
+                <th class="px-6 py-3 text-right text-xs font-medium text-bitcoin-orange uppercase tracking-wider">{{ 'admin.actions' | translate }}</th>
               </tr>
             </thead>
-            <tbody class="bg-white divide-y divide-gray-200">
+            <tbody class="bg-bitcoin-dark/20 divide-y divide-bitcoin-gray/20">
               @if (filteredProducts.length === 0) {
                 <tr>
                   <td colspan="6" class="px-6 py-12 text-center">
                     <div class="flex flex-col items-center justify-center gap-4">
-                      <svg class="w-16 h-16 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <svg class="w-16 h-16 text-bitcoin-gray/30" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"></path>
                       </svg>
-                      <p class="text-gray-500">{{ 'admin.no_products' | translate }}</p>
+                      <p class="text-bitcoin-gray/70">{{ 'admin.no_products' | translate }}</p>
                     </div>
                   </td>
                 </tr>
               } @else {
                 @for (product of filteredProducts; track product.id) {
-                  <tr class="hover:bg-gray-50 transition-colors">
+                  <tr class="hover:bg-bitcoin-dark/40 transition-colors">
                     <td class="px-6 py-4 whitespace-nowrap">
                       @if (product.imageUrl) {
-                        <img [src]="product.imageUrl" [alt]="product.name" class="w-16 h-16 object-cover rounded-lg">
+                        <img [src]="product.imageUrl" [alt]="product.name" class="w-16 h-16 object-cover rounded-lg border border-bitcoin-gray/20">
                       } @else {
-                        <div class="w-16 h-16 bg-gray-200 rounded-lg flex items-center justify-center">
-                          <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <div class="w-16 h-16 bg-bitcoin-dark/60 border border-bitcoin-gray/20 rounded-lg flex items-center justify-center">
+                          <svg class="w-8 h-8 text-bitcoin-gray/50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
                           </svg>
                         </div>
                       }
                     </td>
                     <td class="px-6 py-4">
-                      <div class="text-sm font-medium text-gray-900 flex items-center gap-2">
+                      <div class="text-sm font-medium text-bitcoin-gray flex items-center gap-2">
                         <span>{{ product.name }}</span>
                         <span class="text-xs px-2 py-0.5 rounded-full"
-                              [class.bg-green-100]="product.status === 'published'"
-                              [class.text-green-700]="product.status === 'published'"
-                              [class.bg-amber-100]="product.status === 'draft'"
-                              [class.text-amber-700]="product.status === 'draft'">
+                              [class.bg-bitcoin-gold/20]="product.status === 'published'"
+                              [class.text-bitcoin-gold]="product.status === 'published'"
+                              [class.border]="product.status === 'published'"
+                              [class.border-bitcoin-gold/30]="product.status === 'published'"
+                              [class.bg-bitcoin-orange/20]="product.status === 'draft'"
+                              [class.text-bitcoin-orange]="product.status === 'draft'"
+                              [class.border]="product.status === 'draft'"
+                              [class.border-bitcoin-orange/30]="product.status === 'draft'">
                           {{ ('admin.status_' + (product.status || 'draft')) | translate }}
                         </span>
                       </div>
-                      <div class="text-sm text-gray-500 line-clamp-1">{{ product.description }}</div>
+                      <div class="text-sm text-bitcoin-gray/70 line-clamp-1">{{ product.description }}</div>
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap">
-                      <span class="px-2 py-1 text-xs font-medium bg-blue-100 text-blue-700 rounded-full">
+                      <span class="px-2 py-1 text-xs font-medium bg-bitcoin-orange/20 text-bitcoin-orange border border-bitcoin-orange/30 rounded-full">
                         {{ product.size || '160x320cm' }}
                       </span>
                     </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-bitcoin-gray">
                       {{ product.grosor || product.specs?.grosor || 'n/a' }}
                     </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-bitcoin-gray">
                       @if (product.price) {
-                        EUR {{ product.price.toFixed(2) }}
+                        <span class="text-bitcoin-gold">EUR {{ product.price.toFixed(2) }}</span>
                       } @else {
-                        <span class="text-gray-400">n/a</span>
+                        <span class="text-bitcoin-gray/50">n/a</span>
                       }
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                       <div class="flex items-center justify-end gap-2">
-                        <button (click)="openEditModal(product)" class="ts-btn-icon is-info" [title]="'admin.edit' | translate">
+                        <button (click)="openEditModal(product)" class="p-2 bg-bitcoin-orange/20 hover:bg-bitcoin-orange/30 text-bitcoin-orange border border-bitcoin-orange/30 rounded-lg transition-colors" [title]="'admin.edit' | translate">
                           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
                           </svg>
                         </button>
-                        <button (click)="openDeleteConfirm(product)" class="ts-btn-icon is-danger" [title]="'admin.delete' | translate">
+                        <button (click)="openDeleteConfirm(product)" class="p-2 bg-red-500/20 hover:bg-red-500/30 text-red-400 border border-red-500/30 rounded-lg transition-colors" [title]="'admin.delete' | translate">
                           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
                           </svg>
@@ -249,11 +265,22 @@
                 </div>
                 <div class="max-h-64 overflow-y-auto pr-1 space-y-2">
                   @if (catalogOptions.length === 0) {
-                    <div class="p-4 bg-red-50 border border-red-200 rounded-xl">
-                      <p class="text-sm text-red-700 font-semibold">❌ No catalog data loaded</p>
-                      <p class="text-xs text-red-600 mt-1">Categories: {{ categories.length }} | Materials: {{ materials.length }}</p>
-                      <a routerLink="/admin/seed" class="inline-block mt-2 px-3 py-1 bg-red-600 text-white text-xs rounded-lg hover:bg-red-700">
-                        Run Seed →
+                    <div class="p-4 bg-bitcoin-orange/20 border border-bitcoin-orange/30 rounded-xl">
+                      <p class="text-sm text-bitcoin-orange font-semibold">⚠️ No Catalog Data Available</p>
+                      <p class="text-xs text-bitcoin-gray mt-1">
+                        @if (categories.length === 0 && materials.length === 0) {
+                          You need to create categories and materials first.
+                        } @else if (categories.length === 0) {
+                          You need to create at least one category.
+                        } @else {
+                          You need to create at least one material.
+                        }
+                      </p>
+                      <a routerLink="/admin/catalog" class="inline-flex items-center gap-2 mt-2 px-3 py-1.5 bg-bitcoin-orange/30 hover:bg-bitcoin-orange/40 text-bitcoin-orange text-xs rounded-lg border border-bitcoin-orange/30 transition-colors">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+                        </svg>
+                        Go to Catalog →
                       </a>
                     </div>
                   } @else if (filteredCatalogOptions.length === 0) {

@@ -1,17 +1,66 @@
-<section class="hero">
-  <div class="container hero__content">
+<section class="hero relative overflow-hidden">
+  <!-- Animated background -->
+  <div class="absolute inset-0 luxury-overlay opacity-30"></div>
+  <div class="absolute inset-0" style="background: radial-gradient(circle at 30% 50%, rgba(247, 147, 26, 0.1) 0%, transparent 60%), radial-gradient(circle at 70% 50%, rgba(212, 175, 55, 0.1) 0%, transparent 60%);"></div>
+  
+  <div class="container hero__content relative z-10">
     <div class="hero__copy">
-      <p class="hero__etiqueta">Premium Bitcoin Mining Hardware</p>
-      <h1>Enterprise-Grade Mining Solutions for Maximum Profitability.</h1>
-      <p>
-        At TheLuxMining we provide cutting-edge ASIC miners combining peak hash rate with superior efficiency.
-        Each solution is engineered for professional operations seeking consistent returns and industry-leading performance.
+      <div class="flex items-center gap-3 mb-6">
+        <img src="/assets/Logo.jpg" alt="TheLuxMining" class="h-16 w-16 rounded-lg shadow-bitcoin bitcoin-glow" />
+        <div>
+          <p class="hero__etiqueta text-bitcoin-gold">Premium Bitcoin Mining Hardware</p>
+          <div class="flex items-center gap-2 mt-1">
+            <span class="text-xs px-2 py-1 bg-bitcoin-orange/20 text-bitcoin-orange rounded-full border border-bitcoin-orange/30">Since 2020</span>
+            <span class="text-xs px-2 py-1 bg-luxury-gold/20 text-luxury-gold rounded-full border border-luxury-gold/30">Enterprise Grade</span>
+          </div>
+        </div>
+      </div>
+      
+      <h1 class="bitcoin-gradient-text mb-4">Mine Your Future with Professional ASIC Hardware</h1>
+      <p class="text-bitcoin-gray mb-6">
+        Join the revolution. Maximize your profits with cutting-edge ASIC miners engineered for peak performance and unmatched efficiency. 
+        <strong class="text-bitcoin-orange">Your success is our mission.</strong>
       </p>
+      
+      <!-- Stats Row -->
+      <div class="grid grid-cols-3 gap-4 mb-8 p-4 bg-bitcoin-dark/40 rounded-xl border border-bitcoin-gray/20">
+        <div class="text-center">
+          <div class="text-2xl font-bold text-bitcoin-orange">5000+</div>
+          <div class="text-xs text-bitcoin-gray">Miners Deployed</div>
+        </div>
+        <div class="text-center border-x border-bitcoin-gray/20">
+          <div class="text-2xl font-bold text-bitcoin-gold">99.9%</div>
+          <div class="text-xs text-bitcoin-gray">Uptime</div>
+        </div>
+        <div class="text-center">
+          <div class="text-2xl font-bold text-luxury-gold">24/7</div>
+          <div class="text-xs text-bitcoin-gray">Support</div>
+        </div>
+      </div>
+      
       <div class="hero__actions">
-        <a class="btn btn--primary" routerLink="/productos">Explore Miners</a>
-        <a class="btn btn--ghost" routerLink="/contacto">Request Consultation</a>
+        <a class="btn btn--primary" routerLink="/productos">
+          <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+          </svg>
+          Explore Miners
+        </a>
+        <a class="btn btn--ghost" routerLink="/contacto">
+          <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"></path>
+          </svg>
+          Request Consultation
+        </a>
       </div>
     </div>
-    <div class="hero__visual" role="img" aria-label="Bitcoin mining hardware setup"></div>
+    
+    <div class="hero__visual relative">
+      <!-- Mining animation overlay -->
+      <div class="absolute inset-0 flex items-center justify-center">
+        <svg class="w-24 h-24 text-bitcoin-orange bitcoin-glow animate-pulse" fill="currentColor" viewBox="0 0 24 24">
+          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm.31-8.86c-1.77-.45-2.34-.94-2.34-1.67 0-.84.79-1.43 2.1-1.43 1.38 0 1.9.66 1.94 1.64h1.71c-.05-1.34-.87-2.57-2.49-2.97V5H10.9v1.69c-1.51.32-2.72 1.3-2.72 2.81 0 1.79 1.49 2.69 3.66 3.21 1.95.46 2.34 1.15 2.34 1.87 0 .53-.39 1.39-2.1 1.39-1.6 0-2.23-.72-2.32-1.64H8.04c.1 1.7 1.36 2.66 2.86 2.97V19h2.34v-1.67c1.52-.29 2.72-1.16 2.73-2.77-.01-2.2-1.9-2.96-3.66-3.42z"/>
+        </svg>
+      </div>
+    </div>
   </div>
 </section>
