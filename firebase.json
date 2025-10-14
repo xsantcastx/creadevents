@@ -7,22 +7,11 @@
     "rules": "storage.rules"
   },
   "hosting": {
-    "public": "dist/tstone-web/browser",
+    "public": "public",
     "ignore": [
       "firebase.json",
       "**/.*",
       "**/node_modules/**"
-    ],
-    "headers": [
-      {
-        "source": "/assets/**",
-        "headers": [
-          {
-            "key": "Cache-Control",
-            "value": "public,max-age=31536000,immutable"
-          }
-        ]
-      }
     ],
     "rewrites": [
       {
