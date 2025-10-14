@@ -4,11 +4,11 @@
   <div class="relative py-24 lg:py-32 bg-gradient-to-b from-[#0a0b0d] to-bitcoin-dark overflow-hidden">
     <div class="max-w-7xl mx-auto px-6 text-center">
       <h1 class="font-serif text-5xl lg:text-6xl bitcoin-gradient-text mb-6">
-        Nuestros Productos
+        Bitcoin Mining Hardware
       </h1>
       <p class="text-xl text-bitcoin-gray max-w-3xl mx-auto leading-relaxed">
-        Superficies porcelánicas de gran formato disponibles en diferentes grosores.
-        Cada colección está diseñada para adaptarse a las necesidades específicas de tu proyecto.
+        Premium cryptocurrency mining equipment available in different configurations.
+        Each model is designed to meet the specific needs of your mining operation.
       </p>
     </div>
   </div>
@@ -20,31 +20,31 @@
         <!-- Category Filter -->
         <div>
           <label for="categoryFilter" class="block text-sm font-medium text-bitcoin-gray mb-2">
-            Categoría
+            Category
           </label>
           <select id="categoryFilter"
                   [(ngModel)]="selectedCategoryId"
                   (change)="onCategoryChange()"
                   class="w-full px-4 py-2.5 bg-bitcoin-dark/60 border border-bitcoin-gray/20 text-bitcoin-gray rounded-lg focus:ring-2 focus:ring-bitcoin-orange focus:border-bitcoin-orange transition-all">
-            <option value="">Todas las categorías</option>
+            <option value="">All Categories</option>
             @for (category of categories; track category.id) {
               <option [value]="category.id">{{ category.name }}</option>
             }
           </select>
         </div>
 
-        <!-- Material Filter -->
+        <!-- Model Filter -->
         <div>
-          <label for="materialFilter" class="block text-sm font-medium text-bitcoin-gray mb-2">
-            Material
+          <label for="modelFilter" class="block text-sm font-medium text-bitcoin-gray mb-2">
+            Model
           </label>
-          <select id="materialFilter"
-                  [(ngModel)]="selectedMaterialId"
-                  (change)="onMaterialChange()"
+          <select id="modelFilter"
+                  [(ngModel)]="selectedModelId"
+                  (change)="onModelChange()"
                   class="w-full px-4 py-2.5 bg-bitcoin-dark/60 border border-bitcoin-gray/20 text-bitcoin-gray rounded-lg focus:ring-2 focus:ring-bitcoin-orange focus:border-bitcoin-orange transition-all">
-            <option value="">Todos los materiales</option>
-            @for (material of materials; track material.id) {
-              <option [value]="material.id">{{ material.name }}</option>
+            <option value="">All Models</option>
+            @for (model of models; track model.id) {
+              <option [value]="model.id">{{ model.name }}</option>
             }
           </select>
         </div>
@@ -52,13 +52,13 @@
         <!-- Search Filter -->
         <div>
           <label for="searchFilter" class="block text-sm font-medium text-bitcoin-gray mb-2">
-            Buscar
+            Search
           </label>
           <input type="text"
                  id="searchFilter"
                  [(ngModel)]="searchTerm"
                  (input)="onSearchChange()"
-                 placeholder="Nombre del producto..."
+                 placeholder="Product name..."
                  class="w-full px-4 py-2.5 bg-bitcoin-dark/60 border border-bitcoin-gray/20 text-bitcoin-gray placeholder-bitcoin-gray/50 rounded-lg focus:ring-2 focus:ring-bitcoin-orange focus:border-bitcoin-orange transition-all"/>
         </div>
 
@@ -67,19 +67,46 @@
           @if (hasFilters) {
             <button (click)="clearFilters()"
                     class="w-full px-4 py-2.5 bg-bitcoin-dark/60 hover:bg-bitcoin-dark/80 border border-bitcoin-gray/20 text-bitcoin-gray rounded-lg font-medium transition-colors">
-              Limpiar filtros
+              Clear Filters
             </button>
           }
         </div>
       </div>
 
+      <!-- Tags Filter -->
+      @if (allTags.length > 0) {
+        <div class="mt-4 pt-4 border-t border-bitcoin-orange/20">
+          <label class="block text-sm font-medium text-bitcoin-gray mb-3">
+            <span class="flex items-center gap-2">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"></path>
+              </svg>
+              Filter by Tags
+            </span>
+          </label>
+          <div class="flex flex-wrap gap-2">
+            @for (tagSlug of allTags; track tagSlug) {
+              <button
+                type="button"
+                (click)="toggleTag(tagSlug)"
+                [style.background-color]="isTagSelected(tagSlug) ? getTagColor(tagSlug) : 'transparent'"
+                [style.color]="isTagSelected(tagSlug) ? '#FFFFFF' : getTagColor(tagSlug)"
+                [style.border-color]="getTagColor(tagSlug)"
+                class="px-3 py-1.5 border rounded-full text-sm font-medium transition-all hover:scale-105">
+                {{ getTagName(tagSlug) }}
+              </button>
+            }
+          </div>
+        </div>
+      }
+
       <!-- Results Count -->
       <div class="mt-4 pt-4 border-t border-bitcoin-orange/20">
         <p class="text-sm text-bitcoin-gray/70">
           @if (isLoading) {
-            Cargando productos...
+            Loading mining hardware...
           } @else {
-            Mostrando <strong class="text-bitcoin-orange">{{ filteredProductsCount }}</strong> de <strong class="text-bitcoin-orange">{{ totalProductsCount }}</strong> productos
+            Showing <strong class="text-bitcoin-orange">{{ filteredProductsCount }}</strong> of <strong class="text-bitcoin-orange">{{ totalProductsCount }}</strong> products
           }
         </p>
       </div>
@@ -94,7 +121,7 @@
           <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
           <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
         </svg>
-        <span class="text-bitcoin-gray font-medium">Cargando productos...</span>
+        <span class="text-bitcoin-gray font-medium">Loading mining hardware...</span>
       </div>
     </div>
   }
@@ -106,12 +133,12 @@
         <svg class="w-16 h-16 text-bitcoin-gray/50 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"/>
         </svg>
-        <h3 class="font-serif text-2xl bitcoin-gradient-text mb-2">No se encontraron productos</h3>
-        <p class="text-bitcoin-gray/70 mb-6">Intenta ajustar los filtros para ver más resultados</p>
+        <h3 class="font-serif text-2xl bitcoin-gradient-text mb-2">No Products Found</h3>
+        <p class="text-bitcoin-gray/70 mb-6">Try adjusting the filters to see more results</p>
         @if (hasFilters) {
           <button (click)="clearFilters()"
                   class="px-6 py-3 bg-bitcoin-orange/30 hover:bg-bitcoin-orange/40 border border-bitcoin-orange/30 text-bitcoin-orange rounded-full font-semibold transition-colors">
-            Limpiar filtros
+            Clear Filters
           </button>
         }
       </div>
@@ -121,26 +148,16 @@
   <!-- Products by Thickness -->
   @if (!isLoading && filteredProducts.length > 0) {
     <div class="max-w-7xl mx-auto px-6 pb-20">
-    
-    <!-- 12mm Collection -->
-    @if (productos12mm.length > 0) {
+      
+      <!-- All Filtered Products -->
       <section class="mb-20">
-        <div class="flex items-center justify-between mb-8">
-          <div>
-            <h2 class="font-serif text-4xl bitcoin-gradient-text mb-2">12mm</h2>
-            <p class="text-lg text-bitcoin-gray">160×320cm · Ideal para revestimientos interiores y exteriores</p>
-          </div>
-          <a routerLink="/productos/12mm" 
-             class="inline-flex items-center gap-2 px-6 py-3 bg-bitcoin-orange/30 hover:bg-bitcoin-orange/40 border border-bitcoin-orange/30 text-bitcoin-orange rounded-full font-semibold transition-colors shadow-bitcoin">
-            Ver toda la colección
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
-            </svg>
-          </a>
+        <div class="mb-8">
+          <h2 class="font-serif text-4xl bitcoin-gradient-text mb-2">Mining Hardware</h2>
+          <p class="text-lg text-bitcoin-gray">Premium cryptocurrency mining equipment</p>
         </div>
         
         <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
-          @for (producto of productos12mm; track producto.slug) {
+          @for (producto of filteredProducts; track producto.slug) {
             <article class="group rounded-2xl overflow-hidden bg-bitcoin-dark/40 backdrop-blur-sm border border-bitcoin-gray/20 shadow-bitcoin hover:shadow-bitcoin-lg hover:border-bitcoin-orange/30 transition-all duration-300">
               <div class="aspect-[4/3] overflow-hidden bg-bitcoin-dark/60">
                 @if (producto.imageUrl) {
@@ -157,21 +174,39 @@
                 }
               </div>
               <div class="p-6">
-                <h3 class="font-serif text-xl text-bitcoin-gray mb-2">{{producto.name}}</h3>
-                <p class="text-sm text-bitcoin-gray/70 mb-4">
-                  {{producto.specs?.size || producto.size || '160×320cm'}} · {{producto.grosor}}
-                </p>
+                <h3 class="font-serif text-xl text-bitcoin-gray mb-3">{{producto.name}}</h3>
+                
+                <!-- Category and Model Badges -->
+                <div class="flex flex-wrap gap-2 mb-3">
+                  @if (getCategoryName(producto.categoryId)) {
+                    <span class="px-2 py-1 bg-bitcoin-gold/20 text-bitcoin-gold border border-bitcoin-gold/30 rounded text-xs font-medium">
+                      {{getCategoryName(producto.categoryId)}}
+                    </span>
+                  }
+                  @if (getModelName(producto.modelId)) {
+                    <span class="px-2 py-1 bg-bitcoin-orange/20 text-bitcoin-orange border border-bitcoin-orange/30 rounded text-xs font-medium">
+                      {{getModelName(producto.modelId)}}
+                    </span>
+                  }
+                </div>
+                
+                @if (producto.description) {
+                  <p class="text-sm text-bitcoin-gray/70 mb-4 line-clamp-2">
+                    {{producto.description}}
+                  </p>
+                }
+                
                 @if (producto.price) {
                   <p class="text-lg font-semibold text-bitcoin-gold mb-4">{{producto.price | currency:'USD':'symbol':'1.2-2'}}</p>
                 }
                 <div class="flex items-center justify-between">
                   <a [routerLink]="['/productos', producto.grosor, producto.slug]" 
                      class="text-bitcoin-orange hover:text-bitcoin-gold font-medium transition-colors">
-                    Ver detalles →
+                    View Details →
                   </a>
                   <button (click)="addToCart(producto, $event)"
                           class="px-4 py-2 bg-bitcoin-orange/30 hover:bg-bitcoin-orange/40 border border-bitcoin-orange/30 text-bitcoin-orange rounded-lg font-medium transition-colors">
-                    Añadir
+                    Add to Cart
                   </button>
                 </div>
               </div>
@@ -179,149 +214,23 @@
           }
         </div>
       </section>
-    }
-
-    <!-- 15mm Collection -->
-    @if (productos15mm.length > 0) {
-      <section class="mb-20">
-        <div class="flex items-center justify-between mb-8">
-          <div>
-            <h2 class="font-serif text-4xl bitcoin-gradient-text mb-2">15mm</h2>
-            <p class="text-lg text-bitcoin-gray">160×320cm · Perfectas para pavimentos y encimeras</p>
-          </div>
-          <a routerLink="/productos/15mm" 
-             class="inline-flex items-center gap-2 px-6 py-3 bg-bitcoin-orange/30 hover:bg-bitcoin-orange/40 border border-bitcoin-orange/30 text-bitcoin-orange rounded-full font-semibold transition-colors shadow-bitcoin">
-            Ver toda la colección
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
-            </svg>
-          </a>
-        </div>
-        
-        <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
-          @for (producto of productos15mm; track producto.slug) {
-            <article class="group rounded-2xl overflow-hidden bg-bitcoin-dark/40 backdrop-blur-sm border border-bitcoin-gray/20 shadow-bitcoin hover:shadow-bitcoin-lg hover:border-bitcoin-orange/30 transition-all duration-300">
-              <div class="aspect-[4/3] overflow-hidden bg-bitcoin-dark/60">
-                @if (producto.imageUrl) {
-                  <img [src]="producto.imageUrl" 
-                       [alt]="producto.name"
-                       class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                       loading="lazy"/>
-                } @else {
-                  <div class="w-full h-full flex items-center justify-center text-bitcoin-gray/50">
-                    <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-                    </svg>
-                  </div>
-                }
-              </div>
-              <div class="p-6">
-                <h3 class="font-serif text-xl text-bitcoin-gray mb-2">{{producto.name}}</h3>
-                <p class="text-sm text-bitcoin-gray/70 mb-4">
-                  {{producto.specs?.size || producto.size || '160×320cm'}} · {{producto.grosor}}
-                </p>
-                @if (producto.price) {
-                  <p class="text-lg font-semibold text-bitcoin-gold mb-4">{{producto.price | currency:'USD':'symbol':'1.2-2'}}</p>
-                }
-                <div class="flex items-center justify-between">
-                  <a [routerLink]="['/productos', producto.grosor, producto.slug]" 
-                     class="text-bitcoin-orange hover:text-bitcoin-gold font-medium transition-colors">
-                    Ver detalles →
-                  </a>
-                  <button (click)="addToCart(producto, $event)"
-                          class="px-4 py-2 bg-bitcoin-orange/30 hover:bg-bitcoin-orange/40 border border-bitcoin-orange/30 text-bitcoin-orange rounded-lg font-medium transition-colors">
-                    Añadir
-                  </button>
-                </div>
-              </div>
-            </article>
-          }
-        </div>
-      </section>
-    }
-
-    <!-- 20mm Collection -->
-    @if (productos20mm.length > 0) {
-      <section class="mb-20">
-        <div class="flex items-center justify-between mb-8">
-          <div>
-            <h2 class="font-serif text-4xl bitcoin-gradient-text mb-2">20mm</h2>
-            <p class="text-lg text-bitcoin-gray">160×320cm · Ideales para exteriores y zonas de alto tránsito</p>
-          </div>
-          <a routerLink="/productos/20mm" 
-             class="inline-flex items-center gap-2 px-6 py-3 bg-bitcoin-orange/30 hover:bg-bitcoin-orange/40 border border-bitcoin-orange/30 text-bitcoin-orange rounded-full font-semibold transition-colors shadow-bitcoin">
-            Ver toda la colección
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
-            </svg>
-          </a>
-        </div>
-        
-        <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
-          @for (producto of productos20mm; track producto.slug) {
-            <article class="group rounded-2xl overflow-hidden bg-bitcoin-dark/40 backdrop-blur-sm border border-bitcoin-gray/20 shadow-bitcoin hover:shadow-bitcoin-lg hover:border-bitcoin-orange/30 transition-all duration-300">
-              <div class="aspect-[4/3] overflow-hidden bg-bitcoin-dark/60">
-                @if (producto.imageUrl) {
-                  <img [src]="producto.imageUrl" 
-                       [alt]="producto.name"
-                       class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                       loading="lazy"/>
-                } @else {
-                  <div class="w-full h-full flex items-center justify-center text-bitcoin-gray/50">
-                    <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-                    </svg>
-                  </div>
-                }
-              </div>
-              <div class="p-6">
-                <h3 class="font-serif text-xl text-bitcoin-gray mb-2">{{producto.name}}</h3>
-                <p class="text-sm text-bitcoin-gray/70 mb-4">
-                  {{producto.specs?.size || producto.size || '160×320cm'}} · {{producto.grosor}}
-                </p>
-                @if (producto.price) {
-                  <p class="text-lg font-semibold text-bitcoin-gold mb-4">{{producto.price | currency:'USD':'symbol':'1.2-2'}}</p>
-                }
-                <div class="flex items-center justify-between">
-                  <a [routerLink]="['/productos', producto.grosor, producto.slug]" 
-                     class="text-bitcoin-orange hover:text-bitcoin-gold font-medium transition-colors">
-                    Ver detalles →
-                  </a>
-                  <button (click)="addToCart(producto, $event)"
-                          class="px-4 py-2 bg-bitcoin-orange/30 hover:bg-bitcoin-orange/40 border border-bitcoin-orange/30 text-bitcoin-orange rounded-lg font-medium transition-colors">
-                    Añadir
-                  </button>
-                </div>
-              </div>
-            </article>
-          }
-        </div>
-      </section>
-    }
 
       <!-- Call to Action -->
       <section class="text-center py-16">
         <div class="max-w-3xl mx-auto">
           <h2 class="font-serif text-3xl bitcoin-gradient-text mb-4">
-            ¿Necesitas asesoramiento personalizado?
+            Need Personalized Consultation?
           </h2>
           <p class="text-lg text-bitcoin-gray mb-8">
-            Nuestro equipo de expertos te ayudará a elegir la superficie perfecta para tu proyecto.
+            Our team of mining experts will help you choose the perfect hardware for your operation.
           </p>
-          <div class="flex flex-col sm:flex-row gap-4 justify-center">
+          <div class="flex justify-center">
             <a routerLink="/contacto" 
                class="inline-flex items-center gap-2 px-8 py-4 bg-bitcoin-orange/30 hover:bg-bitcoin-orange/40 border border-bitcoin-orange/30 text-bitcoin-orange rounded-full font-semibold transition-colors shadow-bitcoin">
               <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-3.582 8-8 8a8.955 8.955 0 01-3.793-.793L3 21l1.793-6.207A8.955 8.955 0 013 12a8 8 0 018-8c4.418 0 8 3.582 8 8z"/>
               </svg>
-              Solicitar asesoramiento
-            </a>
-            <a routerLink="/datos-tecnicos" 
-               class="inline-flex items-center gap-2 px-8 py-4 bg-bitcoin-dark/60 hover:bg-bitcoin-orange/20 border-2 border-bitcoin-orange/30 text-bitcoin-orange rounded-full font-semibold transition-colors">
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25zM6.75 12h.008v.008H6.75V12zm0 3h.008v.008H6.75V15zm0 3h.008v.008H6.75V18z"/>
-              </svg>
-              Datos técnicos
+              Request Consultation
             </a>
           </div>
         </div>

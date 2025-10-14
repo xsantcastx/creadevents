@@ -53,9 +53,39 @@ import { AuthService } from '../../../services/auth.service';
                 </svg>
                 Seeding...
               } @else {
-                🌱 Run Seed
+                🌱 Run Seed (Tiles/Ceramics)
               }
             </button>
+
+            <div class="my-6 border-t border-neutral-200"></div>
+
+            <!-- NEW: Benefit Templates Seed -->
+            <div class="p-4 bg-bitcoin-orange/10 border border-bitcoin-orange/30 rounded-xl">
+              <h3 class="font-semibold text-bitcoin-orange mb-2">🎨 Benefit Templates (Crypto Products)</h3>
+              <ul class="text-sm text-neutral-600 space-y-1">
+                <li>✓ 6 Mining Hardware Templates</li>
+                <li>✓ 4 Accessory Templates</li>
+                <li>✓ 4 Wallet Templates</li>
+                <li>✓ 2 General Templates</li>
+              </ul>
+            </div>
+
+            <button
+              (click)="runBenefitTemplatesSeed()"
+              [disabled]="isSeedingBenefits"
+              class="w-full py-3 px-6 bg-bitcoin-orange text-white rounded-xl font-semibold hover:bg-bitcoin-orange/90 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2">
+              @if (isSeedingBenefits) {
+                <svg class="animate-spin h-5 w-5" fill="none" viewBox="0 0 24 24">
+                  <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                  <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                Seeding Templates...
+              } @else {
+                � Seed Benefit Templates Only
+              }
+            </button>
+
+            <div class="my-6 border-t border-neutral-200"></div>
 
             <button
               (click)="runMigration()"
@@ -102,6 +132,7 @@ export class SeedAdminComponent {
 
   isSeeding = false;
   isMigrating = false;
+  isSeedingBenefits = false;
   message = '';
   messageType: 'success' | 'error' | 'info' = 'info';
   logs: string[] = [];
@@ -193,6 +224,39 @@ export class SeedAdminComponent {
       // Restore console methods
       console.log = originalLog;
       console.warn = originalWarn;
+    }
+  }
+
+  async runBenefitTemplatesSeed() {
+    if (this.isSeedingBenefits) return;
+
+    this.isSeedingBenefits = true;
+    this.message = '';
+    this.logs = [];
+
+    // Override console.log to capture logs
+    const originalLog = console.log;
+    console.log = (...args: any[]) => {
+      this.logs.push(args.join(' '));
+      originalLog(...args);
+    };
+
+    try {
+      this.message = 'Seeding benefit templates...';
+      this.messageType = 'info';
+
+      await this.seedService.seedBenefitTemplates();
+
+      this.message = '✅ Benefit templates seeded successfully! 16 templates created.';
+      this.messageType = 'success';
+    } catch (error: any) {
+      console.error('Benefit templates seed error:', error);
+      this.message = `❌ Error: ${error.message || 'Benefit templates seed failed'}`;
+      this.messageType = 'error';
+    } finally {
+      this.isSeedingBenefits = false;
+      // Restore console.log
+      console.log = originalLog;
     }
   }
 }

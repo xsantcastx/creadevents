@@ -2,7 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { ProductsService } from './products.service';
 import { CategoryService } from './category.service';
-import { MaterialService } from './material.service';
+import { ModelService } from './model.service';
 import { StorageService } from './storage.service';
 import { firstValueFrom } from 'rxjs';
 
@@ -23,7 +23,7 @@ export class MigrationService {
   private http = inject(HttpClient);
   private productsService = inject(ProductsService);
   private categoryService = inject(CategoryService);
-  private materialService = inject(MaterialService);
+  private modelService = inject(ModelService);
   private storageService = inject(StorageService);
 
   /**
@@ -41,15 +41,15 @@ export class MigrationService {
 
       console.log(`Found ${legacyProducts.length} products to migrate`);
 
-      // Load categories and materials
+      // Load categories and models
       const categories = await firstValueFrom(this.categoryService.getAllCategories());
-      const materials = await firstValueFrom(this.materialService.getAllMaterials());
+      const models = await firstValueFrom(this.modelService.getAllModels());
 
-      console.log(`Loaded ${categories.length} categories and ${materials.length} materials`);
+      console.log(`Loaded ${categories.length} categories and ${models.length} models`);
 
       // Create a map for quick lookups
       const categoryMap = new Map(categories.map(c => [c.slug, c]));
-      const materialMap = new Map(materials.map(m => [m.slug, m]));
+      const modelMap = new Map(models.map(m => [m.slug, m]));
 
       let successCount = 0;
       let skipCount = 0;
@@ -66,13 +66,13 @@ export class MigrationService {
             continue;
           }
 
-          // Extract material name from product name
-          const materialName = this.extractMaterialName(legacy.nombre);
-          const materialSlug = this.slugify(materialName);
-          const material = materialMap.get(materialSlug);
+          // Extract model name from product name
+          const modelName = this.extractModelName(legacy.nombre);
+          const modelSlug = this.slugify(modelName);
+          const model = modelMap.get(modelSlug);
 
-          if (!material) {
-            console.warn(`⚠️ Material not found: ${materialSlug} (${legacy.nombre})`);
+          if (!model) {
+            console.warn(`⚠️ Model not found: ${modelSlug} (${legacy.nombre})`);
             skipCount++;
             continue;
           }
@@ -91,13 +91,13 @@ export class MigrationService {
             name: legacy.nombre,
             slug: legacy.slug,
             categoryId: category.id!,
-            materialId: material.id!,
+            modelId: model.id!,
             description: legacy.descripcion,
             coverImage: imageUrl,
             price: 0, // Default price, update manually later
             stock: 0,  // Default stock, update manually later
             size: legacy.medida,
-            sku: `TS-${category.slug}-${material.slug}`.toUpperCase(),
+            sku: `TS-${category.slug}-${model.slug}`.toUpperCase(),
             active: true,
             featured: false,
             createdAt: new Date(),
@@ -172,10 +172,10 @@ export class MigrationService {
   }
 
   /**
-   * Extract material name from product name
+   * Extract model name from product name
    * E.g., "Black Gold Premium" -> "Black Gold"
    */
-  private extractMaterialName(productName: string): string {
+  private extractModelName(productName: string): string {
     // Remove common suffixes
     return productName
       .replace(/\s+(Premium|Natural|Elegance)$/i, '')

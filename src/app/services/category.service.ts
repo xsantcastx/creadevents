@@ -81,12 +81,12 @@ export class CategoryService {
   async addCategory(category: Omit<Category, 'id'>): Promise<string> {
     const categoriesCollection = collection(this.firestore, 'categories');
     const now = Timestamp.now();
-    const data = {
+    const data = this.removeUndefinedFields({
       ...category,
       active: category.active !== false,
       createdAt: now,
       updatedAt: now
-    };
+    });
     const docRef = await addDoc(categoriesCollection, data as any);
     return docRef.id;
   }
@@ -96,10 +96,11 @@ export class CategoryService {
    */
   async updateCategory(id: string, updates: Partial<Category>): Promise<void> {
     const docRef = this.categoryDoc(id);
-    await updateDoc(docRef, {
+    const cleanedUpdates = this.removeUndefinedFields({
       ...updates,
       updatedAt: Timestamp.now()
-    } as any);
+    });
+    await updateDoc(docRef, cleanedUpdates as any);
   }
 
   /**
@@ -108,6 +109,19 @@ export class CategoryService {
   async deleteCategory(id: string): Promise<void> {
     const docRef = this.categoryDoc(id);
     await deleteDoc(docRef);
+  }
+
+  /**
+   * Remove undefined fields from object to prevent Firestore errors
+   */
+  private removeUndefinedFields(obj: any): any {
+    const cleaned: any = {};
+    for (const key in obj) {
+      if (obj[key] !== undefined) {
+        cleaned[key] = obj[key];
+      }
+    }
+    return cleaned;
   }
 
   /**

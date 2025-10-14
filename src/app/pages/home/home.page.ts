@@ -24,12 +24,16 @@ export class HomePageComponent implements OnInit {
   featuredProducts: FirestoreProduct[] = [];
   galleryImages: GalleryImage[] = [];
   loading = true;
+  hasProducts = false;
 
   ngOnInit() {
     // Only load from service if in browser (not during SSR)
     if (isPlatformBrowser(this.platformId)) {
       this.loadLatestProducts();
       this.loadGalleryPreview();
+    } else {
+      // During SSR, set loading to false to show empty state
+      this.loading = false;
     }
   }
 
@@ -50,10 +54,12 @@ export class HomePageComponent implements OnInit {
           
           // Take up to 8 latest products for featured section
           this.featuredProducts = availableProducts.slice(0, 8);
+          this.hasProducts = this.featuredProducts.length > 0;
           this.loading = false;
         },
         error: (error) => {
           console.error('Error loading products:', error);
+          this.hasProducts = false;
           this.loading = false;
         }
       });

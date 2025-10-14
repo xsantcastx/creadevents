@@ -1,14 +1,17 @@
 import { Injectable, inject } from '@angular/core';
 import { CategoryService } from './category.service';
-import { MaterialService } from './material.service';
+import { ModelService } from './model.service';
 import { TemplateService } from './template.service';
-import { Category, Material, Template } from '../models/catalog';
+import { BenefitTemplateService } from './benefit-template.service';
+import { Category, Model, Template } from '../models/catalog';
+import { DEFAULT_BENEFIT_TEMPLATES } from '../../data/benefit-templates.seed';
 
 @Injectable({ providedIn: 'root' })
 export class SeedService {
   private categoryService = inject(CategoryService);
-  private materialService = inject(MaterialService);
+  private modelService = inject(ModelService);
   private templateService = inject(TemplateService);
+  private benefitTemplateService = inject(BenefitTemplateService);
 
   /**
    * Seed all initial data
@@ -18,8 +21,8 @@ export class SeedService {
     
     try {
       const categoryIds = await this.seedCategories();
-      const materialIds = await this.seedMaterials();
-      await this.seedTemplates(categoryIds, materialIds);
+      const modelIds = await this.seedModels(categoryIds);
+      await this.seedTemplates(categoryIds, modelIds);
       
       console.log('✅ Seed completed successfully!');
     } catch (error) {
@@ -99,13 +102,22 @@ export class SeedService {
   }
 
   /**
-   * Seed materials from productos.json product names
+   * Seed mining hardware models from productos.json product names
    */
-  private async seedMaterials(): Promise<Record<string, string>> {
-    console.log('🎨 Seeding materials...');
+  private async seedModels(categoryIds: Record<string, string>): Promise<Record<string, string>> {
+    console.log('🎨 Seeding models...');
     
-    const materials: Omit<Material, 'id'>[] = [
+    // Get the first available category as default (or use '12mm' if it exists)
+    const defaultCategoryId = categoryIds['12mm'] || Object.values(categoryIds)[0];
+    
+    if (!defaultCategoryId) {
+      console.warn('⚠️ No categories found. Skipping model seeding.');
+      return {};
+    }
+    
+    const models: Omit<Model, 'id'>[] = [
       {
+        categoryId: defaultCategoryId,
         name: 'Saint Laurent',
         slug: 'saint-laurent',
         textureHints: ['vetas oscuras', 'mármol natural', 'sofisticado'],
@@ -113,6 +125,7 @@ export class SeedService {
         active: true
       },
       {
+        categoryId: defaultCategoryId,
         name: 'Black Gold',
         slug: 'black-gold',
         textureHints: ['contrastes dorados', 'fondo negro profundo', 'dramático'],
@@ -120,6 +133,7 @@ export class SeedService {
         active: true
       },
       {
+        categoryId: defaultCategoryId,
         name: 'Arenaria Ivory',
         slug: 'arenaria-ivory',
         textureHints: ['tonos neutros cálidos', 'textura suave', 'serenidad'],
@@ -127,6 +141,7 @@ export class SeedService {
         active: true
       },
       {
+        categoryId: defaultCategoryId,
         name: 'Rapolano',
         slug: 'rapolano',
         textureHints: ['piedra travertino', 'texturas naturales', 'colores tierra'],
@@ -134,6 +149,7 @@ export class SeedService {
         active: true
       },
       {
+        categoryId: defaultCategoryId,
         name: 'Konkrete',
         slug: 'konkrete',
         textureHints: ['industrial moderno', 'hormigón pulido'],
@@ -141,6 +157,7 @@ export class SeedService {
         active: true
       },
       {
+        categoryId: defaultCategoryId,
         name: 'Crystal Clear',
         slug: 'crystal-clear',
         textureHints: ['cristalino', 'transparencias', 'efectos de luz'],
@@ -148,6 +165,7 @@ export class SeedService {
         active: true
       },
       {
+        categoryId: defaultCategoryId,
         name: 'Taj Mahal',
         slug: 'taj-mahal',
         textureHints: ['mármol clásico', 'vetas sutiles', 'crema y beige'],
@@ -155,6 +173,7 @@ export class SeedService {
         active: true
       },
       {
+        categoryId: defaultCategoryId,
         name: 'Apollo White',
         slug: 'apollo-white',
         textureHints: ['blanco puro', 'variaciones sutiles', 'elegancia atemporal'],
@@ -162,6 +181,7 @@ export class SeedService {
         active: true
       },
       {
+        categoryId: defaultCategoryId,
         name: 'Calacatta Gold',
         slug: 'calacatta-gold',
         textureHints: ['mármol Calacatta', 'vetas doradas distintivas', 'lujo'],
@@ -169,6 +189,7 @@ export class SeedService {
         active: true
       },
       {
+        categoryId: defaultCategoryId,
         name: 'Patagonia',
         slug: 'patagonia',
         textureHints: ['paisajes naturales', 'texturas únicas', 'natural'],
@@ -176,6 +197,7 @@ export class SeedService {
         active: true
       },
       {
+        categoryId: defaultCategoryId,
         name: 'Statuario Elegance',
         slug: 'statuario-elegance',
         textureHints: ['mármol Statuario', 'vetas dramáticas', 'elegancia'],
@@ -183,6 +205,7 @@ export class SeedService {
         active: true
       },
       {
+        categoryId: defaultCategoryId,
         name: 'Laponia Black',
         slug: 'laponia-black',
         textureHints: ['negro profundo', 'matices sutiles', 'nórdico'],
@@ -193,21 +216,21 @@ export class SeedService {
 
     const ids: Record<string, string> = {};
     
-    for (const material of materials) {
-      const exists = await this.materialService.slugExists(material.slug);
+    for (const model of models) {
+      const exists = await this.modelService.slugExists(model.slug);
       if (!exists) {
-        const id = await this.materialService.addMaterial(material);
-        ids[material.slug] = id;
-        console.log(`  ✓ Created material: ${material.name}`);
+        const id = await this.modelService.addModel(model);
+        ids[model.slug] = id;
+        console.log(`  ✓ Created model: ${model.name}`);
       } else {
-        // Update existing material to ensure it has active: true
-        const existingMat = await this.materialService.getMaterialBySlug(material.slug).toPromise();
-        if (existingMat && existingMat.id) {
-          await this.materialService.updateMaterial(existingMat.id, { active: true });
-          ids[material.slug] = existingMat.id;
-          console.log(`  ✓ Updated material to active: ${material.name}`);
+        // Update existing model to ensure it has active: true
+        const existingModel = await this.modelService.getModelBySlug(model.slug).toPromise();
+        if (existingModel && existingModel.id) {
+          await this.modelService.updateModel(existingModel.id, { active: true });
+          ids[model.slug] = existingModel.id;
+          console.log(`  ✓ Updated model to active: ${model.name}`);
         } else {
-          console.log(`  ⊘ Material already exists: ${material.name}`);
+          console.log(`  ⊘ Model already exists: ${model.name}`);
         }
       }
     }
@@ -220,7 +243,7 @@ export class SeedService {
    */
   private async seedTemplates(
     categoryIds: Record<string, string>,
-    materialIds: Record<string, string>
+    modelIds: Record<string, string>
   ): Promise<void> {
     console.log('📝 Seeding templates...');
     
@@ -229,8 +252,8 @@ export class SeedService {
       type: 'description',
       scope: 'global',
       language: 'es',
-      content: 'Superficie porcelánica de gran formato con acabado {material}. Perfecta para {aplicaciones}.',
-      fields: ['material', 'aplicaciones'],
+      content: 'Superficie porcelánica de gran formato con acabado {model}. Perfecta para {aplicaciones}.',
+      fields: ['model', 'aplicaciones'],
       active: true
     };
 
@@ -266,5 +289,28 @@ export class SeedService {
     }
 
     console.log('✅ Templates seeded');
+  }
+
+  /**
+   * Seed benefit templates
+   */
+  async seedBenefitTemplates(): Promise<void> {
+    console.log('🎨 Seeding benefit templates...');
+    
+    let created = 0;
+    let skipped = 0;
+
+    for (const template of DEFAULT_BENEFIT_TEMPLATES) {
+      try {
+        await this.benefitTemplateService.createTemplate(template);
+        console.log(`  ✓ Created template: ${template.name}`);
+        created++;
+      } catch (error) {
+        console.error(`  ✗ Error creating template ${template.name}:`, error);
+        skipped++;
+      }
+    }
+
+    console.log(`✅ Benefit templates seeded: ${created} created, ${skipped} skipped`);
   }
 }

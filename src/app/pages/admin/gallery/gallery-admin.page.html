@@ -61,17 +61,22 @@
           class="px-4 py-2 rounded-xl font-medium transition-all whitespace-nowrap border">
           All Media ({{ getTagCount('all') }})
         </button>
-        @for (tag of availableTags; track tag) {
+        @for (tag of availableTags; track tag.id) {
           <button
-            (click)="selectedTag = tag"
-            [class.bg-bitcoin-orange]="selectedTag === tag"
-            [class.text-white]="selectedTag === tag"
-            [class.border-bitcoin-orange]="selectedTag === tag"
-            [class.bg-bitcoin-dark/40]="selectedTag !== tag"
-            [class.text-bitcoin-gray]="selectedTag !== tag"
-            [class.border-bitcoin-gray/20]="selectedTag !== tag"
-            class="px-4 py-2 rounded-xl font-medium transition-all whitespace-nowrap capitalize border">
-            {{ tag }} ({{ getTagCount(tag) }})
+            (click)="selectedTag = tag.slug"
+            [class.bg-bitcoin-orange]="selectedTag === tag.slug"
+            [class.text-white]="selectedTag === tag.slug"
+            [class.border-bitcoin-orange]="selectedTag === tag.slug"
+            [class.bg-bitcoin-dark/40]="selectedTag !== tag.slug"
+            [class.text-bitcoin-gray]="selectedTag !== tag.slug"
+            [class.border-bitcoin-gray/20]="selectedTag !== tag.slug"
+            class="px-4 py-2 rounded-xl font-medium transition-all whitespace-nowrap border flex items-center gap-2"
+            [style.border-color]="selectedTag === tag.slug ? tag.color : ''">
+            @if (tag.icon) {
+              <span>{{ tag.icon }}</span>
+            }
+            <span>{{ tag.name }}</span>
+            <span class="text-xs opacity-70">({{ getTagCount(tag.slug) }})</span>
           </button>
         }
       </div>
@@ -240,7 +245,7 @@
 
           <!-- File Upload -->
           <div>
-            <label for="imageFile" class="block text-sm font-medium text-bitcoin-gray mb-2">
+            <label for="imageFile" class="block text-base font-semibold text-bitcoin-gray mb-3">
               {{ 'admin.image_file' | translate }}
             </label>
             <input
@@ -248,54 +253,72 @@
               id="imageFile"
               (change)="onCoverSelected($event)"
               accept="image/*"
-              class="w-full px-4 py-3 border border-dashed border-bitcoin-orange/30 rounded-xl focus:ring-2 focus:ring-bitcoin-orange focus:border-bitcoin-orange bg-bitcoin-dark/40 text-bitcoin-gray">
-            <p class="mt-2 text-xs text-bitcoin-gray/70">
+              class="w-full px-4 py-3 border-2 border-dashed border-bitcoin-orange/30 rounded-xl focus:ring-2 focus:ring-bitcoin-orange focus:border-bitcoin-orange bg-bitcoin-dark/40 text-bitcoin-gray text-base file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-bitcoin-orange/30 file:text-bitcoin-orange hover:file:bg-bitcoin-orange/40 file:cursor-pointer">
+            <p class="mt-2 text-sm text-bitcoin-gray">
               Recommended: 1600x1200px or larger. Max 10MB. Smaller images are allowed but may appear pixelated.
             </p>
           </div>
 
           <!-- Alt Text -->
           <div>
-            <label for="altText" class="block text-sm font-medium text-bitcoin-gray mb-2">
-              Alt Text
+            <label for="altText" class="block text-base font-semibold text-bitcoin-gray mb-3">
+              Project Name *
             </label>
             <input
               type="text"
               id="altText"
               formControlName="altText"
-              placeholder="Describe the image for accessibility..."
-              class="w-full px-4 py-3 bg-bitcoin-dark/40 border border-bitcoin-gray/20 rounded-xl focus:ring-2 focus:ring-bitcoin-orange focus:border-bitcoin-orange placeholder:text-bitcoin-gray/50 text-bitcoin-gray">
-            <p class="mt-2 text-xs text-bitcoin-gray/70">Brief description of the image content</p>
+              placeholder="e.g., Bitcoin Mining Farm Setup"
+              class="w-full px-4 py-3 bg-bitcoin-dark/40 border-2 border-bitcoin-gray/20 rounded-xl focus:ring-2 focus:ring-bitcoin-orange focus:border-bitcoin-orange placeholder:text-bitcoin-gray/50 text-bitcoin-gray text-base">
+            <p class="mt-2 text-sm text-bitcoin-gray">Project name (will be displayed as the title)</p>
+          </div>
+
+          <!-- Caption/Description -->
+          <div>
+            <label for="caption" class="block text-base font-semibold text-bitcoin-gray mb-3">
+              Description
+            </label>
+            <textarea
+              id="caption"
+              formControlName="caption"
+              rows="3"
+              placeholder="e.g., Texas, USA - High-efficiency cooling system"
+              class="w-full px-4 py-3 bg-bitcoin-dark/40 border-2 border-bitcoin-gray/20 rounded-xl focus:ring-2 focus:ring-bitcoin-orange focus:border-bitcoin-orange placeholder:text-bitcoin-gray/50 text-bitcoin-gray text-base resize-none"></textarea>
+            <p class="mt-2 text-sm text-bitcoin-gray">Location or project description (optional)</p>
           </div>
 
           <!-- Tags -->
           <div>
-            <label class="block text-sm font-medium text-bitcoin-gray mb-2">
+            <label class="block text-base font-semibold text-bitcoin-gray mb-3">
               Tags *
             </label>
             <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
-              @for (tag of availableTags; track tag) {
-                <label class="flex items-center gap-2 p-3 bg-bitcoin-dark/40 border border-bitcoin-gray/20 rounded-xl hover:bg-bitcoin-dark/60 hover:border-bitcoin-orange/30 cursor-pointer transition-all">
+              @for (tag of availableTags; track tag.id) {
+                <label class="flex items-center gap-2 p-3 bg-bitcoin-dark/40 border-2 border-bitcoin-gray/20 rounded-xl hover:bg-bitcoin-dark/60 hover:border-bitcoin-orange/30 cursor-pointer transition-all"
+                       [style.border-color]="isTagSelected(tag.slug, false) ? tag.color : ''">
                   <input
                     type="checkbox"
-                    [checked]="isTagSelected(tag, false)"
-                    (change)="toggleTag(tag, $any($event.target).checked, false)"
-                    class="rounded border-bitcoin-gray/30 text-bitcoin-orange focus:ring-bitcoin-orange bg-bitcoin-dark/60">
-                  <span class="text-sm text-bitcoin-gray">{{ 'gallery.tags.' + tag | translate }}</span>
+                    [checked]="isTagSelected(tag.slug, false)"
+                    (change)="toggleTag(tag.slug, $any($event.target).checked, false)"
+                    class="w-5 h-5 rounded border-bitcoin-gray/30 text-bitcoin-orange focus:ring-bitcoin-orange bg-bitcoin-dark/60">
+                  @if (tag.icon) {
+                    <span class="text-lg">{{ tag.icon }}</span>
+                  }
+                  <span class="text-base text-bitcoin-gray font-medium">{{ tag.name }}</span>
                 </label>
               }
             </div>
-            <p class="mt-2 text-xs text-bitcoin-gray/70">Select at least one tag to categorize the media</p>
+            <p class="mt-2 text-sm text-bitcoin-gray">Select at least one tag to categorize the media</p>
           </div>
 
           <!-- Related Products -->
           <div>
-            <label class="block text-sm font-medium text-bitcoin-gray mb-2">
+            <label class="block text-base font-semibold text-bitcoin-gray mb-3">
               Related Products
             </label>
-            <div class="max-h-64 overflow-y-auto border border-bitcoin-gray/20 rounded-xl bg-bitcoin-dark/40 p-3 space-y-2">
+            <div class="max-h-64 overflow-y-auto border-2 border-bitcoin-gray/20 rounded-xl bg-bitcoin-dark/40 p-3 space-y-2">
               @if (products.length === 0) {
-                <p class="text-xs text-bitcoin-gray/70">No products available</p>
+                <p class="text-sm text-bitcoin-gray">No products available</p>
               } @else {
                 @for (product of products; track product.id) {
                   <label class="flex items-center gap-2 p-2 hover:bg-bitcoin-dark/60 rounded-lg cursor-pointer transition-colors">
@@ -303,13 +326,13 @@
                       type="checkbox"
                       [checked]="isProductSelected(product.id || '', false)"
                       (change)="toggleRelatedProduct(product.id || '', $any($event.target).checked, false)"
-                      class="rounded border-bitcoin-gray/30 text-bitcoin-orange focus:ring-bitcoin-orange bg-bitcoin-dark/60">
-                    <span class="text-sm truncate text-bitcoin-gray">{{ product.name }}</span>
+                      class="w-5 h-5 rounded border-bitcoin-gray/30 text-bitcoin-orange focus:ring-bitcoin-orange bg-bitcoin-dark/60">
+                    <span class="text-base truncate text-bitcoin-gray">{{ product.name }}</span>
                   </label>
                 }
               }
             </div>
-            <p class="mt-2 text-xs text-bitcoin-gray/70">Link this media to specific products (optional)</p>
+            <p class="mt-2 text-sm text-bitcoin-gray">Link this media to specific products (optional)</p>
           </div>
 
           <!-- Upload Progress -->
@@ -333,7 +356,7 @@
             <button
               type="submit"
               [disabled]="isSaving"
-              class="flex-1 py-3 px-6 bg-bitcoin-orange/30 hover:bg-bitcoin-orange/40 text-bitcoin-orange border border-bitcoin-orange/30 rounded-xl font-semibold transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2">
+              class="flex-1 py-4 px-6 bg-bitcoin-orange/30 hover:bg-bitcoin-orange/40 text-bitcoin-orange border-2 border-bitcoin-orange/30 rounded-xl font-bold text-base transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2">
               @if (isSaving) {
                 <svg class="animate-spin h-5 w-5 text-bitcoin-orange" fill="none" viewBox="0 0 24 24">
                   <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
@@ -348,7 +371,7 @@
               type="button"
               (click)="closeUploadModal()"
               [disabled]="isSaving"
-              class="flex-1 py-3 px-6 bg-bitcoin-dark/40 hover:bg-bitcoin-dark/60 border border-bitcoin-gray/20 text-bitcoin-gray font-semibold rounded-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed">
+              class="flex-1 py-4 px-6 bg-bitcoin-dark/40 hover:bg-bitcoin-dark/60 border-2 border-bitcoin-gray/20 text-bitcoin-gray font-bold text-base rounded-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed">
               <span>Cancel</span>
             </button>
           </div>
@@ -373,63 +396,85 @@
         <form [formGroup]="editForm" (ngSubmit)="onEditSubmit()" class="p-6 space-y-6">
           
           <!-- Preview -->
-          <div class="rounded-2xl overflow-hidden border border-gray-200">
+          <div class="rounded-2xl overflow-hidden border border-bitcoin-gray/20">
             <img [src]="mediaToEdit.thumbnailUrl || mediaToEdit.url" [alt]="mediaToEdit.altText" class="w-full h-64 object-cover">
           </div>
 
           <!-- Alt Text -->
           <div>
-            <label for="editAltText" class="block text-sm font-medium text-gray-900 mb-2">
-              Alt Text
+            <label for="editAltText" class="block text-base font-semibold text-bitcoin-gray mb-3">
+              Project Name *
             </label>
             <input
               type="text"
               id="editAltText"
               formControlName="altText"
-              placeholder="Describe the image for accessibility..."
-              class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-ts-accent focus:border-transparent placeholder:text-gray-400 text-gray-900">
+              placeholder="e.g., Bitcoin Mining Farm Setup"
+              class="w-full px-4 py-3 bg-bitcoin-dark/40 border-2 border-bitcoin-gray/20 rounded-xl focus:ring-2 focus:ring-bitcoin-orange focus:border-bitcoin-orange text-bitcoin-gray placeholder-bitcoin-gray/50 text-base">
+            <p class="mt-2 text-sm text-bitcoin-gray">Project name (will be displayed as the title)</p>
+          </div>
+
+          <!-- Caption/Description -->
+          <div>
+            <label for="editCaption" class="block text-base font-semibold text-bitcoin-gray mb-3">
+              Description
+            </label>
+            <textarea
+              id="editCaption"
+              formControlName="caption"
+              rows="3"
+              placeholder="e.g., Texas, USA - High-efficiency cooling system"
+              class="w-full px-4 py-3 bg-bitcoin-dark/40 border-2 border-bitcoin-gray/20 rounded-xl focus:ring-2 focus:ring-bitcoin-orange focus:border-bitcoin-orange placeholder:text-bitcoin-gray/50 text-bitcoin-gray text-base resize-none"></textarea>
+            <p class="mt-2 text-sm text-bitcoin-gray">Location or project description (optional)</p>
           </div>
 
           <!-- Tags -->
           <div>
-            <label class="block text-sm font-medium text-gray-900 mb-2">
+            <label class="block text-base font-semibold text-bitcoin-gray mb-3">
               Tags *
             </label>
             <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
-              @for (tag of availableTags; track tag) {
-                <label class="flex items-center gap-2 p-3 border border-gray-200 rounded-xl hover:bg-gray-50 cursor-pointer transition-colors">
+              @for (tag of availableTags; track tag.id) {
+                <label class="flex items-center gap-2 p-3 bg-bitcoin-dark/40 border-2 border-bitcoin-gray/20 rounded-xl hover:bg-bitcoin-dark/60 hover:border-bitcoin-orange/30 cursor-pointer transition-all"
+                       [class.border-bitcoin-orange]="isTagSelected(tag.slug, true)"
+                       [style.border-color]="isTagSelected(tag.slug, true) ? tag.color : ''">
                   <input
                     type="checkbox"
-                    [checked]="isTagSelected(tag, true)"
-                    (change)="toggleTag(tag, $any($event.target).checked, true)"
-                    class="rounded border-gray-300 text-ts-accent focus:ring-ts-accent">
-                  <span class="text-sm text-gray-900">{{ 'gallery.tags.' + tag | translate }}</span>
+                    [checked]="isTagSelected(tag.slug, true)"
+                    (change)="toggleTag(tag.slug, $any($event.target).checked, true)"
+                    class="w-5 h-5 rounded border-bitcoin-gray/30 text-bitcoin-orange focus:ring-bitcoin-orange bg-bitcoin-dark/60">
+                  @if (tag.icon) {
+                    <span class="text-lg">{{ tag.icon }}</span>
+                  }
+                  <span class="text-base text-bitcoin-gray font-medium">{{ tag.name }}</span>
                 </label>
               }
             </div>
+            <p class="text-sm text-bitcoin-gray mt-2">Selected: {{ editTags?.value?.length || 0 }} tag(s)</p>
           </div>
 
           <!-- Related Products -->
           <div>
-            <label class="block text-sm font-medium text-gray-900 mb-2">
+            <label class="block text-base font-semibold text-bitcoin-gray mb-3">
               Related Products
             </label>
-            <div class="max-h-64 overflow-y-auto border border-gray-200 rounded-xl bg-gray-50 p-3 space-y-2">
+            <div class="max-h-64 overflow-y-auto border-2 border-bitcoin-gray/20 rounded-xl bg-bitcoin-dark/40 p-3 space-y-2">
               @if (products.length === 0) {
-                <p class="text-xs text-gray-600">No products available</p>
+                <p class="text-sm text-bitcoin-gray">No products available</p>
               } @else {
                 @for (product of products; track product.id) {
-                  <label class="flex items-center gap-2 p-2 hover:bg-white rounded-lg cursor-pointer transition-colors">
+                  <label class="flex items-center gap-2 p-2 hover:bg-bitcoin-dark/60 rounded-lg cursor-pointer transition-colors">
                     <input
                       type="checkbox"
                       [checked]="isProductSelected(product.id || '', true)"
                       (change)="toggleRelatedProduct(product.id || '', $any($event.target).checked, true)"
-                      class="rounded border-gray-300 text-ts-accent focus:ring-ts-accent">
-                    <span class="text-sm truncate text-gray-900">{{ product.name }}</span>
+                      class="w-5 h-5 rounded border-bitcoin-gray/30 text-bitcoin-orange focus:ring-bitcoin-orange">
+                    <span class="text-base truncate text-bitcoin-gray">{{ product.name }}</span>
                   </label>
                 }
               }
             </div>
+            <p class="mt-2 text-sm text-bitcoin-gray">Link this media to specific products (optional)</p>
           </div>
 
           <!-- Actions -->
@@ -437,23 +482,23 @@
             <button
               type="submit"
               [disabled]="isSaving"
-              class="flex-1 py-3 px-6 bg-ts-accent text-white rounded-xl font-semibold hover:bg-ts-accent/90 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2">
+              class="flex-1 py-4 px-6 bg-bitcoin-orange/30 hover:bg-bitcoin-orange/40 text-bitcoin-orange border-2 border-bitcoin-orange/30 rounded-xl font-bold text-base transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2">
               @if (isSaving) {
-                <svg class="animate-spin h-5 w-5 text-white" fill="none" viewBox="0 0 24 24">
+                <svg class="animate-spin h-5 w-5" fill="none" viewBox="0 0 24 24">
                   <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                   <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                 </svg>
-                <span class="text-white">Saving...</span>
+                <span>Saving...</span>
               } @else {
-                <span class="text-white">Save Changes</span>
+                <span>Save Changes</span>
               }
             </button>
             <button
               type="button"
               (click)="closeEditModal()"
               [disabled]="isSaving"
-              class="flex-1 py-3 px-6 border-2 border-gray-300 text-gray-700 font-semibold rounded-xl hover:bg-gray-50 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed">
-              <span class="text-gray-700">Cancel</span>
+              class="flex-1 py-4 px-6 bg-bitcoin-dark/40 hover:bg-bitcoin-dark/60 border-2 border-bitcoin-gray/20 text-bitcoin-gray font-bold text-base rounded-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed">
+              <span>Cancel</span>
             </button>
           </div>
         </form>

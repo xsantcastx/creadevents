@@ -1,4 +1,4 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, OnInit, signal, ChangeDetectorRef, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
 
@@ -10,17 +10,21 @@ import { TranslateModule } from '@ngx-translate/core';
   styleUrl: './home-stats.component.scss'
 })
 export class HomeStatsComponent implements OnInit {
+  private cdr = inject(ChangeDetectorRef);
+  
   minersDeployed = signal(0);
   customerSatisfaction = signal(0);
   uptimeGuarantee = signal(0);
   yearsExperience = signal(0);
 
   ngOnInit() {
-    // Animate counters
-    this.animateCounter(this.minersDeployed, 5000, 2000);
-    this.animateCounter(this.customerSatisfaction, 98, 2000);
-    this.animateCounter(this.uptimeGuarantee, 99.9, 2000, true);
-    this.animateCounter(this.yearsExperience, 5, 1500);
+    // Delay animation start to avoid ExpressionChangedAfterItHasBeenCheckedError
+    setTimeout(() => {
+      this.animateCounter(this.minersDeployed, 5000, 2000);
+      this.animateCounter(this.customerSatisfaction, 98, 2000);
+      this.animateCounter(this.uptimeGuarantee, 99.9, 2000, true);
+      this.animateCounter(this.yearsExperience, 5, 1500);
+    }, 0);
   }
 
   private animateCounter(signal: any, target: number, duration: number, isDecimal = false) {

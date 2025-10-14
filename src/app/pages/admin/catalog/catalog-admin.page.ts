@@ -1,21 +1,23 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, ActivatedRoute } from '@angular/router';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, ReactiveFormsModule, FormsModule, Validators } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { AuthService } from '../../../services/auth.service';
 import { CategoryService } from '../../../services/category.service';
-import { MaterialService } from '../../../services/material.service';
+import { ModelService } from '../../../services/model.service';
 import { SizeGroupService } from '../../../services/size-group.service';
-import { Category, Material, Family, SizeGroup } from '../../../models/catalog';
+import { TagService } from '../../../services/tag.service';
+import { TemplateService } from '../../../services/template.service';
+import { Category, Model, Tag, SizeGroup } from '../../../models/catalog';
 import { AdminQuickActionsComponent } from '../../../shared/components/admin-quick-actions/admin-quick-actions.component';
 
-type TabType = 'categories' | 'materials' | 'families' | 'sizes';
+type TabType = 'categories' | 'models' | 'tags' | 'sizes';
 
 @Component({
   selector: 'app-catalog-admin',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, TranslateModule, AdminQuickActionsComponent],
+  imports: [CommonModule, ReactiveFormsModule, FormsModule, TranslateModule, AdminQuickActionsComponent],
   templateUrl: './catalog-admin.page.html',
   styleUrl: './catalog-admin.page.scss'
 })
@@ -24,31 +26,34 @@ export class CatalogAdminComponent implements OnInit {
   private router = inject(Router);
   private fb = inject(FormBuilder);
   private categoryService = inject(CategoryService);
-  private materialService = inject(MaterialService);
+  private modelService = inject(ModelService);
   private sizeGroupService = inject(SizeGroupService);
+  private tagService = inject(TagService);
+  private templateService = inject(TemplateService);
 
   // Data
   categories: Category[] = [];
-  materials: Material[] = [];
-  families: Family[] = [];
+  models: Model[] = [];
+  tags: Tag[] = [];
   sizes: SizeGroup[] = [];
 
   // UI State
   activeTab: TabType = 'categories';
   isLoading = true;
   isSaving = false;
+  selectedCategoryFilter: string = ''; // For filtering models by category
   
   // Modals
   showCategoryModal = false;
-  showMaterialModal = false;
-  showFamilyModal = false;
+  showModelModal = false;
+  showTagModal = false;
   showSizeModal = false;
   showDeleteConfirm = false;
   
   // Forms
   categoryForm: FormGroup;
-  materialForm: FormGroup;
-  familyForm: FormGroup;
+  modelForm: FormGroup;
+  tagForm: FormGroup;
   sizeForm: FormGroup;
   
   // Messages
@@ -57,8 +62,8 @@ export class CatalogAdminComponent implements OnInit {
   
   // Edit mode
   editingCategory: Category | null = null;
-  editingMaterial: Material | null = null;
-  editingFamily: Family | null = null;
+  editingModel: Model | null = null;
+  editingTag: Tag | null = null;
   editingSize: SizeGroup | null = null;
   itemToDelete: { type: TabType; id: string; name: string } | null = null;
 
@@ -69,22 +74,30 @@ export class CatalogAdminComponent implements OnInit {
       slug: ['', Validators.required],
       order: [0],
       icon: [''],
+      descriptionTemplate: [''],
+      seoTitleTemplate: [''],
+      seoMetaTemplate: [''],
       active: [true]
     });
 
-    this.materialForm = this.fb.group({
+    this.modelForm = this.fb.group({
+      categoryId: [''],  // Category parent - optional for backward compatibility
       name: ['', Validators.required],
       slug: ['', Validators.required],
       textureHints: [''],
-      defaultTags: [''],
+      defaultTags: [[]],  // Changed to array for multi-select
+      descriptionTemplate: [''],
+      seoTitleTemplate: [''],
+      seoMetaTemplate: [''],
       active: [true]
     });
 
-    this.familyForm = this.fb.group({
+    this.tagForm = this.fb.group({
       name: ['', Validators.required],
       slug: ['', Validators.required],
-      materialId: [''],
       description: [''],
+      color: ['#F7931A'],
+      icon: [''],
       order: [0],
       active: [true]
     });
@@ -122,18 +135,22 @@ export class CatalogAdminComponent implements OnInit {
       // Subscribe to observables
       this.categoryService.getAllCategories().subscribe(categories => {
         this.categories = categories;
+        console.log('✅ Categories loaded:', this.categories.length, this.categories);
       });
       
-      this.materialService.getAllMaterials().subscribe(materials => {
-        this.materials = materials;
+      this.modelService.getAllModels().subscribe(models => {
+        this.models = models;
+        console.log('✅ Models loaded:', this.models.length, this.models);
       });
       
       this.sizeGroupService.getAllSizeGroups().subscribe(sizes => {
         this.sizes = sizes;
       });
       
-      // TODO: Load families when service is ready
-      this.families = [];
+      this.tagService.getTags().subscribe(tags => {
+        this.tags = tags;
+        console.log('✅ Tags loaded:', this.tags.length, this.tags);
+      });
     } catch (error) {
       console.error('Error loading catalog data:', error);
       this.errorMessage = 'Error loading catalog data';
@@ -149,15 +166,26 @@ export class CatalogAdminComponent implements OnInit {
   }
 
   // Category CRUD
-  openCategoryModal(category?: Category) {
+  async openCategoryModal(category?: Category) {
     this.editingCategory = category || null;
     
-    if (category) {
+    if (category?.id) {
+      // Load existing templates for this category
+      const currentLang = 'es';
+      const [descTemplates, seoTitleTemplates, seoMetaTemplates] = await Promise.all([
+        this.templateService.getTemplatesByScope('description', 'category', category.id, currentLang),
+        this.templateService.getTemplatesByScope('seoTitle', 'category', category.id, currentLang),
+        this.templateService.getTemplatesByScope('seoMeta', 'category', category.id, currentLang)
+      ]);
+      
       this.categoryForm.patchValue({
         name: category.name,
         slug: category.slug,
         order: category.order || 0,
         icon: category.icon || '',
+        descriptionTemplate: descTemplates[0]?.content || '',
+        seoTitleTemplate: seoTitleTemplates[0]?.content || '',
+        seoMetaTemplate: seoMetaTemplates[0]?.content || '',
         active: category.active !== false
       });
     } else {
@@ -180,16 +208,90 @@ export class CatalogAdminComponent implements OnInit {
         name: formValue.name,
         slug: formValue.slug,
         order: formValue.order || 0,
-        icon: formValue.icon || undefined,
         active: formValue.active !== false
       };
 
+      // Only add icon if it has a value
+      if (formValue.icon) {
+        categoryData.icon = formValue.icon;
+      }
+
+      let categoryId: string;
+      
       if (this.editingCategory?.id) {
         await this.categoryService.updateCategory(this.editingCategory.id, categoryData);
+        categoryId = this.editingCategory.id;
         this.successMessage = 'Category updated successfully';
       } else {
-        await this.categoryService.addCategory(categoryData);
+        categoryId = await this.categoryService.addCategory(categoryData);
         this.successMessage = 'Category created successfully';
+      }
+
+      // Save templates if provided
+      const currentLang = 'es'; // TODO: Get from i18n service
+      
+      // Get existing templates for this category to update instead of create duplicates
+      const existingTemplates = await Promise.all([
+        this.templateService.getTemplatesByScope('description', 'category', categoryId, currentLang),
+        this.templateService.getTemplatesByScope('seoTitle', 'category', categoryId, currentLang),
+        this.templateService.getTemplatesByScope('seoMeta', 'category', categoryId, currentLang)
+      ]);
+      
+      // Save or update description template
+      if (formValue.descriptionTemplate?.trim()) {
+        const existingDescTemplate = existingTemplates[0][0];
+        if (existingDescTemplate?.id) {
+          await this.templateService.updateTemplate(existingDescTemplate.id, {
+            content: formValue.descriptionTemplate.trim()
+          });
+        } else {
+          await this.templateService.addTemplate({
+            type: 'description',
+            scope: 'category',
+            refId: categoryId,
+            language: currentLang,
+            content: formValue.descriptionTemplate.trim(),
+            active: true
+          });
+        }
+      }
+      
+      // Save or update SEO title template
+      if (formValue.seoTitleTemplate?.trim()) {
+        const existingSeoTitleTemplate = existingTemplates[1][0];
+        if (existingSeoTitleTemplate?.id) {
+          await this.templateService.updateTemplate(existingSeoTitleTemplate.id, {
+            content: formValue.seoTitleTemplate.trim()
+          });
+        } else {
+          await this.templateService.addTemplate({
+            type: 'seoTitle',
+            scope: 'category',
+            refId: categoryId,
+            language: currentLang,
+            content: formValue.seoTitleTemplate.trim(),
+            active: true
+          });
+        }
+      }
+      
+      // Save or update SEO meta template
+      if (formValue.seoMetaTemplate?.trim()) {
+        const existingSeoMetaTemplate = existingTemplates[2][0];
+        if (existingSeoMetaTemplate?.id) {
+          await this.templateService.updateTemplate(existingSeoMetaTemplate.id, {
+            content: formValue.seoMetaTemplate.trim()
+          });
+        } else {
+          await this.templateService.addTemplate({
+            type: 'seoMeta',
+            scope: 'category',
+            refId: categoryId,
+            language: currentLang,
+            content: formValue.seoMetaTemplate.trim(),
+            active: true
+          });
+        }
       }
 
       await this.loadAllData();
@@ -210,70 +312,225 @@ export class CatalogAdminComponent implements OnInit {
     this.categoryForm.reset();
   }
 
-  // Material CRUD
-  openMaterialModal(material?: Material) {
-    this.editingMaterial = material || null;
+  // Model CRUD
+  async openModelModal(model?: Model) {
+    this.editingModel = model || null;
     
-    if (material) {
-      this.materialForm.patchValue({
-        name: material.name,
-        slug: material.slug,
-        textureHints: material.textureHints?.join(', ') || '',
-        defaultTags: material.defaultTags?.join(', ') || '',
-        active: material.active !== false
+    if (model?.id) {
+      // Load existing templates for this model
+      const currentLang = 'es';
+      const [descTemplates, seoTitleTemplates, seoMetaTemplates] = await Promise.all([
+        this.templateService.getTemplatesByScope('description', 'model', model.id, currentLang),
+        this.templateService.getTemplatesByScope('seoTitle', 'model', model.id, currentLang),
+        this.templateService.getTemplatesByScope('seoMeta', 'model', model.id, currentLang)
+      ]);
+      
+      this.modelForm.patchValue({
+        categoryId: model.categoryId,
+        name: model.name,
+        slug: model.slug,
+        textureHints: model.textureHints?.join(', ') || '',
+        defaultTags: model.defaultTags || [],  // Load as array
+        descriptionTemplate: descTemplates[0]?.content || '',
+        seoTitleTemplate: seoTitleTemplates[0]?.content || '',
+        seoMetaTemplate: seoMetaTemplates[0]?.content || '',
+        active: model.active !== false
       });
     } else {
-      this.materialForm.reset({ active: true });
+      this.modelForm.reset({ active: true, defaultTags: [] });  // Reset with empty array
     }
     
-    this.showMaterialModal = true;
+    this.showModelModal = true;
     this.clearMessages();
   }
 
-  async saveMaterial() {
-    if (this.materialForm.invalid) return;
+  async saveModel() {
+    if (this.modelForm.invalid) return;
 
     this.isSaving = true;
     this.clearMessages();
 
     try {
-      const formValue = this.materialForm.value;
-      const materialData: Material = {
+      const formValue = this.modelForm.value;
+      const modelData: Model = {
+        categoryId: formValue.categoryId,
         name: formValue.name,
         slug: formValue.slug,
         textureHints: formValue.textureHints 
           ? formValue.textureHints.split(',').map((s: string) => s.trim()).filter((s: string) => s)
           : undefined,
-        defaultTags: formValue.defaultTags
-          ? formValue.defaultTags.split(',').map((s: string) => s.trim()).filter((s: string) => s)
+        defaultTags: formValue.defaultTags && formValue.defaultTags.length > 0
+          ? formValue.defaultTags
           : undefined,
         active: formValue.active !== false
       };
 
-      if (this.editingMaterial?.id) {
-        await this.materialService.updateMaterial(this.editingMaterial.id, materialData);
-        this.successMessage = 'Material updated successfully';
+      let modelId: string;
+      
+      if (this.editingModel?.id) {
+        await this.modelService.updateModel(this.editingModel.id, modelData);
+        modelId = this.editingModel.id;
+        this.successMessage = 'Model updated successfully';
       } else {
-        await this.materialService.addMaterial(materialData);
-        this.successMessage = 'Material created successfully';
+        modelId = await this.modelService.addModel(modelData);
+        this.successMessage = 'Model created successfully';
+      }
+
+      // Save templates if provided
+      const currentLang = 'es'; // TODO: Get from i18n service
+      
+      // Get existing templates for this model to update instead of create duplicates
+      const existingTemplates = await Promise.all([
+        this.templateService.getTemplatesByScope('description', 'model', modelId, currentLang),
+        this.templateService.getTemplatesByScope('seoTitle', 'model', modelId, currentLang),
+        this.templateService.getTemplatesByScope('seoMeta', 'model', modelId, currentLang)
+      ]);
+      
+      // Save or update description template
+      if (formValue.descriptionTemplate?.trim()) {
+        const existingDescTemplate = existingTemplates[0][0];
+        if (existingDescTemplate?.id) {
+          await this.templateService.updateTemplate(existingDescTemplate.id, {
+            content: formValue.descriptionTemplate.trim()
+          });
+        } else {
+          await this.templateService.addTemplate({
+            type: 'description',
+            scope: 'model',
+            refId: modelId,
+            language: currentLang,
+            content: formValue.descriptionTemplate.trim(),
+            active: true
+          });
+        }
+      }
+      
+      // Save or update SEO title template
+      if (formValue.seoTitleTemplate?.trim()) {
+        const existingSeoTitleTemplate = existingTemplates[1][0];
+        if (existingSeoTitleTemplate?.id) {
+          await this.templateService.updateTemplate(existingSeoTitleTemplate.id, {
+            content: formValue.seoTitleTemplate.trim()
+          });
+        } else {
+          await this.templateService.addTemplate({
+            type: 'seoTitle',
+            scope: 'model',
+            refId: modelId,
+            language: currentLang,
+            content: formValue.seoTitleTemplate.trim(),
+            active: true
+          });
+        }
+      }
+      
+      // Save or update SEO meta template
+      if (formValue.seoMetaTemplate?.trim()) {
+        const existingSeoMetaTemplate = existingTemplates[2][0];
+        if (existingSeoMetaTemplate?.id) {
+          await this.templateService.updateTemplate(existingSeoMetaTemplate.id, {
+            content: formValue.seoMetaTemplate.trim()
+          });
+        } else {
+          await this.templateService.addTemplate({
+            type: 'seoMeta',
+            scope: 'model',
+            refId: modelId,
+            language: currentLang,
+            content: formValue.seoMetaTemplate.trim(),
+            active: true
+          });
+        }
       }
 
       await this.loadAllData();
-      this.closeMaterialModal();
+      this.closeModelModal();
       
       setTimeout(() => this.successMessage = '', 3000);
     } catch (error) {
-      console.error('Error saving material:', error);
-      this.errorMessage = 'Error saving material';
+      console.error('Error saving model:', error);
+      this.errorMessage = 'Error saving model';
     } finally {
       this.isSaving = false;
     }
   }
 
-  closeMaterialModal() {
-    this.showMaterialModal = false;
-    this.editingMaterial = null;
-    this.materialForm.reset();
+  closeModelModal() {
+    this.showModelModal = false;
+    this.editingModel = null;
+    this.modelForm.reset();
+  }
+
+  // Tag CRUD
+  openTagModal(tag?: Tag) {
+    this.editingTag = tag || null;
+    
+    if (tag) {
+      this.tagForm.patchValue({
+        name: tag.name,
+        slug: tag.slug,
+        description: tag.description || '',
+        color: tag.color || '#F7931A',
+        icon: tag.icon || '',
+        order: tag.order || 0,
+        active: tag.active !== false
+      });
+    } else {
+      this.tagForm.reset({ active: true, order: 0, color: '#F7931A' });
+    }
+    
+    this.showTagModal = true;
+    this.clearMessages();
+  }
+
+  async saveTag() {
+    if (this.tagForm.invalid) return;
+
+    this.isSaving = true;
+    this.clearMessages();
+
+    try {
+      const formValue = this.tagForm.value;
+      const tagData: any = {
+        name: formValue.name,
+        slug: formValue.slug,
+        color: formValue.color || '#F7931A',
+        order: formValue.order || 0,
+        active: formValue.active !== false
+      };
+
+      // Only add optional fields if they have values
+      if (formValue.description && formValue.description.trim()) {
+        tagData.description = formValue.description.trim();
+      }
+      if (formValue.icon && formValue.icon.trim()) {
+        tagData.icon = formValue.icon.trim();
+      }
+
+      if (this.editingTag?.id) {
+        await this.tagService.updateTag(this.editingTag.id, tagData);
+        this.successMessage = 'Tag updated successfully';
+      } else {
+        await this.tagService.addTag(tagData);
+        this.successMessage = 'Tag created successfully';
+      }
+
+      await this.loadAllData();
+      this.closeTagModal();
+      
+      setTimeout(() => this.successMessage = '', 3000);
+    } catch (error) {
+      console.error('Error saving tag:', error);
+      this.errorMessage = 'Error saving tag';
+    } finally {
+      this.isSaving = false;
+    }
+  }
+
+  closeTagModal() {
+    this.showTagModal = false;
+    this.editingTag = null;
+    this.tagForm.reset();
   }
 
   // Size CRUD
@@ -358,15 +615,18 @@ export class CatalogAdminComponent implements OnInit {
           await this.categoryService.deleteCategory(id);
           this.successMessage = 'Category deleted successfully';
           break;
-        case 'materials':
-          await this.materialService.deleteMaterial(id);
-          this.successMessage = 'Material deleted successfully';
+        case 'models':
+          await this.modelService.deleteModel(id);
+          this.successMessage = 'Model deleted successfully';
+          break;
+        case 'tags':
+          await this.tagService.deleteTag(id);
+          this.successMessage = 'Tag deleted successfully';
           break;
         case 'sizes':
           await this.sizeGroupService.deleteSizeGroup(id);
           this.successMessage = 'Size group deleted successfully';
           break;
-        // TODO: Add family deletion
       }
 
       await this.loadAllData();
@@ -384,6 +644,61 @@ export class CatalogAdminComponent implements OnInit {
   closeDeleteConfirm() {
     this.showDeleteConfirm = false;
     this.itemToDelete = null;
+  }
+
+  // Tag selection helpers for Model form
+  isTagSelected(tagSlug: string): boolean {
+    const selectedTags = this.modelForm.get('defaultTags')?.value || [];
+    return selectedTags.includes(tagSlug);
+  }
+
+  toggleTag(tagSlug: string) {
+    const currentTags = this.modelForm.get('defaultTags')?.value || [];
+    const index = currentTags.indexOf(tagSlug);
+    
+    if (index > -1) {
+      // Remove tag
+      currentTags.splice(index, 1);
+    } else {
+      // Add tag
+      currentTags.push(tagSlug);
+    }
+    
+    this.modelForm.patchValue({ defaultTags: [...currentTags] });
+  }
+
+  // Get category name by ID
+  getCategoryName(categoryId: string): string {
+    const category = this.categories.find(c => c.id === categoryId);
+    return category ? category.name : 'Unknown';
+  }
+
+  // Filter models by selected category
+  get filteredModels(): Model[] {
+    console.log('🔍 Filtering models:', {
+      totalModels: this.models.length,
+      selectedFilter: this.selectedCategoryFilter,
+      models: this.models
+    });
+    
+    if (!this.selectedCategoryFilter) {
+      return this.models;
+    }
+    
+    const filtered = this.models.filter(m => m.categoryId === this.selectedCategoryFilter);
+    console.log('📊 Filtered result:', filtered.length, filtered);
+    return filtered;
+  }
+
+  // Navigate to models tab and filter by category
+  viewCategoryModels(categoryId: string) {
+    this.selectedCategoryFilter = categoryId;
+    this.activeTab = 'models';
+  }
+
+  // Clear category filter
+  clearCategoryFilter() {
+    this.selectedCategoryFilter = '';
   }
 
   // Auto-generate slug from name

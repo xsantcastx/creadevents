@@ -4,59 +4,83 @@
   <div class="relative max-w-7xl mx-auto px-6 text-center">
     <div class="animate-fade-up">
       <h1 class="font-serif text-5xl lg:text-7xl bitcoin-gradient-text mb-6 leading-tight">
-        Galería de <span class="text-bitcoin-orange">Proyectos</span>
+        Project <span class="text-bitcoin-orange">Gallery</span>
       </h1>
       <p class="text-xl lg:text-2xl text-bitcoin-gray max-w-3xl mx-auto leading-relaxed">
-        Descubre cómo nuestras superficies porcelánicas transforman espacios reales 
-        en proyectos únicos y excepcionales.
+        Explore our crypto mining infrastructure projects showcasing cutting-edge facilities, 
+        advanced cooling systems, and professional installations worldwide.
       </p>
       <div class="mt-8 flex items-center justify-center gap-4 text-bitcoin-gray/70">
         <div class="w-16 h-px bg-bitcoin-orange"></div>
-        <span class="text-sm font-medium tracking-wider uppercase">{{getTotalItems()}} Proyectos</span>
+        <span class="text-sm font-medium tracking-wider uppercase">{{getTotalItems()}} Projects</span>
         <div class="w-16 h-px bg-bitcoin-orange"></div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- Enhanced Category Filters with Pill Components -->
+<!-- Enhanced Category Filters with Tag Icons & Colors -->
 <section class="py-8 bg-gradient-to-r from-bitcoin-dark to-bitcoin-gray/30 backdrop-blur-sm border-b border-bitcoin-orange/20">
-  <div class="max-w-7xl mx-auto">
-    <div class="subnav justify-center">
+  <div class="max-w-7xl mx-auto px-6">
+    <div class="flex flex-wrap items-center justify-center gap-3">
       <!-- All Categories Pill -->
       <button 
         (click)="filtrarPorCategoria('todos')"
-        [class]="{
-          'pill-active': categoriaActiva === 'todos',
-          'pill-light': categoriaActiva !== 'todos'
-        }"
-        class="pill">
-        <span>Todos</span>
-        <span class="text-xs opacity-75 ml-1">({{getCategoryCount('todos')}})</span>
+        class="px-5 py-2.5 rounded-full font-medium text-sm transition-all duration-300 transform hover:scale-105"
+        [class.bg-bitcoin-orange]="categoriaActiva === 'todos'"
+        [class.text-white]="categoriaActiva === 'todos'"
+        [class.shadow-bitcoin]="categoriaActiva === 'todos'"
+        [class.bg-bitcoin-dark/60]="categoriaActiva !== 'todos'"
+        [class.text-bitcoin-gray]="categoriaActiva !== 'todos'"
+        [class.border]="categoriaActiva !== 'todos'"
+        [class.border-bitcoin-gray/30]="categoriaActiva !== 'todos'"
+        [class.hover:border-bitcoin-orange/50]="categoriaActiva !== 'todos'">
+        <div class="flex items-center gap-2">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path>
+          </svg>
+          <span>All Projects</span>
+          <span class="ml-1 px-2 py-0.5 bg-white/20 rounded-full text-xs font-bold">{{getCategoryCount('todos')}}</span>
+        </div>
       </button>
       
-      <!-- Category Pills -->
+      <!-- Category Pills with Dynamic Tags -->
       @for (categoria of categorias; track categoria.slug) {
+        @let tag = getTag(categoria.slug);
         <button 
           (click)="filtrarPorCategoria(categoria.slug)"
-          [class]="{
-            'pill-active': categoriaActiva === categoria.slug,
-            'pill-light': categoriaActiva !== categoria.slug
-          }"
-          class="pill">
-          <span>{{categoria.titulo}}</span>
-          <span class="text-xs opacity-75 ml-1">({{getCategoryCount(categoria.slug)}})</span>
+          class="px-5 py-2.5 rounded-full font-medium text-sm transition-all duration-300 transform hover:scale-105 group"
+          [class.shadow-bitcoin]="categoriaActiva === categoria.slug"
+          [class.bg-bitcoin-dark/60]="categoriaActiva !== categoria.slug"
+          [class.border]="true"
+          [class.hover:shadow-lg]="true"
+          [style.background-color]="categoriaActiva === categoria.slug ? (tag?.color || '#F7931A') : ''"
+          [style.border-color]="categoriaActiva === categoria.slug ? (tag?.color || '#F7931A') : ''"
+          [style.color]="categoriaActiva === categoria.slug ? '#ffffff' : ''">
+          <div class="flex items-center gap-2" 
+               [class.text-bitcoin-gray]="categoriaActiva !== categoria.slug"
+               [class.text-white]="categoriaActiva === categoria.slug">
+            @if (tag && tag.icon) {
+              <span class="text-lg">{{tag.icon}}</span>
+            } @else {
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"></path>
+              </svg>
+            }
+            <span>{{categoria.titulo}}</span>
+            <span class="ml-1 px-2 py-0.5 bg-white/20 rounded-full text-xs font-bold">{{getCategoryCount(categoria.slug)}}</span>
+          </div>
         </button>
       }
     </div>
 
     <!-- Results Info -->
     @if (!isLoading) {
-      <div class="text-center text-sm text-bitcoin-gray/70 mb-8">
+      <div class="text-center text-sm text-bitcoin-gray/70 mt-6">
         @if (categoriaActiva === 'todos') {
-          <span>Mostrando todos los proyectos</span>
+          <span>Showing all projects</span>
         } @else {
-          <span>Mostrando proyectos de {{getCategoryTitle(categoriaActiva)}}</span>
+          <span>Showing {{getCategoryTitle(categoriaActiva)}} projects</span>
         }
       </div>
     }
@@ -97,13 +121,13 @@
                 <!-- Overlay on Hover -->
                 <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                   <div class="absolute bottom-4 left-4 right-4 text-white transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
-                    <h3 class="font-medium text-lg mb-1 text-bitcoin-gold">{{item.proyecto || 'Proyecto Premium'}}</h3>
+                    <h3 class="font-medium text-lg mb-1 text-bitcoin-gold">{{item.proyecto || 'Mining Project'}}</h3>
                     <p class="text-sm opacity-90 flex items-center text-bitcoin-orange">
                       <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.899a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
                       </svg>
-                      {{item.ubicacion || 'Valencia'}}
+                      {{item.ubicacion || 'Global'}}
                     </p>
                   </div>
                 </div>
@@ -118,13 +142,15 @@
               </div>
 
               <!-- Card Content -->
-              <div class="p-5">
-                <h3 class="font-medium text-bitcoin-gray mb-2 line-clamp-2">{{item.alt}}</h3>
-                <div class="flex items-center justify-between text-sm text-bitcoin-gray/70">
-                  <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-bitcoin-orange/20 border border-bitcoin-orange/30 text-bitcoin-orange">
+              <div class="p-5 bg-gradient-to-br from-[#14161c]/95 via-bitcoin-dark/90 to-[#0b0c10]/95 backdrop-blur-md border-t border-bitcoin-orange/25">
+                <h3 class="font-semibold text-bitcoin-gold mb-2 line-clamp-2 tracking-tight">{{item.proyecto || 'Mining Project'}}</h3>
+                <p class="text-xs text-bitcoin-gray/70 mb-1 uppercase tracking-wider font-medium">Description</p>
+                <p class="text-sm text-bitcoin-gray mb-3 line-clamp-2 leading-relaxed">{{item.ubicacion || 'Bitcoin mining infrastructure deployment'}}</p>
+                <div class="flex items-center justify-between text-sm">
+                  <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-bitcoin-orange/25 border border-bitcoin-orange/40 text-white shadow-sm">
                     {{item.producto}}
                   </span>
-                  <span class="text-xs text-bitcoin-orange">Ver proyecto</span>
+                  <span class="text-xs font-semibold text-bitcoin-gold tracking-wide uppercase">View</span>
                 </div>
               </div>
             </div>
@@ -142,8 +168,8 @@
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
             </svg>
           </div>
-          <h3 class="text-xl font-medium bitcoin-gradient-text mb-2">No hay proyectos disponibles</h3>
-          <p class="text-bitcoin-gray/70">No se encontraron proyectos para esta categoría. Prueba seleccionando otra categoría.</p>
+          <h3 class="text-xl font-medium bitcoin-gradient-text mb-2">No Projects Available</h3>
+          <p class="text-bitcoin-gray/70">No projects found for this category. Try selecting another category or view all projects.</p>
         </div>
       </div>
     }
@@ -200,21 +226,21 @@
           (error)="$event.target.src='/assets/productos/placeholder.jpg'">
         
         <!-- Project Information -->
-        <div class="absolute bottom-6 left-6 right-6 bg-bitcoin-dark/90 backdrop-blur-md text-white p-6 rounded-2xl border border-bitcoin-orange/30 shadow-bitcoin-lg">
+        <div class="absolute bottom-6 left-6 right-6 bg-gradient-to-br from-[#14161c]/98 via-bitcoin-dark/95 to-[#0b0c10]/98 backdrop-blur-lg text-white p-6 rounded-2xl border border-bitcoin-orange/40 shadow-bitcoin-lg">
           <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
             <div class="flex-1">
-              <h3 class="text-2xl font-medium mb-2 bitcoin-gradient-text">{{modalItem.proyecto || 'Proyecto Premium'}}</h3>
-              <p class="text-lg text-bitcoin-gray mb-2">{{modalItem.alt}}</p>
-              <div class="flex items-center gap-4 text-sm text-bitcoin-gray/70">
-                <span class="flex items-center">
-                  <svg class="w-4 h-4 mr-1 text-bitcoin-orange" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <h3 class="text-2xl font-bold mb-3 text-bitcoin-gold">{{modalItem.proyecto || 'Mining Infrastructure Project'}}</h3>
+              <p class="text-lg text-bitcoin-gray mb-3 font-medium">{{modalItem.alt}}</p>
+              <div class="flex items-center gap-4 text-sm">
+                <span class="flex items-center text-bitcoin-gray font-medium">
+                  <svg class="w-5 h-5 mr-2 text-bitcoin-orange" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.899a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
                   </svg>
-                  {{modalItem.ubicacion || 'Valencia'}}
+                  {{modalItem.ubicacion || 'Global'}}
                 </span>
-                <span class="flex items-center">
-                  <svg class="w-4 h-4 mr-1 text-bitcoin-orange" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <span class="flex items-center text-bitcoin-gray font-medium">
+                  <svg class="w-5 h-5 mr-2 text-bitcoin-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"></path>
                   </svg>
                   {{modalItem.producto}}
@@ -222,11 +248,11 @@
               </div>
             </div>
             <div class="text-right">
-              <p class="text-sm text-bitcoin-gray/70 mb-1">{{modalIndex + 1}} de {{itemsVisible.length}}</p>
+              <p class="text-sm text-bitcoin-gray mb-2 font-medium">{{modalIndex + 1}} of {{itemsVisible.length}}</p>
               <div class="flex items-center gap-2">
-                <div class="w-32 bg-bitcoin-dark/60 border border-bitcoin-orange/20 rounded-full h-1">
+                <div class="w-32 bg-black/60 border border-bitcoin-orange/30 rounded-full h-1.5">
                   <div 
-                    class="bg-bitcoin-orange h-1 rounded-full transition-all duration-300"
+                    class="bg-gradient-to-r from-bitcoin-orange to-bitcoin-gold h-1.5 rounded-full transition-all duration-300"
                     [style.width.%]="((modalIndex + 1) / itemsVisible.length) * 100">
                   </div>
                 </div>

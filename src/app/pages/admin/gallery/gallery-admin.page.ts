@@ -8,8 +8,10 @@ import { Subscription } from 'rxjs';
 import { AuthService } from '../../../services/auth.service';
 import { MediaService } from '../../../services/media.service';
 import { ProductsService } from '../../../services/products.service';
+import { TagService } from '../../../services/tag.service';
 import { Product } from '../../../models/product';
-import { Media, MediaTag, GALLERY_TAGS, MediaCreateInput } from '../../../models/media';
+import { Media, MediaTag, MediaCreateInput } from '../../../models/media';
+import { Tag } from '../../../models/catalog';
 import { AdminQuickActionsComponent } from '../../../shared/components/admin-quick-actions/admin-quick-actions.component';
 
 @Component({
@@ -26,9 +28,11 @@ export class GalleryAdminComponent implements OnInit, OnDestroy {
   private fb = inject(FormBuilder);
   private mediaService = inject(MediaService);
   private productsService = inject(ProductsService);
+  private tagService = inject(TagService);
 
   mediaList: Media[] = [];
   products: Product[] = [];
+  availableTags: Tag[] = [];
   isLoading = true;
   showUploadModal = false;
   showEditModal = false;
@@ -51,18 +55,19 @@ export class GalleryAdminComponent implements OnInit, OnDestroy {
   private selectedFile: File | null = null;
   private mediaSub: Subscription | null = null;
   private productsSub: Subscription | null = null;
-
-  availableTags = GALLERY_TAGS;
+  private tagsSub: Subscription | null = null;
 
   constructor() {
     this.uploadForm = this.fb.group({
-      altText: [''],
+      altText: ['', Validators.required],
+      caption: [''],
       tags: [[]],
       relatedProductIds: [[]]
     });
 
     this.editForm = this.fb.group({
-      altText: [''],
+      altText: ['', Validators.required],
+      caption: [''],
       tags: [[]],
       relatedProductIds: [[]]
     });
@@ -72,6 +77,7 @@ export class GalleryAdminComponent implements OnInit, OnDestroy {
     await this.checkAdminAccess();
     this.subscribeToMedia();
     this.subscribeToProducts();
+    this.subscribeToTags();
     
     // Check if we should auto-open upload modal
     this.route.queryParams.subscribe(params => {
@@ -87,6 +93,7 @@ export class GalleryAdminComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.mediaSub?.unsubscribe();
     this.productsSub?.unsubscribe();
+    this.tagsSub?.unsubscribe();
     this.revokePreviewUrl();
   }
 
@@ -128,6 +135,18 @@ export class GalleryAdminComponent implements OnInit, OnDestroy {
       },
       error: (error) => {
         console.error('Error loading products:', error);
+      }
+    });
+  }
+
+  private subscribeToTags(): void {
+    this.tagsSub?.unsubscribe();
+    this.tagsSub = this.tagService.getActiveTags().subscribe({
+      next: (tags) => {
+        this.availableTags = tags;
+      },
+      error: (error) => {
+        console.error('Error loading tags:', error);
       }
     });
   }
@@ -200,11 +219,14 @@ export class GalleryAdminComponent implements OnInit, OnDestroy {
   openEditModal(media: Media): void {
     this.mediaToEdit = media;
     this.showEditModal = true;
+    
     this.editForm.patchValue({
       altText: media.altText || '',
+      caption: media.caption || '',
       tags: media.tags || [],
       relatedProductIds: this.extractProductIds(media.relatedEntityIds || [])
     });
+    
     this.successMessage = '';
     this.errorMessage = '';
   }
@@ -262,7 +284,8 @@ export class GalleryAdminComponent implements OnInit, OnDestroy {
       current.delete(tag);
     }
     
-    form.patchValue({ tags: Array.from(current) });
+    const newTags = Array.from(current);
+    form.patchValue({ tags: newTags });
   }
 
   isTagSelected(tag: MediaTag, isEdit = false): boolean {
@@ -355,6 +378,7 @@ export class GalleryAdminComponent implements OnInit, OnDestroy {
         uploadedBy: currentUser.uid,
         tags: tags as string[],
         altText: formValue.altText || '',
+        caption: formValue.caption || '',
         relatedEntityIds: relatedProductIds.map(id => `products/${id}`),
         relatedEntityType: 'gallery'
       };
@@ -410,6 +434,7 @@ export class GalleryAdminComponent implements OnInit, OnDestroy {
       await this.mediaService.updateMedia(this.mediaToEdit.id, {
         tags: tags as string[],
         altText: formValue.altText || '',
+        caption: formValue.caption || '',
         relatedEntityIds: relatedProductIds.map(id => `products/${id}`)
       });
 

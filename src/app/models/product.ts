@@ -12,10 +12,11 @@ export interface Product {
   stock?: number;          // Available stock
   sku?: string;            // SKU code
   features?: string[];     // Product features
+  benefits?: ProductBenefit[]; // Why Choose This Product benefits
   active?: boolean;        // Is product active/visible
   status?: 'draft' | 'published' | 'archived';
   categoryId?: string;     // Reference to category document
-  materialId?: string;     // Reference to material document
+  modelId?: string;        // Mining hardware model (Antminer S19, Whatsminer M30S, etc.)
   search_name?: string;    // Lowercase name for search (auto-generated)
   variantMode?: 'embedded' | 'referenced';
   variants?: ProductVariant[];
@@ -59,4 +60,11 @@ export interface ProductSpecs {
   thicknessMm?: number;
   usage?: string[];
   [key: string]: any;
+}
+
+export interface ProductBenefit {
+  icon: string;           // Icon type: 'performance', 'efficiency', 'reliability', 'support', 'quality', 'security', etc.
+  iconColor: string;      // Tailwind color: 'bitcoin-orange', 'bitcoin-gold', 'green-500', 'blue-500', etc.
+  title: string;          // e.g., "Proven Performance"
+  description: string;    // e.g., "Industry-leading hash rates..."
 }

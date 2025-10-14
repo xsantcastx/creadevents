@@ -4,6 +4,8 @@ import { TranslateModule } from '@ngx-translate/core';
 import { CategoriaGaleria, GaleriaItem } from '../../core/services/data.service';
 import { Firestore, collection, query, where, orderBy, getDocs, QueryDocumentSnapshot } from '@angular/fire/firestore';
 import { Media } from '../../models/media';
+import { Tag } from '../../models/catalog';
+import { TagService } from '../../services/tag.service';
 
 @Component({
   selector: 'app-galeria-page',
@@ -19,9 +21,11 @@ export class GaleriaPageComponent implements OnInit {
   modalItem: GaleriaItem | null = null;
   modalIndex = 0;
   isLoading = true;
+  availableTags: Tag[] = [];
   
   private platformId = inject(PLATFORM_ID);
   private isBrowser = isPlatformBrowser(this.platformId);
+  private tagService = inject(TagService);
 
   constructor(
     private firestore: Firestore
@@ -30,9 +34,31 @@ export class GaleriaPageComponent implements OnInit {
   ngOnInit() {
     // Load gallery from Firestore only
     if (this.isBrowser) {
-      this.loadGaleriaFromFirebase();
+      this.loadTagsAndGallery();
     } else {
       this.isLoading = false;
+    }
+  }
+
+  private async loadTagsAndGallery() {
+    try {
+      // Load tags first
+      this.tagService.getActiveTags().subscribe({
+        next: (tags) => {
+          this.availableTags = tags;
+          console.log('🏷️ Tags loaded:', tags.length);
+          // Then load gallery
+          this.loadGaleriaFromFirebase();
+        },
+        error: (error) => {
+          console.error('Error loading tags:', error);
+          // Continue loading gallery even if tags fail
+          this.loadGaleriaFromFirebase();
+        }
+      });
+    } catch (error) {
+      console.error('Error in loadTagsAndGallery:', error);
+      this.loadGaleriaFromFirebase();
     }
   }
 
@@ -78,50 +104,86 @@ export class GaleriaPageComponent implements OnInit {
     }
   }
 
-  // Group media by tags - Map to category structure
+  // Group media by tags - Map to category structure using dynamic tags from Firestore
   private groupMediaByTags(mediaItems: Media[]): CategoriaGaleria[] {
-    // Tag to category mapping
-    const tagToCategoryMap: Record<string, { slug: string, titulo: string }> = {
-      'kitchen': { slug: 'cocinas', titulo: 'Cocinas' },
-      'bathroom': { slug: 'banos', titulo: 'Baños' },
-      'facade': { slug: 'fachadas', titulo: 'Fachadas' },
-      'industrial': { slug: 'industria', titulo: 'Industria' },
-      'other': { slug: 'otros', titulo: 'Otros' }
-    };
+    // Create a map of tag slugs to tag objects for quick lookup
+    const tagMap = new Map<string, Tag>();
+    this.availableTags.forEach(tag => {
+      tagMap.set(tag.slug, tag);
+    });
 
     // Group images by their first tag
     const categoriesMap = new Map<string, GaleriaItem[]>();
 
     mediaItems.forEach(media => {
-      if (!media.tags || media.tags.length === 0) return;
-
-      const firstTag = media.tags[0]; // Use first tag as category
-      const category = tagToCategoryMap[firstTag];
-      
-      if (!category) return; // Skip if unknown tag
-
-      if (!categoriesMap.has(category.slug)) {
-        categoriesMap.set(category.slug, []);
+      if (!media.tags || media.tags.length === 0) {
+        // Default to 'other' if no tags
+        if (!categoriesMap.has('other')) {
+          categoriesMap.set('other', []);
+        }
+        categoriesMap.get('other')!.push({
+          src: media.url,
+          alt: media.altText || 'TheLuxMining Project',
+          producto: 'Other',
+          proyecto: media.altText || '',
+          ubicacion: media.caption || ''
+        });
+        return;
       }
 
-      categoriesMap.get(category.slug)!.push({
+      const firstTag = media.tags[0]; // Use first tag as category
+      const tag = tagMap.get(firstTag);
+      
+      if (!tag) {
+        // Unknown tag - add to 'other'
+        if (!categoriesMap.has('other')) {
+          categoriesMap.set('other', []);
+        }
+        categoriesMap.get('other')!.push({
+          src: media.url,
+          alt: media.altText || 'TheLuxMining Project',
+          producto: 'Other',
+          proyecto: media.altText || '',
+          ubicacion: media.caption || ''
+        });
+        return;
+      }
+
+      if (!categoriesMap.has(tag.slug)) {
+        categoriesMap.set(tag.slug, []);
+      }
+
+      categoriesMap.get(tag.slug)!.push({
         src: media.url,
-        alt: media.altText || media.caption || 'Proyecto TStone',
-        producto: media.filename,
-        proyecto: '',
-        ubicacion: ''
+        alt: media.altText || 'TheLuxMining Project',
+        producto: tag.name,
+        proyecto: media.altText || '',
+        ubicacion: media.caption || ''
       });
     });
 
-    // Convert map to array of categories
+    // Convert map to array of categories using tag information
     return Array.from(categoriesMap.entries()).map(([slug, items]) => {
-      const categoryInfo = Object.values(tagToCategoryMap).find(cat => cat.slug === slug);
+      const tag = tagMap.get(slug);
       return {
         slug,
-        titulo: categoryInfo?.titulo || slug,
+        titulo: tag?.name || (slug === 'other' ? 'Others' : slug),
         items
       };
+    }).sort((a, b) => {
+      // Sort by tag order if available
+      const tagA = tagMap.get(a.slug);
+      const tagB = tagMap.get(b.slug);
+      if (tagA && tagB) {
+        return (tagA.order || 999) - (tagB.order || 999);
+      }
+      return 0;
     });
+  }
+
+  // Get tag by slug for accessing color/icon
+  getTag(slug: string): Tag | undefined {
+    return this.availableTags.find(t => t.slug === slug);
   }
 
   filtrarPorCategoria(categoria: string) {

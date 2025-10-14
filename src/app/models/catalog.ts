@@ -9,8 +9,7 @@ export interface Product {
   name: string;
   slug: string;
   categoryId: Id;
-  materialId: Id;
-  familyId?: Id;
+  modelId: Id;  // Mining hardware model (e.g., Antminer S19, Whatsminer M30S)
   status: 'draft' | 'published' | 'archived';
   shortDescription?: string;
   description?: string;
@@ -19,7 +18,7 @@ export interface Product {
   variants?: ProductVariant[];
   coverImage?: string;                 // gs:// path or https
   galleryImageIds?: Id[];
-  tags?: string[];
+  tags?: string[]; // Array of tag slugs or IDs
   seo?: Seo;
   metrics?: { views: number; favorites: number; };
   
@@ -76,10 +75,11 @@ export interface Category {
   updatedAt?: Timestamp;
 }
 
-// ===== Materials =====
+// ===== Models (Mining Hardware Models) =====
 
-export interface Material {
+export interface Model {
   id?: Id;
+  categoryId?: Id;  // Parent category (e.g., "Bitcoin Miner") - optional for backward compatibility
   name: string;
   slug: string;
   textureHints?: string[];
@@ -119,12 +119,12 @@ export interface SizeGroup {
 export interface Template {
   id?: Id;
   type: 'description' | 'seoTitle' | 'seoMeta' | 'specs';
-  scope: 'material' | 'category' | 'family' | 'global';
-  refId?: Id;          // ID of material/category/family if scoped
+  scope: 'model' | 'category' | 'tag' | 'global';
+  refId?: Id;          // ID of model/category/tag if scoped
   language: 'es' | 'en' | 'fr' | 'it';
   content?: string;                     // for description/seo templates
   specDefaults?: Partial<Specs>;        // if type === 'specs'
-  fields?: string[];                    // placeholders like {name}, {material}, {size}
+  fields?: string[];                    // placeholders like {name}, {model}, {size}
   active?: boolean;
   createdAt?: Timestamp;
   updatedAt?: Timestamp;
@@ -161,15 +161,16 @@ export interface GalleryItem {
   updatedAt?: Timestamp;
 }
 
-// ===== Families (Optional) =====
+// ===== Tags (for gallery and product categorization) =====
 
-export interface Family {
+export interface Tag {
   id?: Id;
   name: string;
   slug: string;
-  materialId?: Id;
-  order?: number;
   description?: string;
+  color?: string; // Hex color for UI display
+  icon?: string; // Optional icon name
+  order?: number;
   active?: boolean;
   createdAt?: Timestamp;
   updatedAt?: Timestamp;
@@ -188,9 +189,8 @@ export interface TemplateComposition {
 export interface ProductFormData {
   name: string;
   categoryId: Id;
-  materialId: Id;
+  modelId: Id;  // Mining hardware model ID
   sizeGroupId?: Id;
-  familyId?: Id;
   shortDescription?: string;
   description?: string;
   specs?: Specs;
@@ -199,7 +199,7 @@ export interface ProductFormData {
   sku?: string;
   finish?: string;
   colorId?: Id;
-  tags?: string[];
+  tags?: string[]; // Array of tag slugs
   seo?: Seo;
   active?: boolean;
 }

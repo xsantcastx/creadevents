@@ -4,7 +4,7 @@ import { Observable, from, map, firstValueFrom } from 'rxjs';
 import { Product } from '../models/product';
 import { Product as CatalogProduct, TemplateComposition, ProductFormData } from '../models/catalog';
 import { CategoryService } from './category.service';
-import { MaterialService } from './material.service';
+import { ModelService } from './model.service';
 import { TemplateService } from './template.service';
 
 @Injectable({
@@ -13,7 +13,7 @@ import { TemplateService } from './template.service';
 export class ProductsService {
   private firestore = inject(Firestore);
   private categoryService = inject(CategoryService);
-  private materialService = inject(MaterialService);
+  private modelService = inject(ModelService);
   private templateService = inject(TemplateService);
 
   /**
@@ -22,20 +22,20 @@ export class ProductsService {
    */
   async generateProductData(formData: ProductFormData): Promise<TemplateComposition> {
     try {
-      // Fetch category and material in parallel
-      const [category, material] = await Promise.all([
+      // Fetch category and model in parallel
+      const [category, model] = await Promise.all([
         firstValueFrom(this.categoryService.getCategory(formData.categoryId)),
-        firstValueFrom(this.materialService.getMaterial(formData.materialId))
+        firstValueFrom(this.modelService.getModel(formData.modelId))
       ]);
 
-      if (!category || !material) {
-        throw new Error('Category or Material not found');
+      if (!category || !model) {
+        throw new Error('Category or Model not found');
       }
 
       // Prepare placeholders for template rendering
       const placeholders: Record<string, string> = {
         name: formData.name,
-        material: material.name,
+        model: model.name,
         grosor: category.slug, // '12mm', '15mm', '20mm'
         size: category.defaultSpecOverrides?.size || '160×320cm',
         aplicaciones: formData.specs?.usage?.join(', ') || 'cocinas, baños, fachadas',
@@ -47,7 +47,7 @@ export class ProductsService {
       // Compose templates
       const composition = await this.templateService.composeTemplates(
         formData.categoryId,
-        formData.materialId,
+        formData.modelId,
         placeholders
       );
 
@@ -58,9 +58,9 @@ export class ProductsService {
         ...formData.specs
       };
 
-      // Merge tags from material defaults + user input
+      // Merge tags from model defaults + user input
       const finalTags = [
-        ...(material.defaultTags || []),
+        ...(model.defaultTags || []),
         ...(composition.tags || []),
         ...(formData.tags || [])
       ];
@@ -237,6 +237,10 @@ export class ProductsService {
    */
   async slugExists(slug: string, grosor: string, excludeId?: string): Promise<boolean> {
     try {
+      console.log('🔎 slugExists called with:');
+      console.log('  - slug:', slug);
+      console.log('  - grosor:', grosor);
+      console.log('  - excludeId:', excludeId);
       const productsCol = collection(this.firestore, 'products');
       const q = query(
         productsCol,
@@ -245,15 +249,38 @@ export class ProductsService {
       );
       const snapshot = await getDocs(q);
       
+      const foundDocs = snapshot.docs.map(d => ({ id: d.id, slug: d.data()['slug'] }));
+      console.log('📄 Found documents:', foundDocs);
+      console.log('📄 Number of documents found:', foundDocs.length);
+      
       if (snapshot.empty) {
+        console.log('✅ No documents found, slug is available');
         return false;
       }
 
       // If excludeId is provided, check if the found document is different
       if (excludeId) {
-        return snapshot.docs.some(doc => doc.id !== excludeId);
+        const foundIds = snapshot.docs.map(d => d.id);
+        console.log('🔍 Exclude check:');
+        console.log('  - excludeId:', excludeId);
+        console.log('  - excludeId type:', typeof excludeId);
+        console.log('  - foundIds:', foundIds);
+        console.log('  - foundIds[0]:', foundIds[0]);
+        console.log('  - foundIds[0] type:', typeof foundIds[0]);
+        console.log('  - Are they equal?:', foundIds[0] === excludeId);
+        
+        const hasDifferent = snapshot.docs.some(doc => {
+          const matches = doc.id === excludeId;
+          console.log(`  - Comparing: "${doc.id}" === "${excludeId}" = ${matches}`);
+          return doc.id !== excludeId;
+        });
+        
+        console.log('  - hasDifferent:', hasDifferent);
+        console.log('  - returning:', hasDifferent);
+        return hasDifferent;
       }
 
+      console.log('❌ Slug exists (no exclude ID provided)');
       return true;
     } catch (error) {
       console.error('Error checking slug:', error);

@@ -59,11 +59,11 @@ export class TemplateService {
 
   /**
    * Compose templates for a product
-   * Fetches and merges templates from material, category, and global scopes
+   * Fetches and merges templates from model, category, and global scopes
    */
   async composeTemplates(
     categoryId: string,
-    materialId: string,
+    modelId: string,
     placeholders: Record<string, string>,
     language: string = 'es'
   ): Promise<TemplateComposition> {
@@ -71,60 +71,60 @@ export class TemplateService {
 
     // Fetch all relevant templates in parallel
     const [
-      materialDescTemplates,
+      modelDescTemplates,
       categoryDescTemplates,
       globalDescTemplates,
-      materialSeoTitleTemplates,
+      modelSeoTitleTemplates,
       categorySeoTitleTemplates,
       globalSeoTitleTemplates,
-      materialSeoMetaTemplates,
+      modelSeoMetaTemplates,
       categorySeoMetaTemplates,
       globalSeoMetaTemplates,
-      materialSpecsTemplates,
+      modelSpecsTemplates,
       categorySpecsTemplates,
       globalSpecsTemplates
     ] = await Promise.all([
       // Description templates
-      this.getTemplatesByScope('description', 'material', materialId, language),
+      this.getTemplatesByScope('description', 'model', modelId, language),
       this.getTemplatesByScope('description', 'category', categoryId, language),
       this.getTemplatesByScope('description', 'global', undefined, language),
       // SEO Title templates
-      this.getTemplatesByScope('seoTitle', 'material', materialId, language),
+      this.getTemplatesByScope('seoTitle', 'model', modelId, language),
       this.getTemplatesByScope('seoTitle', 'category', categoryId, language),
       this.getTemplatesByScope('seoTitle', 'global', undefined, language),
       // SEO Meta templates
-      this.getTemplatesByScope('seoMeta', 'material', materialId, language),
+      this.getTemplatesByScope('seoMeta', 'model', modelId, language),
       this.getTemplatesByScope('seoMeta', 'category', categoryId, language),
       this.getTemplatesByScope('seoMeta', 'global', undefined, language),
       // Specs templates
-      this.getTemplatesByScope('specs', 'material', materialId, language),
+      this.getTemplatesByScope('specs', 'model', modelId, language),
       this.getTemplatesByScope('specs', 'category', categoryId, language),
       this.getTemplatesByScope('specs', 'global', undefined, language)
     ]);
 
-    // Compose description (material > category > global)
-    const descTemplate = materialDescTemplates[0] || categoryDescTemplates[0] || globalDescTemplates[0];
+    // Compose description (model > category > global)
+    const descTemplate = modelDescTemplates[0] || categoryDescTemplates[0] || globalDescTemplates[0];
     if (descTemplate?.content) {
       composition.description = this.renderTemplate(descTemplate.content, placeholders);
     }
 
-    // Compose SEO title (material > category > global)
-    const seoTitleTemplate = materialSeoTitleTemplates[0] || categorySeoTitleTemplates[0] || globalSeoTitleTemplates[0];
+    // Compose SEO title (model > category > global)
+    const seoTitleTemplate = modelSeoTitleTemplates[0] || categorySeoTitleTemplates[0] || globalSeoTitleTemplates[0];
     if (seoTitleTemplate?.content) {
       composition.seoTitle = this.renderTemplate(seoTitleTemplate.content, placeholders);
     }
 
-    // Compose SEO meta (material > category > global)
-    const seoMetaTemplate = materialSeoMetaTemplates[0] || categorySeoMetaTemplates[0] || globalSeoMetaTemplates[0];
+    // Compose SEO meta (model > category > global)
+    const seoMetaTemplate = modelSeoMetaTemplates[0] || categorySeoMetaTemplates[0] || globalSeoMetaTemplates[0];
     if (seoMetaTemplate?.content) {
       composition.seoMeta = this.renderTemplate(seoMetaTemplate.content, placeholders);
     }
 
-    // Merge specs (global < category < material)
+    // Merge specs (global < category < model)
     composition.specs = this.mergeSpecs(
       globalSpecsTemplates[0]?.specDefaults,
       categorySpecsTemplates[0]?.specDefaults,
-      materialSpecsTemplates[0]?.specDefaults
+      modelSpecsTemplates[0]?.specDefaults
     );
 
     return composition;

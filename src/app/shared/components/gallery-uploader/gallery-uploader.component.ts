@@ -28,6 +28,7 @@ export class GalleryUploaderComponent implements OnInit {
   @Input() existingMediaIds: string[] = [];
   @Input() productSlug: string = '';
   @Input() productGrosor: string = '';
+  @Input() availableTags: string[] = []; // Custom tags from parent component
   @Output() mediaIdsChange = new EventEmitter<string[]>();
 
   previews: GalleryImagePreview[] = [];
@@ -35,7 +36,7 @@ export class GalleryUploaderComponent implements OnInit {
   isDragging = false;
   errorMessage = '';
 
-  readonly availableTags = PRODUCT_TAGS;
+  readonly defaultTags = PRODUCT_TAGS; // Fallback to default tags
   readonly minWidth = MEDIA_VALIDATION.MIN_WIDTH;
   readonly minHeight = MEDIA_VALIDATION.MIN_HEIGHT;
   readonly maxSize = MEDIA_VALIDATION.MAX_SIZE;
@@ -45,6 +46,11 @@ export class GalleryUploaderComponent implements OnInit {
     private storageService: StorageService,
     private authService: AuthService
   ) {}
+
+  // Computed property to get tags (custom or default)
+  get tags(): string[] {
+    return this.availableTags.length > 0 ? this.availableTags : this.defaultTags;
+  }
 
   async ngOnInit() {
     if (this.existingMediaIds.length > 0) {

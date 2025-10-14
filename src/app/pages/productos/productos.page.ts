@@ -6,10 +6,11 @@ import { TranslateModule } from '@ngx-translate/core';
 import { ProductsService } from '../../services/products.service';
 import { MediaService } from '../../services/media.service';
 import { CategoryService } from '../../services/category.service';
-import { MaterialService } from '../../services/material.service';
+import { ModelService } from '../../services/model.service';
+import { TagService } from '../../services/tag.service';
 import { CartService } from '../../services/cart.service';
 import { Product } from '../../models/product';
-import { Category, Material } from '../../models/catalog';
+import { Category, Model, Tag } from '../../models/catalog';
 import { Media } from '../../models/media';
 
 @Component({
@@ -24,7 +25,8 @@ export class ProductosPageComponent implements OnInit {
   private productsService = inject(ProductsService);
   private mediaService = inject(MediaService);
   private categoryService = inject(CategoryService);
-  private materialService = inject(MaterialService);
+  private modelService = inject(ModelService);
+  private tagService = inject(TagService);
   private cartService = inject(CartService);
   
   // Firestore products
@@ -38,9 +40,12 @@ export class ProductosPageComponent implements OnInit {
   
   // Filter options
   categories: Category[] = [];
-  materials: Material[] = [];
+  models: Model[] = [];
+  tags: Tag[] = [];
+  allTags: string[] = [];
   selectedCategoryId = '';
-  selectedMaterialId = '';
+  selectedModelId = '';
+  selectedTags: string[] = [];
   searchTerm = '';
   
   // Loading state
@@ -53,6 +58,9 @@ export class ProductosPageComponent implements OnInit {
     // Load products if in browser
     if (isPlatformBrowser(this.platformId)) {
       await this.loadProducts();
+    } else {
+      // During SSR, set loading to false
+      this.isLoading = false;
     }
   }
 
@@ -65,11 +73,18 @@ export class ProductosPageComponent implements OnInit {
         error: (err) => console.error('Error loading categories:', err)
       });
 
-      this.materialService.getActiveMaterials().subscribe({
-        next: (materials) => {
-          this.materials = materials;
+      this.modelService.getActiveModels().subscribe({
+        next: (models) => {
+          this.models = models;
         },
-        error: (err) => console.error('Error loading materials:', err)
+        error: (err) => console.error('Error loading models:', err)
+      });
+
+      this.tagService.getActiveTags().subscribe({
+        next: (tags) => {
+          this.tags = tags;
+        },
+        error: (err) => console.error('Error loading tags:', err)
       });
     } catch (error) {
       console.error('Error loading filter options:', error);
@@ -83,11 +98,18 @@ export class ProductosPageComponent implements OnInit {
       // Get all published products from Firestore
       this.productsService.getAllProducts().subscribe({
         next: async (products) => {
+          console.log('📦 All products loaded:', products.length, products);
+          
           // Filter only published products
           const publishedProducts = products.filter(p => p.status === 'published');
+          console.log('✅ Published products:', publishedProducts.length, publishedProducts);
           
           // Load cover images from media
           this.allProducts = await this.loadProductCovers(publishedProducts);
+          console.log('🖼️ Products with covers:', this.allProducts);
+          
+          // Extract all unique tags
+          this.extractAllTags();
           
           // Apply filters
           this.applyFilters();
@@ -95,12 +117,12 @@ export class ProductosPageComponent implements OnInit {
           this.isLoading = false;
         },
         error: (error) => {
-          console.error('Error loading products:', error);
+          console.error('❌ Error loading products:', error);
           this.isLoading = false;
         }
       });
     } catch (error) {
-      console.error('Error in loadProducts:', error);
+      console.error('❌ Error in loadProducts:', error);
       this.isLoading = false;
     }
   }
@@ -135,6 +157,26 @@ export class ProductosPageComponent implements OnInit {
     return productsWithCovers;
   }
 
+  private extractAllTags() {
+    const tagsSet = new Set<string>();
+    this.allProducts.forEach(product => {
+      if (product.tags && Array.isArray(product.tags)) {
+        product.tags.forEach(tag => tagsSet.add(tag));
+      }
+    });
+    this.allTags = Array.from(tagsSet).sort();
+  }
+
+  getTagName(tagSlug: string): string {
+    const tag = this.tags.find(t => t.slug === tagSlug);
+    return tag?.name || tagSlug;
+  }
+
+  getTagColor(tagSlug: string): string {
+    const tag = this.tags.find(t => t.slug === tagSlug);
+    return tag?.color || '#F7931A';
+  }
+
   applyFilters() {
     let filtered = [...this.allProducts];
 
@@ -143,9 +185,17 @@ export class ProductosPageComponent implements OnInit {
       filtered = filtered.filter(p => p.categoryId === this.selectedCategoryId);
     }
 
-    // Filter by material
-    if (this.selectedMaterialId) {
-      filtered = filtered.filter(p => p.materialId === this.selectedMaterialId);
+    // Filter by model
+    if (this.selectedModelId) {
+      filtered = filtered.filter(p => p.modelId === this.selectedModelId);
+    }
+
+    // Filter by tags (products must have ALL selected tags)
+    if (this.selectedTags.length > 0) {
+      filtered = filtered.filter(p => {
+        if (!p.tags || !Array.isArray(p.tags)) return false;
+        return this.selectedTags.every(tag => p.tags!.includes(tag));
+      });
     }
 
     // Filter by search term (search in name and slug)
@@ -170,7 +220,7 @@ export class ProductosPageComponent implements OnInit {
     this.applyFilters();
   }
 
-  onMaterialChange() {
+  onModelChange() {
     this.applyFilters();
   }
 
@@ -180,9 +230,24 @@ export class ProductosPageComponent implements OnInit {
 
   clearFilters() {
     this.selectedCategoryId = '';
-    this.selectedMaterialId = '';
+    this.selectedModelId = '';
+    this.selectedTags = [];
     this.searchTerm = '';
     this.applyFilters();
+  }
+
+  toggleTag(tag: string) {
+    const index = this.selectedTags.indexOf(tag);
+    if (index > -1) {
+      this.selectedTags.splice(index, 1);
+    } else {
+      this.selectedTags.push(tag);
+    }
+    this.applyFilters();
+  }
+
+  isTagSelected(tag: string): boolean {
+    return this.selectedTags.includes(tag);
   }
 
   addToCart(product: Product, event: Event) {
@@ -192,7 +257,7 @@ export class ProductosPageComponent implements OnInit {
   }
 
   get hasFilters(): boolean {
-    return !!(this.selectedCategoryId || this.selectedMaterialId || this.searchTerm);
+    return !!(this.selectedCategoryId || this.selectedModelId || this.selectedTags.length > 0 || this.searchTerm);
   }
 
   get totalProductsCount(): number {
@@ -201,5 +266,17 @@ export class ProductosPageComponent implements OnInit {
 
   get filteredProductsCount(): number {
     return this.filteredProducts.length;
+  }
+
+  getCategoryName(categoryId: string | undefined): string {
+    if (!categoryId) return '';
+    const category = this.categories.find(c => c.id === categoryId);
+    return category?.name || '';
+  }
+
+  getModelName(modelId: string | undefined): string {
+    if (!modelId) return '';
+    const model = this.models.find(m => m.id === modelId);
+    return model?.name || '';
   }
 }
