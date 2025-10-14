@@ -6,47 +6,8 @@
 @include theme.apply-theme(light);
 
 body {
-  background: linear-gradient(135deg, #0a0b0d 0%, #13151a 50%, #1a1d24 100%);
-  color: var(--ts-ink);
-  position: relative;
-  overflow-x: hidden;
-}
-
-body::before {
-  content: '';
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: 
-    radial-gradient(circle at 20% 50%, rgba(247, 147, 26, 0.08) 0%, transparent 50%),
-    radial-gradient(circle at 80% 80%, rgba(212, 175, 55, 0.06) 0%, transparent 50%),
-    radial-gradient(circle at 40% 20%, rgba(74, 158, 255, 0.05) 0%, transparent 50%);
-  pointer-events: none;
-  z-index: 0;
-}
-
-body::after {
-  content: '';
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-image: 
-    repeating-linear-gradient(0deg, rgba(247, 147, 26, 0.03) 0px, transparent 1px, transparent 2px, rgba(247, 147, 26, 0.03) 3px),
-    repeating-linear-gradient(90deg, rgba(247, 147, 26, 0.03) 0px, transparent 1px, transparent 2px, rgba(247, 147, 26, 0.03) 3px);
-  background-size: 50px 50px;
-  opacity: 0.3;
-  pointer-events: none;
-  z-index: 0;
-  animation: gridMove 20s linear infinite;
-}
-
-@keyframes gridMove {
-  0% { background-position: 0 0; }
-  100% { background-position: 50px 50px; }
+  background-color: var(--bg-surface);
+  color: var(--text);
 }
 
 .menu-surface,
@@ -88,117 +49,35 @@ a:hover {
   background: color-mix(in srgb, #fef08a 35%, var(--bg-elevated));
 }
 
-:root {
-  --ts-accent: #f7931a; /* Bitcoin Orange */
-  --bitcoin-gold: #ffb81c;
-  --luxury-gold: #d4af37;
-}
+@layer base {
+  :root { --ts-accent: #B08968; }
 
-:root {
-  --ts-bg: #0a0b0d;
-  --ts-bg-soft: #13151a;
-  --ts-ink: #f5f5f7;
-  --ts-ink-soft: #b8bcc4;
-  --ts-accent: #f7931a;
-  --ts-line: #2a2d35;
-  --ts-paper: #13151a;
-}
-
-/* Bitcoin Mining Luxurious Background */
-body {
-  background: linear-gradient(135deg, #0a0b0d 0%, #13151a 50%, #1a1d24 100%);
-  position: relative;
-  overflow-x: hidden;
-}
-
-body::before {
-  content: '';
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: 
-    radial-gradient(circle at 20% 50%, rgba(247, 147, 26, 0.08) 0%, transparent 50%),
-    radial-gradient(circle at 80% 80%, rgba(212, 175, 55, 0.06) 0%, transparent 50%),
-    radial-gradient(circle at 40% 20%, rgba(74, 158, 255, 0.05) 0%, transparent 50%);
-  pointer-events: none;
-  z-index: 0;
-}
-
-body::after {
-  content: '';
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-image: 
-    repeating-linear-gradient(0deg, rgba(247, 147, 26, 0.03) 0px, transparent 1px, transparent 2px, rgba(247, 147, 26, 0.03) 3px),
-    repeating-linear-gradient(90deg, rgba(247, 147, 26, 0.03) 0px, transparent 1px, transparent 2px, rgba(247, 147, 26, 0.03) 3px);
-  background-size: 50px 50px;
-  opacity: 0.3;
-  pointer-events: none;
-  z-index: 0;
-  animation: gridMove 20s linear infinite;
-}
-
-@keyframes gridMove {
-  0% { background-position: 0 0; }
-  100% { background-position: 50px 50px; }
-}
-
-/* Luxurious overlay effect for content sections */
-.luxury-overlay {
-  position: relative;
-  background: linear-gradient(135deg, rgba(13, 15, 20, 0.85) 0%, rgba(19, 21, 26, 0.9) 100%);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(247, 147, 26, 0.1);
-  box-shadow: 
-    0 8px 32px rgba(0, 0, 0, 0.4),
-    inset 0 1px 0 rgba(255, 255, 255, 0.05);
-}
-
-.luxury-overlay::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(247, 147, 26, 0.5), transparent);
-}
-
-/* Bitcoin-themed glow effects */
-.bitcoin-glow {
-  box-shadow: 
-    0 0 20px rgba(247, 147, 26, 0.3),
-    0 0 40px rgba(247, 147, 26, 0.2),
-    0 0 60px rgba(247, 147, 26, 0.1);
-  animation: pulseGlow 3s ease-in-out infinite;
-}
-
-@keyframes pulseGlow {
-  0%, 100% { 
-    box-shadow: 
-      0 0 20px rgba(247, 147, 26, 0.3),
-      0 0 40px rgba(247, 147, 26, 0.2),
-      0 0 60px rgba(247, 147, 26, 0.1);
+  button,
+  input[type="button"],
+  input[type="submit"] {
+    color: #111827;
   }
-  50% { 
-    box-shadow: 
-      0 0 30px rgba(247, 147, 26, 0.4),
-      0 0 60px rgba(247, 147, 26, 0.3),
-      0 0 90px rgba(247, 147, 26, 0.2);
-  }
-}
 
-/* Gradient text for headers */
-.bitcoin-gradient-text {
-  background: linear-gradient(135deg, #f7931a 0%, #ffb81c 50%, #d4af37 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  .body-dark button,
+  .body-dark input[type="button"],
+  .body-dark input[type="submit"] {
+    color: var(--ts-ink);
+  }
+
+  button[data-variant="inverse"],
+  input[type="button"][data-variant="inverse"],
+  input[type="submit"][data-variant="inverse"] {
+    color: #f9fafb;
+  }
+
+  button[class*="bg-white"]:not([class*="text-"]),
+  button[class*="bg-neutral-100"]:not([class*="text-"]),
+  button[class*="bg-gray-100"]:not([class*="text-"]),
+  a[class*="bg-white"]:not([class*="text-"]),
+  a[class*="bg-neutral-100"]:not([class*="text-"]),
+  a[class*="bg-gray-100"]:not([class*="text-"]) {
+    color: #111827;
+  }
 }
 
 @layer components {
@@ -248,20 +127,14 @@ body::after {
   }
 
   .ts-btn-primary {
-    background: linear-gradient(135deg, #f7931a 0%, #ffb81c 100%);
-    color: #0a0b0d;
-    box-shadow: 
-      0 20px 44px -24px rgba(247, 147, 26, 0.55),
-      0 0 20px rgba(247, 147, 26, 0.3);
-    border: 1px solid rgba(255, 184, 28, 0.3);
+    background: linear-gradient(135deg, #b08968 0%, #a78059 100%);
+    color: var(--on-primary);
+    box-shadow: 0 20px 44px -24px rgba(176, 137, 104, 0.55);
   }
 
   .ts-btn-primary:hover {
-    filter: brightness(1.15);
-    box-shadow: 
-      0 26px 54px -22px rgba(247, 147, 26, 0.65),
-      0 0 30px rgba(247, 147, 26, 0.4);
-    transform: translateY(-2px);
+    filter: brightness(1.05);
+    box-shadow: 0 26px 54px -22px rgba(176, 137, 104, 0.55);
   }
 
   .ts-btn-secondary {
