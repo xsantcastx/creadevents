@@ -13,13 +13,13 @@ const LS_LANG_KEY = 'ts_lang';
 export class LanguageService {
   private translate = inject(TranslateService);
   private platformId = inject(PLATFORM_ID);
-  private currentLang$ = new BehaviorSubject<Language>('es');
+  private currentLang$ = new BehaviorSubject<Language>('en');
   
   readonly lang$ = this.currentLang$.asObservable();
   
   readonly languages: { code: Language; label: string; name: string; flag: string }[] = [
-    { code: 'es', label: 'ES', name: 'Español', flag: '🇪🇸' },
-    { code: 'en', label: 'EN', name: 'English', flag: '🇬🇧' },
+    { code: 'en', label: 'EN', name: 'English', flag: '��' },
+    { code: 'es', label: 'ES', name: 'Español', flag: '��' },
     { code: 'fr', label: 'FR', name: 'Français', flag: '🇫🇷' },
     { code: 'it', label: 'IT', name: 'Italiano', flag: '🇮🇹' }
   ];
@@ -32,17 +32,17 @@ export class LanguageService {
     // Set available languages
     this.translate.addLangs(['es', 'en', 'fr', 'it']);
     
-    let defaultLang: Language = 'es';
+    let defaultLang: Language = 'en';
     
     // Only access localStorage in browser
     if (isPlatformBrowser(this.platformId)) {
       const stored = localStorage.getItem(LS_LANG_KEY) as Language;
       const browserLang = this.translate.getBrowserLang() as Language;
       defaultLang = stored || 
-        (this.isValidLanguage(browserLang) ? browserLang : 'es');
+        (this.isValidLanguage(browserLang) ? browserLang : 'en');
     }
     
-    this.translate.setDefaultLang('es');
+    this.translate.setDefaultLang('en');
     this.setLanguage(defaultLang);
   }
 

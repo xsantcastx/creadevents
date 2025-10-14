@@ -7,7 +7,7 @@ export interface BenefitTemplate {
   
   // Template Info
   name: string;              // Template name (for admin reference)
-  category: 'mining' | 'accessory' | 'wallet' | 'general';  // Product category this applies to
+  category: string;          // Product category slug (matches Category.slug from database)
   
   // Benefit Data (what gets added to products)
   icon: 'performance' | 'efficiency' | 'reliability' | 'support' | 'quality' | 'security' | 'warranty' | 'design' | 'value';
@@ -35,16 +35,6 @@ export const BENEFIT_ICON_TYPES = [
   'warranty',
   'design',
   'value'
-] as const;
-
-/**
- * Category options for templates
- */
-export const BENEFIT_CATEGORIES = [
-  { value: 'mining', label: 'Mining Hardware' },
-  { value: 'accessory', label: 'Accessories' },
-  { value: 'wallet', label: 'Wallets' },
-  { value: 'general', label: 'General (All Products)' }
 ] as const;
 
 /**

@@ -47,8 +47,8 @@
       <div class="flex items-center gap-3">
         <select [(ngModel)]="categoryFilter" (change)="applyFilters()" class="px-3 py-2 bg-bitcoin-dark/60 border border-bitcoin-gray/30 rounded-xl text-bitcoin-gray text-sm focus:ring-2 focus:ring-bitcoin-orange focus:border-bitcoin-orange">
           <option value="">All Categories</option>
-          @for (category of categories; track category.value) {
-            <option [value]="category.value">{{ category.label }}</option>
+          @for (category of categories; track category.id) {
+            <option [value]="category.slug">{{ category.name }}</option>
           }
         </select>
         
@@ -124,13 +124,8 @@
                   
                   <!-- Category -->
                   <td class="px-6 py-4">
-                    <span class="px-2 py-1 rounded-lg text-xs font-medium"
-                          [ngClass]="{
-                            'bg-cyan-500/20 text-cyan-400 border border-cyan-500/30': template.category === 'mining',
-                            'bg-purple-500/20 text-purple-400 border border-purple-500/30': template.category === 'accessory',
-                            'bg-blue-500/20 text-blue-400 border border-blue-500/30': template.category === 'wallet',
-                            'bg-bitcoin-gold/20 text-bitcoin-gold border border-bitcoin-gold/30': template.category === 'general'
-                          }">
+                    <span class="px-2 py-1 rounded-lg text-xs font-medium border"
+                          [ngClass]="getCategoryBadgeColor(template.category)">
                       {{ getCategoryLabel(template.category) }}
                     </span>
                   </td>
@@ -222,8 +217,8 @@
               <label class="block text-sm font-semibold text-bitcoin-gray mb-2">Category</label>
               <select formControlName="category"
                       class="w-full px-4 py-3 bg-bitcoin-dark/60 border-2 border-bitcoin-gray/30 rounded-xl focus:ring-2 focus:ring-bitcoin-orange focus:border-bitcoin-orange text-white">
-                @for (category of categories; track category.value) {
-                  <option [value]="category.value">{{ category.label }}</option>
+                @for (category of categories; track category.id) {
+                  <option [value]="category.slug">{{ category.name }}</option>
                 }
               </select>
             </div>

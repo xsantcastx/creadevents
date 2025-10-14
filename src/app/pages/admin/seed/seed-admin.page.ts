@@ -1,6 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
+import { TranslateModule } from '@ngx-translate/core';
 import { SeedService } from '../../../services/seed.service';
 import { MigrationService } from '../../../services/migration.service';
 import { AuthService } from '../../../services/auth.service';
@@ -8,7 +9,7 @@ import { AuthService } from '../../../services/auth.service';
 @Component({
   selector: 'app-seed-admin',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, RouterLink, TranslateModule],
   template: `
     <div class="min-h-screen bg-gradient-to-br from-neutral-50 to-neutral-100 py-12 px-4">
       <div class="max-w-2xl mx-auto">

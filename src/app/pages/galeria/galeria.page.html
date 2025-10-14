@@ -4,15 +4,14 @@
   <div class="relative max-w-7xl mx-auto px-6 text-center">
     <div class="animate-fade-up">
       <h1 class="font-serif text-5xl lg:text-7xl bitcoin-gradient-text mb-6 leading-tight">
-        Project <span class="text-bitcoin-orange">Gallery</span>
+        {{ 'gallery.project' | translate }} <span class="text-bitcoin-orange">{{ 'gallery.title' | translate }}</span>
       </h1>
       <p class="text-xl lg:text-2xl text-bitcoin-gray max-w-3xl mx-auto leading-relaxed">
-        Explore our crypto mining infrastructure projects showcasing cutting-edge facilities, 
-        advanced cooling systems, and professional installations worldwide.
+        {{ 'gallery.subtitle' | translate }}
       </p>
       <div class="mt-8 flex items-center justify-center gap-4 text-bitcoin-gray/70">
         <div class="w-16 h-px bg-bitcoin-orange"></div>
-        <span class="text-sm font-medium tracking-wider uppercase">{{getTotalItems()}} Projects</span>
+        <span class="text-sm font-medium tracking-wider uppercase">{{getTotalItems()}} {{ 'gallery.projects' | translate }}</span>
         <div class="w-16 h-px bg-bitcoin-orange"></div>
       </div>
     </div>
@@ -39,7 +38,7 @@
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path>
           </svg>
-          <span>All Projects</span>
+          <span>{{ 'gallery.all_projects' | translate }}</span>
           <span class="ml-1 px-2 py-0.5 bg-white/20 rounded-full text-xs font-bold">{{getCategoryCount('todos')}}</span>
         </div>
       </button>
@@ -78,9 +77,9 @@
     @if (!isLoading) {
       <div class="text-center text-sm text-bitcoin-gray/70 mt-6">
         @if (categoriaActiva === 'todos') {
-          <span>Showing all projects</span>
+          <span>{{ 'gallery.showing_all' | translate }}</span>
         } @else {
-          <span>Showing {{getCategoryTitle(categoriaActiva)}} projects</span>
+          <span>{{ 'gallery.showing' | translate }} {{getCategoryTitle(categoriaActiva)}} {{ 'gallery.projects' | translate }}</span>
         }
       </div>
     }
@@ -144,13 +143,13 @@
               <!-- Card Content -->
               <div class="p-5 bg-gradient-to-br from-[#14161c]/95 via-bitcoin-dark/90 to-[#0b0c10]/95 backdrop-blur-md border-t border-bitcoin-orange/25">
                 <h3 class="font-semibold text-bitcoin-gold mb-2 line-clamp-2 tracking-tight">{{item.proyecto || 'Mining Project'}}</h3>
-                <p class="text-xs text-bitcoin-gray/70 mb-1 uppercase tracking-wider font-medium">Description</p>
+                <p class="text-xs text-bitcoin-gray/70 mb-1 uppercase tracking-wider font-medium">{{ 'gallery.description' | translate }}</p>
                 <p class="text-sm text-bitcoin-gray mb-3 line-clamp-2 leading-relaxed">{{item.ubicacion || 'Bitcoin mining infrastructure deployment'}}</p>
                 <div class="flex items-center justify-between text-sm">
                   <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-bitcoin-orange/25 border border-bitcoin-orange/40 text-white shadow-sm">
                     {{item.producto}}
                   </span>
-                  <span class="text-xs font-semibold text-bitcoin-gold tracking-wide uppercase">View</span>
+                  <span class="text-xs font-semibold text-bitcoin-gold tracking-wide uppercase">{{ 'gallery.view' | translate }}</span>
                 </div>
               </div>
             </div>
@@ -168,8 +167,8 @@
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
             </svg>
           </div>
-          <h3 class="text-xl font-medium bitcoin-gradient-text mb-2">No Projects Available</h3>
-          <p class="text-bitcoin-gray/70">No projects found for this category. Try selecting another category or view all projects.</p>
+          <h3 class="text-xl font-medium bitcoin-gradient-text mb-2">{{ 'gallery.no_projects' | translate }}</h3>
+          <p class="text-bitcoin-gray/70">{{ 'gallery.no_projects_message' | translate }}</p>
         </div>
       </div>
     }
@@ -248,7 +247,7 @@
               </div>
             </div>
             <div class="text-right">
-              <p class="text-sm text-bitcoin-gray mb-2 font-medium">{{modalIndex + 1}} of {{itemsVisible.length}}</p>
+              <p class="text-sm text-bitcoin-gray mb-2 font-medium">{{modalIndex + 1}} {{ 'gallery.of' | translate }} {{itemsVisible.length}}</p>
               <div class="flex items-center gap-2">
                 <div class="w-32 bg-black/60 border border-bitcoin-orange/30 rounded-full h-1.5">
                   <div 

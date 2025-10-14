@@ -4,11 +4,10 @@
   <div class="relative py-24 lg:py-32 bg-gradient-to-b from-[#0a0b0d] to-bitcoin-dark overflow-hidden">
     <div class="max-w-7xl mx-auto px-6 text-center">
       <h1 class="font-serif text-5xl lg:text-6xl bitcoin-gradient-text mb-6">
-        Bitcoin Mining Hardware
+        {{ 'products.hero.title' | translate }}
       </h1>
       <p class="text-xl text-bitcoin-gray max-w-3xl mx-auto leading-relaxed">
-        Premium cryptocurrency mining equipment available in different configurations.
-        Each model is designed to meet the specific needs of your mining operation.
+        {{ 'products.hero.subtitle' | translate }}
       </p>
     </div>
   </div>
@@ -20,13 +19,13 @@
         <!-- Category Filter -->
         <div>
           <label for="categoryFilter" class="block text-sm font-medium text-bitcoin-gray mb-2">
-            Category
+            {{ 'products.filters.category' | translate }}
           </label>
           <select id="categoryFilter"
                   [(ngModel)]="selectedCategoryId"
                   (change)="onCategoryChange()"
                   class="w-full px-4 py-2.5 bg-bitcoin-dark/60 border border-bitcoin-gray/20 text-bitcoin-gray rounded-lg focus:ring-2 focus:ring-bitcoin-orange focus:border-bitcoin-orange transition-all">
-            <option value="">All Categories</option>
+            <option value="">{{ 'products.filters.all_categories' | translate }}</option>
             @for (category of categories; track category.id) {
               <option [value]="category.id">{{ category.name }}</option>
             }
@@ -36,13 +35,13 @@
         <!-- Model Filter -->
         <div>
           <label for="modelFilter" class="block text-sm font-medium text-bitcoin-gray mb-2">
-            Model
+            {{ 'products.filters.model' | translate }}
           </label>
           <select id="modelFilter"
                   [(ngModel)]="selectedModelId"
                   (change)="onModelChange()"
                   class="w-full px-4 py-2.5 bg-bitcoin-dark/60 border border-bitcoin-gray/20 text-bitcoin-gray rounded-lg focus:ring-2 focus:ring-bitcoin-orange focus:border-bitcoin-orange transition-all">
-            <option value="">All Models</option>
+            <option value="">{{ 'products.filters.all_models' | translate }}</option>
             @for (model of models; track model.id) {
               <option [value]="model.id">{{ model.name }}</option>
             }
@@ -52,13 +51,13 @@
         <!-- Search Filter -->
         <div>
           <label for="searchFilter" class="block text-sm font-medium text-bitcoin-gray mb-2">
-            Search
+            {{ 'products.filters.search' | translate }}
           </label>
           <input type="text"
                  id="searchFilter"
                  [(ngModel)]="searchTerm"
                  (input)="onSearchChange()"
-                 placeholder="Product name..."
+                 [placeholder]="'products.filters.search_placeholder' | translate"
                  class="w-full px-4 py-2.5 bg-bitcoin-dark/60 border border-bitcoin-gray/20 text-bitcoin-gray placeholder-bitcoin-gray/50 rounded-lg focus:ring-2 focus:ring-bitcoin-orange focus:border-bitcoin-orange transition-all"/>
         </div>
 
@@ -67,7 +66,7 @@
           @if (hasFilters) {
             <button (click)="clearFilters()"
                     class="w-full px-4 py-2.5 bg-bitcoin-dark/60 hover:bg-bitcoin-dark/80 border border-bitcoin-gray/20 text-bitcoin-gray rounded-lg font-medium transition-colors">
-              Clear Filters
+              {{ 'products.filters.clear_filters' | translate }}
             </button>
           }
         </div>
@@ -81,7 +80,7 @@
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"></path>
               </svg>
-              Filter by Tags
+              {{ 'products.filters.filter_by_tags' | translate }}
             </span>
           </label>
           <div class="flex flex-wrap gap-2">
@@ -104,9 +103,9 @@
       <div class="mt-4 pt-4 border-t border-bitcoin-orange/20">
         <p class="text-sm text-bitcoin-gray/70">
           @if (isLoading) {
-            Loading mining hardware...
+            {{ 'products.results.loading' | translate }}
           } @else {
-            Showing <strong class="text-bitcoin-orange">{{ filteredProductsCount }}</strong> of <strong class="text-bitcoin-orange">{{ totalProductsCount }}</strong> products
+            {{ 'products.results.showing' | translate : { current: filteredProductsCount, total: totalProductsCount } }}
           }
         </p>
       </div>
@@ -121,7 +120,7 @@
           <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
           <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
         </svg>
-        <span class="text-bitcoin-gray font-medium">Loading mining hardware...</span>
+        <span class="text-bitcoin-gray font-medium">{{ 'products.results.loading' | translate }}</span>
       </div>
     </div>
   }
@@ -133,12 +132,12 @@
         <svg class="w-16 h-16 text-bitcoin-gray/50 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"/>
         </svg>
-        <h3 class="font-serif text-2xl bitcoin-gradient-text mb-2">No Products Found</h3>
-        <p class="text-bitcoin-gray/70 mb-6">Try adjusting the filters to see more results</p>
+        <h3 class="font-serif text-2xl bitcoin-gradient-text mb-2">{{ 'products.empty.title' | translate }}</h3>
+        <p class="text-bitcoin-gray/70 mb-6">{{ 'products.empty.message' | translate }}</p>
         @if (hasFilters) {
           <button (click)="clearFilters()"
                   class="px-6 py-3 bg-bitcoin-orange/30 hover:bg-bitcoin-orange/40 border border-bitcoin-orange/30 text-bitcoin-orange rounded-full font-semibold transition-colors">
-            Clear Filters
+            {{ 'products.empty.clear_button' | translate }}
           </button>
         }
       </div>
@@ -152,8 +151,8 @@
       <!-- All Filtered Products -->
       <section class="mb-20">
         <div class="mb-8">
-          <h2 class="font-serif text-4xl bitcoin-gradient-text mb-2">Mining Hardware</h2>
-          <p class="text-lg text-bitcoin-gray">Premium cryptocurrency mining equipment</p>
+          <h2 class="font-serif text-4xl bitcoin-gradient-text mb-2">{{ 'products.section.title' | translate }}</h2>
+          <p class="text-lg text-bitcoin-gray">{{ 'products.section.subtitle' | translate }}</p>
         </div>
         
         <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">

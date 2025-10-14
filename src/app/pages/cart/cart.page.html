@@ -6,19 +6,19 @@
       <!-- Breadcrumb Navigation -->
       <nav class="mb-8">
         <ol class="flex items-center space-x-2 text-sm text-bitcoin-gray">
-          <li><a routerLink="/" class="hover:text-bitcoin-orange transition-colors text-bitcoin-gray">Home</a></li>
+          <li><a routerLink="/" class="hover:text-bitcoin-orange transition-colors text-bitcoin-gray">{{ 'nav.home' | translate }}</a></li>
           <li class="text-bitcoin-gray/50">/</li>
-          <li class="text-bitcoin-orange font-medium">Carrito</li>
+          <li class="text-bitcoin-orange font-medium">{{ 'cart.title' | translate }}</li>
         </ol>
       </nav>
       
       <!-- Header Content -->
       <div class="text-center">
         <h1 class="font-serif text-4xl lg:text-6xl text-white mb-6 leading-tight">
-          Tu <span class="bitcoin-gradient-text">Selección</span>
+          {{ 'cart.your' | translate }} <span class="bitcoin-gradient-text">{{ 'cart.selection' | translate }}</span>
         </h1>
         <p class="text-xl lg:text-2xl text-bitcoin-gray max-w-3xl mx-auto leading-relaxed mb-8">
-          Revisa tu selección de productos y envíanos tus datos para recibir un presupuesto personalizado
+          {{ 'cart.subtitle' | translate }}
         </p>
       </div>
     </div>
@@ -48,11 +48,11 @@
                 </div>
                 <button class="text-sm text-red-400 hover:text-red-300 transition-colors" 
                         (click)="remove(it.product.id!)">
-                  Quitar
+                  {{ 'cart.remove' | translate }}
                 </button>
               </div>
               <div class="mt-3 flex items-center gap-2">
-                <label class="text-sm text-bitcoin-gray font-medium">Cantidad</label>
+                <label class="text-sm text-bitcoin-gray font-medium">{{ 'cart.quantity' | translate }}</label>
                 <input type="number" 
                        min="1" 
                        [value]="it.qty"
@@ -70,11 +70,11 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-2.5 5M7 13h10m0 0v6a1 1 0 01-1 1H8a1 1 0 01-1-1v-6m8 0V9a1 1 0 00-1-1H8a1 1 0 00-1 1v4.01"/>
               </svg>
             </div>
-            <h3 class="font-serif text-xl bitcoin-gradient-text mb-2">Tu carrito está vacío</h3>
-            <p class="text-bitcoin-gray mb-4">Explora nuestros productos y añade los que más te gusten</p>
+            <h3 class="font-serif text-xl bitcoin-gradient-text mb-2">{{ 'cart.empty_title' | translate }}</h3>
+            <p class="text-bitcoin-gray mb-4">{{ 'cart.empty_message' | translate }}</p>
             <a routerLink="/productos" 
                class="inline-block px-6 py-3 bg-bitcoin-orange/30 hover:bg-bitcoin-orange/40 text-white rounded-xl border border-bitcoin-orange/30 hover:border-bitcoin-orange/50 font-semibold shadow-bitcoin transition-all">
-              Explorar productos
+              {{ 'cart.explore_products' | translate }}
             </a>
           </div>
         </ng-template>
@@ -82,7 +82,7 @@
         <div *ngIf="vm.items.length" class="text-right">
           <button class="text-sm text-bitcoin-gray hover:text-bitcoin-orange transition-colors" 
                   (click)="clear()">
-            Vaciar carrito
+            {{ 'cart.clear_cart' | translate }}
           </button>
         </div>
       </div>
@@ -91,51 +91,51 @@
       <div class="md:col-span-2">
         <form [formGroup]="form" (ngSubmit)="submit()" 
               class="rounded-xl border border-bitcoin-orange/20 p-6 space-y-4 bg-bitcoin-dark/40 backdrop-blur-md shadow-bitcoin">
-          <h2 class="font-serif text-xl bitcoin-gradient-text mb-4">Datos de contacto</h2>
+          <h2 class="font-serif text-xl bitcoin-gradient-text mb-4">{{ 'cart.contact_data' | translate }}</h2>
           
           <div>
             <input formControlName="name" 
-                   placeholder="Nombre completo *" 
+                   [placeholder]="('cart.full_name_required' | translate)" 
                    class="w-full rounded-md bg-bitcoin-dark/60 border border-bitcoin-gray/20 px-3 py-2 text-sm text-bitcoin-gray placeholder-bitcoin-gray/50 focus:ring-2 focus:ring-bitcoin-orange focus:border-bitcoin-orange"
                    [class.border-red-500]="form.get('name')?.touched && form.get('name')?.errors">
             <div *ngIf="form.get('name')?.touched && form.get('name')?.errors" 
                  class="text-red-400 text-xs mt-1">
-              El nombre es requerido (mínimo 2 caracteres)
+              {{ 'cart.name_error' | translate }}
             </div>
           </div>
           
           <div>
             <input formControlName="email" 
                    type="email"
-                   placeholder="Email *" 
+                   [placeholder]="('cart.email_required' | translate)" 
                    class="w-full rounded-md bg-bitcoin-dark/60 border border-bitcoin-gray/20 px-3 py-2 text-sm text-bitcoin-gray placeholder-bitcoin-gray/50 focus:ring-2 focus:ring-bitcoin-orange focus:border-bitcoin-orange"
                    [class.border-red-500]="form.get('email')?.touched && form.get('email')?.errors">
             <div *ngIf="form.get('email')?.touched && form.get('email')?.errors" 
                  class="text-red-400 text-xs mt-1">
-              Ingresa un email válido
+              {{ 'cart.email_error' | translate }}
             </div>
           </div>
           
           <input formControlName="phone" 
-                 placeholder="Teléfono (opcional)" 
+                 [placeholder]="('cart.phone_optional' | translate)" 
                  class="w-full rounded-md bg-bitcoin-dark/60 border border-bitcoin-gray/20 px-3 py-2 text-sm text-bitcoin-gray placeholder-bitcoin-gray/50 focus:ring-2 focus:ring-bitcoin-orange focus:border-bitcoin-orange">
           
           <textarea formControlName="message" 
                     rows="4" 
-                    placeholder="Mensaje adicional (opcional)"
+                    [placeholder]="('cart.message_optional' | translate)"
                     class="w-full rounded-md bg-bitcoin-dark/60 border border-bitcoin-gray/20 px-3 py-2 text-sm text-bitcoin-gray placeholder-bitcoin-gray/50 focus:ring-2 focus:ring-bitcoin-orange focus:border-bitcoin-orange resize-none"></textarea>
 
           <button type="submit" 
                   [disabled]="submitting || form.invalid"
                   class="w-full rounded-lg bg-bitcoin-orange/30 hover:bg-bitcoin-orange/40 text-white font-semibold py-3 border border-bitcoin-orange/30 hover:border-bitcoin-orange/50 shadow-bitcoin transition-all disabled:opacity-50 disabled:cursor-not-allowed">
-            {{ submitting ? 'Enviando…' : 'Enviar selección por correo' }}
+            {{ submitting ? ('cart.sending' | translate) : ('cart.send_selection' | translate) }}
           </button>
 
           <p *ngIf="success" class="text-green-300 text-sm bg-green-500/20 border border-green-500/30 p-3 rounded-lg">{{ success }}</p>
           <p *ngIf="error" class="text-red-300 text-sm bg-red-500/20 border border-red-500/30 p-3 rounded-lg">{{ error }}</p>
           
           <p class="text-xs text-bitcoin-gray/70 text-center">
-            * Campos obligatorios. Te contactaremos en breve con un presupuesto personalizado.
+            {{ 'cart.required_fields_note' | translate }}
           </p>
         </form>
       </div>

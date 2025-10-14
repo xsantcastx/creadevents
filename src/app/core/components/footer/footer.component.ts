@@ -1,7 +1,17 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
+import { CategoryService } from '../../../services/category.service';
+
+interface Category {
+  id?: string;
+  name: string;
+  slug: string;
+  description?: string;
+  order?: number;
+  active?: boolean;
+}
 
 @Component({
   selector: 'app-footer',
@@ -58,35 +68,27 @@ import { TranslateModule } from '@ngx-translate/core';
           <div>
             <h3 class="font-semibold text-white mb-4">{{ 'footer.products_title' | translate }}</h3>
             <ul class="space-y-2">
-              <li><a routerLink="/productos/12mm" class="text-bitcoin-gray hover:text-bitcoin-orange transition-colors">Flagship Series</a></li>
-              <li><a routerLink="/productos/15mm" class="text-bitcoin-gray hover:text-bitcoin-orange transition-colors">Professional Series</a></li>
-              <li><a routerLink="/productos/20mm" class="text-bitcoin-gray hover:text-bitcoin-orange transition-colors">Enterprise Series</a></li>
+              <li><a routerLink="/productos" class="text-bitcoin-gray hover:text-bitcoin-orange transition-colors">{{ 'nav.all_products' | translate }}</a></li>
+              @for (category of categories; track category.id) {
+                <li><a [routerLink]="['/productos']" [queryParams]="{category: category.slug}" class="text-bitcoin-gray hover:text-bitcoin-orange transition-colors">{{ category.name }}</a></li>
+              }
             </ul>
           </div>
         </div>
 
         <!-- Contact Info Section -->
-        <div class="grid md:grid-cols-3 gap-6 mb-12 p-6 bg-bitcoin-dark/40 rounded-xl border border-bitcoin-orange/20">
+        <div class="grid md:grid-cols-2 gap-6 mb-12 p-6 bg-bitcoin-dark/40 rounded-xl border border-bitcoin-orange/20">
           <div class="text-center">
             <h4 class="font-semibold text-bitcoin-gold mb-2">{{ 'footer.address' | translate }}</h4>
             <p class="text-bitcoin-gray text-sm">
-              450 Serra Mall<br>
-              Stanford, CA 94305<br>
-              United States
+              100 Greyrock Pl F119<br>
+              Stamford, CT 06901
             </p>
           </div>
           <div class="text-center">
             <h4 class="font-semibold text-bitcoin-gold mb-2">{{ 'footer.contact_info' | translate }}</h4>
             <p class="text-bitcoin-gray text-sm">
-              <a href="tel:+16507232300" class="hover:text-bitcoin-orange transition-colors">+1 (650) 723-2300</a><br>
-              <a href="mailto:info@theluxmining.com" class="hover:text-bitcoin-orange transition-colors">info@theluxmining.com</a>
-            </p>
-          </div>
-          <div class="text-center">
-            <h4 class="font-semibold text-bitcoin-gold mb-2">{{ 'footer.business_hours' | translate }}</h4>
-            <p class="text-bitcoin-gray text-sm">
-              Monday - Friday<br>
-              9:00 AM - 6:00 PM PST
+              <a href="mailto:support@theluxmining.com" class="hover:text-bitcoin-orange transition-colors">support@theluxmining.com</a>
             </p>
           </div>
         </div>
@@ -107,4 +109,26 @@ import { TranslateModule } from '@ngx-translate/core';
     </footer>
   `
 })
-export class FooterComponent {}
+export class FooterComponent implements OnInit {
+  categories: Category[] = [];
+
+  constructor(private categoryService: CategoryService) {}
+
+  ngOnInit() {
+    this.loadCategories();
+  }
+
+  loadCategories() {
+    this.categoryService.getAllCategories().subscribe({
+      next: (categories: Category[]) => {
+        this.categories = categories
+          .filter((cat: Category) => cat.active !== false)
+          .sort((a: Category, b: Category) => (a.order || 0) - (b.order || 0))
+          .slice(0, 3); // Show only first 3 categories
+      },
+      error: (error: any) => {
+        console.error('Error loading categories for footer:', error);
+      }
+    });
+  }
+}

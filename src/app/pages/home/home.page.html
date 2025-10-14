@@ -89,10 +89,10 @@
     <div class="max-w-7xl mx-auto px-6 relative z-10">
       <div class="text-center mb-16">
         <h2 class="font-serif text-4xl lg:text-5xl bitcoin-gradient-text mb-4">
-          Mining Farm Gallery
+          {{ 'home.gallery_preview.title' | translate }}
         </h2>
         <p class="text-xl text-bitcoin-gray max-w-2xl mx-auto">
-          Explore our professional mining installations and setups
+          {{ 'home.gallery_preview.subtitle' | translate }}
         </p>
       </div>
 
@@ -120,7 +120,7 @@
       <div class="text-center">
         <a routerLink="/galeria" 
            class="inline-block px-8 py-4 bg-gradient-to-r from-bitcoin-orange to-bitcoin-gold text-bitcoin-dark rounded-full font-semibold hover:shadow-bitcoin transition-all duration-300">
-          View Full Gallery →
+          {{ 'home.gallery_preview.view_full' | translate }}
         </a>
       </div>
     </div>
@@ -133,7 +133,7 @@
   <div class="max-w-7xl mx-auto px-6 relative z-10">
     <div class="text-center mb-16">
       <h2 class="font-serif text-4xl lg:text-5xl bitcoin-gradient-text mb-4">
-        Why Choose TheLuxMining?
+        {{ 'home.why_choose.title' | translate }}
       </h2>
     </div>
     
@@ -145,10 +145,9 @@
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
           </svg>
         </div>
-        <h3 class="font-serif text-2xl text-bitcoin-orange mb-4">Peak Hash Rate</h3>
+        <h3 class="font-serif text-2xl text-bitcoin-orange mb-4">{{ 'home.why_choose.hashrate.title' | translate }}</h3>
         <p class="text-bitcoin-gray leading-relaxed">
-          Industry-leading hash rate performance with cutting-edge ASIC technology, 
-          maximizing your Bitcoin mining profitability.
+          {{ 'home.why_choose.hashrate.description' | translate }}
         </p>
       </div>
       
@@ -159,10 +158,9 @@
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
           </svg>
         </div>
-        <h3 class="font-serif text-2xl text-bitcoin-orange mb-4">Superior Efficiency</h3>
+        <h3 class="font-serif text-2xl text-bitcoin-orange mb-4">{{ 'home.why_choose.efficiency.title' | translate }}</h3>
         <p class="text-bitcoin-gray leading-relaxed">
-          Optimized power consumption with advanced cooling systems, 
-          delivering the best J/TH ratio in the market.
+          {{ 'home.why_choose.efficiency.description' | translate }}
         </p>
       </div>
       
@@ -173,10 +171,9 @@
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
           </svg>
         </div>
-        <h3 class="font-serif text-2xl text-bitcoin-orange mb-4">Maximum ROI</h3>
+        <h3 class="font-serif text-2xl text-bitcoin-orange mb-4">{{ 'home.why_choose.roi.title' | translate }}</h3>
         <p class="text-bitcoin-gray leading-relaxed">
-          Enterprise-grade reliability and uptime guarantees, 
-          ensuring consistent returns on your mining investment.
+          {{ 'home.why_choose.roi.description' | translate }}
         </p>
       </div>
     </div>
@@ -198,10 +195,10 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
               </svg>
             </div>
-            <h3 class="font-serif text-3xl mb-4 bitcoin-gradient-text">Explore Mining Setups</h3>
+            <h3 class="font-serif text-3xl mb-4 bitcoin-gradient-text">{{ 'home.cta.gallery.title' | translate }}</h3>
             <a routerLink="/galeria" 
                class="inline-block px-8 py-4 bg-gradient-to-r from-bitcoin-orange to-bitcoin-gold text-bitcoin-dark rounded-full font-semibold hover:shadow-bitcoin transition-all duration-300">
-              View Gallery
+              {{ 'home.cta.gallery.button' | translate }}
             </a>
           </div>
         </div>
@@ -217,10 +214,10 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"></path>
               </svg>
             </div>
-            <h3 class="font-serif text-3xl mb-4 bitcoin-gradient-text">Ready to Start Mining?</h3>
+            <h3 class="font-serif text-3xl mb-4 bitcoin-gradient-text">{{ 'home.cta.contact.title' | translate }}</h3>
             <a routerLink="/contacto" 
                class="inline-block px-8 py-4 bg-gradient-to-r from-bitcoin-gold to-luxury-gold text-bitcoin-dark rounded-full font-semibold hover:shadow-bitcoin transition-all duration-300">
-              Get Custom Quote
+              {{ 'home.cta.contact.button' | translate }}
             </a>
           </div>
         </div>

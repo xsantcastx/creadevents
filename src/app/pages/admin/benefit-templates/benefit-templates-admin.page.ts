@@ -5,7 +5,9 @@ import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, FormsModule } 
 import { TranslateModule } from '@ngx-translate/core';
 import { AuthService } from '../../../services/auth.service';
 import { BenefitTemplateService } from '../../../services/benefit-template.service';
-import { BenefitTemplate, BENEFIT_ICON_TYPES, BENEFIT_CATEGORIES, BENEFIT_ICON_COLORS } from '../../../models/benefit-template';
+import { CategoryService } from '../../../services/category.service';
+import { BenefitTemplate, BENEFIT_ICON_TYPES, BENEFIT_ICON_COLORS } from '../../../models/benefit-template';
+import { Category } from '../../../models/catalog';
 import { AdminQuickActionsComponent } from '../../../shared/components/admin-quick-actions/admin-quick-actions.component';
 
 @Component({
@@ -20,9 +22,11 @@ export class BenefitTemplatesAdminComponent implements OnInit {
   private router = inject(Router);
   private fb = inject(FormBuilder);
   private benefitTemplateService = inject(BenefitTemplateService);
+  private categoryService = inject(CategoryService);
 
   templates: BenefitTemplate[] = [];
   filteredTemplates: BenefitTemplate[] = [];
+  categories: Category[] = [];
   
   templateForm: FormGroup;
   showModal = false;
@@ -38,13 +42,12 @@ export class BenefitTemplatesAdminComponent implements OnInit {
   
   // Constants for dropdowns
   iconTypes = BENEFIT_ICON_TYPES;
-  categories = BENEFIT_CATEGORIES;
   iconColors = BENEFIT_ICON_COLORS;
 
   constructor() {
     this.templateForm = this.fb.group({
       name: ['', [Validators.required, Validators.minLength(3)]],
-      category: ['mining', Validators.required],
+      category: ['', Validators.required],
       icon: ['performance', Validators.required],
       iconColor: ['bitcoin-orange', Validators.required],
       title: ['', [Validators.required, Validators.minLength(3)]],
@@ -56,6 +59,7 @@ export class BenefitTemplatesAdminComponent implements OnInit {
 
   async ngOnInit() {
     await this.checkAdminAccess();
+    await this.loadCategories();
     await this.loadTemplates();
   }
 
@@ -70,6 +74,26 @@ export class BenefitTemplatesAdminComponent implements OnInit {
     if (!isAdmin) {
       this.router.navigate(['/']);
       return;
+    }
+  }
+
+  private async loadCategories() {
+    try {
+      this.categoryService.getActiveCategories().subscribe({
+        next: (categories) => {
+          this.categories = categories;
+          // Set first category as default if form is empty
+          if (this.categories.length > 0 && !this.templateForm.get('category')?.value) {
+            this.templateForm.patchValue({ category: this.categories[0].slug });
+          }
+        },
+        error: (error) => {
+          console.error('Error loading categories:', error);
+          this.errorMessage = 'Failed to load categories';
+        }
+      });
+    } catch (error) {
+      console.error('Error loading categories:', error);
     }
   }
 
@@ -202,9 +226,24 @@ export class BenefitTemplatesAdminComponent implements OnInit {
     }
   }
 
-  getCategoryLabel(value: string): string {
-    const category = this.categories.find(c => c.value === value);
-    return category ? category.label : value;
+  getCategoryLabel(slug: string): string {
+    const category = this.categories.find(c => c.slug === slug);
+    return category ? category.name : slug;
+  }
+
+  getCategoryBadgeColor(slug: string): string {
+    const colors = [
+      'bg-cyan-500/20 text-cyan-400 border-cyan-500/30',
+      'bg-purple-500/20 text-purple-400 border-purple-500/30',
+      'bg-blue-500/20 text-blue-400 border-blue-500/30',
+      'bg-green-500/20 text-green-400 border-green-500/30',
+      'bg-yellow-500/20 text-yellow-400 border-yellow-500/30',
+      'bg-pink-500/20 text-pink-400 border-pink-500/30',
+      'bg-bitcoin-gold/20 text-bitcoin-gold border-bitcoin-gold/30'
+    ];
+    
+    const index = this.categories.findIndex(c => c.slug === slug);
+    return index >= 0 ? colors[index % colors.length] : colors[colors.length - 1];
   }
 
   getColorPreview(colorValue: string): string {

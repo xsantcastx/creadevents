@@ -1,0 +1,292 @@
+{
+  "home": {
+    "hero": {
+      "title": "Mina il Tuo Futuro",
+      "subtitle": "💠 Dove la tecnologia crypto diventa stile di vita.\nEsplora attrezzatura di mining, storage sicuro e gadget che mostrano la tua passione per il futuro decentralizzato.\n🔥 Innovazione, sicurezza e design — senza limiti.",
+      "description": "Unisciti alla rivoluzione. Massimizza i tuoi profitti con miner ASIC all'avanguardia progettati per prestazioni di punta ed efficienza senza pari.",
+      "cta_primary": "Esplora Miner",
+      "cta_secondary": "Richiedi Preventivo"
+    },
+    "featured": {
+      "title": "Hardware di Mining in Evidenza",
+      "subtitle": "Scopri le nostre ultime soluzioni di mining Bitcoin",
+      "latest": "Ultimi Prodotti",
+      "flagship": "Miner di Punta",
+      "professional": "Serie Professionale",
+      "enterprise": "Soluzioni Aziendali",
+      "view_all": "Vedi Tutti"
+    },
+    "gallery_preview": {
+      "title": "Galleria Farm di Mining",
+      "subtitle": "Esplora le nostre installazioni e configurazioni di mining professionali",
+      "view_full": "Vedi Galleria Completa →"
+    },
+    "why_choose": {
+      "title": "Perché Scegliere TheLuxMining?",
+      "subtitle": "Il Tuo Successo È la Nostra Missione",
+      "hashrate": {
+        "title": "Tasso di Hash Massimo",
+        "description": "Prestazioni di hash rate leader del settore con tecnologia ASIC all'avanguardia, massimizzando la tua redditività nel mining Bitcoin."
+      },
+      "efficiency": {
+        "title": "Efficienza Superiore",
+        "description": "Consumo energetico ottimizzato con sistemi di raffreddamento avanzati, offrendo il miglior rapporto J/TH sul mercato."
+      },
+      "roi": {
+        "title": "ROI Massimo",
+        "description": "Affidabilità di livello aziendale e garanzie di uptime, assicurando rendimenti costanti sul tuo investimento nel mining."
+      }
+    },
+    "cta": {
+      "gallery": {
+        "title": "Esplora le Configurazioni di Mining",
+        "button": "Vedi Galleria"
+      },
+      "contact": {
+        "title": "Pronto per Iniziare il Mining?",
+        "button": "Ottieni Preventivo Personalizzato"
+      }
+    },
+    "stats": {
+      "miners_deployed": "Miner Distribuiti nel Mondo",
+      "customer_satisfaction": "Soddisfazione del Cliente",
+      "uptime_guarantee": "Garanzia di Uptime",
+      "years_experience": "Anni di Eccellenza"
+    }
+  },
+  "nav": {
+    "home": "Home",
+    "products": "Prodotti",
+    "all_products": "Tutti i Prodotti",
+    "gallery": "Galleria",
+    "technical": "Specifiche Tecniche",
+    "contact": "Contatto",
+    "login": "Accedi",
+    "cart": "Carrello"
+  },
+  "footer": {
+    "rights": "Tutti i diritti riservati",
+    "privacy": "Politica sulla Privacy",
+    "terms": "Termini e Condizioni",
+    "description": "La tua destinazione principale per hardware di mining crypto, miner solo, soluzioni di archiviazione a freddo, portachiavi Bitcoin e gadget esclusivi di criptovalute.",
+    "quick_links": "Link Rapidi",
+    "products_title": "Prodotti",
+    "contact_info": "Contatto",
+    "phone": "Telefono",
+    "email": "Email",
+    "address": "Indirizzo",
+    "business_hours": "Orari di Apertura"
+  },
+  "products": {
+    "hero": {
+      "title": "Hardware di Mining Bitcoin",
+      "subtitle": "Attrezzatura di mining di criptovalute premium disponibile in diverse configurazioni e livelli di prestazioni per soddisfare le esigenze della tua operazione di mining."
+    },
+    "filters": {
+      "category": "Categoria",
+      "all_categories": "Tutte le Categorie",
+      "model": "Modello",
+      "all_models": "Tutti i Modelli",
+      "search": "Cerca",
+      "search_placeholder": "Nome del prodotto...",
+      "clear_filters": "Cancella Filtri",
+      "filter_by_tags": "Filtra per Etichette"
+    },
+    "results": {
+      "loading": "Caricamento hardware di mining...",
+      "showing": "Visualizzazione di {{current}} su {{total}} prodotti"
+    },
+    "empty": {
+      "title": "Nessun Prodotto Trovato",
+      "message": "Prova ad aggiustare i filtri o cancellarli per vedere tutta l'attrezzatura di mining disponibile.",
+      "clear_button": "Cancella Filtri"
+    },
+    "section": {
+      "title": "Hardware di Mining",
+      "subtitle": "Attrezzatura di mining di criptovalute premium"
+    },
+    "title": "Hardware di Mining",
+    "subtitle": "Attrezzatura Professionale",
+    "specs": "Specifiche",
+    "hashrate": "Tasso di Hash",
+    "power": "Consumo Energetico",
+    "efficiency": "Efficienza",
+    "add_to_cart": "Aggiungi al Carrello",
+    "request_quote": "Richiedi Preventivo",
+    "filterBy": "Filtra per",
+    "thickness": "Spessore"
+  },
+  "common": {
+    "loading": "Caricamento...",
+    "search": "Cerca..."
+  },
+  "client": {
+    "login": "Accedi",
+    "register": "Registrati",
+    "logout": "Disconnetti",
+    "my_account": "Il Mio Account",
+    "my_orders": "I Miei Ordini",
+    "pending": "In Attesa",
+    "name": "Nome",
+    "email": "Email",
+    "phone": "Telefono",
+    "password": "Password",
+    "confirm_password": "Conferma Password",
+    "display_name": "Nome Visualizzato",
+    "company": "Azienda",
+    "address": "Indirizzo",
+    "city": "Città",
+    "postal_code": "Codice Postale",
+    "country": "Paese",
+    "save_changes": "Salva Modifiche",
+    "profile_updated": "Profilo aggiornato con successo",
+    "welcome_back": "Bentornato",
+    "sign_in": "Accedi al tuo account",
+    "dont_have_account": "Non hai un account?",
+    "sign_up_here": "Registrati qui",
+    "already_have_account": "Hai già un account?",
+    "sign_in_here": "Accedi qui",
+    "create_account": "Crea il tuo account",
+    "order_history": "Storico Ordini",
+    "no_orders_yet": "Nessun ordine ancora",
+    "order_details": "Dettagli Ordine",
+    "order_date": "Data Ordine",
+    "order_status": "Stato",
+    "order_total": "Totale",
+    "shipping_address": "Indirizzo di Spedizione",
+    "items": "Articoli",
+    "processing": "In Elaborazione",
+    "shipped": "Spedito",
+    "delivered": "Consegnato",
+    "cancelled": "Annullato"
+  },
+  "gallery": {
+    "project": "Progetto",
+    "title": "Galleria",
+    "subtitle": "Esplora la nostra collezione di hardware premium per il mining crypto, miner solo, soluzioni di archiviazione a freddo, portachiavi Bitcoin e gadget esclusivi di criptovalute",
+    "projects": "Progetti",
+    "all_projects": "Tutti i Progetti",
+    "showing_all": "Mostrando tutti i progetti",
+    "showing": "Mostrando",
+    "description": "Descrizione",
+    "view": "Visualizza",
+    "no_projects": "Nessun Progetto Disponibile",
+    "no_projects_message": "Nessun progetto trovato per questa categoria. Prova a selezionare un'altra categoria o visualizza tutti i progetti.",
+    "of": "di",
+    "tags": {
+      "kitchens": "Cucine",
+      "bathrooms": "Bagni",
+      "modern": "Moderno",
+      "classic": "Classico",
+      "luxury": "Lusso"
+    }
+  },
+  "contact": {
+    "title": "Contatto",
+    "subtitle": "Mettiti in contatto con i nostri esperti di mining crypto. Che tu abbia bisogno di aiuto per scegliere il miner giusto, domande sull'archiviazione a freddo, o voglia discutere ordini all'ingrosso.",
+    "form_title": "Inviaci la tua richiesta",
+    "success_message": "Grazie per il tuo messaggio! Ti contatteremo presto.",
+    "error_message": "Si è verificato un errore durante l'invio del messaggio. Per favore riprova.",
+    "full_name": "Nome completo",
+    "full_name_placeholder": "Mario Rossi",
+    "email_placeholder": "satoshi@bitcoin.com",
+    "phone_placeholder": "+1 203 555 0123",
+    "company_placeholder": "La tua operazione di mining o azienda (facoltativo)",
+    "message": "Messaggio",
+    "message_placeholder": "Sono interessato ai miner ASIC, configurazioni di mining solo, portafogli freddi... Dicci di cosa hai bisogno!",
+    "accept_privacy": "Accetto il trattamento dei miei dati personali secondo la politica sulla privacy",
+    "privacy_required": "Devi accettare la politica sulla privacy",
+    "send_message": "Invia messaggio",
+    "sending": "Invio in corso...",
+    "info_title": "Informazioni di Contatto",
+    "address_label": "Indirizzo",
+    "address_line1": "100 Greyrock Pl F119",
+    "address_line2": "Stamford, CT 06901",
+    "email_label": "Email"
+  },
+  "cart": {
+    "title": "Carrello",
+    "your": "La Tua",
+    "selection": "Selezione",
+    "subtitle": "Rivedi la tua selezione di prodotti e inviaci i tuoi dati per ricevere un preventivo personalizzato",
+    "remove": "Rimuovi",
+    "quantity": "Quantità",
+    "empty_title": "Il tuo carrello è vuoto",
+    "empty_message": "Esplora i nostri prodotti e aggiungi quelli che ti piacciono di più",
+    "explore_products": "Esplora prodotti",
+    "clear_cart": "Svuota carrello",
+    "contact_data": "Dati di Contatto",
+    "full_name_required": "Nome completo *",
+    "name_error": "Il nome è obbligatorio (minimo 2 caratteri)",
+    "email_required": "Email *",
+    "email_error": "Inserisci un'email valida",
+    "phone_optional": "Telefono (facoltativo)",
+    "message_optional": "Messaggio aggiuntivo (facoltativo)",
+    "send_selection": "Invia selezione per email",
+    "sending": "Invio in corso...",
+    "required_fields_note": "I campi contrassegnati con * sono obbligatori"
+  },
+  "admin": {
+    "title": "Pannello di Amministrazione",
+    "welcome": "Benvenuto",
+    "dashboard": {
+      "title": "Cruscotto"
+    },
+    "products": {
+      "title": "Prodotti"
+    },
+    "orders": {
+      "title": "Ordini"
+    },
+    "gallery": {
+      "title": "Galleria"
+    },
+    "users": {
+      "title": "Utenti"
+    },
+    "total_products": "Totale Prodotti",
+    "total_orders": "Totale Ordini",
+    "gallery_images": "Immagini Galleria",
+    "total_users": "Totale Utenti",
+    "quick_actions": "Azioni Rapide",
+    "add_product": "Aggiungi Prodotto",
+    "upload_image": "Carica Immagine",
+    "manage_products": "Gestisci Prodotti",
+    "manage_orders": "Gestisci Ordini",
+    "manage_gallery": "Gestisci Galleria",
+    "manage_users": "Gestisci Utenti",
+    "recent_activity": "Attività Recente",
+    "no_recent_activity": "Nessuna attività recente",
+    "setup_required": "Configurazione Richiesta",
+    "need_categories_and_models": "È necessario creare categorie e modelli prima di aggiungere prodotti.",
+    "need_category": "È necessario creare almeno una categoria prima di aggiungere prodotti.",
+    "need_model": "È necessario creare almeno un modello prima di aggiungere prodotti.",
+    "goto_catalog": "Vai a Gestione Catalogo",
+    "catalog": {
+      "title": "Gestione Catalogo"
+    },
+    "seed": {
+      "title": "Inizializzazione Database",
+      "subtitle": "Inizializzare Firestore con categorie, modelli e template",
+      "operations": "Operazioni di Inizializzazione",
+      "operations_hint": "Questo creerà dati iniziali in Firestore",
+      "run_seed": "Esegui Inizializzazione",
+      "seeding": "Inizializzazione in corso...",
+      "categories": "Categorie",
+      "categories_count": "3 tipi di spessore",
+      "categories_list": "12mm, 15mm, 20mm",
+      "models": "Modelli",
+      "models_count": "12 modelli hardware",
+      "models_list": "Black Gold, Saint Laurent...",
+      "templates": "Template",
+      "templates_count": "3 template globali",
+      "templates_list": "Descrizione, SEO, Meta",
+      "success_title": "Inizializzazione Completata con Successo!",
+      "success_message": "Il tuo database Firestore è stato inizializzato con i dati di partenza.",
+      "error_title": "Inizializzazione Fallita",
+      "console_output": "Output Console",
+      "clear": "Cancella",
+      "back_to_products": "Torna a Prodotti Admin"
+    }
+  }
+}

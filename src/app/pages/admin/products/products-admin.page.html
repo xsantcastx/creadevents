@@ -52,21 +52,21 @@
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
           </svg>
           <div>
-            <h4 class="font-semibold text-bitcoin-orange">Setup Required</h4>
+            <h4 class="font-semibold text-bitcoin-orange">{{ 'admin.setup_required' | translate }}</h4>
             <p class="text-sm text-bitcoin-gray mt-1">
               @if (categories.length === 0 && models.length === 0) {
-                You need to create categories and models before adding products.
+                {{ 'admin.need_categories_and_models' | translate }}
               } @else if (categories.length === 0) {
-                You need to create at least one category before adding products.
+                {{ 'admin.need_category' | translate }}
               } @else {
-                You need to create at least one model before adding products.
+                {{ 'admin.need_model' | translate }}
               }
             </p>
             <a routerLink="/admin/catalog" class="inline-flex items-center gap-2 mt-3 px-4 py-2 bg-bitcoin-orange/30 hover:bg-bitcoin-orange/40 text-bitcoin-orange border border-bitcoin-orange/30 rounded-lg transition-colors">
               <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
               </svg>
-              Go to Catalog Management
+              {{ 'admin.goto_catalog' | translate }}
             </a>
           </div>
         </div>
@@ -894,56 +894,23 @@
                 <!-- Add New Benefit -->
                 @if (currentBenefits.length < 4) {
                   <div class="border-t border-bitcoin-gray/10 pt-4">
-                    <p class="text-xs font-semibold text-bitcoin-gray mb-3">Quick Benefit Templates:</p>
+                    <p class="text-xs font-semibold text-bitcoin-gray mb-3">💡 Quick Benefit Templates (based on selected category):</p>
                     
-                    <div class="space-y-3">
-                      <!-- Mining Hardware Benefits -->
-                      <div>
-                        <p class="text-xs font-bold text-cyan-400 mb-2">⛏️ Mining Hardware:</p>
-                        <div class="flex flex-wrap gap-2">
-                          @for (template of getMiningBenefitTemplates(); track template.title) {
-                            <button
-                              type="button"
-                              (click)="addBenefit(template)"
-                              [disabled]="currentBenefits.length >= 4"
-                              class="px-3 py-1.5 bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-300 text-xs rounded-lg border border-cyan-500/30 transition-all hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed">
-                              + {{template.title}}
-                            </button>
-                          }
-                        </div>
-                      </div>
-
-                      <!-- Accessory Benefits -->
-                      <div>
-                        <p class="text-xs font-bold text-purple-400 mb-2">🔑 Accessories:</p>
-                        <div class="flex flex-wrap gap-2">
-                          @for (template of getAccessoryBenefitTemplates(); track template.title) {
-                            <button
-                              type="button"
-                              (click)="addBenefit(template)"
-                              [disabled]="currentBenefits.length >= 4"
-                              class="px-3 py-1.5 bg-purple-500/10 hover:bg-purple-500/20 text-purple-300 text-xs rounded-lg border border-purple-500/30 transition-all hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed">
-                              + {{template.title}}
-                            </button>
-                          }
-                        </div>
-                      </div>
-
-                      <!-- Hardware Wallet Benefits -->
-                      <div>
-                        <p class="text-xs font-bold text-green-400 mb-2">💳 Hardware Wallets:</p>
-                        <div class="flex flex-wrap gap-2">
-                          @for (template of getWalletBenefitTemplates(); track template.title) {
-                            <button
-                              type="button"
-                              (click)="addBenefit(template)"
-                              [disabled]="currentBenefits.length >= 4"
-                              class="px-3 py-1.5 bg-green-500/10 hover:bg-green-500/20 text-green-300 text-xs rounded-lg border border-green-500/30 transition-all hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed">
-                              + {{template.title}}
-                            </button>
-                          }
-                        </div>
-                      </div>
+                    <div class="flex flex-wrap gap-2">
+                      @for (template of getBenefitTemplatesForProduct(); track template.title) {
+                        <button
+                          type="button"
+                          (click)="addBenefit(template)"
+                          [disabled]="currentBenefits.length >= 4"
+                          class="px-3 py-1.5 bg-bitcoin-orange/10 hover:bg-bitcoin-orange/20 text-bitcoin-orange text-xs rounded-lg border border-bitcoin-orange/30 transition-all hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed">
+                          + {{template.title}}
+                        </button>
+                      }
+                      @if (getBenefitTemplatesForProduct().length === 0) {
+                        <p class="text-xs text-bitcoin-gray/60 italic">
+                          No templates available. Select a category or create templates in <a routerLink="/admin/benefit-templates" class="text-bitcoin-orange hover:underline">Benefit Templates</a>.
+                        </p>
+                      }
                     </div>
                   </div>
                 } @else {

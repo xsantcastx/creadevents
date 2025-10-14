@@ -2,16 +2,16 @@
   <div class="max-w-4xl mx-auto">
     <!-- Header -->
     <div class="text-center mb-8">
-      <h1 class="text-4xl font-bold bitcoin-gradient-text mb-2">🌱 Database Seed</h1>
-      <p class="text-bitcoin-gray/70">Initialize Firestore with categories, models, and templates</p>
+      <h1 class="text-4xl font-bold bitcoin-gradient-text mb-2">🌱 {{ 'admin.seed.title' | translate }}</h1>
+      <p class="text-bitcoin-gray/70">{{ 'admin.seed.subtitle' | translate }}</p>
     </div>
 
     <!-- Seed Controls -->
     <div class="bg-bitcoin-dark/40 backdrop-blur-md border border-bitcoin-orange/20 rounded-2xl shadow-bitcoin-lg p-8 mb-6">
       <div class="flex items-center justify-between mb-6">
         <div>
-          <h2 class="text-2xl font-bold bitcoin-gradient-text">Seed Operations</h2>
-          <p class="text-sm text-bitcoin-gray/70 mt-1">This will create initial data in Firestore</p>
+          <h2 class="text-2xl font-bold bitcoin-gradient-text">{{ 'admin.seed.operations' | translate }}</h2>
+          <p class="text-sm text-bitcoin-gray/70 mt-1">{{ 'admin.seed.operations_hint' | translate }}</p>
         </div>
         
         @if (!isSeeding) {
@@ -21,7 +21,7 @@
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
             </svg>
-            Run Seed
+            {{ 'admin.seed.run_seed' | translate }}
           </button>
         } @else {
           <div class="flex items-center gap-2 px-6 py-3 bg-bitcoin-orange/20 border border-bitcoin-orange/30 text-bitcoin-orange rounded-xl">
@@ -29,7 +29,7 @@
               <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
               <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
             </svg>
-            Seeding...
+            {{ 'admin.seed.seeding' | translate }}
           </div>
         }
       </div>
@@ -38,23 +38,23 @@
       <div class="grid grid-cols-3 gap-4 mb-6">
         <div class="p-4 bg-bitcoin-dark/60 backdrop-blur-sm rounded-xl border border-bitcoin-orange/20">
           <div class="text-2xl mb-2">📂</div>
-          <h3 class="font-semibold text-bitcoin-gold">Categories</h3>
-          <p class="text-sm text-bitcoin-gray">3 grosor types</p>
-          <p class="text-xs text-bitcoin-gray/70 mt-1">12mm, 15mm, 20mm</p>
+          <h3 class="font-semibold text-bitcoin-gold">{{ 'admin.seed.categories' | translate }}</h3>
+          <p class="text-sm text-bitcoin-gray">{{ 'admin.seed.categories_count' | translate }}</p>
+          <p class="text-xs text-bitcoin-gray/70 mt-1">{{ 'admin.seed.categories_list' | translate }}</p>
         </div>
 
         <div class="p-4 bg-bitcoin-dark/60 backdrop-blur-sm rounded-xl border border-bitcoin-orange/20">
           <div class="text-2xl mb-2">🎨</div>
-          <h3 class="font-semibold text-bitcoin-gold">Models</h3>
-          <p class="text-sm text-bitcoin-gray">12 hardware models</p>
-          <p class="text-xs text-bitcoin-gray/70 mt-1">Black Gold, Saint Laurent...</p>
+          <h3 class="font-semibold text-bitcoin-gold">{{ 'admin.seed.models' | translate }}</h3>
+          <p class="text-sm text-bitcoin-gray">{{ 'admin.seed.models_count' | translate }}</p>
+          <p class="text-xs text-bitcoin-gray/70 mt-1">{{ 'admin.seed.models_list' | translate }}</p>
         </div>
 
         <div class="p-4 bg-bitcoin-dark/60 backdrop-blur-sm rounded-xl border border-bitcoin-orange/20">
           <div class="text-2xl mb-2">📝</div>
-          <h3 class="font-semibold text-bitcoin-gold">Templates</h3>
-          <p class="text-sm text-bitcoin-gray">3 global templates</p>
-          <p class="text-xs text-bitcoin-gray/70 mt-1">Description, SEO, Meta</p>
+          <h3 class="font-semibold text-bitcoin-gold">{{ 'admin.seed.templates' | translate }}</h3>
+          <p class="text-sm text-bitcoin-gray">{{ 'admin.seed.templates_count' | translate }}</p>
+          <p class="text-xs text-bitcoin-gray/70 mt-1">{{ 'admin.seed.templates_list' | translate }}</p>
         </div>
       </div>
 
@@ -65,8 +65,8 @@
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
           </svg>
           <div>
-            <h4 class="font-semibold text-bitcoin-gold">Seed Completed Successfully!</h4>
-            <p class="text-sm text-bitcoin-gray mt-1">Your Firestore database has been initialized with seed data.</p>
+            <h4 class="font-semibold text-bitcoin-gold">{{ 'admin.seed.success_title' | translate }}</h4>
+            <p class="text-sm text-bitcoin-gray mt-1">{{ 'admin.seed.success_message' | translate }}</p>
           </div>
         </div>
       }
@@ -77,7 +77,7 @@
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
           </svg>
           <div>
-            <h4 class="font-semibold text-red-400">Seed Failed</h4>
+            <h4 class="font-semibold text-red-400">{{ 'admin.seed.error_title' | translate }}</h4>
             <p class="text-sm text-red-300 mt-1">{{ seedError }}</p>
           </div>
         </div>
@@ -88,11 +88,11 @@
     @if (consoleMessages.length > 0) {
       <div class="bg-bitcoin-dark/60 backdrop-blur-md border border-bitcoin-orange/20 rounded-2xl shadow-bitcoin-lg p-6">
         <div class="flex items-center justify-between mb-4">
-          <h3 class="text-lg font-semibold bitcoin-gradient-text">Console Output</h3>
+          <h3 class="text-lg font-semibold bitcoin-gradient-text">{{ 'admin.seed.console_output' | translate }}</h3>
           <button
             (click)="clearLogs()"
             class="px-3 py-1 text-xs bg-bitcoin-dark/60 hover:bg-bitcoin-dark/80 border border-bitcoin-gray/20 text-bitcoin-gray rounded transition-colors">
-            Clear
+            {{ 'admin.seed.clear' | translate }}
           </button>
         </div>
         
@@ -116,7 +116,7 @@
         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
         </svg>
-        Back to Products Admin
+        {{ 'admin.seed.back_to_products' | translate }}
       </a>
     </div>
   </div>

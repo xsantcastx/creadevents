@@ -1,4 +1,4 @@
-import { Component, HostListener, inject, PLATFORM_ID, EventEmitter, Output, OnInit } from '@angular/core';
+import { Component, HostListener, inject, PLATFORM_ID, EventEmitter, Output, OnInit, signal } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
@@ -22,7 +22,7 @@ export class NavbarComponent implements OnInit {
   private readonly cartService = inject(CartService);
   private readonly authService = inject(AuthService);
   
-  scrolled = false;
+  scrolled = signal(false);
   mobileOpen = false;
   showUserMenu = false;
   
@@ -36,14 +36,17 @@ export class NavbarComponent implements OnInit {
   ) as () => number;
 
   ngOnInit() {
-    // Component initialization
+    // Set initial scroll state
+    if (isPlatformBrowser(this.platformId)) {
+      this.scrolled.set(window.scrollY > 8);
+    }
   }
 
   @HostListener('window:scroll')
   onScroll() {
     // Only run in browser to avoid SSR issues
     if (isPlatformBrowser(this.platformId)) {
-      this.scrolled = window.scrollY > 8;
+      this.scrolled.set(window.scrollY > 8);
     }
   }
 

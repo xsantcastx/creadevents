@@ -1,0 +1,292 @@
+{
+  "home": {
+    "hero": {
+      "title": "Minez Votre Avenir",
+      "subtitle": "💠 Où la technologie crypto devient un style de vie.\nExplorez équipement de minage, stockage sécurisé et gadgets qui montrent votre passion pour l'avenir décentralisé.\n🔥 Innovation, sécurité et design — sans limites.",
+      "description": "Rejoignez la révolution. Maximisez vos profits avec des mineurs ASIC de pointe conçus pour des performances optimales et une efficacité inégalée.",
+      "cta_primary": "Explorer les Mineurs",
+      "cta_secondary": "Demander un Devis"
+    },
+    "featured": {
+      "title": "Matériel de Minage en Vedette",
+      "subtitle": "Découvrez nos dernières solutions de minage Bitcoin",
+      "latest": "Derniers Produits",
+      "flagship": "Mineurs Phares",
+      "professional": "Série Professionnelle",
+      "enterprise": "Solutions d'Entreprise",
+      "view_all": "Tout Voir"
+    },
+    "gallery_preview": {
+      "title": "Galerie de Ferme de Minage",
+      "subtitle": "Explorez nos installations et configurations de minage professionnelles",
+      "view_full": "Voir la Galerie Complète →"
+    },
+    "why_choose": {
+      "title": "Pourquoi Choisir TheLuxMining?",
+      "subtitle": "Votre Succès Est Notre Mission",
+      "hashrate": {
+        "title": "Taux de Hachage Maximal",
+        "description": "Performance de taux de hachage leader de l'industrie avec la technologie ASIC de pointe, maximisant votre rentabilité minière Bitcoin."
+      },
+      "efficiency": {
+        "title": "Efficacité Supérieure",
+        "description": "Consommation d'énergie optimisée avec des systèmes de refroidissement avancés, offrant le meilleur rapport J/TH du marché."
+      },
+      "roi": {
+        "title": "ROI Maximum",
+        "description": "Fiabilité de niveau entreprise et garanties de disponibilité, assurant des rendements constants sur votre investissement minier."
+      }
+    },
+    "cta": {
+      "gallery": {
+        "title": "Explorer les Configurations de Minage",
+        "button": "Voir la Galerie"
+      },
+      "contact": {
+        "title": "Prêt à Commencer le Minage?",
+        "button": "Obtenir un Devis Personnalisé"
+      }
+    },
+    "stats": {
+      "miners_deployed": "Mineurs Déployés dans le Monde",
+      "customer_satisfaction": "Satisfaction Client",
+      "uptime_guarantee": "Garantie de Disponibilité",
+      "years_experience": "Années d'Excellence"
+    }
+  },
+  "nav": {
+    "home": "Accueil",
+    "products": "Produits",
+    "all_products": "Tous les Produits",
+    "gallery": "Galerie",
+    "technical": "Spécifications Techniques",
+    "contact": "Contact",
+    "login": "Connexion",
+    "cart": "Panier"
+  },
+  "footer": {
+    "rights": "Tous droits réservés",
+    "privacy": "Politique de Confidentialité",
+    "terms": "Termes et Conditions",
+    "description": "Votre destination de choix pour le matériel de minage crypto, les mineurs solo, les solutions de stockage à froid, les porte-clés Bitcoin et les gadgets exclusifs de cryptomonnaies.",
+    "quick_links": "Liens Rapides",
+    "products_title": "Produits",
+    "contact_info": "Contact",
+    "phone": "Téléphone",
+    "email": "Email",
+    "address": "Adresse",
+    "business_hours": "Heures d'Ouverture"
+  },
+  "products": {
+    "hero": {
+      "title": "Matériel de Minage Bitcoin",
+      "subtitle": "Équipement de minage de cryptomonnaies premium disponible dans différentes configurations et niveaux de performance pour répondre aux besoins de votre opération de minage."
+    },
+    "filters": {
+      "category": "Catégorie",
+      "all_categories": "Toutes les Catégories",
+      "model": "Modèle",
+      "all_models": "Tous les Modèles",
+      "search": "Rechercher",
+      "search_placeholder": "Nom du produit...",
+      "clear_filters": "Effacer les Filtres",
+      "filter_by_tags": "Filtrer par Étiquettes"
+    },
+    "results": {
+      "loading": "Chargement du matériel de minage...",
+      "showing": "Affichage de {{current}} sur {{total}} produits"
+    },
+    "empty": {
+      "title": "Aucun Produit Trouvé",
+      "message": "Essayez d'ajuster les filtres ou de les effacer pour voir tout l'équipement de minage disponible.",
+      "clear_button": "Effacer les Filtres"
+    },
+    "section": {
+      "title": "Matériel de Minage",
+      "subtitle": "Équipement de minage de cryptomonnaies premium"
+    },
+    "title": "Matériel de Minage",
+    "subtitle": "Équipement Professionnel",
+    "specs": "Spécifications",
+    "hashrate": "Taux de Hachage",
+    "power": "Consommation d'Énergie",
+    "efficiency": "Efficacité",
+    "add_to_cart": "Ajouter au Panier",
+    "request_quote": "Demander un Devis",
+    "filterBy": "Filtrer par",
+    "thickness": "Épaisseur"
+  },
+  "common": {
+    "loading": "Chargement...",
+    "search": "Rechercher..."
+  },
+  "client": {
+    "login": "Connexion",
+    "register": "S'inscrire",
+    "logout": "Déconnexion",
+    "my_account": "Mon Compte",
+    "my_orders": "Mes Commandes",
+    "pending": "En Attente",
+    "name": "Nom",
+    "email": "Email",
+    "phone": "Téléphone",
+    "password": "Mot de Passe",
+    "confirm_password": "Confirmer le Mot de Passe",
+    "display_name": "Nom d'Affichage",
+    "company": "Entreprise",
+    "address": "Adresse",
+    "city": "Ville",
+    "postal_code": "Code Postal",
+    "country": "Pays",
+    "save_changes": "Enregistrer les Modifications",
+    "profile_updated": "Profil mis à jour avec succès",
+    "welcome_back": "Bon retour",
+    "sign_in": "Connectez-vous à votre compte",
+    "dont_have_account": "Vous n'avez pas de compte?",
+    "sign_up_here": "Inscrivez-vous ici",
+    "already_have_account": "Vous avez déjà un compte?",
+    "sign_in_here": "Connectez-vous ici",
+    "create_account": "Créez votre compte",
+    "order_history": "Historique des Commandes",
+    "no_orders_yet": "Aucune commande pour le moment",
+    "order_details": "Détails de la Commande",
+    "order_date": "Date de Commande",
+    "order_status": "Statut",
+    "order_total": "Total",
+    "shipping_address": "Adresse de Livraison",
+    "items": "Articles",
+    "processing": "En Traitement",
+    "shipped": "Expédié",
+    "delivered": "Livré",
+    "cancelled": "Annulé"
+  },
+  "gallery": {
+    "project": "Projet",
+    "title": "Galerie",
+    "subtitle": "Explorez notre collection de matériel de minage crypto premium, mineurs solo, solutions de stockage à froid, porte-clés Bitcoin et gadgets exclusifs de cryptomonnaies",
+    "projects": "Projets",
+    "all_projects": "Tous les Projets",
+    "showing_all": "Affichage de tous les projets",
+    "showing": "Affichage",
+    "description": "Description",
+    "view": "Voir",
+    "no_projects": "Aucun Projet Disponible",
+    "no_projects_message": "Aucun projet trouvé pour cette catégorie. Essayez de sélectionner une autre catégorie ou de voir tous les projets.",
+    "of": "de",
+    "tags": {
+      "kitchens": "Cuisines",
+      "bathrooms": "Salles de Bain",
+      "modern": "Moderne",
+      "classic": "Classique",
+      "luxury": "Luxe"
+    }
+  },
+  "contact": {
+    "title": "Contact",
+    "subtitle": "Contactez nos experts en minage crypto. Que vous ayez besoin d'aide pour choisir le bon mineur, des questions sur le stockage à froid, ou souhaitiez discuter de commandes en gros.",
+    "form_title": "Envoyez-nous votre demande",
+    "success_message": "Merci pour votre message ! Nous vous contacterons bientôt.",
+    "error_message": "Une erreur s'est produite lors de l'envoi du message. Veuillez réessayer.",
+    "full_name": "Nom complet",
+    "full_name_placeholder": "Jean Dupont",
+    "email_placeholder": "satoshi@bitcoin.com",
+    "phone_placeholder": "+1 203 555 0123",
+    "company_placeholder": "Votre opération de minage ou entreprise (facultatif)",
+    "message": "Message",
+    "message_placeholder": "Je suis intéressé par les mineurs ASIC, les configurations de minage solo, les portefeuilles froids... Dites-nous ce dont vous avez besoin!",
+    "accept_privacy": "J'accepte le traitement de mes données personnelles selon la politique de confidentialité",
+    "privacy_required": "Vous devez accepter la politique de confidentialité",
+    "send_message": "Envoyer le message",
+    "sending": "Envoi en cours...",
+    "info_title": "Informations de Contact",
+    "address_label": "Adresse",
+    "address_line1": "100 Greyrock Pl F119",
+    "address_line2": "Stamford, CT 06901",
+    "email_label": "Email"
+  },
+  "cart": {
+    "title": "Panier",
+    "your": "Votre",
+    "selection": "Sélection",
+    "subtitle": "Consultez votre sélection de produits et envoyez-nous vos coordonnées pour recevoir un devis personnalisé",
+    "remove": "Retirer",
+    "quantity": "Quantité",
+    "empty_title": "Votre panier est vide",
+    "empty_message": "Explorez nos produits et ajoutez ceux que vous préférez",
+    "explore_products": "Explorer les produits",
+    "clear_cart": "Vider le panier",
+    "contact_data": "Coordonnées",
+    "full_name_required": "Nom complet *",
+    "name_error": "Le nom est requis (minimum 2 caractères)",
+    "email_required": "Email *",
+    "email_error": "Entrez un email valide",
+    "phone_optional": "Téléphone (facultatif)",
+    "message_optional": "Message supplémentaire (facultatif)",
+    "send_selection": "Envoyer la sélection par email",
+    "sending": "Envoi en cours...",
+    "required_fields_note": "Les champs marqués d'un * sont obligatoires"
+  },
+  "admin": {
+    "title": "Panneau d'Administration",
+    "welcome": "Bienvenue",
+    "dashboard": {
+      "title": "Tableau de Bord"
+    },
+    "products": {
+      "title": "Produits"
+    },
+    "orders": {
+      "title": "Commandes"
+    },
+    "gallery": {
+      "title": "Galerie"
+    },
+    "users": {
+      "title": "Utilisateurs"
+    },
+    "total_products": "Total de Produits",
+    "total_orders": "Total de Commandes",
+    "gallery_images": "Images de Galerie",
+    "total_users": "Total d'Utilisateurs",
+    "quick_actions": "Actions Rapides",
+    "add_product": "Ajouter un Produit",
+    "upload_image": "Télécharger une Image",
+    "manage_products": "Gérer les Produits",
+    "manage_orders": "Gérer les Commandes",
+    "manage_gallery": "Gérer la Galerie",
+    "manage_users": "Gérer les Utilisateurs",
+    "recent_activity": "Activité Récente",
+    "no_recent_activity": "Aucune activité récente",
+    "setup_required": "Configuration Requise",
+    "need_categories_and_models": "Vous devez créer des catégories et des modèles avant d'ajouter des produits.",
+    "need_category": "Vous devez créer au moins une catégorie avant d'ajouter des produits.",
+    "need_model": "Vous devez créer au moins un modèle avant d'ajouter des produits.",
+    "goto_catalog": "Aller à la Gestion du Catalogue",
+    "catalog": {
+      "title": "Gestion du Catalogue"
+    },
+    "seed": {
+      "title": "Initialisation de Base de Données",
+      "subtitle": "Initialiser Firestore avec des catégories, modèles et modèles",
+      "operations": "Opérations d'Initialisation",
+      "operations_hint": "Cela créera des données initiales dans Firestore",
+      "run_seed": "Lancer l'Initialisation",
+      "seeding": "Initialisation en cours...",
+      "categories": "Catégories",
+      "categories_count": "3 types d'épaisseur",
+      "categories_list": "12mm, 15mm, 20mm",
+      "models": "Modèles",
+      "models_count": "12 modèles de matériel",
+      "models_list": "Black Gold, Saint Laurent...",
+      "templates": "Modèles",
+      "templates_count": "3 modèles globaux",
+      "templates_list": "Description, SEO, Méta",
+      "success_title": "Initialisation Terminée avec Succès!",
+      "success_message": "Votre base de données Firestore a été initialisée avec des données de départ.",
+      "error_title": "Échec de l'Initialisation",
+      "console_output": "Sortie Console",
+      "clear": "Effacer",
+      "back_to_products": "Retour aux Produits Admin"
+    }
+  }
+}

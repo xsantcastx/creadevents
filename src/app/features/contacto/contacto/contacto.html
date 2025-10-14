@@ -11,22 +11,18 @@
       </p>
       <ul>
         <li>
-          <strong>Phone:</strong>
-          <a href="tel:+16507232300">+1 (650) 723-2300</a>
-        </li>
-        <li>
           <strong>Email:</strong>
-          <a href="mailto:info@theluxmining.com">info@theluxmining.com</a>
+          <a href="mailto:support@theluxmining.com">support@theluxmining.com</a>
         </li>
         <li>
           <strong>Address:</strong>
-          450 Serra Mall, Stanford, CA 94305, United States
+          100 Greyrock Pl F119, Stamford, CT 06901
         </li>
       </ul>
       <div class="contacto__mapa" aria-hidden="true">
         <iframe
           title="TheLuxMining Location"
-          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3168.639317845!2d-122.16904!3d37.42742!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x808fbb28416493a7%3A0x3a0f1f8e8b8b8b8b!2sStanford%20University!5e0!3m2!1sen!2sus!4v1700000000000"
+          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2996.3!2d-73.5387!3d41.0534!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c2a1e1f1f1f1f1%3A0x1f1f1f1f1f1f1f1f!2s100%20Greyrock%20Pl%2C%20Stamford%2C%20CT%2006901!5e0!3m2!1sen!2sus!4v1700000000000"
           loading="lazy"
           referrerpolicy="no-referrer-when-downgrade"
         ></iframe>
@@ -35,29 +31,29 @@
 
     <form class="contacto__form" [formGroup]="formulario" (ngSubmit)="enviar()">
       <label>
-        Nombre y apellidos
-        <input type="text" formControlName="nombre" placeholder="Laura Martinez" class="text-neutral-800 placeholder-neutral-500" />
+        Full Name
+        <input type="text" formControlName="nombre" placeholder="Satoshi Nakamoto" class="text-neutral-800 placeholder-neutral-500" />
       </label>
       <label>
-        Correo electronico
-        <input type="email" formControlName="email" placeholder="contacto@estudio.com" class="text-neutral-800 placeholder-neutral-500" />
+        Email
+        <input type="email" formControlName="email" placeholder="satoshi@bitcoin.com" class="text-neutral-800 placeholder-neutral-500" />
       </label>
       <label>
-        Telefono
-        <input type="tel" formControlName="telefono" placeholder="+34 600 000 000" class="text-neutral-800 placeholder-neutral-500" />
+        Phone
+        <input type="tel" formControlName="telefono" placeholder="+1 203 555 0123" class="text-neutral-800 placeholder-neutral-500" />
       </label>
       <label>
-        Empresa / Estudio
-        <input type="text" formControlName="empresa" placeholder="Nombre de la empresa" class="text-neutral-800 placeholder-neutral-500" />
+        Company / Mining Operation
+        <input type="text" formControlName="empresa" placeholder="Your mining operation (optional)" class="text-neutral-800 placeholder-neutral-500" />
       </label>
       <label class="contacto__full">
-        Cuentanos tu proyecto
-        <textarea formControlName="mensaje" rows="5" placeholder="Superficies, fechas, acabados preferidos..." class="text-neutral-800 placeholder-neutral-500"></textarea>
+        Tell us what you need
+        <textarea formControlName="mensaje" rows="5" placeholder="ASIC miners, solo mining setups, cold wallets, bulk orders..." class="text-neutral-800 placeholder-neutral-500"></textarea>
       </label>
-      <button type="submit" class="ts-btn ts-btn-primary ts-btn-lg contacto__submit">Enviar mensaje</button>
+      <button type="submit" class="ts-btn ts-btn-primary ts-btn-lg contacto__submit">Send Message</button>
 
       @if (enviado) {
-        <p class="contacto__exito">Gracias por escribirnos. Responderemos en menos de 24 horas laborables.</p>
+        <p class="contacto__exito">Thank you for contacting us! We'll respond within 24 business hours.</p>
       }
     </form>
   </div>

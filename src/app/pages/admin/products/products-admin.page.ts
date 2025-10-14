@@ -709,11 +709,48 @@ export class ProductsAdminComponent implements OnInit {
   }
 
   /**
+   * Get benefit templates for current product's category
+   * Filters by product's category slug or shows "general" templates
+   */
+  getBenefitTemplatesForProduct() {
+    if (!this.productForm.get('categoryId')?.value) {
+      // If no category selected, return only general templates
+      return this.benefitTemplates
+        .filter(t => t.isActive)
+        .map(t => ({
+          icon: t.icon,
+          iconColor: t.iconColor,
+          title: t.title,
+          description: t.description
+        }));
+    }
+
+    // Find the category to get its slug
+    const categoryId = this.productForm.get('categoryId')?.value;
+    const category = this.categories.find(c => c.id === categoryId);
+    
+    if (!category) {
+      return [];
+    }
+
+    // Filter templates by category slug (matches both specific category and "general")
+    return this.benefitTemplates
+      .filter(t => t.isActive && (t.category === category.slug || t.category === 'general'))
+      .map(t => ({
+        icon: t.icon,
+        iconColor: t.iconColor,
+        title: t.title,
+        description: t.description
+      }));
+  }
+
+  /**
+   * @deprecated Use getBenefitTemplatesForProduct() instead
    * Get mining benefit templates from database
    */
   getMiningBenefitTemplates() {
     return this.benefitTemplates
-      .filter(t => t.category === 'mining' || t.category === 'general')
+      .filter(t => t.isActive && (t.category === 'mining' || t.category === 'general'))
       .map(t => ({
         icon: t.icon,
         iconColor: t.iconColor,
@@ -723,11 +760,12 @@ export class ProductsAdminComponent implements OnInit {
   }
 
   /**
+   * @deprecated Use getBenefitTemplatesForProduct() instead
    * Get accessory benefit templates from database
    */
   getAccessoryBenefitTemplates() {
     return this.benefitTemplates
-      .filter(t => t.category === 'accessory' || t.category === 'general')
+      .filter(t => t.isActive && (t.category === 'accessory' || t.category === 'general'))
       .map(t => ({
         icon: t.icon,
         iconColor: t.iconColor,
@@ -737,11 +775,12 @@ export class ProductsAdminComponent implements OnInit {
   }
 
   /**
+   * @deprecated Use getBenefitTemplatesForProduct() instead
    * Get wallet benefit templates from database
    */
   getWalletBenefitTemplates() {
     return this.benefitTemplates
-      .filter(t => t.category === 'wallet' || t.category === 'general')
+      .filter(t => t.isActive && (t.category === 'wallet' || t.category === 'general'))
       .map(t => ({
         icon: t.icon,
         iconColor: t.iconColor,

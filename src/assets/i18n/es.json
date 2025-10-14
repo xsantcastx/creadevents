@@ -2,7 +2,7 @@
   "home": {
     "hero": {
       "title": "Mina Tu Futuro",
-      "subtitle": "Soluciones de Minería Bitcoin de Nivel Empresarial",
+      "subtitle": "💠 Donde la tecnología cripto se convierte en estilo de vida.\nExplora equipo de minería, almacenamiento seguro y gadgets que muestran tu pasión por el futuro descentralizado.\n🔥 Innovación, seguridad y diseño — sin límites.",
       "description": "Únete a la revolución. Maximiza tus ganancias con mineros ASIC de última generación diseñados para el máximo rendimiento y eficiencia incomparable.",
       "cta_primary": "Explorar Mineros",
       "cta_secondary": "Solicitar Cotización"
@@ -15,6 +15,11 @@
       "professional": "Serie Profesional",
       "enterprise": "Soluciones Empresariales",
       "view_all": "Ver Todos"
+    },
+    "gallery_preview": {
+      "title": "Galería de Granja de Minería",
+      "subtitle": "Explora nuestras instalaciones y configuraciones de minería profesionales",
+      "view_full": "Ver Galería Completa →"
     },
     "why_choose": {
       "title": "¿Por Qué Elegir TheLuxMining?",
@@ -52,6 +57,7 @@
   "nav": {
     "home": "Inicio",
     "products": "Productos",
+    "all_products": "Todos los Productos",
     "gallery": "Galería",
     "technical": "Especificaciones Técnicas",
     "contact": "Contacto",
@@ -62,7 +68,7 @@
     "rights": "Todos los derechos reservados",
     "privacy": "Política de Privacidad",
     "terms": "Términos y Condiciones",
-    "description": "Soluciones premium de hardware de minería Bitcoin que ofrecen rendimiento, eficiencia y confiabilidad de nivel empresarial para operaciones mineras profesionales.",
+    "description": "Tu destino principal para hardware de minería cripto, mineros solo, soluciones de almacenamiento en frío, llaveros Bitcoin y gadgets exclusivos de criptomonedas.",
     "quick_links": "Enlaces Rápidos",
     "products_title": "Productos",
     "contact_info": "Contacto",
@@ -72,6 +78,33 @@
     "business_hours": "Horario de Atención"
   },
   "products": {
+    "hero": {
+      "title": "Hardware de Minería Bitcoin",
+      "subtitle": "Equipo de minería de criptomonedas premium disponible en diferentes configuraciones y niveles de rendimiento para satisfacer las necesidades de tu operación minera."
+    },
+    "filters": {
+      "category": "Categoría",
+      "all_categories": "Todas las Categorías",
+      "model": "Modelo",
+      "all_models": "Todos los Modelos",
+      "search": "Buscar",
+      "search_placeholder": "Nombre del producto...",
+      "clear_filters": "Limpiar Filtros",
+      "filter_by_tags": "Filtrar por Etiquetas"
+    },
+    "results": {
+      "loading": "Cargando hardware de minería...",
+      "showing": "Mostrando {{current}} de {{total}} productos"
+    },
+    "empty": {
+      "title": "No se Encontraron Productos",
+      "message": "Intenta ajustar los filtros o elimínalos para ver todo el equipo de minería disponible.",
+      "clear_button": "Limpiar Filtros"
+    },
+    "section": {
+      "title": "Hardware de Minería",
+      "subtitle": "Equipo de minería de criptomonedas premium"
+    },
     "title": "Hardware de Minería",
     "subtitle": "Equipo Profesional",
     "specs": "Especificaciones",
@@ -88,13 +121,58 @@
     "search": "Buscar..."
   },
   "client": {
+    "login": "Iniciar Sesión",
+    "register": "Registrarse",
     "logout": "Cerrar Sesión",
+    "my_account": "Mi Cuenta",
+    "my_orders": "Mis Pedidos",
     "pending": "Pendiente",
     "name": "Nombre",
     "email": "Correo",
-    "phone": "Teléfono"
+    "phone": "Teléfono",
+    "password": "Contraseña",
+    "confirm_password": "Confirmar Contraseña",
+    "display_name": "Nombre para Mostrar",
+    "company": "Empresa",
+    "address": "Dirección",
+    "city": "Ciudad",
+    "postal_code": "Código Postal",
+    "country": "País",
+    "save_changes": "Guardar Cambios",
+    "profile_updated": "Perfil actualizado exitosamente",
+    "welcome_back": "Bienvenido de nuevo",
+    "sign_in": "Inicia sesión en tu cuenta",
+    "dont_have_account": "¿No tienes una cuenta?",
+    "sign_up_here": "Regístrate aquí",
+    "already_have_account": "¿Ya tienes una cuenta?",
+    "sign_in_here": "Inicia sesión aquí",
+    "create_account": "Crea tu cuenta",
+    "order_history": "Historial de Pedidos",
+    "no_orders_yet": "Aún no tienes pedidos",
+    "order_details": "Detalles del Pedido",
+    "order_date": "Fecha del Pedido",
+    "order_status": "Estado",
+    "order_total": "Total",
+    "shipping_address": "Dirección de Envío",
+    "items": "Artículos",
+    "processing": "Procesando",
+    "shipped": "Enviado",
+    "delivered": "Entregado",
+    "cancelled": "Cancelado"
   },
   "gallery": {
+    "project": "Proyecto",
+    "title": "Galería",
+    "subtitle": "Explora nuestra colección de hardware premium de minería cripto, mineros solo, soluciones de almacenamiento en frío, llaveros Bitcoin y gadgets exclusivos de criptomonedas",
+    "projects": "Proyectos",
+    "all_projects": "Todos los Proyectos",
+    "showing_all": "Mostrando todos los proyectos",
+    "showing": "Mostrando",
+    "description": "Descripción",
+    "view": "Ver",
+    "no_projects": "No Hay Proyectos Disponibles",
+    "no_projects_message": "No se encontraron proyectos para esta categoría. Intenta seleccionar otra categoría o ver todos los proyectos.",
+    "of": "de",
     "tags": {
       "kitchens": "Cocinas",
       "bathrooms": "Baños",
@@ -102,6 +180,51 @@
       "classic": "Clásico",
       "luxury": "Lujo"
     }
+  },
+  "contact": {
+    "title": "Contacto",
+    "subtitle": "Ponte en contacto con nuestros expertos en minería crypto. Ya sea que necesites ayuda para elegir el minero adecuado, tengas preguntas sobre almacenamiento en frío, o quieras discutir pedidos al por mayor.",
+    "form_title": "Envíanos tu consulta",
+    "success_message": "¡Gracias por tu mensaje! Te contactaremos pronto.",
+    "error_message": "Hubo un error al enviar el mensaje. Por favor, inténtalo de nuevo.",
+    "full_name": "Nombre completo",
+    "full_name_placeholder": "Juan Pérez",
+    "email_placeholder": "satoshi@bitcoin.com",
+    "phone_placeholder": "+1 203 555 0123",
+    "company_placeholder": "Tu operación de minería o empresa (opcional)",
+    "message": "Mensaje",
+    "message_placeholder": "Me interesan los mineros ASIC, configuraciones de minería solo, carteras frías... ¡Dinos qué necesitas!",
+    "accept_privacy": "Acepto el tratamiento de mis datos personales según la política de privacidad",
+    "privacy_required": "Debes aceptar la política de privacidad",
+    "send_message": "Enviar mensaje",
+    "sending": "Enviando...",
+    "info_title": "Información de contacto",
+    "address_label": "Dirección",
+    "address_line1": "100 Greyrock Pl F119",
+    "address_line2": "Stamford, CT 06901",
+    "email_label": "Email"
+  },
+  "cart": {
+    "title": "Carrito",
+    "your": "Tu",
+    "selection": "Selección",
+    "subtitle": "Revisa tu selección de productos y envíanos tus datos para recibir un presupuesto personalizado",
+    "remove": "Quitar",
+    "quantity": "Cantidad",
+    "empty_title": "Tu carrito está vacío",
+    "empty_message": "Explora nuestros productos y añade los que más te gusten",
+    "explore_products": "Explorar productos",
+    "clear_cart": "Vaciar carrito",
+    "contact_data": "Datos de contacto",
+    "full_name_required": "Nombre completo *",
+    "name_error": "El nombre es requerido (mínimo 2 caracteres)",
+    "email_required": "Email *",
+    "email_error": "Ingresa un email válido",
+    "phone_optional": "Teléfono (opcional)",
+    "message_optional": "Mensaje adicional (opcional)",
+    "send_selection": "Enviar selección por correo",
+    "sending": "Enviando...",
+    "required_fields_note": "Los campos marcados con * son obligatorios"
   },
   "admin": {
     "title": "Panel de Administración",
@@ -134,6 +257,11 @@
     "manage_users": "Gestionar Usuarios",
     "recent_activity": "Actividad Reciente",
     "no_recent_activity": "Sin actividad reciente",
+    "setup_required": "Configuración Requerida",
+    "need_categories_and_models": "Necesitas crear categorías y modelos antes de añadir productos.",
+    "need_category": "Necesitas crear al menos una categoría antes de añadir productos.",
+    "need_model": "Necesitas crear al menos un modelo antes de añadir productos.",
+    "goto_catalog": "Ir a Gestión de Catálogo",
     "seed_missing": "No se encontraron productos",
     "seed_missing_hint": "Parece que aún no has inicializado tu base de datos",
     "run_seed": "Ejecutar Script de Inicialización",
@@ -256,6 +384,29 @@
       "confirm_delete_message": "¿Estás seguro de que quieres eliminar",
       "confirm_delete_warning": "Esta acción no se puede deshacer.",
       "deleting": "Eliminando..."
+    },
+    "seed": {
+      "title": "Semilla de Base de Datos",
+      "subtitle": "Inicializar Firestore con categorías, modelos y plantillas",
+      "operations": "Operaciones de Semilla",
+      "operations_hint": "Esto creará datos iniciales en Firestore",
+      "run_seed": "Ejecutar Semilla",
+      "seeding": "Sembrando...",
+      "categories": "Categorías",
+      "categories_count": "3 tipos de grosor",
+      "categories_list": "12mm, 15mm, 20mm",
+      "models": "Modelos",
+      "models_count": "12 modelos de hardware",
+      "models_list": "Black Gold, Saint Laurent...",
+      "templates": "Plantillas",
+      "templates_count": "3 plantillas globales",
+      "templates_list": "Descripción, SEO, Meta",
+      "success_title": "¡Semilla Completada Exitosamente!",
+      "success_message": "Tu base de datos Firestore ha sido inicializada con datos de semilla.",
+      "error_title": "Falló la Semilla",
+      "console_output": "Salida de Consola",
+      "clear": "Limpiar",
+      "back_to_products": "Volver a Productos Admin"
     }
   }
 }
