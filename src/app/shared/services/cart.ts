@@ -6,7 +6,7 @@ import { CartItem, Product } from '../../shared/models/catalog';
   providedIn: 'root'
 })
 export class CartService {
-  private readonly storageKey = 'tstone-cart';
+  private readonly storageKey = 'theluxmining-cart';
   private readonly itemsSubject = new BehaviorSubject<CartItem[]>(this.loadInitialCart());
 
   readonly items$ = this.itemsSubject.asObservable();

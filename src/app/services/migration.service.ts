@@ -114,13 +114,13 @@ export class MigrationService {
             },
             variants: [],
             seo: {
-              title: `${legacy.nombre} - Superficie Porcelánica ${legacy.grosor} | TopStone`,
+              title: `${legacy.nombre} - Mining Hardware ${legacy.grosor} | TheLuxMining`,
               metaDescription: legacy.descripcion,
               keywords: [
                 legacy.nombre,
-                'superficie porcelánica',
+                'bitcoin mining',
                 legacy.grosor,
-                'gran formato',
+                'ASIC miner',
                 ...legacy.aplicaciones
               ]
             },

@@ -31,7 +31,7 @@ export class EmailService {
 
     const html = `
       <div style="font-family:Inter,Segoe UI,Arial,sans-serif">
-        <h2 style="margin:0 0 8px">Nueva selección de productos - TopStone</h2>
+        <h2 style="margin:0 0 8px">Nueva selección de productos - TheLuxMining</h2>
         <p><b>Nombre:</b> ${String(contact.name).replace(/</g, '&lt;')}<br>
            <b>Email:</b> ${String(contact.email).replace(/</g, '&lt;')}<br>
            <b>Tel:</b> ${String(contact.phone || 'No proporcionado').replace(/</g, '&lt;')}</p>
@@ -49,7 +49,7 @@ export class EmailService {
         </table>
         <hr style="margin:24px 0;border:none;border-top:1px solid #e5e7eb">
         <p style="font-size:12px;color:#6b7280">
-          Enviado desde el carrito de TopStone - ${new Date().toLocaleString('es-ES')}
+          Enviado desde el carrito de TheLuxMining - ${new Date().toLocaleString('es-ES')}
         </p>
       </div>`;
 
@@ -58,7 +58,7 @@ export class EmailService {
       const docRef = await addDoc(collection(this.db, 'mail'), {
         to: ['xsantcastx@xsantcastx.com'], // Must match Firestore security rules
         message: { 
-          subject: 'TopStone · Selección de carrito', 
+          subject: 'TheLuxMining · Selección de carrito', 
           html 
         }
       });
@@ -79,7 +79,7 @@ export class EmailService {
 
     const html = `
       <div style="font-family:Inter,Segoe UI,Arial,sans-serif">
-        <h2 style="margin:0 0 8px">Nuevo mensaje de contacto - TopStone</h2>
+        <h2 style="margin:0 0 8px">Nuevo mensaje de contacto - TheLuxMining</h2>
         <div style="background-color:#f9fafb;padding:16px;border-radius:8px;margin-bottom:16px">
           <p style="margin:0 0 8px"><b>Nombre:</b> ${String(formData.nombre).replace(/</g, '&lt;')}</p>
           <p style="margin:0 0 8px"><b>Email:</b> ${String(formData.email).replace(/</g, '&lt;')}</p>
@@ -96,7 +96,7 @@ export class EmailService {
         
         <hr style="margin:24px 0;border:none;border-top:1px solid #e5e7eb">
         <p style="font-size:12px;color:#6b7280">
-          Enviado desde el formulario de contacto de TopStone - ${new Date().toLocaleString('es-ES')}
+          Enviado desde el formulario de contacto de TheLuxMining - ${new Date().toLocaleString('es-ES')}
         </p>
       </div>`;
 
@@ -105,7 +105,7 @@ export class EmailService {
       const docRef = await addDoc(collection(this.db, 'mail'), {
         to: ['xsantcastx@xsantcastx.com'], // Must match Firestore security rules
         message: { 
-          subject: `TopStone · Contacto de ${formData.nombre}`, 
+          subject: `TheLuxMining · Contacto de ${formData.nombre}`, 
           html 
         }
       });

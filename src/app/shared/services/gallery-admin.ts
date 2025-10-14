@@ -24,7 +24,7 @@ export interface UploadResponse {
   providedIn: 'root'
 })
 export class GalleryAdminService {
-  private readonly storageKey = 'topstone_gallery_items';
+  private readonly storageKey = 'theluxmining_gallery_items';
   private itemsSubject = new BehaviorSubject<GalleryItem[]>([]);
   
   readonly items$ = this.itemsSubject.asObservable();
