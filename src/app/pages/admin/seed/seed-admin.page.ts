@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { SeedService } from '../../../services/seed.service';
-import { MigrationService } from '../../../services/migration.service';
 import { AuthService } from '../../../services/auth.service';
 
 @Component({
@@ -86,23 +85,6 @@ import { AuthService } from '../../../services/auth.service';
               }
             </button>
 
-            <div class="my-6 border-t border-neutral-200"></div>
-
-            <button
-              (click)="runMigration()"
-              [disabled]="isMigrating"
-              class="w-full py-3 px-6 bg-blue-600 text-white rounded-xl font-semibold hover:bg-blue-700 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2">
-              @if (isMigrating) {
-                <svg class="animate-spin h-5 w-5" fill="none" viewBox="0 0 24 24">
-                  <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                  <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                </svg>
-                Migrating...
-              } @else {
-                📦 Migrate 19 Products from JSON
-              }
-            </button>
-
             <a routerLink="/admin"
                class="block w-full py-3 px-6 text-center border border-neutral-300 text-neutral-700 rounded-xl font-semibold hover:bg-neutral-50 transition-all duration-300">
               ← Back to Admin
@@ -127,12 +109,10 @@ import { AuthService } from '../../../services/auth.service';
 })
 export class SeedAdminComponent {
   private seedService = inject(SeedService);
-  private migrationService = inject(MigrationService);
   private authService = inject(AuthService);
   private router = inject(Router);
 
   isSeeding = false;
-  isMigrating = false;
   isSeedingBenefits = false;
   message = '';
   messageType: 'success' | 'error' | 'info' = 'info';
@@ -189,44 +169,7 @@ export class SeedAdminComponent {
     }
   }
 
-  async runMigration() {
-    if (this.isMigrating) return;
-
-    this.isMigrating = true;
-    this.message = '';
-    this.logs = [];
-
-    // Override console.log to capture logs
-    const originalLog = console.log;
-    const originalWarn = console.warn;
-    console.log = (...args: any[]) => {
-      this.logs.push(args.join(' '));
-      originalLog(...args);
-    };
-    console.warn = (...args: any[]) => {
-      this.logs.push(`⚠️ ${args.join(' ')}`);
-      originalWarn(...args);
-    };
-
-    try {
-      this.message = 'Migrating products from JSON...';
-      this.messageType = 'info';
-
-      await this.migrationService.migrateProductsFromJSON();
-
-      this.message = '✅ Migration completed! Check console for details.';
-      this.messageType = 'success';
-    } catch (error: any) {
-      console.error('Migration error:', error);
-      this.message = `❌ Error: ${error.message || 'Migration failed'}`;
-      this.messageType = 'error';
-    } finally {
-      this.isMigrating = false;
-      // Restore console methods
-      console.log = originalLog;
-      console.warn = originalWarn;
-    }
-  }
+  // Migration function removed - productos.json deleted
 
   async runBenefitTemplatesSeed() {
     if (this.isSeedingBenefits) return;

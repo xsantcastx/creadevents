@@ -116,6 +116,63 @@
     "filterBy": "Filtrer par",
     "thickness": "Épaisseur"
   },
+  "grosor": {
+    "breadcrumb": {
+      "home": "Accueil",
+      "products": "Produits"
+    },
+    "collection": "Collection",
+    "subtitle": "Matériel de Minage Bitcoin Premium et Accessoires",
+    "product_available": "produit disponible",
+    "products_available": "produits disponibles",
+    "view_mode": "Mode d'Affichage",
+    "grid": "Grille",
+    "list": "Liste",
+    "no_products": "Aucun Produit Disponible",
+    "no_products_desc": "Actuellement aucun produit disponible dans la catégorie {{category}}.",
+    "view_all_products": "Voir Tous les Produits",
+    "cta": {
+      "title": "Besoin de Plus d'Informations ?",
+      "description": "Contactez notre équipe pour des conseils personnalisés sur le matériel de minage Bitcoin.",
+      "contact_us": "Nous Contacter",
+      "all_products": "Tous les Produits"
+    }
+  },
+  "detalle": {
+    "breadcrumb": {
+      "home": "Accueil",
+      "products": "Produits"
+    },
+    "category": "Catégorie :",
+    "model": "Modèle :",
+    "premium_label": "Matériel de Minage Premium",
+    "recommended_apps": "Applications Recommandées",
+    "request_quote": "Demander un Devis",
+    "in_stock": "En Stock",
+    "units_available": "{{count}} unités disponibles",
+    "pre_order": "Précommande Disponible",
+    "back_to_products": "Retour aux Produits",
+    "technical_support": "Assistance technique 24/7",
+    "specs_title": "Spécifications Techniques",
+    "hash_rate": "Taux de Hachage",
+    "power_consumption": "Consommation d'Énergie",
+    "efficiency": "Efficacité",
+    "cooling": "Refroidissement",
+    "dimensions": "Dimensions",
+    "weight": "Poids",
+    "noise_level": "Niveau de Bruit",
+    "operating_temp": "Température de Fonctionnement",
+    "network": "Connexion Réseau",
+    "warranty": "Garantie",
+    "benefits_title": "Avantages du Produit",
+    "related_products": "Produits Connexes",
+    "view_all_products": "Voir Tous les Produits",
+    "cta": {
+      "title": "Besoin de Plus d'Informations ?",
+      "description": "Contactez notre équipe pour des conseils personnalisés sur le matériel de minage Bitcoin.",
+      "contact_us": "Nous Contacter"
+    }
+  },
   "common": {
     "loading": "Chargement...",
     "search": "Rechercher..."
@@ -226,6 +283,22 @@
     "sending": "Envoi en cours...",
     "required_fields_note": "Les champs marqués d'un * sont obligatoires"
   },
+  "notfound": {
+    "title": "Page non trouvée",
+    "description": "Désolé, la page que vous recherchez n'existe pas. Elle a peut-être été déplacée ou supprimée.",
+    "go_home": "Retour à l'accueil",
+    "view_products": "Voir les produits",
+    "looking_for": "Que cherchiez-vous ?",
+    "explore_sections": "Explorez nos sections principales ou utilisez les liens de navigation pour trouver ce dont vous avez besoin.",
+    "links": {
+      "home_title": "Accueil",
+      "home_desc": "Découvrez notre collection phare et explorez TheLuxMining.",
+      "products_title": "Produits",
+      "products_desc": "Explorez notre catalogue complet de matériel de minage premium.",
+      "contact_title": "Contact",
+      "contact_desc": "Contactez notre équipe d'experts."
+    }
+  },
   "admin": {
     "title": "Panneau d'Administration",
     "welcome": "Bienvenue",
@@ -244,7 +317,10 @@
     "users": {
       "title": "Utilisateurs"
     },
-    "total_products": "Total de Produits",
+    "benefit_templates": {
+      "title": "Gestionnaire de Modèles d'Avantages"
+    },
+    "total_products": "Total des Produits",
     "total_orders": "Total de Commandes",
     "gallery_images": "Images de Galerie",
     "total_users": "Total d'Utilisateurs",
@@ -262,6 +338,31 @@
     "need_category": "Vous devez créer au moins une catégorie avant d'ajouter des produits.",
     "need_model": "Vous devez créer au moins un modèle avant d'ajouter des produits.",
     "goto_catalog": "Aller à la Gestion du Catalogue",
+    "new_status": "Nouveau Statut",
+    "users_description": "Gérer les comptes utilisateurs et les permissions",
+    "search_users": "Rechercher des Utilisateurs",
+    "search_users_placeholder": "Rechercher par nom ou email...",
+    "filter_by_role": "Filtrer par Rôle",
+    "all_roles": "Tous les Rôles",
+    "role_admin": "Administrateur",
+    "role_client": "Client",
+    "user": "Utilisateur",
+    "company": "Société",
+    "role": "Rôle",
+    "status": "Statut",
+    "actions": "Actions",
+    "created_at": "Créé le",
+    "loading_users": "Chargement des utilisateurs...",
+    "disabled": "Désactivé",
+    "active": "Actif",
+    "change_role": "Changer le Rôle",
+    "enable_user": "Activer l'Utilisateur",
+    "disable_user": "Désactiver l'Utilisateur",
+    "no_users_found": "Aucun utilisateur trouvé",
+    "change_role_for": "Changer le rôle pour",
+    "new_role": "Nouveau Rôle",
+    "cancel": "Annuler",
+    "confirm": "Confirmer",
     "catalog": {
       "title": "Gestion du Catalogue"
     },

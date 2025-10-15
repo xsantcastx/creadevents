@@ -1,4 +1,5 @@
 import { Timestamp } from '@angular/fire/firestore';
+import { ProductBenefit } from './product';
 
 export type Id = string;
 
@@ -38,7 +39,11 @@ export interface Specs {
   waterAbsorption?: string;
   density?: string;
   usage?: string[];
-  grosor?: '12mm' | '15mm' | '20mm';  // Keeping compatibility with current system
+  features?: string[];
+  benefits?: ProductBenefit[];
+  
+  // Legacy field - now dynamic category identifier
+  grosor?: string;
 }
 
 export interface ProductVariant {

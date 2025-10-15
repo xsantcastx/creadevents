@@ -1,8 +1,7 @@
 import { Component, HostListener, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { DataService, Producto } from '../../services/data.service';
-import { Subject, takeUntil } from 'rxjs';
+import { Subject } from 'rxjs';
 
 @Component({
   selector: 'app-header',
@@ -14,18 +13,12 @@ import { Subject, takeUntil } from 'rxjs';
 export class HeaderComponent implements OnInit, OnDestroy {
   scrolled = false;
   mobileMenuOpen = false;
-  productos: Producto[] = [];
-  hoverPreviewUrl = '/assets/Modern/image2.jpeg';
   private destroy$ = new Subject<void>();
 
-  productos12mm: Producto[] = [];
-  productos15mm: Producto[] = [];
-  productos20mm: Producto[] = [];
-
-  constructor(private dataService: DataService) {}
+  constructor() {}
 
   ngOnInit() {
-    this.loadProductos();
+    // Removed legacy ceramic tile product loading
   }
 
   ngOnDestroy() {
@@ -36,21 +29,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
   @HostListener('window:scroll')
   onWindowScroll() {
     this.scrolled = window.pageYOffset > 50;
-  }
-
-  private loadProductos() {
-    this.dataService.getProductos()
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(data => {
-        this.productos = data.items;
-        this.productos12mm = this.dataService.getProductosByGrosor(this.productos, '12mm');
-        this.productos15mm = this.dataService.getProductosByGrosor(this.productos, '15mm');
-        this.productos20mm = this.dataService.getProductosByGrosor(this.productos, '20mm');
-      });
-  }
-
-  onProductHover(producto: Producto) {
-    this.hoverPreviewUrl = producto.cover;
   }
 
   toggleMobileMenu() {

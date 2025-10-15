@@ -39,14 +39,14 @@ export class DetalleComponent implements OnInit {
   productosRelacionados: Product[] = [];
   coverImage: Media | undefined;
   galleryImages: Media[] = [];
-  grosor = '';
+  categoryParam = '';
   loading = true;
   lightboxOpen = false;
   currentLightboxImage = '';
   currentLightboxAlt = '';
 
   async ngOnInit() {
-    this.grosor = this.route.snapshot.paramMap.get('grosor') || '';
+    this.categoryParam = this.route.snapshot.paramMap.get('category') || '';
     const slug = this.route.snapshot.paramMap.get('slug');
     
     if (slug) {
@@ -60,13 +60,13 @@ export class DetalleComponent implements OnInit {
     // Only load from service if in browser (not during SSR)
     if (isPlatformBrowser(this.platformId)) {
       try {
-        // Query product by slug and grosor
+        // Query product by slug and category
         const products = await firstValueFrom(this.productsService.getAllProducts());
         
-        // Find product matching slug and grosor, filter by published status
+        // Find product matching slug and category, filter by published status
         this.producto = products.find(p => 
           p.slug === slug && 
-          p.grosor === this.grosor &&
+          p.grosor === this.categoryParam &&
           p.status === 'published'
         );
         
@@ -169,7 +169,7 @@ export class DetalleComponent implements OnInit {
     if (!this.producto) return;
     
     // Update page title
-    const title = this.producto.seo?.title || `${this.producto.name} - TopStone`;
+    const title = this.producto.seo?.title || `${this.producto.name} - TheLuxMining`;
     this.titleService.setTitle(title);
     
     // Update meta description
@@ -186,8 +186,8 @@ export class DetalleComponent implements OnInit {
   }
 
   goBack() {
-    if (this.grosor) {
-      this.router.navigate(['/productos', this.grosor]);
+    if (this.categoryParam) {
+      this.router.navigate(['/products', this.categoryParam]);
     } else {
       this.router.navigate(['/productos']);
     }

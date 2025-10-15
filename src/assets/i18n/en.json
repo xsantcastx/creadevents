@@ -116,6 +116,63 @@
     "filterBy": "Filter by",
     "thickness": "Thickness"
   },
+  "grosor": {
+    "breadcrumb": {
+      "home": "Home",
+      "products": "Products"
+    },
+    "collection": "Collection",
+    "subtitle": "Premium Bitcoin Mining Hardware & Accessories",
+    "product_available": "product available",
+    "products_available": "products available",
+    "view_mode": "View Mode",
+    "grid": "Grid",
+    "list": "List",
+    "no_products": "No Products Available",
+    "no_products_desc": "Currently no products available in the {{category}} category.",
+    "view_all_products": "View All Products",
+    "cta": {
+      "title": "Need More Information?",
+      "description": "Contact our team for personalized advice on Bitcoin mining hardware.",
+      "contact_us": "Contact Us",
+      "all_products": "All Products"
+    }
+  },
+  "detalle": {
+    "breadcrumb": {
+      "home": "Home",
+      "products": "Products"
+    },
+    "category": "Category:",
+    "model": "Model:",
+    "premium_label": "Premium Mining Hardware",
+    "recommended_apps": "Recommended Applications",
+    "request_quote": "Request Quote",
+    "in_stock": "In Stock",
+    "units_available": "{{count}} units available",
+    "pre_order": "Pre-Order Available",
+    "back_to_products": "Back to Products",
+    "technical_support": "24/7 technical assistance",
+    "specs_title": "Technical Specifications",
+    "hash_rate": "Hash Rate",
+    "power_consumption": "Power Consumption",
+    "efficiency": "Efficiency",
+    "cooling": "Cooling",
+    "dimensions": "Dimensions",
+    "weight": "Weight",
+    "noise_level": "Noise Level",
+    "operating_temp": "Operating Temperature",
+    "network": "Network Connection",
+    "warranty": "Warranty",
+    "benefits_title": "Product Benefits",
+    "related_products": "Related Products",
+    "view_all_products": "View All Products",
+    "cta": {
+      "title": "Need More Information?",
+      "description": "Contact our team for personalized advice on Bitcoin mining hardware.",
+      "contact_us": "Contact Us"
+    }
+  },
   "common": {
     "loading": "Loading...",
     "search": "Search..."
@@ -226,6 +283,22 @@
     "sending": "Sending...",
     "required_fields_note": "Fields marked with * are required"
   },
+  "notfound": {
+    "title": "Page Not Found",
+    "description": "Sorry, the page you are looking for does not exist. It may have been moved or deleted.",
+    "go_home": "Go to Home",
+    "view_products": "View Products",
+    "looking_for": "What were you looking for?",
+    "explore_sections": "Explore our main sections or use the navigation links to find what you need.",
+    "links": {
+      "home_title": "Home",
+      "home_desc": "Discover our featured collection and explore TheLuxMining.",
+      "products_title": "Products",
+      "products_desc": "Explore our complete catalog of premium mining hardware.",
+      "contact_title": "Contact",
+      "contact_desc": "Get in touch with our team of experts."
+    }
+  },
   "admin": {
     "title": "Admin Panel",
     "welcome": "Welcome",
@@ -243,6 +316,9 @@
     },
     "users": {
       "title": "Users"
+    },
+    "benefit_templates": {
+      "title": "Benefit Templates Manager"
     },
     "total_products": "Total Products",
     "total_orders": "Total Orders",
@@ -394,7 +470,9 @@
       "seeding": "Seeding...",
       "categories": "Categories",
       "categories_count": "3 grosor types",
-      "categories_list": "12mm, 15mm, 20mm",
+            "subtitle": "Comprehensive product catalog and ordering system for Bitcoin mining equipment.",
+      "categories_list": "Mining Hardware Categories",
+      "email_orders": "Email Orders",
       "models": "Models",
       "models_count": "12 hardware models",
       "models_list": "Black Gold, Saint Laurent...",

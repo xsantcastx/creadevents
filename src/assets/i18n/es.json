@@ -116,6 +116,63 @@
     "filterBy": "Filtrar por",
     "thickness": "Grosor"
   },
+  "grosor": {
+    "breadcrumb": {
+      "home": "Inicio",
+      "products": "Productos"
+    },
+    "collection": "Colección",
+    "subtitle": "Hardware de Minería Bitcoin Premium y Accesorios",
+    "product_available": "producto disponible",
+    "products_available": "productos disponibles",
+    "view_mode": "Modo de Vista",
+    "grid": "Cuadrícula",
+    "list": "Lista",
+    "no_products": "No Hay Productos Disponibles",
+    "no_products_desc": "Actualmente no hay productos disponibles en la categoría {{category}}.",
+    "view_all_products": "Ver Todos los Productos",
+    "cta": {
+      "title": "¿Necesitas Más Información?",
+      "description": "Contacta a nuestro equipo para asesoría personalizada sobre hardware de minería Bitcoin.",
+      "contact_us": "Contáctanos",
+      "all_products": "Todos los Productos"
+    }
+  },
+  "detalle": {
+    "breadcrumb": {
+      "home": "Inicio",
+      "products": "Productos"
+    },
+    "category": "Categoría:",
+    "model": "Modelo:",
+    "premium_label": "Hardware de Minería Premium",
+    "recommended_apps": "Aplicaciones Recomendadas",
+    "request_quote": "Solicitar Cotización",
+    "in_stock": "En Stock",
+    "units_available": "{{count}} unidades disponibles",
+    "pre_order": "Pre-Orden Disponible",
+    "back_to_products": "Volver a Productos",
+    "technical_support": "Asistencia técnica 24/7",
+    "specs_title": "Especificaciones Técnicas",
+    "hash_rate": "Tasa de Hash",
+    "power_consumption": "Consumo de Energía",
+    "efficiency": "Eficiencia",
+    "cooling": "Refrigeración",
+    "dimensions": "Dimensiones",
+    "weight": "Peso",
+    "noise_level": "Nivel de Ruido",
+    "operating_temp": "Temperatura de Operación",
+    "network": "Conexión de Red",
+    "warranty": "Garantía",
+    "benefits_title": "Beneficios del Producto",
+    "related_products": "Productos Relacionados",
+    "view_all_products": "Ver Todos los Productos",
+    "cta": {
+      "title": "¿Necesitas Más Información?",
+      "description": "Contacta a nuestro equipo para asesoría personalizada sobre hardware de minería Bitcoin.",
+      "contact_us": "Contáctanos"
+    }
+  },
   "common": {
     "loading": "Cargando...",
     "search": "Buscar..."
@@ -226,6 +283,22 @@
     "sending": "Enviando...",
     "required_fields_note": "Los campos marcados con * son obligatorios"
   },
+  "notfound": {
+    "title": "Página no encontrada",
+    "description": "Lo sentimos, la página que buscas no existe. Es posible que haya sido movida o eliminada.",
+    "go_home": "Ir al inicio",
+    "view_products": "Ver productos",
+    "looking_for": "¿Qué estabas buscando?",
+    "explore_sections": "Explora nuestras secciones principales o utiliza los enlaces de navegación para encontrar lo que necesitas.",
+    "links": {
+      "home_title": "Inicio",
+      "home_desc": "Descubre nuestra colección destacada y explora TheLuxMining.",
+      "products_title": "Productos",
+      "products_desc": "Explora nuestro catálogo completo de hardware de minería premium.",
+      "contact_title": "Contacto",
+      "contact_desc": "Ponte en contacto con nuestro equipo de expertos."
+    }
+  },
   "admin": {
     "title": "Panel de Administración",
     "welcome": "Bienvenido",
@@ -243,6 +316,9 @@
     },
     "users": {
       "title": "Usuarios"
+    },
+    "benefit_templates": {
+      "title": "Gestor de Plantillas de Beneficios"
     },
     "total_products": "Total de Productos",
     "total_orders": "Total de Pedidos",
@@ -394,7 +470,9 @@
       "seeding": "Sembrando...",
       "categories": "Categorías",
       "categories_count": "3 tipos de grosor",
-      "categories_list": "12mm, 15mm, 20mm",
+            "subtitle": "Sistema integral de catálogo de productos y pedidos para equipos de minería Bitcoin.",
+      "categories_list": "Categorías de Hardware de Minería",
+      "email_orders": "Pedidos por Email",,
       "models": "Modelos",
       "models_count": "12 modelos de hardware",
       "models_list": "Black Gold, Saint Laurent...",

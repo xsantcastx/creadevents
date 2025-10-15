@@ -41,9 +41,8 @@
                 <div>
                   <h3 class="font-semibold text-bitcoin-gold">{{ it.product.name }}</h3>
                   <p class="text-sm text-bitcoin-gray">
-                    {{ it.product.size || '160×320cm' }}
-                    <span *ngIf="it.product.grosor">· {{ it.product.grosor }}</span>
-                    <span *ngIf="it.product.sku">· {{ it.product.sku }}</span>
+                    <span *ngIf="it.product.grosor">{{ it.product.grosor }}</span>
+                    <span *ngIf="it.product.sku"> · {{ it.product.sku }}</span>
                   </p>
                 </div>
                 <button class="text-sm text-red-400 hover:text-red-300 transition-colors" 

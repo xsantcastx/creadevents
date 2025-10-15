@@ -1,0 +1,220 @@
+/**
+ * Admin Panel Mobile Optimizations
+ * Responsive improvements for admin interfaces on mobile devices
+ */
+
+// Mobile breakpoints
+$mobile: 640px;
+$tablet: 768px;
+$desktop: 1024px;
+
+// Admin Header Mobile Styles
+@media (max-width: $tablet) {
+  .admin-header {
+    .header-actions {
+      flex-direction: column;
+      gap: 0.5rem;
+      width: 100%;
+      
+      button, a {
+        width: 100%;
+        justify-content: center;
+        font-size: 0.875rem;
+        padding: 0.5rem 1rem;
+      }
+    }
+    
+    .header-title {
+      font-size: 1.125rem;
+    }
+  }
+}
+
+// Mobile Table Card Layout
+@media (max-width: $tablet) {
+  .admin-table-responsive {
+    .table-wrapper {
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      
+      table {
+        min-width: 100%;
+        display: block;
+        
+        thead {
+          display: none; // Hide headers on mobile
+        }
+        
+        tbody {
+          display: block;
+          
+          tr {
+            display: block;
+            margin-bottom: 1rem;
+            padding: 1rem;
+            background: rgba(19, 21, 26, 0.4);
+            border: 1px solid rgba(247, 147, 26, 0.2);
+            border-radius: 1rem;
+            
+            td {
+              display: flex;
+              justify-content: space-between;
+              align-items: center;
+              padding: 0.75rem 0;
+              border-bottom: 1px solid rgba(247, 147, 26, 0.1);
+              
+              &:last-child {
+                border-bottom: none;
+              }
+              
+              // Add labels before content
+              &:before {
+                content: attr(data-label);
+                font-weight: 600;
+                color: #f7931a;
+                margin-right: 1rem;
+                min-width: 100px;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+// Mobile Action Buttons
+@media (max-width: $mobile) {
+  .admin-actions {
+    flex-direction: column;
+    width: 100%;
+    
+    button, a {
+      width: 100%;
+      justify-content: center;
+    }
+  }
+  
+  .action-buttons-group {
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    
+    button {
+      flex: 1;
+      min-width: calc(50% - 0.25rem);
+    }
+  }
+}
+
+// Mobile Grid Adjustments
+@media (max-width: $mobile) {
+  .stats-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+// Mobile Modal Improvements
+@media (max-width: $tablet) {
+  .admin-modal {
+    width: 95vw !important;
+    max-width: 95vw !important;
+    margin: 1rem;
+    max-height: 90vh;
+    overflow-y: auto;
+    
+    .modal-content {
+      padding: 1rem;
+    }
+    
+    .modal-actions {
+      flex-direction: column;
+      gap: 0.5rem;
+      
+      button {
+        width: 100%;
+      }
+    }
+  }
+}
+
+// Mobile Form Improvements
+@media (max-width: $tablet) {
+  .admin-form {
+    .form-row {
+      flex-direction: column;
+      
+      .form-group {
+        width: 100%;
+      }
+    }
+    
+    .form-actions {
+      flex-direction: column;
+      gap: 0.5rem;
+      
+      button {
+        width: 100%;
+      }
+    }
+  }
+}
+
+// Touch-friendly button sizes
+@media (max-width: $tablet) {
+  .btn-icon {
+    min-width: 44px;
+    min-height: 44px;
+    padding: 0.75rem;
+  }
+  
+  .btn-sm {
+    padding: 0.625rem 1rem;
+    font-size: 0.875rem;
+  }
+}
+
+// Responsive padding adjustments
+@media (max-width: $mobile) {
+  .admin-container {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+  
+  .admin-card {
+    padding: 1rem;
+  }
+}
+
+// Hide desktop-only elements on mobile
+@media (max-width: $tablet) {
+  .desktop-only {
+    display: none !important;
+  }
+}
+
+// Show mobile-only elements
+@media (min-width: 769px) {
+  .mobile-only {
+    display: none !important;
+  }
+}
+
+// Improve scrolling areas
+.scroll-container {
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth;
+}
+
+// Mobile-friendly tabs
+@media (max-width: $tablet) {
+  .tab-list {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    flex-wrap: nowrap;
+    
+    .tab-button {
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+  }
+}

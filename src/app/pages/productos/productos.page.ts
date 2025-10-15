@@ -210,10 +210,8 @@ export class ProductosPageComponent implements OnInit {
 
     this.filteredProducts = filtered;
     
-    // Group by thickness
-    this.productos12mm = filtered.filter(p => p.grosor === '12mm' || p.specs?.grosor === '12mm');
-    this.productos15mm = filtered.filter(p => p.grosor === '15mm' || p.specs?.grosor === '15mm');
-    this.productos20mm = filtered.filter(p => p.grosor === '20mm' || p.specs?.grosor === '20mm');
+    // No longer grouping by hardcoded thickness values
+    // Products will be grouped dynamically by their actual categories from Firestore
   }
 
   onCategoryChange() {

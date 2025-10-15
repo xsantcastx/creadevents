@@ -19,8 +19,8 @@ export interface FirestoreProduct {
   id?: string;
   name: string;
   slug: string;
-  grosor?: '12mm' | '15mm' | '20mm';
-  thickness?: '12mm' | '15mm' | '20mm'; // legacy support
+  grosor?: string;  // Dynamic category identifier
+  thickness?: string; // legacy support
   dimensions?: string;
   size?: string;
   imageUrl?: string;

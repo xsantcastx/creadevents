@@ -1,11 +1,12 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-not-found-page',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, RouterLink, TranslateModule],
   template: `
     <!-- Header -->
     <section class="py-20 lg:py-28 body-dark">
@@ -18,12 +19,12 @@ import { RouterLink } from '@angular/router';
           
           <!-- Title -->
           <h1 class="font-serif text-4xl lg:text-5xl text-ts-ink mb-6">
-            Página no encontrada
+            {{ 'notfound.title' | translate }}
           </h1>
           
           <!-- Description -->
           <p class="text-xl text-ts-ink-soft mb-8 max-w-xl mx-auto">
-            Lo sentimos, la página que buscas no existe. Es posible que haya sido movida o eliminada.
+            {{ 'notfound.description' | translate }}
           </p>
           
           <!-- Action Buttons -->
@@ -33,7 +34,7 @@ import { RouterLink } from '@angular/router';
               <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
               </svg>
-              Ir al inicio
+              {{ 'notfound.go_home' | translate }}
             </a>
             
             <a routerLink="/productos" 
@@ -41,7 +42,7 @@ import { RouterLink } from '@angular/router';
               <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
               </svg>
-              Ver productos
+              {{ 'notfound.view_products' | translate }}
             </a>
           </div>
         </div>
@@ -52,9 +53,9 @@ import { RouterLink } from '@angular/router';
     <section class="py-16 bg-ts-paper">
       <div class="max-w-7xl mx-auto px-6">
         <div class="text-center mb-12">
-          <h2 class="font-serif text-3xl text-ts-bg mb-4">¿Qué estabas buscando?</h2>
+          <h2 class="font-serif text-3xl text-ts-bg mb-4">{{ 'notfound.looking_for' | translate }}</h2>
           <p class="text-gray-600 max-w-2xl mx-auto">
-            Explora nuestras secciones principales o utiliza los enlaces de navegación para encontrar lo que necesitas.
+            {{ 'notfound.explore_sections' | translate }}
           </p>
         </div>
         
@@ -67,8 +68,8 @@ import { RouterLink } from '@angular/router';
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
               </svg>
             </div>
-            <h3 class="font-serif text-xl text-ts-bg mb-2">Inicio</h3>
-            <p class="text-gray-600">Descubre nuestra colección destacada y conoce TopStone.</p>
+            <h3 class="font-serif text-xl text-ts-bg mb-2">{{ 'notfound.links.home_title' | translate }}</h3>
+            <p class="text-gray-600">{{ 'notfound.links.home_desc' | translate }}</p>
           </a>
           
           <!-- Products -->
@@ -79,8 +80,8 @@ import { RouterLink } from '@angular/router';
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
               </svg>
             </div>
-            <h3 class="font-serif text-xl text-ts-bg mb-2">Productos</h3>
-            <p class="text-gray-600">Explora nuestro catálogo completo de superficies premium.</p>
+            <h3 class="font-serif text-xl text-ts-bg mb-2">{{ 'notfound.links.products_title' | translate }}</h3>
+            <p class="text-gray-600">{{ 'notfound.links.products_desc' | translate }}</p>
           </a>
           
           <!-- Contact -->
@@ -91,8 +92,8 @@ import { RouterLink } from '@angular/router';
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 3.26a2 2 0 001.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
               </svg>
             </div>
-            <h3 class="font-serif text-xl text-ts-bg mb-2">Contacto</h3>
-            <p class="text-gray-600">Ponte en contacto con nuestro equipo de expertos.</p>
+            <h3 class="font-serif text-xl text-ts-bg mb-2">{{ 'notfound.links.contact_title' | translate }}</h3>
+            <p class="text-gray-600">{{ 'notfound.links.contact_desc' | translate }}</p>
           </a>
         </div>
       </div>

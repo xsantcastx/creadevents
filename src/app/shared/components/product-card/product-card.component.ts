@@ -14,7 +14,7 @@ import { CartService } from '../../../services/cart.service';
 export class ProductCardComponent {
   @Input() product!: Product;
   @Input() viewMode: 'grid' | 'list' = 'grid';
-  @Input() grosorPath?: string; // e.g., "12mm" for routing
+  @Input() categoryPath?: string; // e.g., "Antminer S19" for routing
   
   adding = false;
   
@@ -27,18 +27,9 @@ export class ProductCardComponent {
   }
 
   getProductRoute(): string[] {
-    if (this.grosorPath && this.product.grosor) {
-      return ['/productos', this.product.grosor, this.product.slug || this.product.id || ''];
+    if (this.categoryPath && this.product.grosor) {
+      return ['/products', this.product.grosor, this.product.slug || this.product.id || ''];
     }
     return ['/productos', this.product.slug || this.product.id || ''];
-  }
-
-  getAplicaciones(grosor?: string): string {
-    switch (grosor) {
-      case '12mm': return 'cocinas y baños residenciales';
-      case '15mm': return 'espacios comerciales y residenciales';
-      case '20mm': return 'exteriores y zonas de alto tránsito';
-      default: return 'diversos proyectos';
-    }
   }
 }

@@ -3,18 +3,18 @@ import { HttpClient } from '@angular/common/http';
 import { isPlatformBrowser } from '@angular/common';
 import { Observable, of } from 'rxjs';
 
-export interface Producto {
+export interface ProductoMock {
   nombre: string;
   slug: string;
-  grosor: '12mm' | '15mm' | '20mm';
-  medida: string;
+  grosor: string;  // Dynamic category identifier
+  medida?: string;
   cover: string;
   descripcion?: string;
   aplicaciones?: string[];
 }
 
 export interface ProductosData {
-  items: Producto[];
+  items: ProductoMock[];
 }
 
 export interface GaleriaItem {
@@ -75,15 +75,7 @@ export interface Mantenimiento {
   evitar: string[];
 }
 
-export interface DatosTecnicosData {
-  acabadosSuperficie: AcabadoSuperficie[];
-  fichasTecnicas: FichaTecnica[];
-  especificacionesTecnicas: Record<string, string>;
-  packing: PackingInfo[];
-  acabadosBordes: AcabadoBorde[];
-  fijacionesFachada: FijacionesFachada;
-  mantenimiento: Mantenimiento;
-}
+// Removed DatosTecnicosData - ceramic tile data no longer needed
 
 @Injectable({
   providedIn: 'root'
@@ -108,31 +100,9 @@ export class DataService {
     return this.http.get<GaleriaData>('/assets/data/galeria.json');
   }
 
-  getDatosTecnicos(): Observable<DatosTecnicosData> {
-    if (!isPlatformBrowser(this.platformId)) {
-      // Return empty data during SSR
-      return of({
-        acabadosSuperficie: [],
-        fichasTecnicas: [],
-        especificacionesTecnicas: {},
-        packing: [],
-        acabadosBordes: [],
-        fijacionesFachada: { descripcion: '', imagen: '', ventajas: [] },
-        mantenimiento: { limpieza: '', frecuencia: '', productos: [], evitar: [] }
-      });
-    }
-    return this.http.get<DatosTecnicosData>('/assets/data/datos_tecnicos.json');
-  }
-
-  // Helper methods
-  getProductosByGrosor(productos: Producto[], grosor: string): Producto[] {
-    return productos.filter(p => p.grosor === grosor);
-  }
-
-  getProductoBySlug(productos: Producto[], slug: string): Producto | undefined {
-    return productos.find(p => p.slug === slug);
-  }
-
+  // Removed getDatosTecnicos() - ceramic tile technical data no longer needed
+  // Removed getProductosByGrosor(), getProductoBySlug() - legacy helper methods for ceramic tiles
+  
   getCategoriaBySlug(categorias: CategoriaGaleria[], slug: string): CategoriaGaleria | undefined {
     return categorias.find(c => c.slug === slug);
   }

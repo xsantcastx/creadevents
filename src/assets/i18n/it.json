@@ -116,6 +116,63 @@
     "filterBy": "Filtra per",
     "thickness": "Spessore"
   },
+  "grosor": {
+    "breadcrumb": {
+      "home": "Home",
+      "products": "Prodotti"
+    },
+    "collection": "Collezione",
+    "subtitle": "Hardware di Mining Bitcoin Premium e Accessori",
+    "product_available": "prodotto disponibile",
+    "products_available": "prodotti disponibili",
+    "view_mode": "Modalità di Visualizzazione",
+    "grid": "Griglia",
+    "list": "Lista",
+    "no_products": "Nessun Prodotto Disponibile",
+    "no_products_desc": "Attualmente nessun prodotto disponibile nella categoria {{category}}.",
+    "view_all_products": "Visualizza Tutti i Prodotti",
+    "cta": {
+      "title": "Hai Bisogno di Più Informazioni?",
+      "description": "Contatta il nostro team per consigli personalizzati sull'hardware di mining Bitcoin.",
+      "contact_us": "Contattaci",
+      "all_products": "Tutti i Prodotti"
+    }
+  },
+  "detalle": {
+    "breadcrumb": {
+      "home": "Home",
+      "products": "Prodotti"
+    },
+    "category": "Categoria:",
+    "model": "Modello:",
+    "premium_label": "Hardware di Mining Premium",
+    "recommended_apps": "Applicazioni Consigliate",
+    "request_quote": "Richiedi Preventivo",
+    "in_stock": "Disponibile",
+    "units_available": "{{count}} unità disponibili",
+    "pre_order": "Pre-Ordine Disponibile",
+    "back_to_products": "Torna ai Prodotti",
+    "technical_support": "Assistenza tecnica 24/7",
+    "specs_title": "Specifiche Tecniche",
+    "hash_rate": "Tasso di Hash",
+    "power_consumption": "Consumo Energetico",
+    "efficiency": "Efficienza",
+    "cooling": "Raffreddamento",
+    "dimensions": "Dimensioni",
+    "weight": "Peso",
+    "noise_level": "Livello di Rumore",
+    "operating_temp": "Temperatura di Funzionamento",
+    "network": "Connessione di Rete",
+    "warranty": "Garanzia",
+    "benefits_title": "Vantaggi del Prodotto",
+    "related_products": "Prodotti Correlati",
+    "view_all_products": "Visualizza Tutti i Prodotti",
+    "cta": {
+      "title": "Hai Bisogno di Più Informazioni?",
+      "description": "Contatta il nostro team per consigli personalizzati sull'hardware di mining Bitcoin.",
+      "contact_us": "Contattaci"
+    }
+  },
   "common": {
     "loading": "Caricamento...",
     "search": "Cerca..."
@@ -226,6 +283,22 @@
     "sending": "Invio in corso...",
     "required_fields_note": "I campi contrassegnati con * sono obbligatori"
   },
+  "notfound": {
+    "title": "Pagina non trovata",
+    "description": "Siamo spiacenti, la pagina che stai cercando non esiste. Potrebbe essere stata spostata o eliminata.",
+    "go_home": "Torna alla home",
+    "view_products": "Visualizza prodotti",
+    "looking_for": "Cosa stavi cercando?",
+    "explore_sections": "Esplora le nostre sezioni principali o utilizza i link di navigazione per trovare ciò di cui hai bisogno.",
+    "links": {
+      "home_title": "Home",
+      "home_desc": "Scopri la nostra collezione in evidenza ed esplora TheLuxMining.",
+      "products_title": "Prodotti",
+      "products_desc": "Esplora il nostro catalogo completo di hardware di mining premium.",
+      "contact_title": "Contatto",
+      "contact_desc": "Mettiti in contatto con il nostro team di esperti."
+    }
+  },
   "admin": {
     "title": "Pannello di Amministrazione",
     "welcome": "Benvenuto",
@@ -243,6 +316,9 @@
     },
     "users": {
       "title": "Utenti"
+    },
+    "benefit_templates": {
+      "title": "Gestore Modelli di Vantaggi"
     },
     "total_products": "Totale Prodotti",
     "total_orders": "Totale Ordini",
@@ -262,6 +338,31 @@
     "need_category": "È necessario creare almeno una categoria prima di aggiungere prodotti.",
     "need_model": "È necessario creare almeno un modello prima di aggiungere prodotti.",
     "goto_catalog": "Vai a Gestione Catalogo",
+    "new_status": "Nuovo Stato",
+    "users_description": "Gestisci account utente e permessi",
+    "search_users": "Cerca Utenti",
+    "search_users_placeholder": "Cerca per nome o email...",
+    "filter_by_role": "Filtra per Ruolo",
+    "all_roles": "Tutti i Ruoli",
+    "role_admin": "Amministratore",
+    "role_client": "Cliente",
+    "user": "Utente",
+    "company": "Azienda",
+    "role": "Ruolo",
+    "status": "Stato",
+    "actions": "Azioni",
+    "created_at": "Creato il",
+    "loading_users": "Caricamento utenti...",
+    "disabled": "Disabilitato",
+    "active": "Attivo",
+    "change_role": "Cambia Ruolo",
+    "enable_user": "Abilita Utente",
+    "disable_user": "Disabilita Utente",
+    "no_users_found": "Nessun utente trovato",
+    "change_role_for": "Cambia ruolo per",
+    "new_role": "Nuovo Ruolo",
+    "cancel": "Annulla",
+    "confirm": "Conferma",
     "catalog": {
       "title": "Gestione Catalogo"
     },

@@ -14,95 +14,89 @@ export const routes: Routes = [
     title: 'TheLuxMining | Mining Products'
   },
   {
-    path: 'productos/:grosor',
+    path: 'products/:category',
     loadComponent: () => import('./pages/productos/grosor/grosor.component').then(m => m.GrosorComponent),
-    title: 'TheLuxMining | Mining Hardware by Series'
+    title: 'TheLuxMining | Mining Hardware by Category'
   },
   {
-    path: 'productos/:grosor/:slug',
+    path: 'products/:category/:slug',
     loadComponent: () => import('./pages/productos/detalle/detalle.component').then(m => m.DetalleComponent),
-    title: 'TopStone | Detalle de Producto'
+    title: 'TheLuxMining | Product Details'
   },
   {
     path: 'galeria',
     loadComponent: () => import('./pages/galeria/galeria.page').then(m => m.GaleriaPageComponent),
-    title: 'TopStone | Galería de Proyectos'
+    title: 'TheLuxMining | Gallery'
   },
   {
     path: 'contacto',
     loadComponent: () => import('./pages/contacto/contacto.page').then(m => m.ContactoPageComponent),
-    title: 'TopStone | Contacto'
+    title: 'TheLuxMining | Contact'
   },
   {
     path: 'cart',
     loadComponent: () => import('./pages/cart/cart.page').then(m => m.CartPage),
-    title: 'TopStone | Carrito'
+    title: 'TheLuxMining | Shopping Cart'
   },
   // Client Area Routes
   {
     path: 'client/login',
     loadComponent: () => import('./pages/client/login/login.page').then(m => m.LoginPageComponent),
-    title: 'TopStone | Iniciar Sesión'
+    title: 'TheLuxMining | Login'
   },
   {
     path: 'client/register',
     loadComponent: () => import('./pages/client/register/register.page').then(m => m.RegisterPageComponent),
-    title: 'TopStone | Registro'
+    title: 'TheLuxMining | Register'
   },
   {
     path: 'client/profile',
     loadComponent: () => import('./pages/client/profile/profile.page').then(m => m.ProfilePageComponent),
     canActivate: [authGuard],
-    title: 'TopStone | Mi Perfil'
+    title: 'TheLuxMining | My Profile'
   },
   {
     path: 'client/orders',
     loadComponent: () => import('./pages/client/orders/orders.page').then(m => m.OrdersPageComponent),
     canActivate: [authGuard],
-    title: 'TopStone | Mis Pedidos'
+    title: 'TheLuxMining | My Orders'
   },
   // Admin Panel Routes
   {
     path: 'admin',
     loadComponent: () => import('./pages/admin/dashboard/dashboard.page').then(m => m.AdminDashboardComponent),
     canActivate: [adminGuard],
-    title: 'TopStone | Panel de Administración'
+    title: 'TheLuxMining | Admin Dashboard'
   },
   {
     path: 'admin/products',
     loadComponent: () => import('./pages/admin/products/products-admin.page').then(m => m.ProductsAdminComponent),
     canActivate: [adminGuard],
-    title: 'TopStone | Gestión de Productos'
+    title: 'TheLuxMining | Product Management'
   },
   {
     path: 'admin/gallery',
     loadComponent: () => import('./pages/admin/gallery/gallery-admin.page').then(m => m.GalleryAdminComponent),
     canActivate: [adminGuard],
-    title: 'TopStone | Gestión de Galería'
+    title: 'TheLuxMining | Gallery Management'
   },
   {
     path: 'admin/catalog',
     loadComponent: () => import('./pages/admin/catalog/catalog-admin.page').then(m => m.CatalogAdminComponent),
     canActivate: [adminGuard],
-    title: 'TopStone | Catálogo Master'
+    title: 'TheLuxMining | Catalog Management'
   },
   {
     path: 'admin/orders',
     loadComponent: () => import('./pages/admin/orders/orders-admin.page').then(m => m.OrdersAdminComponent),
     canActivate: [adminGuard],
-    title: 'TopStone | Gestión de Pedidos'
+    title: 'TheLuxMining | Order Management'
   },
   {
     path: 'admin/users',
     loadComponent: () => import('./pages/admin/users/users-admin.page').then(m => m.UsersAdminComponent),
     canActivate: [adminGuard],
-    title: 'TopStone | Gestión de Usuarios'
-  },
-  {
-    path: 'admin/seed',
-    loadComponent: () => import('./pages/admin/seed/seed-admin.page').then(m => m.SeedAdminComponent),
-    canActivate: [adminGuard],
-    title: 'TopStone | Database Seeder'
+    title: 'TheLuxMining | User Management'
   },
   {
     path: 'admin/benefit-templates',
@@ -113,7 +107,7 @@ export const routes: Routes = [
   {
     path: '404',
     loadComponent: () => import('./pages/not-found/not-found.page').then(m => m.NotFoundPageComponent),
-    title: 'TopStone | Página no encontrada'
+    title: 'TheLuxMining | Page Not Found'
   },
   {
     path: '**',
