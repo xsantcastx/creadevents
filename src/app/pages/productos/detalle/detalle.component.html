@@ -78,10 +78,17 @@
         @if (producto.price) {
           <p class="text-3xl font-semibold text-bitcoin-gold mb-4">{{producto.price | currency:'USD':'symbol':'1.2-2'}}</p>
         }
-        <p class="text-lg text-bitcoin-orange font-medium mb-8">{{ 'detalle.premium_label' | translate }}</p>
         
-        <div class="prose max-w-none mb-8" *ngIf="producto.description">
-          <p class="text-bitcoin-gray leading-relaxed text-lg">{{producto.description}}</p>
+        <!-- Description Section -->
+        <div class="mb-8" *ngIf="producto.description">
+          <h2 class="text-2xl font-serif text-white mb-4">
+            <span class="bg-gradient-to-r from-bitcoin-gold via-bitcoin-orange to-bitcoin-gold bg-clip-text text-transparent">
+              Description
+            </span>
+          </h2>
+          <div class="prose max-w-none">
+            <p class="text-bitcoin-gray leading-relaxed text-lg">{{producto.description}}</p>
+          </div>
         </div>
         
         <!-- Applications -->

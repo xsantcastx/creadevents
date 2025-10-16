@@ -1,16 +1,11 @@
-<!-- Header -->
-<section class="py-20 lg:py-28 bg-gradient-to-b from-[#0a0b0d] to-[#13151a]">
-  <div class="max-w-7xl mx-auto px-6">
-    <div class="text-center mb-16">
-      <h1 class="font-serif text-5xl lg:text-6xl bitcoin-gradient-text mb-4">
-        {{ 'contact.title' | translate }}
-      </h1>
-      <p class="text-xl text-bitcoin-gray max-w-2xl mx-auto">
-        {{ 'contact.subtitle' | translate }}
-      </p>
-    </div>
-  </div>
-</section>
+<!-- Page Header Component -->
+<app-page-header
+  title="{{ 'contact.title' | translate }}"
+  subtitle="{{ 'contact.subtitle' | translate }}"
+  [breadcrumbs]="breadcrumbs"
+  icon="contact"
+  [compact]="true">
+</app-page-header>
 
 <!-- Contenido de Contacto -->
 <section class="py-16 bg-gradient-to-b from-[#13151a] to-[#0a0b0d]">

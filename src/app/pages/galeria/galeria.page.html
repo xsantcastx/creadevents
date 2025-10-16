@@ -1,22 +1,11 @@
-<!-- Gallery Hero Section -->
-<section class="relative py-24 lg:py-32 bg-gradient-to-b from-[#0a0b0d] to-bitcoin-dark overflow-hidden">
-  <div class="absolute inset-0 bg-gradient-to-r from-bitcoin-orange/5 to-bitcoin-gold/5"></div>
-  <div class="relative max-w-7xl mx-auto px-6 text-center">
-    <div class="animate-fade-up">
-      <h1 class="font-serif text-5xl lg:text-7xl bitcoin-gradient-text mb-6 leading-tight">
-        {{ 'gallery.project' | translate }} <span class="text-bitcoin-orange">{{ 'gallery.title' | translate }}</span>
-      </h1>
-      <p class="text-xl lg:text-2xl text-bitcoin-gray max-w-3xl mx-auto leading-relaxed">
-        {{ 'gallery.subtitle' | translate }}
-      </p>
-      <div class="mt-8 flex items-center justify-center gap-4 text-bitcoin-gray/70">
-        <div class="w-16 h-px bg-bitcoin-orange"></div>
-        <span class="text-sm font-medium tracking-wider uppercase">{{getTotalItems()}} {{ 'gallery.projects' | translate }}</span>
-        <div class="w-16 h-px bg-bitcoin-orange"></div>
-      </div>
-    </div>
-  </div>
-</section>
+<!-- Page Header Component -->
+<app-page-header
+  title="{{ 'gallery.project' | translate }}"
+  titleHighlight="{{ 'gallery.title' | translate }}"
+  subtitle="{{ 'gallery.subtitle' | translate }}"
+  [breadcrumbs]="breadcrumbs"
+  icon="gallery">
+</app-page-header>
 
 <!-- Enhanced Category Filters with Tag Icons & Colors -->
 <section class="py-8 bg-gradient-to-r from-bitcoin-dark to-bitcoin-gray/30 backdrop-blur-sm border-b border-bitcoin-orange/20">

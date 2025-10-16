@@ -9,6 +9,7 @@ import { CategoryService } from '../../../services/category.service';
 import { BenefitTemplate, BENEFIT_ICON_TYPES, BENEFIT_ICON_COLORS } from '../../../models/benefit-template';
 import { Category } from '../../../models/catalog';
 import { AdminQuickActionsComponent } from '../../../shared/components/admin-quick-actions/admin-quick-actions.component';
+import { LoadingComponentBase } from '../../../core/classes/loading-component.base';
 
 @Component({
   selector: 'app-benefit-templates-admin',
@@ -17,7 +18,7 @@ import { AdminQuickActionsComponent } from '../../../shared/components/admin-qui
   templateUrl: './benefit-templates-admin.page.html',
   styleUrl: './benefit-templates-admin.page.scss'
 })
-export class BenefitTemplatesAdminComponent implements OnInit {
+export class BenefitTemplatesAdminComponent extends LoadingComponentBase implements OnInit {
   private authService = inject(AuthService);
   private router = inject(Router);
   private fb = inject(FormBuilder);
@@ -33,9 +34,7 @@ export class BenefitTemplatesAdminComponent implements OnInit {
   isEditing = false;
   editingTemplateId: string | null = null;
   
-  isLoading = false;
   successMessage = '';
-  errorMessage = '';
   
   categoryFilter = '';
   activeFilter = '';
@@ -45,6 +44,7 @@ export class BenefitTemplatesAdminComponent implements OnInit {
   iconColors = BENEFIT_ICON_COLORS;
 
   constructor() {
+    super();
     this.templateForm = this.fb.group({
       name: ['', [Validators.required, Validators.minLength(3)]],
       category: ['', Validators.required],
@@ -98,23 +98,22 @@ export class BenefitTemplatesAdminComponent implements OnInit {
   }
 
   private async loadTemplates() {
-    this.isLoading = true;
+    this.setLoading(true);
     try {
       this.benefitTemplateService.getTemplates().subscribe({
         next: (templates) => {
           this.templates = templates;
           this.applyFilters();
-          this.isLoading = false;
+          this.setLoading(false);
         },
         error: (err) => {
           console.error('Error loading templates:', err);
-          this.errorMessage = 'Failed to load benefit templates';
-          this.isLoading = false;
+          this.setError('Failed to load benefit templates');
         }
       });
     } catch (error) {
       console.error('Error loading templates:', error);
-      this.isLoading = false;
+      this.setLoading(false);
     }
   }
 

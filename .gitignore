@@ -40,3 +40,15 @@ testem.log
 # System files
 .DS_Store
 Thumbs.db
+
+# Environment files - Only ignore .env files, not Angular environment.ts
+.env
+.env.local
+.env.*.local
+.env.development
+.env.production
+.env.test
+# Angular environment files are safe to commit (Firebase keys are public anyway)
+# Uncomment these if you want to use environment variables in CI/CD instead:
+# src/environments/environment.ts
+# src/environments/environment.prod.ts

@@ -8,5 +8,11 @@ export const environment = {
     messagingSenderId: "28140566611",
     appId: "1:28140566611:web:14f73bcbf1dc43eac9aea6",
     measurementId: "G-L3NM33F382"
-  }
+  },
+  stripe: {
+    // TEST MODE - Use Stripe test keys (pk_test_...)
+    // Get your test keys from: https://dashboard.stripe.com/test/apikeys
+    publishableKey: 'pk_test_51SIbUgJhHEcCQBgB11y69LG7vPrQBYipNgsjNR9fMD9i4ckCX0pPPRc4wowgdDQnGKjUkfjnkOamBj1Jw06DWYq1001YVRKi1r'
+  },
+  useEmulators: true // Use Firebase emulators for local development
 };

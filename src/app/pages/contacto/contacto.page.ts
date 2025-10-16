@@ -4,6 +4,7 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { TranslateModule } from '@ngx-translate/core';
 import { EmailService } from '../../services/email.service';
 import { AnalyticsService } from '../../services/analytics.service';
+import { PageHeaderComponent, Breadcrumb } from '../../shared/components/page-header/page-header.component';
 
 interface ContactFormData {
   nombre: string;
@@ -17,13 +18,19 @@ interface ContactFormData {
 @Component({
   selector: 'app-contacto-page',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, TranslateModule],
+  imports: [CommonModule, ReactiveFormsModule, TranslateModule, PageHeaderComponent],
   templateUrl: './contacto.page.html',
   styleUrl: './contacto.page.scss'
 })
 export class ContactoPageComponent {
   private platformId = inject(PLATFORM_ID);
   private analyticsService = inject(AnalyticsService);
+  
+  // Breadcrumbs for navigation
+  breadcrumbs: Breadcrumb[] = [
+    { label: 'NAV.HOME', url: '/', icon: 'home' },
+    { label: 'CONTACT.TITLE', icon: 'contact' }
+  ];
   
   contactForm: FormGroup;
   isSubmitting = false;

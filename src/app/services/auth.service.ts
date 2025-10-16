@@ -94,7 +94,15 @@ export class AuthService {
   async getUserProfile(uid: string): Promise<UserProfile | null> {
     const userDoc = doc(this.firestore, `users/${uid}`);
     const docSnap = await getDoc(userDoc);
-    return docSnap.exists() ? docSnap.data() as UserProfile : null;
+    if (!docSnap.exists()) return null;
+    
+    const data = docSnap.data();
+    // Convert Firestore Timestamps to JavaScript Dates
+    return {
+      ...data,
+      createdAt: (data['createdAt'] as any)?.toDate ? (data['createdAt'] as any).toDate() : data['createdAt'],
+      updatedAt: (data['updatedAt'] as any)?.toDate ? (data['updatedAt'] as any).toDate() : data['updatedAt']
+    } as UserProfile;
   }
 
   // Update user profile
@@ -122,7 +130,14 @@ export class AuthService {
     const usersCol = collection(this.firestore, 'users');
     const q = query(usersCol, orderBy('createdAt', 'desc'));
     const snapshot = await getDocs(q);
-    return snapshot.docs.map(doc => doc.data() as UserProfile);
+    return snapshot.docs.map(doc => {
+      const data = doc.data();
+      return {
+        ...data,
+        createdAt: (data['createdAt'] as any)?.toDate ? (data['createdAt'] as any).toDate() : data['createdAt'],
+        updatedAt: (data['updatedAt'] as any)?.toDate ? (data['updatedAt'] as any).toDate() : data['updatedAt']
+      } as UserProfile;
+    });
   }
 
   // Update user role (admin only)

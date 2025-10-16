@@ -6,30 +6,39 @@ import { Firestore, collection, query, where, orderBy, getDocs, QueryDocumentSna
 import { Media } from '../../models/media';
 import { Tag } from '../../models/catalog';
 import { TagService } from '../../services/tag.service';
+import { PageHeaderComponent, Breadcrumb } from '../../shared/components/page-header/page-header.component';
+import { LoadingComponentBase } from '../../core/classes/loading-component.base';
 
 @Component({
   selector: 'app-galeria-page',
   standalone: true,
-  imports: [CommonModule, TranslateModule],
+  imports: [CommonModule, TranslateModule, PageHeaderComponent],
   templateUrl: './galeria.page.html',
   styleUrl: './galeria.page.scss'
 })
-export class GaleriaPageComponent implements OnInit {
+export class GaleriaPageComponent extends LoadingComponentBase implements OnInit {
   categorias: CategoriaGaleria[] = [];
   categoriaActiva = 'todos';
   itemsVisible: GaleriaItem[] = [];
   modalItem: GaleriaItem | null = null;
   modalIndex = 0;
-  isLoading = true;
   availableTags: Tag[] = [];
   
   private platformId = inject(PLATFORM_ID);
   private isBrowser = isPlatformBrowser(this.platformId);
   private tagService = inject(TagService);
 
+  // Breadcrumbs for navigation
+  breadcrumbs: Breadcrumb[] = [
+    { label: 'NAV.HOME', url: '/', icon: 'home' },
+    { label: 'GALLERY.TITLE', icon: 'gallery' }
+  ];
+
   constructor(
     private firestore: Firestore
-  ) {}
+  ) {
+    super(); // Call parent constructor
+  }
 
   ngOnInit() {
     // Load gallery from Firestore only
@@ -63,7 +72,7 @@ export class GaleriaPageComponent implements OnInit {
   }
 
   private async loadGaleriaFromFirebase() {
-    try {
+    await this.withLoading(async () => {
       // Load all gallery media from Media collection (relatedEntityType='gallery')
       const mediaQuery = query(
         collection(this.firestore, 'media'),
@@ -95,13 +104,7 @@ export class GaleriaPageComponent implements OnInit {
         this.categorias = [];
         this.itemsVisible = [];
       }
-      this.isLoading = false;
-    } catch (error) {
-      console.error('❌ Error loading gallery from Firebase:', error);
-      this.categorias = [];
-      this.itemsVisible = [];
-      this.isLoading = false;
-    }
+    });
   }
 
   // Group media by tags - Map to category structure using dynamic tags from Firestore

@@ -12,15 +12,17 @@ import { CartService } from '../../services/cart.service';
 import { Product } from '../../models/product';
 import { Category, Model, Tag } from '../../models/catalog';
 import { Media } from '../../models/media';
+import { PageHeaderComponent, Breadcrumb } from '../../shared/components/page-header/page-header.component';
+import { LoadingComponentBase } from '../../core/classes/loading-component.base';
 
 @Component({
   selector: 'app-productos-page',
   standalone: true,
-  imports: [CommonModule, RouterLink, FormsModule, TranslateModule],
+  imports: [CommonModule, RouterLink, FormsModule, TranslateModule, PageHeaderComponent],
   templateUrl: './productos.page.html',
   styleUrl: './productos.page.scss'
 })
-export class ProductosPageComponent implements OnInit {
+export class ProductosPageComponent extends LoadingComponentBase implements OnInit {
   private platformId = inject(PLATFORM_ID);
   private productsService = inject(ProductsService);
   private mediaService = inject(MediaService);
@@ -28,6 +30,12 @@ export class ProductosPageComponent implements OnInit {
   private modelService = inject(ModelService);
   private tagService = inject(TagService);
   private cartService = inject(CartService);
+  
+  // Breadcrumbs for navigation
+  breadcrumbs: Breadcrumb[] = [
+    { label: 'NAV.HOME', url: '/', icon: 'home' },
+    { label: 'NAV.PRODUCTS', icon: 'products' }
+  ];
   
   // Firestore products
   allProducts: Product[] = [];
@@ -47,9 +55,6 @@ export class ProductosPageComponent implements OnInit {
   selectedModelId = '';
   selectedTags: string[] = [];
   searchTerm = '';
-  
-  // Loading state
-  isLoading = true;
 
   async ngOnInit() {
     // Load filter options
@@ -60,7 +65,7 @@ export class ProductosPageComponent implements OnInit {
       await this.loadProducts();
     } else {
       // During SSR, set loading to false
-      this.isLoading = false;
+      this.setLoading(false);
     }
   }
 
@@ -92,39 +97,31 @@ export class ProductosPageComponent implements OnInit {
   }
 
   private async loadProducts() {
-    this.isLoading = true;
-
-    try {
-      // Get all published products from Firestore
-      this.productsService.getAllProducts().subscribe({
-        next: async (products) => {
-          console.log('📦 All products loaded:', products.length, products);
-          
-          // Filter only published products
-          const publishedProducts = products.filter(p => p.status === 'published');
-          console.log('✅ Published products:', publishedProducts.length, publishedProducts);
-          
-          // Load cover images from media
-          this.allProducts = await this.loadProductCovers(publishedProducts);
-          console.log('🖼️ Products with covers:', this.allProducts);
-          
-          // Extract all unique tags
-          this.extractAllTags();
-          
-          // Apply filters
-          this.applyFilters();
-          
-          this.isLoading = false;
-        },
-        error: (error) => {
-          console.error('❌ Error loading products:', error);
-          this.isLoading = false;
-        }
+    await this.withLoading(async () => {
+      // Get all published products from Firestore - use promise instead of subscribe
+      const products = await new Promise<Product[]>((resolve, reject) => {
+        this.productsService.getAllProducts().subscribe({
+          next: (products) => resolve(products),
+          error: (error) => reject(error)
+        });
       });
-    } catch (error) {
-      console.error('❌ Error in loadProducts:', error);
-      this.isLoading = false;
-    }
+      
+      console.log('📦 All products loaded:', products.length, products);
+      
+      // Filter only published products
+      const publishedProducts = products.filter(p => p.status === 'published');
+      console.log('✅ Published products:', publishedProducts.length, publishedProducts);
+      
+      // Load cover images from media
+      this.allProducts = await this.loadProductCovers(publishedProducts);
+      console.log('🖼️ Products with covers:', this.allProducts);
+      
+      // Extract all unique tags
+      this.extractAllTags();
+      
+      // Apply filters
+      this.applyFilters();
+    });
   }
 
   private async loadProductCovers(products: Product[]): Promise<Product[]> {

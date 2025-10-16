@@ -13,6 +13,7 @@ import { Product } from '../../../models/product';
 import { Media, MediaTag, MediaCreateInput } from '../../../models/media';
 import { Tag } from '../../../models/catalog';
 import { AdminQuickActionsComponent } from '../../../shared/components/admin-quick-actions/admin-quick-actions.component';
+import { LoadingComponentBase } from '../../../core/classes/loading-component.base';
 
 @Component({
   selector: 'app-gallery-admin',
@@ -21,7 +22,7 @@ import { AdminQuickActionsComponent } from '../../../shared/components/admin-qui
   templateUrl: './gallery-admin.page.html',
   styleUrl: './gallery-admin.page.scss'
 })
-export class GalleryAdminComponent implements OnInit, OnDestroy {
+export class GalleryAdminComponent extends LoadingComponentBase implements OnInit, OnDestroy {
   private authService = inject(AuthService);
   private router = inject(Router);
   private route = inject(ActivatedRoute);
@@ -33,14 +34,12 @@ export class GalleryAdminComponent implements OnInit, OnDestroy {
   mediaList: Media[] = [];
   products: Product[] = [];
   availableTags: Tag[] = [];
-  isLoading = true;
   showUploadModal = false;
   showEditModal = false;
   isSaving = false;
   uploadForm: FormGroup;
   editForm: FormGroup;
   successMessage = '';
-  errorMessage = '';
   warningMessage = '';  // Add warning for non-critical issues
   selectedTag: MediaTag | 'all' = 'all';
   searchTerm = '';
@@ -58,6 +57,7 @@ export class GalleryAdminComponent implements OnInit, OnDestroy {
   private tagsSub: Subscription | null = null;
 
   constructor() {
+    super();
     this.uploadForm = this.fb.group({
       altText: ['', Validators.required],
       caption: [''],
@@ -111,18 +111,17 @@ export class GalleryAdminComponent implements OnInit, OnDestroy {
   }
 
   private subscribeToMedia(): void {
-    this.isLoading = true;
+    this.setLoading(true);
     this.mediaSub?.unsubscribe();
 
     this.mediaSub = this.mediaService.getAllMedia().subscribe({
       next: (mediaList) => {
         this.mediaList = mediaList;
-        this.isLoading = false;
+        this.setLoading(false);
       },
       error: (error) => {
         console.error('Error loading media:', error);
-        this.errorMessage = 'Error loading media files';
-        this.isLoading = false;
+        this.setError('Error loading media files');
       }
     });
   }

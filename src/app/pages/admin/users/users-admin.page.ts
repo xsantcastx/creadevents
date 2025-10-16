@@ -5,6 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { AuthService, UserProfile } from '../../../services/auth.service';
 import { AdminQuickActionsComponent } from '../../../shared/components/admin-quick-actions/admin-quick-actions.component';
+import { LoadingComponentBase } from '../../../core/classes/loading-component.base';
 
 @Component({
   selector: 'app-users-admin',
@@ -13,18 +14,16 @@ import { AdminQuickActionsComponent } from '../../../shared/components/admin-qui
   templateUrl: './users-admin.page.html',
   styleUrl: './users-admin.page.scss'
 })
-export class UsersAdminComponent implements OnInit {
+export class UsersAdminComponent extends LoadingComponentBase implements OnInit {
   private authService = inject(AuthService);
   private router = inject(Router);
 
   users: UserProfile[] = [];
   filteredUsers: UserProfile[] = [];
-  isLoading = true;
   searchTerm = '';
   filterRole: 'all' | 'admin' | 'client' = 'all';
   
   successMessage = '';
-  errorMessage = '';
   
   showChangeRoleModal = false;
   selectedUser: UserProfile | null = null;
@@ -50,17 +49,11 @@ export class UsersAdminComponent implements OnInit {
   }
 
   private async loadUsers() {
-    this.isLoading = true;
-    try {
+    await this.withLoading(async () => {
       // Get all users from Firestore users collection
       this.users = await this.authService.getAllUsers();
       this.applyFilters();
-    } catch (error) {
-      console.error('Error loading users:', error);
-      this.errorMessage = 'Failed to load users';
-    } finally {
-      this.isLoading = false;
-    }
+    }, true); // Show errors automatically
   }
 
   applyFilters() {

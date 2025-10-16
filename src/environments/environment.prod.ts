@@ -8,5 +8,9 @@ export const environment = {
     messagingSenderId: "28140566611",
     appId: "1:28140566611:web:14f73bcbf1dc43eac9aea6",
     measurementId: "G-L3NM33F382"
-  }
+  },
+  stripe: {
+    publishableKey: 'pk_live_YOUR_STRIPE_LIVE_KEY_HERE' // Replace with live key for production
+  },
+  useEmulators: false
 };
