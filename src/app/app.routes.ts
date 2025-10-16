@@ -9,6 +9,11 @@ export const routes: Routes = [
     title: 'TheLuxMining | Premium Bitcoin Mining Hardware'
   },
   {
+    path: 'home',
+    redirectTo: '',
+    pathMatch: 'full'
+  },
+  {
     path: 'productos',
     loadComponent: () => import('./pages/productos/productos.page').then(m => m.ProductosPageComponent),
     title: 'TheLuxMining | Mining Products'
@@ -37,6 +42,25 @@ export const routes: Routes = [
     path: 'cart',
     loadComponent: () => import('./pages/cart/cart.page').then(m => m.CartPage),
     title: 'TheLuxMining | Shopping Cart'
+  },
+  // Checkout Routes
+  {
+    path: 'checkout/review',
+    loadComponent: () => import('./pages/checkout/checkout-review.page').then(m => m.CheckoutReviewPage),
+    canActivate: [authGuard],
+    title: 'TheLuxMining | Checkout Review'
+  },
+  {
+    path: 'checkout/payment',
+    loadComponent: () => import('./pages/checkout/payment.page').then(m => m.PaymentPage),
+    canActivate: [authGuard],
+    title: 'TheLuxMining | Payment'
+  },
+  {
+    path: 'checkout/confirmation',
+    loadComponent: () => import('./pages/checkout/confirmation.page').then(m => m.ConfirmationPage),
+    canActivate: [authGuard],
+    title: 'TheLuxMining | Order Confirmation'
   },
   // Client Area Routes
   {
@@ -73,6 +97,12 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/admin/products/products-admin.page').then(m => m.ProductsAdminComponent),
     canActivate: [adminGuard],
     title: 'TheLuxMining | Product Management'
+  },
+  {
+    path: 'admin/products/quick-add',
+    loadComponent: () => import('./pages/admin/products/quick-add-product.page').then(m => m.QuickAddProductComponent),
+    canActivate: [adminGuard],
+    title: 'TheLuxMining | Quick Add Product'
   },
   {
     path: 'admin/gallery',

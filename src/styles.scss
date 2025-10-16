@@ -2,7 +2,7 @@
 @use 'tailwindcss/components';
 @use 'tailwindcss/utilities';
 @use './styles/theme' as theme;
-@import './styles/admin-mobile';
+@use './styles/admin-mobile';
 
 @include theme.apply-theme(light);
 

@@ -9,6 +9,7 @@ import {
   AdminDashboardSnapshot
 } from '../../../services/admin-dashboard.service';
 import { AdminQuickActionsComponent } from '../../../shared/components/admin-quick-actions/admin-quick-actions.component';
+import { LoadingComponentBase } from '../../../core/classes/loading-component.base';
 
 @Component({
   selector: 'app-admin-dashboard',
@@ -17,14 +18,13 @@ import { AdminQuickActionsComponent } from '../../../shared/components/admin-qui
   templateUrl: './dashboard.page.html',
   styleUrl: './dashboard.page.scss'
 })
-export class AdminDashboardComponent implements OnInit {
+export class AdminDashboardComponent extends LoadingComponentBase implements OnInit {
   private authService = inject(AuthService);
   private router = inject(Router);
   private dashboardService = inject(AdminDashboardService);
 
   userProfile: UserProfile | null = null;
   stats: AdminDashboardSnapshot | null = null;
-  isLoading = true;
 
   async ngOnInit() {
     await this.checkAdminAccess();
@@ -48,14 +48,9 @@ export class AdminDashboardComponent implements OnInit {
   }
 
   private async loadDashboardStats() {
-    this.isLoading = true;
-    try {
+    await this.withLoading(async () => {
       this.stats = await this.dashboardService.getDashboardStats();
-    } catch (error) {
-      console.error('Error loading dashboard stats:', error);
-    } finally {
-      this.isLoading = false;
-    }
+    });
   }
 
   async logout() {

@@ -17,6 +17,7 @@ import { MediaCreateInput, MEDIA_VALIDATION } from '../../../models/media';
 import { BenefitTemplate } from '../../../models/benefit-template';
 import { GalleryUploaderComponent } from '../../../shared/components/gallery-uploader/gallery-uploader.component';
 import { AdminQuickActionsComponent } from '../../../shared/components/admin-quick-actions/admin-quick-actions.component';
+import { LoadingComponentBase } from '../../../core/classes/loading-component.base';
 
 interface CatalogOption {
   id: string;
@@ -35,7 +36,7 @@ interface CatalogOption {
   templateUrl: './products-admin.page.html',
   styleUrl: './products-admin.page.scss'
 })
-export class ProductsAdminComponent implements OnInit {
+export class ProductsAdminComponent extends LoadingComponentBase implements OnInit {
   private authService = inject(AuthService);
   private router = inject(Router);
   private route = inject(ActivatedRoute);
@@ -68,7 +69,6 @@ export class ProductsAdminComponent implements OnInit {
     'admin.step_media'
   ];
 
-  isLoading = true;
   showModal = false;
   isEditMode = false;
   isSaving = false;
@@ -78,7 +78,6 @@ export class ProductsAdminComponent implements OnInit {
   productForm: FormGroup;
 
   successMessage = '';
-  errorMessage = '';
   searchTerm = '';
   selectedCategoryFilter = '';
   selectedModelFilter = '';
@@ -112,6 +111,7 @@ export class ProductsAdminComponent implements OnInit {
   // suggestedTags removed - we use tags from database
 
   constructor() {
+    super();
     this.productForm = this.fb.group({
       name: ['', [Validators.required, Validators.minLength(3)]],
       categoryId: ['', [Validators.required]],
@@ -236,32 +236,24 @@ export class ProductsAdminComponent implements OnInit {
   }
 
   private async loadProducts() {
-    this.isLoading = true;
-    try {
-      this.productsService.getAllProducts().subscribe({
-        next: (products) => {
-          this.products = products;
-          // Debug: Check if timestamps are present
-          if (products.length > 0) {
-            console.log('📅 Product timestamps:', {
-              sample: products[0].name,
-              createdAt: products[0].createdAt,
-              updatedAt: products[0].updatedAt
-            });
-          }
-          this.isLoading = false;
-        },
-        error: (error) => {
-          console.error('Error loading products:', error);
-          this.errorMessage = 'admin.error_occurred';
-          this.isLoading = false;
-        }
+    await this.withLoading(async () => {
+      const products = await new Promise<Product[]>((resolve, reject) => {
+        this.productsService.getAllProducts().subscribe({
+          next: (products) => resolve(products),
+          error: (error) => reject(error)
+        });
       });
-    } catch (error) {
-      console.error('Error loading products:', error);
-      this.errorMessage = 'admin.error_occurred';
-      this.isLoading = false;
-    }
+      
+      this.products = products;
+      // Debug: Check if timestamps are present
+      if (products.length > 0) {
+        console.log('📅 Product timestamps:', {
+          sample: products[0].name,
+          createdAt: products[0].createdAt,
+          updatedAt: products[0].updatedAt
+        });
+      }
+    }, true); // Show error messages automatically
   }
 
   private buildCatalogOptions() {
@@ -868,92 +860,14 @@ export class ProductsAdminComponent implements OnInit {
   }
 
   async openEditModal(product: any) {
-    console.log('📝 Opening edit modal for product:');
+    console.log('📝 Opening edit for product:');
     console.log('   - ID:', product.id);
     console.log('   - Name:', product.name);
-    console.log('   - Slug:', product.slug);
-    console.log('   - Full product object:', product);
     
-    this.isEditMode = true;
-    this.selectedProduct = product;
-    this.autoFillPreview = null;
-    
-    // Load lock states from product data (default to true if editing to preserve existing content)
-    this.descriptionLocked = product.descriptionLocked !== undefined ? product.descriptionLocked : true;
-    this.specsLocked = product.specsLocked !== undefined ? product.specsLocked : false;
-    this.seoLocked = product.seoLocked !== undefined ? product.seoLocked : true;
-    
-    this.currentStatus = product.status || 'draft';
-    this.currentStep = 2; // Start at step 2 (content) in edit mode
-    
-    // Load specs into currentSpecs
-    this.currentSpecs = product.specs ? { ...product.specs } : {};
-    
-    // Load benefits
-    this.currentBenefits = product.benefits ? [...product.benefits] : [];
-    
-    const usageStr = product.specs?.usage?.join(', ') || '';
-    
-    this.productForm.patchValue({
-      name: product.name,
-      categoryId: product.categoryId || '',
-      modelId: product.modelId || '',
-      description: product.description || '',
-      seoTitle: product.seo?.title || '',
-      seoMeta: product.seo?.metaDescription || '',
-      tags: product.tags || [],
-      price: product.price || '',
-      stock: product.stock || '',
-      size: product.specs?.size || product.size || '160×320cm',
-      sku: product.sku || '',
-      finish: product.specs?.finish || 'Pulido',
-      usage: usageStr,
-      active: product.active !== false
+    // Navigate to quick-add page with product ID for editing
+    this.router.navigate(['/admin/products/quick-add'], { 
+      queryParams: { id: product.id } 
     });
-    
-    this.selectedCoverFile = null;
-    
-    // Resolve cover image URL
-    // If coverImage looks like a Media ID (no http/https), fetch the actual URL
-    let coverImageUrl = '';
-    if (product.coverImage) {
-      if (product.coverImage.startsWith('http')) {
-        // It's already a URL
-        coverImageUrl = product.coverImage;
-      } else {
-        // It's a Media ID, fetch the media object to get the URL
-        try {
-          const media = await this.mediaService.getMediaById(product.coverImage);
-          coverImageUrl = media?.url || '';
-          console.log('Resolved coverImage from Media ID:', { mediaId: product.coverImage, url: coverImageUrl });
-        } catch (error) {
-          console.error('Error fetching media for coverImage:', error);
-        }
-      }
-    }
-    
-    // Fallback to imageUrl if coverImage resolution failed
-    if (!coverImageUrl && product.imageUrl) {
-      coverImageUrl = product.imageUrl;
-    }
-    
-    this.coverPreview = coverImageUrl;
-    
-    // Debug log to check what we're getting
-    console.log('Edit Mode - Product Image Data:', {
-      productId: product.id,
-      productName: product.name,
-      coverImage: product.coverImage,
-      imageUrl: product.imageUrl,
-      resolvedCoverImageUrl: coverImageUrl,
-      finalCoverPreview: this.coverPreview
-    });
-    
-    this.galleryFiles = [];
-    this.galleryMediaIds = product.galleryImageIds || [];
-    this.showModal = true;
-    this.successMessage = '';
-    this.errorMessage = '';
   }
 
   closeModal() {

@@ -11,6 +11,7 @@ import { TagService } from '../../../services/tag.service';
 import { TemplateService } from '../../../services/template.service';
 import { Category, Model, Tag, SizeGroup } from '../../../models/catalog';
 import { AdminQuickActionsComponent } from '../../../shared/components/admin-quick-actions/admin-quick-actions.component';
+import { LoadingComponentBase } from '../../../core/classes/loading-component.base';
 
 type TabType = 'categories' | 'models' | 'tags' | 'sizes';
 
@@ -21,7 +22,7 @@ type TabType = 'categories' | 'models' | 'tags' | 'sizes';
   templateUrl: './catalog-admin.page.html',
   styleUrl: './catalog-admin.page.scss'
 })
-export class CatalogAdminComponent implements OnInit {
+export class CatalogAdminComponent extends LoadingComponentBase implements OnInit {
   private authService = inject(AuthService);
   private router = inject(Router);
   private fb = inject(FormBuilder);
@@ -39,7 +40,6 @@ export class CatalogAdminComponent implements OnInit {
 
   // UI State
   activeTab: TabType = 'categories';
-  isLoading = true;
   isSaving = false;
   selectedCategoryFilter: string = ''; // For filtering models by category
   
@@ -58,7 +58,6 @@ export class CatalogAdminComponent implements OnInit {
   
   // Messages
   successMessage = '';
-  errorMessage = '';
   
   // Edit mode
   editingCategory: Category | null = null;
@@ -68,6 +67,7 @@ export class CatalogAdminComponent implements OnInit {
   itemToDelete: { type: TabType; id: string; name: string } | null = null;
 
   constructor() {
+    super();
     // Initialize forms
     this.categoryForm = this.fb.group({
       name: ['', Validators.required],
@@ -130,12 +130,13 @@ export class CatalogAdminComponent implements OnInit {
   }
 
   private async loadAllData() {
-    this.isLoading = true;
+    this.setLoading(true);
     try {
       // Subscribe to observables
       this.categoryService.getAllCategories().subscribe(categories => {
         this.categories = categories;
         console.log('✅ Categories loaded:', this.categories.length, this.categories);
+        this.setLoading(false);
       });
       
       this.modelService.getAllModels().subscribe(models => {
@@ -153,9 +154,7 @@ export class CatalogAdminComponent implements OnInit {
       });
     } catch (error) {
       console.error('Error loading catalog data:', error);
-      this.errorMessage = 'Error loading catalog data';
-    } finally {
-      this.isLoading = false;
+      this.setError('Error loading catalog data');
     }
   }
 

@@ -1,16 +1,12 @@
 <!-- Productos Overview Page -->
 <section class="bg-gradient-to-b from-[#0a0b0d] to-[#13151a] min-h-screen">
-  <!-- Hero Section -->
-  <div class="relative py-24 lg:py-32 bg-gradient-to-b from-[#0a0b0d] to-bitcoin-dark overflow-hidden">
-    <div class="max-w-7xl mx-auto px-6 text-center">
-      <h1 class="font-serif text-5xl lg:text-6xl bitcoin-gradient-text mb-6">
-        {{ 'products.hero.title' | translate }}
-      </h1>
-      <p class="text-xl text-bitcoin-gray max-w-3xl mx-auto leading-relaxed">
-        {{ 'products.hero.subtitle' | translate }}
-      </p>
-    </div>
-  </div>
+  <!-- Page Header Component -->
+  <app-page-header
+    title="{{ 'products.hero.title' | translate }}"
+    subtitle="{{ 'products.hero.subtitle' | translate }}"
+    [breadcrumbs]="breadcrumbs"
+    icon="products">
+  </app-page-header>
 
   <!-- Filters Section -->
   <div class="max-w-7xl mx-auto px-6 pb-12">

@@ -5,6 +5,7 @@ import { provideFirebaseApp, initializeApp } from '@angular/fire/app';
 import { provideFirestore, getFirestore } from '@angular/fire/firestore';
 import { provideAuth, getAuth } from '@angular/fire/auth';
 import { provideStorage, getStorage } from '@angular/fire/storage';
+import { provideFunctions, getFunctions, connectFunctionsEmulator } from '@angular/fire/functions';
 import { provideAnalytics, getAnalytics, ScreenTrackingService, UserTrackingService } from '@angular/fire/analytics';
 import { isSupported as analyticsIsSupported } from 'firebase/analytics';
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
@@ -37,6 +38,14 @@ export const appConfig: ApplicationConfig = {
     provideStorage(() => {
       const storage = getStorage();
       return storage;
+    }),
+    provideFunctions(() => {
+      const functions = getFunctions();
+      // Optionally connect to emulator in development
+      // if (!environment.production) {
+      //   connectFunctionsEmulator(functions, 'localhost', 5001);
+      // }
+      return functions;
     }),
     // Analytics with browser support check and production-only
     ...(environment.production ? [

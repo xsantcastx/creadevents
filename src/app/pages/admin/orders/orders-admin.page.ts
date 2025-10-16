@@ -1,43 +1,68 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { AuthService } from '../../../services/auth.service';
 import { AdminQuickActionsComponent } from '../../../shared/components/admin-quick-actions/admin-quick-actions.component';
+import { Firestore, collection, query, orderBy, onSnapshot, doc, updateDoc, Timestamp } from '@angular/fire/firestore';
 
 interface OrderItem {
   productId: string;
   name: string;
-  quantity: number;
-  price: number;
-  thickness: string;
+  qty?: number;
+  quantity?: number;
+  unitPrice?: number;
+  price?: number;
+  thickness?: string;
+  sku?: string;
   image?: string;
+  imageUrl?: string;
 }
 
 interface ShippingAddress {
-  street: string;
-  city: string;
-  state: string;
-  postalCode: string;
-  country: string;
+  firstName?: string;
+  lastName?: string;
+  line1?: string;
+  line2?: string;
+  city?: string;
+  region?: string;
+  state?: string;
+  postalCode?: string;
+  country?: string;
+  phoneE164?: string;
+  email?: string;
+  // Legacy fields
+  street?: string;
+  phone?: string;
 }
 
 interface Order {
-  id: string;
+  id?: string;
   orderNumber: string;
-  date: Date;
+  createdAt?: any;
+  date?: Date;
   status: 'pending' | 'processing' | 'shipped' | 'delivered' | 'cancelled';
   total: number;
+  subtotal?: number;
+  shipping?: number;
+  tax?: number;
+  discount?: number;
+  currency?: string;
   items: OrderItem[];
-  customer: {
+  itemCount?: number;
+  userId?: string;
+  customer?: {
     name: string;
     email: string;
     phone: string;
   };
-  shipping: ShippingAddress;
+  shippingAddress?: ShippingAddress;
+  shippingMethod?: string;
+  trackingNumber?: string;
   tracking?: string;
   notes?: string;
+  paymentIntentId?: string;
 }
 
 @Component({
@@ -48,12 +73,14 @@ interface Order {
   styleUrl: './orders-admin.page.scss'
 })
 export class OrdersAdminComponent implements OnInit {
-  orders: Order[] = [];
+  private firestore: Firestore;
+  
+  orders = signal<Order[]>([]);
   selectedStatus: 'all' | 'pending' | 'processing' | 'shipped' | 'delivered' | 'cancelled' = 'all';
   searchQuery = '';
-  isLoading = false;
-  successMessage = '';
-  errorMessage = '';
+  isLoading = signal(false);
+  successMessage = signal('');
+  errorMessage = signal('');
 
   // Detail modal
   showDetailModal = false;
@@ -63,11 +90,17 @@ export class OrdersAdminComponent implements OnInit {
   showStatusModal = false;
   orderToUpdate: Order | null = null;
   newStatus: Order['status'] = 'pending';
+  
+  // Track number update
+  trackingNumber = '';
 
   constructor(
     private authService: AuthService,
-    private router: Router
-  ) {}
+    private router: Router,
+    firestore: Firestore
+  ) {
+    this.firestore = firestore;
+  }
 
   ngOnInit(): void {
     // Check if user is admin
@@ -82,28 +115,53 @@ export class OrdersAdminComponent implements OnInit {
   }
 
   loadOrders(): void {
-    this.isLoading = true;
+    this.isLoading.set(true);
     
-    // TODO: Replace with actual Firestore query
-    // const ordersRef = collection(this.firestore, 'orders');
-    // const q = query(ordersRef, orderBy('date', 'desc'));
-    // onSnapshot(q, (snapshot) => {
-    //   this.orders = snapshot.docs.map(doc => ({
-    //     id: doc.id,
-    //     ...doc.data()
-    //   } as Order));
-    //   this.isLoading = false;
-    // });
-
-    // Mock data for now
-    setTimeout(() => {
-      this.orders = this.getMockOrders();
-      this.isLoading = false;
-    }, 500);
+    // Query all orders from Firestore
+    const ordersRef = collection(this.firestore, 'orders');
+    const q = query(ordersRef, orderBy('createdAt', 'desc'));
+    
+    onSnapshot(q, (snapshot) => {
+      const orders: Order[] = [];
+      
+      snapshot.docs.forEach(doc => {
+        const data = doc.data();
+        orders.push({
+          id: doc.id,
+          orderNumber: data['orderNumber'],
+          date: data['createdAt'] instanceof Timestamp 
+            ? data['createdAt'].toDate() 
+            : new Date(data['createdAt']),
+          createdAt: data['createdAt'],
+          status: data['status'] || 'pending',
+          total: data['total'] || 0,
+          subtotal: data['subtotal'],
+          shipping: data['shipping'],
+          tax: data['tax'],
+          discount: data['discount'],
+          currency: data['currency'] || 'USD',
+          items: data['items'] || [],
+          itemCount: data['itemCount'],
+          userId: data['userId'],
+          shippingAddress: data['shippingAddress'],
+          shippingMethod: data['shippingMethod'],
+          trackingNumber: data['trackingNumber'],
+          notes: data['notes'],
+          paymentIntentId: data['paymentIntentId'],
+        });
+      });
+      
+      this.orders.set(orders);
+      this.isLoading.set(false);
+    }, (error) => {
+      console.error('Error loading orders:', error);
+      this.errorMessage.set('Failed to load orders');
+      this.isLoading.set(false);
+    });
   }
 
   get filteredOrders(): Order[] {
-    let filtered = [...this.orders];
+    let filtered = [...this.orders()];
 
     // Filter by status
     if (this.selectedStatus !== 'all') {
@@ -113,11 +171,19 @@ export class OrdersAdminComponent implements OnInit {
     // Filter by search query
     if (this.searchQuery.trim()) {
       const query = this.searchQuery.toLowerCase();
-      filtered = filtered.filter(order =>
-        order.orderNumber.toLowerCase().includes(query) ||
-        order.customer.name.toLowerCase().includes(query) ||
-        order.customer.email.toLowerCase().includes(query)
-      );
+      filtered = filtered.filter(order => {
+        const orderNum = order.orderNumber?.toLowerCase() || '';
+        const customerName = order.customer?.name?.toLowerCase() || '';
+        const customerEmail = order.customer?.email?.toLowerCase() || '';
+        const shippingName = order.shippingAddress?.firstName && order.shippingAddress?.lastName
+          ? `${order.shippingAddress.firstName} ${order.shippingAddress.lastName}`.toLowerCase()
+          : '';
+        
+        return orderNum.includes(query) ||
+               customerName.includes(query) ||
+               customerEmail.includes(query) ||
+               shippingName.includes(query);
+      });
     }
 
     return filtered;
@@ -125,9 +191,9 @@ export class OrdersAdminComponent implements OnInit {
 
   getStatusCount(status: string): number {
     if (status === 'all') {
-      return this.orders.length;
+      return this.orders().length;
     }
-    return this.orders.filter(order => order.status === status).length;
+    return this.orders().filter(order => order.status === status).length;
   }
 
   getStatusClass(status: Order['status']): string {
@@ -139,6 +205,25 @@ export class OrdersAdminComponent implements OnInit {
       cancelled: 'bg-red-500/30 text-red-400 border border-red-500/30'
     };
     return classes[status];
+  }
+
+  getCustomerName(order: Order): string {
+    if (order.customer?.name) {
+      return order.customer.name;
+    }
+    
+    const firstName = order.shippingAddress?.firstName || '';
+    const lastName = order.shippingAddress?.lastName || '';
+    
+    if (firstName || lastName) {
+      return `${firstName} ${lastName}`.trim();
+    }
+    
+    return 'N/A';
+  }
+
+  getCustomerEmail(order: Order): string {
+    return order.customer?.email || order.shippingAddress?.email || 'N/A';
   }
 
   openDetailModal(order: Order): void {
@@ -162,184 +247,52 @@ export class OrdersAdminComponent implements OnInit {
     this.orderToUpdate = null;
   }
 
-  updateStatus(): void {
-    if (!this.orderToUpdate) return;
+  async updateStatus(): Promise<void> {
+    if (!this.orderToUpdate || !this.orderToUpdate.id) return;
 
-    // TODO: Replace with actual Firestore update
-    // const orderRef = doc(this.firestore, 'orders', this.orderToUpdate.id);
-    // await updateDoc(orderRef, {
-    //   status: this.newStatus,
-    //   updatedAt: serverTimestamp()
-    // });
+    try {
+      // Update status in Firestore
+      const orderRef = doc(this.firestore, 'orders', this.orderToUpdate.id);
+      await updateDoc(orderRef, {
+        status: this.newStatus,
+        updatedAt: Timestamp.now()
+      });
 
-    // Update mock data
-    const index = this.orders.findIndex(o => o.id === this.orderToUpdate!.id);
-    if (index !== -1) {
-      this.orders[index].status = this.newStatus;
+      this.successMessage.set('admin.status_updated');
+      setTimeout(() => this.successMessage.set(''), 3000);
+      
+      this.closeStatusModal();
+    } catch (error) {
+      console.error('Error updating status:', error);
+      this.errorMessage.set('Failed to update status');
+      setTimeout(() => this.errorMessage.set(''), 3000);
     }
+  }
+  
+  async updateTracking(): Promise<void> {
+    if (!this.orderToUpdate || !this.orderToUpdate.id || !this.trackingNumber.trim()) return;
 
-    this.successMessage = 'admin.status_updated';
-    setTimeout(() => this.successMessage = '', 3000);
-    
-    this.closeStatusModal();
+    try {
+      const orderRef = doc(this.firestore, 'orders', this.orderToUpdate.id);
+      await updateDoc(orderRef, {
+        trackingNumber: this.trackingNumber,
+        updatedAt: Timestamp.now()
+      });
+
+      this.successMessage.set('Tracking number updated');
+      setTimeout(() => this.successMessage.set(''), 3000);
+      
+      this.trackingNumber = '';
+    } catch (error) {
+      console.error('Error updating tracking:', error);
+      this.errorMessage.set('Failed to update tracking number');
+      setTimeout(() => this.errorMessage.set(''), 3000);
+    }
   }
 
   logout(): void {
     this.authService.signOutUser().then(() => {
       this.router.navigate(['/']);
     });
-  }
-
-  private getMockOrders(): Order[] {
-    return [
-      {
-        id: '1',
-        orderNumber: 'ORD-2024-001',
-        date: new Date('2024-01-15'),
-        status: 'delivered',
-        total: 2850.00,
-        customer: {
-          name: 'María García',
-          email: 'maria.garcia@email.com',
-          phone: '+34 612 345 678'
-        },
-        shipping: {
-          street: 'Calle Mayor 123',
-          city: 'Madrid',
-          state: 'Madrid',
-          postalCode: '28001',
-          country: 'España'
-        },
-        tracking: 'TRK123456789',
-        items: [
-          {
-            productId: '1',
-            name: 'Arctic White',
-            quantity: 15,
-            price: 190.00,
-            thickness: '12mm',
-            image: 'https://images.unsplash.com/photo-1615874959474-d609969a20ed?w=400'
-          }
-        ]
-      },
-      {
-        id: '2',
-        orderNumber: 'ORD-2024-002',
-        date: new Date('2024-01-18'),
-        status: 'shipped',
-        total: 4200.00,
-        customer: {
-          name: 'Carlos Rodríguez',
-          email: 'carlos.r@email.com',
-          phone: '+34 623 456 789'
-        },
-        shipping: {
-          street: 'Av. Diagonal 456',
-          city: 'Barcelona',
-          state: 'Cataluña',
-          postalCode: '08008',
-          country: 'España'
-        },
-        tracking: 'TRK987654321',
-        items: [
-          {
-            productId: '2',
-            name: 'Carrara Marble',
-            quantity: 20,
-            price: 210.00,
-            thickness: '15mm',
-            image: 'https://images.unsplash.com/photo-1564053489984-317bbd824340?w=400'
-          }
-        ]
-      },
-      {
-        id: '3',
-        orderNumber: 'ORD-2024-003',
-        date: new Date('2024-01-20'),
-        status: 'processing',
-        total: 3600.00,
-        customer: {
-          name: 'Ana Martínez',
-          email: 'ana.martinez@email.com',
-          phone: '+34 634 567 890'
-        },
-        shipping: {
-          street: 'Plaza España 789',
-          city: 'Valencia',
-          state: 'Valencia',
-          postalCode: '46001',
-          country: 'España'
-        },
-        items: [
-          {
-            productId: '4',
-            name: 'Black Granite',
-            quantity: 12,
-            price: 300.00,
-            thickness: '20mm',
-            image: 'https://images.unsplash.com/photo-1607400201515-c2c41c07d307?w=400'
-          }
-        ]
-      },
-      {
-        id: '4',
-        orderNumber: 'ORD-2024-004',
-        date: new Date('2024-01-22'),
-        status: 'pending',
-        total: 5700.00,
-        customer: {
-          name: 'Juan López',
-          email: 'juan.lopez@email.com',
-          phone: '+34 645 678 901'
-        },
-        shipping: {
-          street: 'Gran Vía 321',
-          city: 'Sevilla',
-          state: 'Andalucía',
-          postalCode: '41001',
-          country: 'España'
-        },
-        items: [
-          {
-            productId: '3',
-            name: 'Concrete Grey',
-            quantity: 30,
-            price: 190.00,
-            thickness: '12mm',
-            image: 'https://images.unsplash.com/photo-1615971677499-5467cbab01c0?w=400'
-          }
-        ]
-      },
-      {
-        id: '5',
-        orderNumber: 'ORD-2024-005',
-        date: new Date('2024-01-10'),
-        status: 'cancelled',
-        total: 1800.00,
-        customer: {
-          name: 'Laura Sánchez',
-          email: 'laura.sanchez@email.com',
-          phone: '+34 656 789 012'
-        },
-        shipping: {
-          street: 'Paseo Gracia 654',
-          city: 'Bilbao',
-          state: 'País Vasco',
-          postalCode: '48001',
-          country: 'España'
-        },
-        items: [
-          {
-            productId: '5',
-            name: 'Calacatta Gold',
-            quantity: 8,
-            price: 225.00,
-            thickness: '15mm',
-            image: 'https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?w=400'
-          }
-        ],
-        notes: 'Cliente solicitó cancelación por cambio de proyecto'
-      }
-    ];
   }
 }

@@ -1,143 +1,534 @@
 <div class="min-h-screen bg-gradient-to-b from-[#0a0b0d] to-[#13151a]">
-  <!-- Hero Section -->
-  <section class="relative py-16 lg:py-24 overflow-hidden">
-    <div class="absolute inset-0 bg-gradient-to-r from-bitcoin-orange/5 to-bitcoin-gold/5"></div>
-    <div class="relative max-w-7xl mx-auto px-6">
-      <!-- Breadcrumb Navigation -->
-      <nav class="mb-8">
-        <ol class="flex items-center space-x-2 text-sm text-bitcoin-gray">
-          <li><a routerLink="/" class="hover:text-bitcoin-orange transition-colors text-bitcoin-gray">{{ 'nav.home' | translate }}</a></li>
-          <li class="text-bitcoin-gray/50">/</li>
-          <li class="text-bitcoin-orange font-medium">{{ 'cart.title' | translate }}</li>
-        </ol>
-      </nav>
-      
-      <!-- Header Content -->
-      <div class="text-center">
-        <h1 class="font-serif text-4xl lg:text-6xl text-white mb-6 leading-tight">
-          {{ 'cart.your' | translate }} <span class="bitcoin-gradient-text">{{ 'cart.selection' | translate }}</span>
-        </h1>
-        <p class="text-xl lg:text-2xl text-bitcoin-gray max-w-3xl mx-auto leading-relaxed mb-8">
-          {{ 'cart.subtitle' | translate }}
-        </p>
-      </div>
-    </div>
-  </section>
+  <!-- Page Header Component -->
+  <app-page-header
+    *ngIf="(vm$ | async) as vm"
+    title="Your"
+    titleHighlight="Shopping Cart"
+    subtitle="Review your mining equipment selection"
+    [breadcrumbs]="breadcrumbs"
+    icon="cart"
+    [showBadge]="true"
+    [badgeCount]="vm.items.length"
+    [compact]="true">
+  </app-page-header>
 
   <!-- Cart Content -->
-  <section class="max-w-5xl mx-auto px-4 pb-16">
-    <div class="grid md:grid-cols-5 gap-8" *ngIf="(vm$ | async) as vm">
+  <section class="max-w-4xl mx-auto px-4 lg:px-6 py-12">
+    <div class="space-y-8" *ngIf="(vm$ | async) as vm">
       
-      <!-- Items -->
-      <div class="md:col-span-3 space-y-4">
+      <!-- Cart Items Section -->
+      <div class="space-y-6">
+        <!-- Section Header -->
+        <div class="flex items-center justify-between pb-4 border-b border-bitcoin-gray/20">
+          <h2 class="font-serif text-2xl text-white flex items-center gap-2">
+            <svg class="w-6 h-6 text-bitcoin-orange" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
+            </svg>
+            Cart Items
+          </h2>
+          <span class="text-bitcoin-gray text-sm">{{ vm.items.length }} {{ vm.items.length === 1 ? 'item' : 'items' }}</span>
+        </div>
+        
         <ng-container *ngIf="vm.items.length; else empty">
-          <article *ngFor="let it of vm.items" 
-                   class="rounded-xl border border-bitcoin-gray/20 p-4 flex gap-4 bg-bitcoin-dark/40 backdrop-blur-sm shadow-bitcoin hover:shadow-bitcoin-lg hover:border-bitcoin-orange/30 transition-all">
-            <img [src]="it.product.imageUrl || 'assets/placeholder-product.jpg'" 
-                 [alt]="it.product.name" 
-                 class="w-24 h-24 object-cover rounded-lg bg-bitcoin-dark/60">
-            <div class="flex-1">
-              <div class="flex items-start justify-between gap-3">
-                <div>
-                  <h3 class="font-semibold text-bitcoin-gold">{{ it.product.name }}</h3>
-                  <p class="text-sm text-bitcoin-gray">
-                    <span *ngIf="it.product.grosor">{{ it.product.grosor }}</span>
-                    <span *ngIf="it.product.sku"> · {{ it.product.sku }}</span>
-                  </p>
+          <!-- Cart Items -->
+          <div class="space-y-4">
+            <article *ngFor="let it of vm.items; let i = index" 
+                     class="group relative rounded-2xl border border-bitcoin-gray/20 p-5 bg-gradient-to-br from-bitcoin-dark/60 to-bitcoin-dark/40 backdrop-blur-sm hover:border-bitcoin-orange/40 hover:shadow-bitcoin-lg transition-all duration-300">
+              <!-- Item Number Badge -->
+              <div class="absolute -top-3 -left-3 w-8 h-8 bg-bitcoin-orange rounded-full flex items-center justify-center text-white text-sm font-bold border-2 border-[#0a0b0d]">
+                {{ i + 1 }}
+              </div>
+              
+              <div class="flex gap-5">
+                <!-- Product Image -->
+                <div class="relative flex-shrink-0">
+                  <img [src]="it.product.imageUrl || 'assets/placeholder-product.jpg'" 
+                       [alt]="it.product.name" 
+                       class="w-28 h-28 object-cover rounded-xl bg-bitcoin-dark/80 border border-bitcoin-gray/10 group-hover:scale-105 transition-transform duration-300">
+                  <!-- Price Tag -->
+                  <div class="absolute -bottom-2 -right-2 bg-bitcoin-gold text-bitcoin-dark px-3 py-1 rounded-lg text-sm font-bold shadow-lg">
+                    ${{ it.product.price.toFixed(2) || '0.00' }}
+                  </div>
                 </div>
-                <button class="text-sm text-red-400 hover:text-red-300 transition-colors" 
-                        (click)="remove(it.product.id!)">
-                  {{ 'cart.remove' | translate }}
-                </button>
+                
+                <!-- Product Details -->
+                <div class="flex-1 min-w-0">
+                  <div class="flex items-start justify-between gap-3 mb-3">
+                    <div class="flex-1">
+                      <h3 class="font-semibold text-lg text-white mb-1 group-hover:text-bitcoin-gold transition-colors">
+                        {{ it.product.name }}
+                      </h3>
+                      <div class="flex flex-wrap items-center gap-2 text-sm text-bitcoin-gray/80">
+                        <span *ngIf="it.product.grosor" class="px-2 py-0.5 bg-bitcoin-gray/10 rounded-md border border-bitcoin-gray/20">
+                          {{ it.product.grosor }}
+                        </span>
+                        <span *ngIf="it.product.sku" class="px-2 py-0.5 bg-bitcoin-gray/10 rounded-md border border-bitcoin-gray/20 font-mono text-xs">
+                          SKU: {{ it.product.sku }}
+                        </span>
+                      </div>
+                    </div>
+                    
+                    <!-- Remove Button -->
+                    <button 
+                      (click)="remove(it.product.id)"
+                      class="flex-shrink-0 p-2 text-bitcoin-gray hover:text-red-400 hover:bg-red-500/10 rounded-lg transition-all group/btn"
+                      title="Remove item">
+                      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                      </svg>
+                    </button>
+                  </div>
+                  
+                  <!-- Quantity Controls -->
+                  <div class="flex items-center gap-3">
+                    <label class="text-sm text-bitcoin-gray font-medium">Quantity:</label>
+                    <div class="flex items-center gap-2 bg-bitcoin-dark/80 border border-bitcoin-gray/20 rounded-lg px-1 py-1">
+                      <button 
+                        (click)="updateQty(it.product.id, (it.qty - 1).toString())"
+                        [disabled]="it.qty <= 1"
+                        class="w-8 h-8 flex items-center justify-center text-bitcoin-gray hover:text-white hover:bg-bitcoin-orange/20 rounded-md transition-all disabled:opacity-30 disabled:cursor-not-allowed">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"></path>
+                        </svg>
+                      </button>
+                      <input 
+                        type="number" 
+                        min="1" 
+                        [value]="it.qty"
+                        (input)="updateQty(it.product.id, $any($event.target).value)"
+                        class="w-16 text-center bg-transparent border-0 text-white font-semibold focus:outline-none focus:ring-0">
+                      <button 
+                        (click)="updateQty(it.product.id, (it.qty + 1).toString())"
+                        class="w-8 h-8 flex items-center justify-center text-bitcoin-gray hover:text-white hover:bg-bitcoin-orange/20 rounded-md transition-all">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                        </svg>
+                      </button>
+                    </div>
+                    <span class="text-sm text-bitcoin-gray/60 ml-auto">
+                      Subtotal: <span class="text-bitcoin-gold font-semibold">${{ (it.product.price * it.qty).toFixed(2) }}</span>
+                    </span>
+                  </div>
+                </div>
               </div>
-              <div class="mt-3 flex items-center gap-2">
-                <label class="text-sm text-bitcoin-gray font-medium">{{ 'cart.quantity' | translate }}</label>
-                <input type="number" 
-                       min="1" 
-                       [value]="it.qty"
-                       (input)="updateQty(it.product.id!, $any($event.target).value)"
-                       class="w-20 rounded-md bg-bitcoin-dark/60 border border-bitcoin-gray/20 text-bitcoin-gray px-2 py-1 text-sm focus:ring-2 focus:ring-bitcoin-orange focus:border-bitcoin-orange">
-              </div>
-            </div>
-          </article>
+            </article>
+          </div>
+          
+          <!-- Clear Cart Button -->
+          <div class="pt-4 border-t border-bitcoin-gray/20">
+            <button 
+              (click)="clear()"
+              class="text-sm text-bitcoin-gray hover:text-red-400 transition-colors flex items-center gap-2">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+              </svg>
+              {{ 'cart.clear_cart' | translate }}
+            </button>
+          </div>
         </ng-container>
         
+        <!-- Empty Cart State -->
         <ng-template #empty>
-          <div class="rounded-xl border border-bitcoin-gray/20 p-8 text-center bg-bitcoin-dark/40 backdrop-blur-sm">
-            <div class="w-16 h-16 mx-auto mb-4 rounded-full bg-bitcoin-orange/20 border border-bitcoin-orange/30 flex items-center justify-center">
-              <svg class="w-8 h-8 text-bitcoin-orange" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-2.5 5M7 13h10m0 0v6a1 1 0 01-1 1H8a1 1 0 01-1-1v-6m8 0V9a1 1 0 00-1-1H8a1 1 0 00-1 1v4.01"/>
+          <div class="rounded-2xl border border-bitcoin-gray/20 p-12 text-center bg-gradient-to-br from-bitcoin-dark/60 to-bitcoin-dark/40 backdrop-blur-sm">
+            <div class="w-24 h-24 mx-auto mb-6 rounded-full bg-gradient-to-br from-bitcoin-orange/20 to-bitcoin-gold/20 border-2 border-bitcoin-orange/30 flex items-center justify-center animate-pulse">
+              <svg class="w-12 h-12 text-bitcoin-orange" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
               </svg>
             </div>
-            <h3 class="font-serif text-xl bitcoin-gradient-text mb-2">{{ 'cart.empty_title' | translate }}</h3>
-            <p class="text-bitcoin-gray mb-4">{{ 'cart.empty_message' | translate }}</p>
+            <h3 class="font-serif text-2xl bitcoin-gradient-text mb-3">Your Cart is Empty</h3>
+            <p class="text-bitcoin-gray mb-6 max-w-md mx-auto">Start adding premium mining hardware to your cart and build your mining empire!</p>
             <a routerLink="/productos" 
-               class="inline-block px-6 py-3 bg-bitcoin-orange/30 hover:bg-bitcoin-orange/40 text-white rounded-xl border border-bitcoin-orange/30 hover:border-bitcoin-orange/50 font-semibold shadow-bitcoin transition-all">
-              {{ 'cart.explore_products' | translate }}
+               class="inline-flex items-center gap-2 px-8 py-4 bg-bitcoin-orange hover:bg-bitcoin-orange/90 text-white rounded-xl font-semibold shadow-bitcoin hover:shadow-bitcoin-lg transition-all">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
+              </svg>
+              <span>Explore Mining Products</span>
             </a>
           </div>
         </ng-template>
+      </div>
+
+      <!-- Shipping Address Section (only for logged in users with items) -->
+      <div class="space-y-6" *ngIf="vm.items.length > 0 && auth.currentUser">
+        <!-- Debug Info (remove after testing) -->
+        <div class="p-4 bg-red-900/20 border border-red-500/30 rounded-lg text-xs">
+          <p class="text-red-300 mb-1">Debug: Addresses count: {{ addresses().length }}</p>
+          <p class="text-red-300 mb-1">Selected: {{ selectedAddress()?.id || 'none' }}</p>
+          <p class="text-red-300">Form value: {{ checkoutForm.value.addressId }}</p>
+        </div>
         
-        <div *ngIf="vm.items.length" class="text-right">
-          <button class="text-sm text-bitcoin-gray hover:text-bitcoin-orange transition-colors" 
-                  (click)="clear()">
-            {{ 'cart.clear_cart' | translate }}
-          </button>
+        <!-- Start checkoutForm here, BEFORE address section div -->
+        <form [formGroup]="checkoutForm">
+        <div class="rounded-2xl border border-bitcoin-orange/20 p-6 bg-gradient-to-br from-bitcoin-dark/60 to-bitcoin-dark/40 backdrop-blur-sm hover:border-bitcoin-orange/30 transition-all">
+          <h2 class="font-serif text-2xl text-white mb-6 flex items-center gap-2">
+            <svg class="w-6 h-6 text-bitcoin-orange" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+            </svg>
+            Shipping Address
+          </h2>
+
+            <!-- Address List -->
+            <div class="space-y-3 mb-4" *ngIf="addresses().length > 0">
+              <div *ngFor="let address of addresses()" 
+                   class="relative block p-4 rounded-lg border-2 transition-all"
+                   [class.border-bitcoin-orange]="checkoutForm.value.addressId === address.id"
+                   [class.bg-bitcoin-orange/10]="checkoutForm.value.addressId === address.id"
+                   [class.border-bitcoin-gray/20]="checkoutForm.value.addressId !== address.id">
+                
+                <!-- Delete button (positioned absolutely to be clickable) -->
+                <button type="button"
+                        (click)="deleteAddress(address.id!)"
+                        class="absolute top-2 right-2 p-2 text-red-400 hover:text-red-300 hover:bg-red-900/30 rounded-lg transition-all z-10"
+                        title="Delete address">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                  </svg>
+                </button>
+                
+                <!-- Address selection label -->
+                <label class="cursor-pointer block">
+                  <input type="radio" 
+                         formControlName="addressId"
+                         [value]="address.id!"
+                         (change)="onAddressChange(address.id!)"
+                         class="sr-only">
+                  <div class="flex items-start justify-between pr-8">
+                    <div class="flex-1">
+                      <div class="flex items-center gap-2 mb-2">
+                        <p class="font-semibold text-white">{{ address.firstName }} {{ address.lastName }}</p>
+                        <span *ngIf="address.isDefault" 
+                              class="text-xs px-2 py-0.5 rounded-full bg-bitcoin-orange/20 text-bitcoin-orange border border-bitcoin-orange/30">
+                          Default
+                        </span>
+                      </div>
+                      <p class="text-sm text-bitcoin-gray">{{ address.line1 }}</p>
+                      <p class="text-sm text-bitcoin-gray" *ngIf="address.line2">{{ address.line2 }}</p>
+                      <p class="text-sm text-bitcoin-gray">{{ address.city }}, {{ address.region }} {{ address.postalCode }}</p>
+                    </div>
+                    <div *ngIf="checkoutForm.value.addressId === address.id" 
+                         class="flex-shrink-0 w-6 h-6 rounded-full bg-bitcoin-orange flex items-center justify-center">
+                      <svg class="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                      </svg>
+                    </div>
+                  </div>
+                </label>
+              </div>
+            </div>
+
+            <!-- No Addresses Message -->
+            <div *ngIf="addresses().length === 0 && !showAddressForm()" class="text-center py-6 bg-bitcoin-dark/40 rounded-lg border border-bitcoin-gray/20 mb-4">
+              <p class="text-bitcoin-gray mb-3">No shipping addresses found</p>
+              <button type="button"
+                      (click)="showAddressForm.set(true)"
+                      class="px-6 py-2 bg-bitcoin-orange/20 hover:bg-bitcoin-orange/30 border border-bitcoin-orange/30 text-bitcoin-orange rounded-lg transition-all">
+                Add Shipping Address
+              </button>
+            </div>
+
+            <!-- Add New Address Button -->
+            <button type="button"
+                    *ngIf="addresses().length > 0 && !showAddressForm()"
+                    (click)="showAddressForm.set(true)"
+                    class="w-full py-3 px-4 rounded-lg border-2 border-dashed border-bitcoin-gray/30 hover:border-bitcoin-orange/30 text-bitcoin-gray hover:text-bitcoin-orange transition-all flex items-center justify-center gap-2">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+              </svg>
+              Add New Address
+            </button>
+
+            <!-- Inline Address Form -->
+            <div *ngIf="showAddressForm()" class="p-6 bg-bitcoin-dark/80 rounded-lg border border-bitcoin-orange/30 mt-4">
+              <h3 class="text-lg font-semibold text-white mb-4">New Shipping Address</h3>
+              
+              <form [formGroup]="addressForm" class="space-y-4">
+                <div class="grid grid-cols-2 gap-4">
+                  <div>
+                    <label class="block text-sm font-medium text-bitcoin-gray mb-1">First Name *</label>
+                    <input type="text" formControlName="firstName"
+                           class="w-full px-3 py-2 bg-bitcoin-dark border border-bitcoin-gray/30 rounded-lg text-white focus:ring-2 focus:ring-bitcoin-orange focus:border-bitcoin-orange">
+                  </div>
+                  <div>
+                    <label class="block text-sm font-medium text-bitcoin-gray mb-1">Last Name *</label>
+                    <input type="text" formControlName="lastName"
+                           class="w-full px-3 py-2 bg-bitcoin-dark border border-bitcoin-gray/30 rounded-lg text-white focus:ring-2 focus:ring-bitcoin-orange focus:border-bitcoin-orange">
+                  </div>
+                </div>
+
+                <div>
+                  <label class="block text-sm font-medium text-bitcoin-gray mb-1">Email *</label>
+                  <input type="email" formControlName="email"
+                         class="w-full px-3 py-2 bg-bitcoin-dark border border-bitcoin-gray/30 rounded-lg text-white focus:ring-2 focus:ring-bitcoin-orange focus:border-bitcoin-orange">
+                </div>
+
+                <div>
+                  <label class="block text-sm font-medium text-bitcoin-gray mb-1">Phone *</label>
+                  <input type="tel" formControlName="phoneE164" placeholder="+14155551234"
+                         class="w-full px-3 py-2 bg-bitcoin-dark border border-bitcoin-gray/30 rounded-lg text-white focus:ring-2 focus:ring-bitcoin-orange focus:border-bitcoin-orange">
+                </div>
+
+                <div>
+                  <label class="block text-sm font-medium text-bitcoin-gray mb-1">Address *</label>
+                  <input type="text" formControlName="line1"
+                         class="w-full px-3 py-2 bg-bitcoin-dark border border-bitcoin-gray/30 rounded-lg text-white focus:ring-2 focus:ring-bitcoin-orange focus:border-bitcoin-orange">
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                  <div>
+                    <label class="block text-sm font-medium text-bitcoin-gray mb-1">City *</label>
+                    <input type="text" formControlName="city"
+                           class="w-full px-3 py-2 bg-bitcoin-dark border border-bitcoin-gray/30 rounded-lg text-white focus:ring-2 focus:ring-bitcoin-orange focus:border-bitcoin-orange">
+                  </div>
+                  <div>
+                    <label class="block text-sm font-medium text-bitcoin-gray mb-1">State *</label>
+                    <select formControlName="region"
+                            class="w-full px-3 py-2 bg-bitcoin-dark border border-bitcoin-gray/30 rounded-lg text-white focus:ring-2 focus:ring-bitcoin-orange focus:border-bitcoin-orange">
+                      <option value="">Select a state...</option>
+                      <option value="AL">Alabama</option>
+                      <option value="AK">Alaska</option>
+                      <option value="AZ">Arizona</option>
+                      <option value="AR">Arkansas</option>
+                      <option value="CA">California</option>
+                      <option value="CO">Colorado</option>
+                      <option value="CT">Connecticut</option>
+                      <option value="DE">Delaware</option>
+                      <option value="FL">Florida</option>
+                      <option value="GA">Georgia</option>
+                      <option value="HI">Hawaii</option>
+                      <option value="ID">Idaho</option>
+                      <option value="IL">Illinois</option>
+                      <option value="IN">Indiana</option>
+                      <option value="IA">Iowa</option>
+                      <option value="KS">Kansas</option>
+                      <option value="KY">Kentucky</option>
+                      <option value="LA">Louisiana</option>
+                      <option value="ME">Maine</option>
+                      <option value="MD">Maryland</option>
+                      <option value="MA">Massachusetts</option>
+                      <option value="MI">Michigan</option>
+                      <option value="MN">Minnesota</option>
+                      <option value="MS">Mississippi</option>
+                      <option value="MO">Missouri</option>
+                      <option value="MT">Montana</option>
+                      <option value="NE">Nebraska</option>
+                      <option value="NV">Nevada</option>
+                      <option value="NH">New Hampshire</option>
+                      <option value="NJ">New Jersey</option>
+                      <option value="NM">New Mexico</option>
+                      <option value="NY">New York</option>
+                      <option value="NC">North Carolina</option>
+                      <option value="ND">North Dakota</option>
+                      <option value="OH">Ohio</option>
+                      <option value="OK">Oklahoma</option>
+                      <option value="OR">Oregon</option>
+                      <option value="PA">Pennsylvania</option>
+                      <option value="RI">Rhode Island</option>
+                      <option value="SC">South Carolina</option>
+                      <option value="SD">South Dakota</option>
+                      <option value="TN">Tennessee</option>
+                      <option value="TX">Texas</option>
+                      <option value="UT">Utah</option>
+                      <option value="VT">Vermont</option>
+                      <option value="VA">Virginia</option>
+                      <option value="WA">Washington</option>
+                      <option value="WV">West Virginia</option>
+                      <option value="WI">Wisconsin</option>
+                      <option value="WY">Wyoming</option>
+                      <option value="DC">District of Columbia</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                  <div>
+                    <label class="block text-sm font-medium text-bitcoin-gray mb-1">ZIP Code *</label>
+                    <input type="text" formControlName="postalCode"
+                           class="w-full px-3 py-2 bg-bitcoin-dark border border-bitcoin-gray/30 rounded-lg text-white focus:ring-2 focus:ring-bitcoin-orange focus:border-bitcoin-orange">
+                  </div>
+                  <div>
+                    <label class="block text-sm font-medium text-bitcoin-gray mb-1">Country *</label>
+                    <select formControlName="country" [disabled]="true"
+                            class="w-full px-3 py-2 bg-bitcoin-dark/50 border border-bitcoin-gray/30 rounded-lg text-white/70 cursor-not-allowed">
+                      <option value="US">United States</option>
+                    </select>
+                    <p class="text-xs text-bitcoin-gray/60 mt-1">Currently shipping to US addresses only</p>
+                  </div>
+                </div>
+
+                <div class="flex gap-3 pt-4">
+                  <button type="button"
+                          (click)="saveNewAddress()"
+                          [disabled]="savingAddress() || addressForm.invalid"
+                          class="flex-1 py-3 px-4 bg-bitcoin-orange hover:bg-bitcoin-orange/90 disabled:bg-bitcoin-gray/30 disabled:cursor-not-allowed text-white font-semibold rounded-lg transition-all">
+                    {{ savingAddress() ? 'Saving...' : 'Save Address' }}
+                  </button>
+                  <button type="button"
+                          (click)="cancelAddAddress()"
+                          [disabled]="savingAddress()"
+                          class="px-6 py-3 border border-bitcoin-gray/30 hover:bg-bitcoin-gray/10 text-bitcoin-gray rounded-lg transition-all">
+                    Cancel
+                  </button>
+                </div>
+              </form>
+            </div>
+        </div>
+        <!-- Close address section div -->
+
+        <!-- Shipping Method Section (still inside checkoutForm) -->
+        <div class="rounded-2xl border border-bitcoin-orange/20 p-6 bg-gradient-to-br from-bitcoin-dark/60 to-bitcoin-dark/40 backdrop-blur-sm hover:border-bitcoin-orange/30 transition-all"
+             *ngIf="shippingMethods().length > 0">
+          <h2 class="font-serif text-2xl text-white mb-6 flex items-center gap-2">
+            <svg class="w-6 h-6 text-bitcoin-orange" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path d="M8 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zM15 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0z"></path>
+              <path d="M3 4a1 1 0 00-1 1v10a1 1 0 001 1h1.05a2.5 2.5 0 014.9 0H10a1 1 0 001-1V5a1 1 0 00-1-1H3zM14 7a1 1 0 00-1 1v6.05A2.5 2.5 0 0115.95 16H17a1 1 0 001-1v-5a1 1 0 00-.293-.707l-2-2A1 1 0 0015 7h-1z"></path>
+            </svg>
+            Shipping Method
+          </h2>
+
+          <div *ngIf="calculatingShipping()" class="flex items-center gap-3 text-bitcoin-gray mb-4">
+            <svg class="animate-spin h-5 w-5" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            <span>Calculating shipping rates...</span>
+          </div>
+
+          <!-- Shipping methods are part of the same checkoutForm -->
+            <div class="space-y-3">
+              <label *ngFor="let method of shippingMethods()"
+                     class="block p-4 rounded-lg border-2 cursor-pointer transition-all"
+                     [class.border-bitcoin-orange]="checkoutForm.value.shippingMethodId === method.id"
+                     [class.bg-bitcoin-orange/10]="checkoutForm.value.shippingMethodId === method.id"
+                     [class.border-bitcoin-gray/20]="checkoutForm.value.shippingMethodId !== method.id">
+                <input type="radio"
+                       formControlName="shippingMethodId"
+                       [value]="method.id"
+                       (change)="onShippingMethodChange(method.id)"
+                       class="sr-only">
+                <div class="flex items-start justify-between">
+                  <div class="flex-1">
+                    <p class="font-semibold text-white mb-1">{{ method.name }}</p>
+                    <p class="text-sm text-bitcoin-gray">{{ method.description }}</p>
+                  </div>
+                  <div class="text-right ml-4">
+                    <p class="font-bold text-bitcoin-gold">{{ formatCurrency(method.cost, method.currency) }}</p>
+                  </div>
+                </div>
+              </label>
+            </div>
+        </div>
+        <!-- Close shipping method section div -->
+      </form>
+      <!-- Close checkoutForm after both address and shipping sections -->
+      </div>
+      <!-- Close shipping/address section (space-y-6 from line 152) -->
+
+      <!-- Order Summary Below Cart Items -->
+      <div class="space-y-6" *ngIf="vm.items.length > 0">
+        <!-- Order Summary Card -->
+        <div class="rounded-2xl border border-bitcoin-orange/20 p-6 bg-gradient-to-br from-bitcoin-dark/80 to-bitcoin-dark/60 backdrop-blur-md shadow-bitcoin-lg">
+          <h2 class="font-serif text-2xl bitcoin-gradient-text mb-6 flex items-center gap-2">
+            <svg class="w-6 h-6 text-bitcoin-orange" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
+            </svg>
+            Order Summary
+          </h2>
+            
+            <div class="space-y-4 mb-6">
+              <!-- Subtotal -->
+              <div class="flex justify-between items-center pb-3 border-b border-bitcoin-gray/10">
+                <span class="text-bitcoin-gray">Subtotal ({{ vm.items.length }} items)</span>
+                <span class="text-white font-semibold text-lg">${{ vm.subtotal.toFixed(2) }}</span>
+              </div>
+              
+              <!-- Shipping -->
+              <div class="flex justify-between items-center text-sm" *ngIf="vm.shipping > 0">
+                <span class="text-bitcoin-gray">Shipping</span>
+                <span class="text-white font-medium">${{ vm.shipping.toFixed(2) }}</span>
+              </div>
+              
+              <!-- Tax -->
+              <div class="flex justify-between items-center text-sm" *ngIf="vm.tax > 0">
+                <span class="text-bitcoin-gray">Tax</span>
+                <span class="text-white font-medium">${{ vm.tax.toFixed(2) }}</span>
+              </div>
+              
+              <!-- Total -->
+              <div class="pt-4 border-t-2 border-bitcoin-orange/30">
+                <div class="flex justify-between items-center">
+                  <span class="text-lg font-semibold text-white">Total</span>
+                  <div class="text-right">
+                    <div class="text-2xl font-bold bitcoin-gradient-text">${{ vm.total.toFixed(2) }}</div>
+                    <div class="text-xs text-bitcoin-gray">{{ vm.currency }}</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <p class="text-xs text-bitcoin-gray text-center mb-5 pb-4 border-b border-bitcoin-gray/10">
+              <svg class="w-4 h-4 inline-block mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+              </svg>
+              Shipping & taxes calculated at checkout
+            </p>
+            
+            <!-- Checkout Button -->
+            <button 
+              (click)="checkout()" 
+              class="w-full group relative overflow-hidden rounded-xl bg-gradient-to-r from-bitcoin-orange to-bitcoin-gold hover:from-bitcoin-gold hover:to-bitcoin-orange text-white font-bold py-4 px-6 shadow-bitcoin hover:shadow-bitcoin-lg transition-all duration-300 transform hover:scale-[1.02]">
+              <span class="relative z-10 flex items-center justify-center gap-3">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                </svg>
+                <span>Proceed to Checkout</span>
+                <svg class="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                </svg>
+              </span>
+              <div class="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700"></div>
+            </button>
+            
+            <!-- Security Badges -->
+            <div class="mt-6 pt-6 border-t border-bitcoin-gray/10">
+              <div class="flex items-center justify-center gap-6 text-xs text-bitcoin-gray">
+                <div class="flex items-center gap-1.5">
+                  <svg class="w-4 h-4 text-green-400" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"></path>
+                  </svg>
+                  <span>Secure</span>
+                </div>
+                <div class="w-px h-4 bg-bitcoin-gray/20"></div>
+                <div class="flex items-center gap-1.5">
+                  <svg class="w-4 h-4 text-blue-400" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M2.166 4.999A11.954 11.954 0 0010 1.944 11.954 11.954 0 0017.834 5c.11.65.166 1.32.166 2.001 0 5.225-3.34 9.67-8 11.317C5.34 16.67 2 12.225 2 7c0-.682.057-1.35.166-2.001zm11.541 3.708a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                  </svg>
+                  <span>SSL</span>
+                </div>
+                <div class="w-px h-4 bg-bitcoin-gray/20"></div>
+                <div class="flex items-center gap-1.5">
+                  <svg class="w-4 h-4 text-bitcoin-orange" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M8 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zM15 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0z"></path>
+                    <path d="M3 4a1 1 0 00-1 1v10a1 1 0 001 1h1.05a2.5 2.5 0 014.9 0H10a1 1 0 001-1V5a1 1 0 00-1-1H3zM14 7a1 1 0 00-1 1v6.05A2.5 2.5 0 0115.95 16H17a1 1 0 001-1v-5a1 1 0 00-.293-.707l-2-2A1 1 0 0015 7h-1z"></path>
+                  </svg>
+                  <span>Fast Shipping</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Continue Shopping -->
+          <a 
+            routerLink="/productos"
+            class="block text-center py-3 px-6 border-2 border-bitcoin-gray/30 text-bitcoin-gray hover:border-bitcoin-orange/50 hover:text-bitcoin-orange rounded-xl font-medium transition-all">
+            <span class="flex items-center justify-center gap-2">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+              </svg>
+              <span>Continue Shopping</span>
+            </span>
+          </a>
         </div>
       </div>
-
-      <!-- Contact form -->
-      <div class="md:col-span-2">
-        <form [formGroup]="form" (ngSubmit)="submit()" 
-              class="rounded-xl border border-bitcoin-orange/20 p-6 space-y-4 bg-bitcoin-dark/40 backdrop-blur-md shadow-bitcoin">
-          <h2 class="font-serif text-xl bitcoin-gradient-text mb-4">{{ 'cart.contact_data' | translate }}</h2>
-          
-          <div>
-            <input formControlName="name" 
-                   [placeholder]="('cart.full_name_required' | translate)" 
-                   class="w-full rounded-md bg-bitcoin-dark/60 border border-bitcoin-gray/20 px-3 py-2 text-sm text-bitcoin-gray placeholder-bitcoin-gray/50 focus:ring-2 focus:ring-bitcoin-orange focus:border-bitcoin-orange"
-                   [class.border-red-500]="form.get('name')?.touched && form.get('name')?.errors">
-            <div *ngIf="form.get('name')?.touched && form.get('name')?.errors" 
-                 class="text-red-400 text-xs mt-1">
-              {{ 'cart.name_error' | translate }}
-            </div>
-          </div>
-          
-          <div>
-            <input formControlName="email" 
-                   type="email"
-                   [placeholder]="('cart.email_required' | translate)" 
-                   class="w-full rounded-md bg-bitcoin-dark/60 border border-bitcoin-gray/20 px-3 py-2 text-sm text-bitcoin-gray placeholder-bitcoin-gray/50 focus:ring-2 focus:ring-bitcoin-orange focus:border-bitcoin-orange"
-                   [class.border-red-500]="form.get('email')?.touched && form.get('email')?.errors">
-            <div *ngIf="form.get('email')?.touched && form.get('email')?.errors" 
-                 class="text-red-400 text-xs mt-1">
-              {{ 'cart.email_error' | translate }}
-            </div>
-          </div>
-          
-          <input formControlName="phone" 
-                 [placeholder]="('cart.phone_optional' | translate)" 
-                 class="w-full rounded-md bg-bitcoin-dark/60 border border-bitcoin-gray/20 px-3 py-2 text-sm text-bitcoin-gray placeholder-bitcoin-gray/50 focus:ring-2 focus:ring-bitcoin-orange focus:border-bitcoin-orange">
-          
-          <textarea formControlName="message" 
-                    rows="4" 
-                    [placeholder]="('cart.message_optional' | translate)"
-                    class="w-full rounded-md bg-bitcoin-dark/60 border border-bitcoin-gray/20 px-3 py-2 text-sm text-bitcoin-gray placeholder-bitcoin-gray/50 focus:ring-2 focus:ring-bitcoin-orange focus:border-bitcoin-orange resize-none"></textarea>
-
-          <button type="submit" 
-                  [disabled]="submitting || form.invalid"
-                  class="w-full rounded-lg bg-bitcoin-orange/30 hover:bg-bitcoin-orange/40 text-white font-semibold py-3 border border-bitcoin-orange/30 hover:border-bitcoin-orange/50 shadow-bitcoin transition-all disabled:opacity-50 disabled:cursor-not-allowed">
-            {{ submitting ? ('cart.sending' | translate) : ('cart.send_selection' | translate) }}
-          </button>
-
-          <p *ngIf="success" class="text-green-300 text-sm bg-green-500/20 border border-green-500/30 p-3 rounded-lg">{{ success }}</p>
-          <p *ngIf="error" class="text-red-300 text-sm bg-red-500/20 border border-red-500/30 p-3 rounded-lg">{{ error }}</p>
-          
-          <p class="text-xs text-bitcoin-gray/70 text-center">
-            {{ 'cart.required_fields_note' | translate }}
-          </p>
-        </form>
-      </div>
-    </div>
+    <!-- Close space-y-8 div from line 17 -->
   </section>
 </div>

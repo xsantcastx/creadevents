@@ -1,26 +1,34 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { AuthService } from '../../../services/auth.service';
+import { InvoiceService } from '../../../services/invoice.service';
+import { Firestore, collection, query, where, orderBy, getDocs, Timestamp, doc, updateDoc } from '@angular/fire/firestore';
 
 export interface Order {
-  id: string;
+  id?: string;
   orderNumber: string;
   date: Date;
   status: 'pending' | 'processing' | 'shipped' | 'delivered' | 'cancelled';
   total: number;
   items: OrderItem[];
-  shippingAddress?: string;
+  shippingAddress?: any;
   trackingNumber?: string;
+  itemCount?: number;
+  currency?: string;
 }
 
 export interface OrderItem {
   productId: string;
-  productName: string;
-  quantity: number;
-  price: number;
+  name?: string;
+  productName?: string;
+  qty?: number;
+  quantity?: number;
+  unitPrice?: number;
+  price?: number;
   image?: string;
+  imageUrl?: string;
 }
 
 @Component({
@@ -33,18 +41,20 @@ export interface OrderItem {
 export class OrdersPageComponent implements OnInit {
   private authService = inject(AuthService);
   private router = inject(Router);
+  private firestore = inject(Firestore);
+  private invoiceService = inject(InvoiceService);
 
-  orders: Order[] = [];
-  isLoading = true;
-  errorMessage = '';
+  orders = signal<Order[]>([]);
+  isLoading = signal(true);
+  errorMessage = signal('');
   selectedFilter: 'all' | 'pending' | 'processing' | 'shipped' | 'delivered' | 'cancelled' = 'all';
 
   async ngOnInit() {
-    this.loadOrders();
+    await this.loadOrders();
   }
 
   private async loadOrders() {
-    this.isLoading = true;
+    this.isLoading.set(true);
     try {
       const user = this.authService.getCurrentUser();
       if (!user) {
@@ -52,22 +62,50 @@ export class OrdersPageComponent implements OnInit {
         return;
       }
 
-      // TODO: Implement actual order fetching from Firestore
-      // For now, using mock data
-      this.orders = this.getMockOrders();
+      // Fetch real orders from Firestore
+      const ordersRef = collection(this.firestore, 'orders');
+      const q = query(
+        ordersRef,
+        where('userId', '==', user.uid),
+        orderBy('createdAt', 'desc')
+      );
+
+      const querySnapshot = await getDocs(q);
+      const orders: Order[] = [];
+
+      querySnapshot.forEach((doc) => {
+        const data = doc.data();
+        orders.push({
+          id: doc.id,
+          orderNumber: data['orderNumber'],
+          date: data['createdAt'] instanceof Timestamp 
+            ? data['createdAt'].toDate() 
+            : new Date(data['createdAt']),
+          status: data['status'] || 'pending',
+          total: data['total'] || 0,
+          items: data['items'] || [],
+          shippingAddress: data['shippingAddress'],
+          trackingNumber: data['trackingNumber'],
+          itemCount: data['itemCount'],
+          currency: data['currency'] || 'USD',
+        });
+      });
+
+      this.orders.set(orders);
     } catch (error) {
       console.error('Error loading orders:', error);
-      this.errorMessage = 'client.errors.load_orders_failed';
+      this.errorMessage.set('client.errors.load_orders_failed');
     } finally {
-      this.isLoading = false;
+      this.isLoading.set(false);
     }
   }
 
   get filteredOrders(): Order[] {
+    const ordersList = this.orders();
     if (this.selectedFilter === 'all') {
-      return this.orders;
+      return ordersList;
     }
-    return this.orders.filter(order => order.status === this.selectedFilter);
+    return ordersList.filter(order => order.status === this.selectedFilter);
   }
 
   setFilter(filter: 'all' | 'pending' | 'processing' | 'shipped' | 'delivered' | 'cancelled') {
@@ -94,73 +132,106 @@ export class OrdersPageComponent implements OnInit {
     }
   }
 
-  // Mock data for demonstration
-  private getMockOrders(): Order[] {
-    return [
-      {
-        id: '1',
-        orderNumber: 'TS-2024-001',
-        date: new Date('2024-01-15'),
-        status: 'delivered',
-        total: 2450.00,
-        items: [
-          {
-            productId: 'p1',
-            productName: 'Arctic White 20mm',
-            quantity: 10,
-            price: 245.00,
-            image: '/assets/productos/20mm/arctic-white.jpg'
-          }
-        ],
-        shippingAddress: 'Calle Principal 123, Madrid, Spain',
-        trackingNumber: 'TRK123456789'
-      },
-      {
-        id: '2',
-        orderNumber: 'TS-2024-002',
-        date: new Date('2024-01-20'),
-        status: 'shipped',
-        total: 1890.00,
-        items: [
-          {
-            productId: 'p2',
-            productName: 'Carrara Marble 15mm',
-            quantity: 15,
-            price: 126.00
-          }
-        ],
-        trackingNumber: 'TRK987654321'
-      },
-      {
-        id: '3',
-        orderNumber: 'TS-2024-003',
-        date: new Date('2024-01-25'),
-        status: 'processing',
-        total: 3200.00,
-        items: [
-          {
-            productId: 'p3',
-            productName: 'Concrete Grey 12mm',
-            quantity: 20,
-            price: 160.00
-          }
-        ]
-      },
-      {
-        id: '4',
-        orderNumber: 'TS-2024-004',
-        date: new Date('2024-01-28'),
-        status: 'pending',
-        total: 4500.00,
-        items: [
-          {
-            productId: 'p4',
-            productName: 'Black Granite 20mm',
-            quantity: 12,
-            price: 375.00
-          }
-        ]
+  viewOrderDetails(orderId: string) {
+    // Navigate to order details (you can create this page later)
+    this.router.navigate(['/client/orders', orderId]);
+  }
+
+  trackShipment(trackingNumber?: string) {
+    if (!trackingNumber) {
+      alert('Tracking information is not available yet.');
+      return;
+    }
+    // Open tracking page (you can customize this URL based on your carrier)
+    window.open(`https://www.google.com/search?q=track+package+${trackingNumber}`, '_blank');
+  }
+
+  downloadInvoice(orderId?: string, orderNumber?: string) {
+    console.log('[downloadInvoice] Called with:', { orderId, orderNumber });
+    
+    if (!orderId) {
+      console.error('[downloadInvoice] Order ID not found');
+      alert('Order ID not found.');
+      return;
+    }
+    
+    try {
+      // Find the order from the orders list
+      const order = this.orders().find(o => o.id === orderId);
+      
+      if (!order) {
+        console.error('[downloadInvoice] Order not found in list');
+        alert('Order not found. Please try again.');
+        return;
       }
-    ];
+      
+      // Generate and download the PDF invoice
+      console.log(`[downloadInvoice] Generating invoice for order ${order.orderNumber}`);
+      this.invoiceService.generateInvoice(order);
+      
+    } catch (error) {
+      console.error('[downloadInvoice] Error generating invoice:', error);
+      alert('Failed to generate invoice. Please try again or contact support.');
+    }
+  }
+
+  async reorder(order: Order) {
+    try {
+      // TODO: Add items to cart and navigate to checkout
+      console.log('Reordering:', order);
+      alert(`Reordering ${order.itemCount} items from order ${order.orderNumber}`);
+      // this.router.navigate(['/cart']);
+    } catch (error) {
+      console.error('Error reordering:', error);
+      alert('Failed to reorder. Please try again.');
+    }
+  }
+
+  async cancelOrder(orderId?: string, orderNumber?: string) {
+    if (!orderId) {
+      alert('Order ID not found.');
+      return;
+    }
+
+    const confirmed = confirm(
+      `Are you sure you want to cancel order #${orderNumber || orderId}?\n\n` +
+      `This action cannot be undone. If payment was processed, a refund will be issued.`
+    );
+    if (!confirmed) return;
+
+    try {
+      this.isLoading.set(true);
+      
+      // Update order status to cancelled in Firestore
+      const orderRef = doc(this.firestore, `orders/${orderId}`);
+      await updateDoc(orderRef, {
+        status: 'cancelled',
+        cancelledAt: new Date(),
+        updatedAt: new Date()
+      });
+
+      // Reload orders to reflect the change
+      await this.loadOrders();
+      
+      console.log(`[cancelOrder] Order ${orderNumber} cancelled successfully`);
+      alert(`Order #${orderNumber || orderId} has been cancelled successfully.`);
+      
+    } catch (error: any) {
+      console.error('Error cancelling order:', error);
+      this.errorMessage.set('client.errors.cancel_order_failed');
+      alert('Failed to cancel order. Please contact support.');
+    } finally {
+      this.isLoading.set(false);
+    }
+  }
+
+  leaveReview(orderId?: string) {
+    if (!orderId) {
+      alert('Order ID not found.');
+      return;
+    }
+    // TODO: Navigate to review page or open modal
+    console.log(`Leaving review for order ${orderId}`);
+    alert('Product review feature will be available soon!');
   }
 }
