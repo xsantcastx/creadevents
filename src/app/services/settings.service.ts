@@ -1,5 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { Firestore, doc, getDoc, setDoc } from '@angular/fire/firestore';
+import { Auth } from '@angular/fire/auth';
 import { ReplaySubject } from 'rxjs';
 
 export interface AppSettings {
@@ -92,12 +93,20 @@ export interface AppSettings {
   stockReserveTime: number;
 }
 
+// Sensitive fields that should never be sent to frontend
+const SENSITIVE_FIELDS: (keyof AppSettings)[] = [
+  'stripeSecretKey',
+  'emailApiKey',
+];
+
 @Injectable({
   providedIn: 'root'
 })
 export class SettingsService {
   private firestore = inject(Firestore);
-  private readonly SETTINGS_DOC_ID = 'app-settings';
+  private auth = inject(Auth);
+  private readonly SETTINGS_DOC_ID = 'app';
+  private readonly PUBLIC_SETTINGS_DOC_ID = 'public';
   private settingsCache: AppSettings | null = null;
   private settingsPromise: Promise<AppSettings> | null = null;
   private settingsSubject = new ReplaySubject<AppSettings>(1);
@@ -132,12 +141,25 @@ export class SettingsService {
 
   private async fetchSettings(): Promise<AppSettings> {
     try {
-      const docRef = doc(this.firestore, 'settings', this.SETTINGS_DOC_ID);
+      // Check if user is admin (has access to full settings)
+      const isAdmin = await this.isUserAdmin();
+      const docId = isAdmin ? this.SETTINGS_DOC_ID : this.PUBLIC_SETTINGS_DOC_ID;
+      
+      const docRef = doc(this.firestore, 'settings', docId);
       const docSnap = await getDoc(docRef);
       const defaults = this.getDefaultSettings();
       
       if (docSnap.exists()) {
-        return { ...defaults, ...docSnap.data() } as AppSettings;
+        const settings = { ...defaults, ...docSnap.data() } as AppSettings;
+        
+        // For non-admins, ensure sensitive fields are empty
+        if (!isAdmin) {
+          SENSITIVE_FIELDS.forEach(field => {
+            (settings[field] as any) = '';
+          });
+        }
+        
+        return settings;
       }
       
       // Return default settings if none exist
@@ -149,14 +171,43 @@ export class SettingsService {
   }
 
   /**
+   * Check if current user is admin
+   */
+  private async isUserAdmin(): Promise<boolean> {
+    const user = this.auth.currentUser;
+    if (!user) return false;
+    
+    try {
+      const userDoc = await getDoc(doc(this.firestore, 'users', user.uid));
+      return userDoc.exists() && userDoc.data()?.['role'] === 'admin';
+    } catch {
+      return false;
+    }
+  }
+
+  /**
    * Save application settings to Firestore
+   * Admin-only: Saves full settings to 'app' doc and public copy to 'public' doc
    */
   async saveSettings(settings: AppSettings): Promise<void> {
     try {
-      const docRef = doc(this.firestore, 'settings', this.SETTINGS_DOC_ID);
-      await setDoc(docRef, settings, { merge: true });
+      // Save full settings (admin only)
+      const adminDocRef = doc(this.firestore, 'settings', this.SETTINGS_DOC_ID);
+      await setDoc(adminDocRef, settings, { merge: true });
+      
+      // Create public copy without sensitive fields
+      const publicSettings = { ...settings };
+      SENSITIVE_FIELDS.forEach(field => {
+        delete (publicSettings as any)[field];
+      });
+      
+      const publicDocRef = doc(this.firestore, 'settings', this.PUBLIC_SETTINGS_DOC_ID);
+      await setDoc(publicDocRef, publicSettings, { merge: true });
+      
       this.settingsCache = settings;
       this.settingsSubject.next(settings);
+      
+      console.log('✅ Settings saved: Full settings to admin doc, public settings to public doc');
     } catch (error) {
       console.error('Error saving settings:', error);
       throw error;

@@ -153,10 +153,17 @@ service cloud.firestore {
       allow write: if isAdmin();
     }
 
-    // Settings - Public read, Admin write
-    match /settings/{settingId} {
-      allow read: if true;
+    // Settings
+    match /settings/app {
+      // Admins can read full settings (including API keys)
+      allow read: if isAdmin();
       allow write: if isAdmin();
+    }
+    
+    // Public settings (non-sensitive copy for frontend)
+    match /settings/public {
+      allow read: if true;  // Anyone can read public settings
+      allow write: if false; // Nobody can write (managed by Cloud Function)
     }
 
     // Mail collection for contact form (Brevo integration)
