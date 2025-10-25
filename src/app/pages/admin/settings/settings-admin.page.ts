@@ -429,4 +429,23 @@ export class SettingsAdminComponent extends LoadingComponentBase implements OnIn
     }
     return 'text';
   }
+
+  /**
+   * Get display value for sensitive fields
+   * Only shows last 8 characters when revealed
+   */
+  getDisplayValue(setting: Setting): string {
+    if (!setting.sensitive || !setting.value) {
+      return setting.value || '';
+    }
+
+    // If showing value and it's sensitive, only show last 8 characters
+    if (setting.showValue && typeof setting.value === 'string' && setting.value.length > 8) {
+      const lastChars = setting.value.slice(-8);
+      const maskedLength = setting.value.length - 8;
+      return '•'.repeat(maskedLength) + lastChars;
+    }
+
+    return setting.value;
+  }
 }

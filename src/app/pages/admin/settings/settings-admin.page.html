@@ -94,13 +94,16 @@
                   @case ('text') {
                     <input
                       [type]="getInputType(setting)"
-                      [(ngModel)]="setting.value"
+                      [value]="setting.sensitive && setting.showValue ? getDisplayValue(setting) : setting.value"
+                      (input)="setting.sensitive && setting.showValue ? null : setting.value = $any($event.target).value"
+                      [readonly]="setting.sensitive && setting.showValue"
                       [ngModelOptions]="{ standalone: true }"
                       [attr.id]="getFieldId(section.title, setting.key)"
                       [attr.name]="getFieldId(section.title, setting.key)"
                       [disabled]="isDisabled(setting)"
                       [placeholder]="setting.placeholder || ''"
-                      class="w-full px-4 py-2 bg-gray-900/50 border border-white/10 rounded-lg text-white placeholder-white/60 focus:border-bitcoin-orange focus:ring-1 focus:ring-bitcoin-orange transition-all disabled:opacity-60 disabled:cursor-not-allowed">
+                      class="w-full px-4 py-2 bg-gray-900/50 border border-white/10 rounded-lg text-white placeholder-white/60 focus:border-bitcoin-orange focus:ring-1 focus:ring-bitcoin-orange transition-all disabled:opacity-60 disabled:cursor-not-allowed"
+                      [class.cursor-default]="setting.sensitive && setting.showValue">
                   }
                   @case ('textarea') {
                     <textarea
