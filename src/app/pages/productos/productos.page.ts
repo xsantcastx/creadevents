@@ -9,6 +9,8 @@ import { CategoryService } from '../../services/category.service';
 import { ModelService } from '../../services/model.service';
 import { TagService } from '../../services/tag.service';
 import { CartService } from '../../services/cart.service';
+import { SettingsService } from '../../services/settings.service';
+import { MetaService } from '../../services/meta.service';
 import { Product } from '../../models/product';
 import { Category, Model, Tag } from '../../models/catalog';
 import { Media } from '../../models/media';
@@ -30,6 +32,8 @@ export class ProductosPageComponent extends LoadingComponentBase implements OnIn
   private modelService = inject(ModelService);
   private tagService = inject(TagService);
   private cartService = inject(CartService);
+  private settingsService = inject(SettingsService);
+  private metaService = inject(MetaService);
   
   // Breadcrumbs for navigation
   breadcrumbs: Breadcrumb[] = [
@@ -98,6 +102,15 @@ export class ProductosPageComponent extends LoadingComponentBase implements OnIn
 
   private async loadProducts() {
     await this.withLoading(async () => {
+      // Set page meta tags from settings
+      this.metaService.setPageMeta({
+        title: 'NAV.PRODUCTS',
+        description: 'PRODUCTS.DESCRIPTION'
+      });
+
+      // Get settings for inventory configuration
+      const settings = await this.settingsService.getSettings();
+      
       // Get all published products from Firestore - use promise instead of subscribe
       const products = await new Promise<Product[]>((resolve, reject) => {
         this.productsService.getAllProducts().subscribe({
@@ -109,7 +122,17 @@ export class ProductosPageComponent extends LoadingComponentBase implements OnIn
       console.log('📦 All products loaded:', products.length, products);
       
       // Filter only published products
-      const publishedProducts = products.filter(p => p.status === 'published');
+      let publishedProducts = products.filter(p => p.status === 'published');
+      
+      // Filter out-of-stock products if hideOutOfStock is enabled
+      if (settings.hideOutOfStock) {
+        publishedProducts = publishedProducts.filter(p => {
+          const stock = p.stock || 0;
+          return stock > 0;
+        });
+        console.log(`🚫 Hiding out-of-stock products (hideOutOfStock=${settings.hideOutOfStock}):`, publishedProducts.length);
+      }
+      
       console.log('✅ Published products:', publishedProducts.length, publishedProducts);
       
       // Load cover images from media

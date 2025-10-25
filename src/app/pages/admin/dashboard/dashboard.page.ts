@@ -23,6 +23,8 @@ export class AdminDashboardComponent extends LoadingComponentBase implements OnI
   private router = inject(Router);
   private dashboardService = inject(AdminDashboardService);
 
+  private currencyFormatterCache = new Map<string, Intl.NumberFormat>();
+
   userProfile: UserProfile | null = null;
   stats: AdminDashboardSnapshot | null = null;
 
@@ -80,5 +82,25 @@ export class AdminDashboardComponent extends LoadingComponentBase implements OnI
       user: 'bg-bitcoin-orange/20 text-bitcoin-orange border border-bitcoin-orange/30'
     };
     return colors[type];
+  }
+
+  formatCurrency(amount: number | null | undefined): string {
+    if (amount === null || amount === undefined) {
+      return '--';
+    }
+
+    const currencyCode = this.stats?.currencyCode || 'USD';
+    if (!this.currencyFormatterCache.has(currencyCode)) {
+      this.currencyFormatterCache.set(
+        currencyCode,
+        new Intl.NumberFormat(undefined, {
+          style: 'currency',
+          currency: currencyCode,
+          maximumFractionDigits: 2
+        })
+      );
+    }
+
+    return this.currencyFormatterCache.get(currencyCode)!.format(amount);
   }
 }

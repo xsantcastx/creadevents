@@ -2,7 +2,7 @@
   "home": {
     "hero": {
       "title": "Mine Your Future",
-      "subtitle": "💠 Where crypto tech becomes lifestyle.\nExplore mining gear, secure storage, and gadgets that show your passion for the decentralized future.\n🔥 Innovation, security, and design — without limits.",
+      "subtitle": "\u00f0\u0178\u2019\u00a0 Where crypto tech becomes lifestyle.\nExplore mining gear, secure storage, and gadgets that show your passion for the decentralized future.\n\u00f0\u0178\u201d\u00a5 Innovation, security, and design \u00e2\u20ac\u201d without limits.",
       "description": "Join the revolution. Maximize your profits with cutting-edge ASIC miners engineered for peak performance and unmatched efficiency.",
       "cta_primary": "Explore Miners",
       "cta_secondary": "Request Quote"
@@ -19,7 +19,7 @@
     "gallery_preview": {
       "title": "Mining Farm Gallery",
       "subtitle": "Explore our professional mining installations and setups",
-      "view_full": "View Full Gallery →"
+      "view_full": "View Full Gallery \u00e2\u2020\u2019"
     },
     "why_choose": {
       "title": "Why Choose TheLuxMining?",
@@ -281,7 +281,16 @@
     "message_optional": "Additional message (optional)",
     "send_selection": "Send selection by email",
     "sending": "Sending...",
-    "required_fields_note": "Fields marked with * are required"
+    "required_fields_note": "Fields marked with * are required",
+    "shipping": {
+      "flat_rate": "Flat rate shipping",
+      "estimate_default": "Ships in 3-5 business days"
+    },
+    "summary": {
+      "shipping_dynamic": "Shipping & taxes calculated at checkout",
+      "shipping_flat": "Shipping calculated automatically. {{estimate}}",
+      "free_shipping": "Free shipping"
+    }
   },
   "notfound": {
     "title": "Page Not Found",
@@ -470,7 +479,6 @@
       "seeding": "Seeding...",
       "categories": "Categories",
       "categories_count": "3 grosor types",
-            "subtitle": "Comprehensive product catalog and ordering system for Bitcoin mining equipment.",
       "categories_list": "Mining Hardware Categories",
       "email_orders": "Email Orders",
       "models": "Models",
@@ -485,6 +493,145 @@
       "console_output": "Console Output",
       "clear": "Clear",
       "back_to_products": "Back to Products Admin"
-    }
+    },
+    "analytics": {
+      "title": "Analytics Dashboard",
+      "subtitle": "Monitor conversion trends, customer activity, and catalog freshness",
+      "eyebrow": "Performance Overview",
+      "period": {
+        "today": "Today",
+        "week": "Last 7 Days",
+        "month": "This Month",
+        "year": "This Year"
+      },
+      "metrics": {
+        "total_orders": "Orders",
+        "revenue": "Revenue",
+        "average_order_value": "Avg. Order Value",
+        "new_customers": "New Customers",
+        "products_updated": "Products Updated",
+        "gallery_uploads": "Gallery Uploads"
+      },
+      "recent_activity": "Latest Activity",
+      "showing_period": "Showing {{period}} insights",
+      "no_activity": "No activity recorded for this period",
+      "future_title": "Deeper insights coming soon",
+      "future_description": "We are building interactive dashboards with revenue trends, product performance, geographical demand, and conversion funnels. Here is how the roadmap is unfolding.",
+      "future_status": {
+        "in_discovery": "Discovery",
+        "in_design": "In design",
+        "in_development": "In development",
+        "internal_beta": "Internal beta"
+      },
+      "future_items": {
+        "charts": {
+          "title": "Interactive revenue charts",
+          "description": "Real-time revenue, profit, and ROI dashboards with miner-level filters and exportable CSV snapshots.",
+          "status": "admin.analytics.future_status.internal_beta"
+        },
+        "top_products": {
+          "title": "Top performing models",
+          "description": "Segmented performance reports to surface high-converting miners, seasonal demand shifts, and attach rates.",
+          "status": "admin.analytics.future_status.in_development"
+        },
+        "geo": {
+          "title": "Geographic breakdowns",
+          "description": "Heatmaps of quote requests and conversions to pinpoint expansion opportunities across LATAM, EU, and APAC.",
+          "status": "admin.analytics.future_status.in_design"
+        },
+        "funnels": {
+          "title": "Conversion funnels",
+          "description": "Step-by-step tracking from landing view to paid order, highlighting drop-off points and messaging gaps.",
+          "status": "admin.analytics.future_status.in_discovery"
+        }
+      }
+    },
+    "models": {
+      "title": "Model Library",
+      "subtitle": "Manage product models, defaults, and catalog organization",
+      "actions": {
+        "add": "Add Model",
+        "edit": "Edit",
+        "delete": "Delete",
+        "create": "Create Model",
+        "update": "Update Model",
+        "cancel": "Cancel",
+        "create_first": "Create First Model"
+      },
+      "filters": {
+        "search_placeholder": "Search models...",
+        "status_label": "Status",
+        "status_all": "All",
+        "status_active": "Active",
+        "status_inactive": "Inactive"
+      },
+      "table": {
+        "name": "Name",
+        "slug": "Slug",
+        "category": "Category",
+        "status": "Status",
+        "actions": "Actions",
+        "active": "Active",
+        "inactive": "Inactive",
+        "unassigned": "Unassigned"
+      },
+      "empty": "No models found for your filters",
+      "messages": {
+        "name_required": "Name is required",
+        "slug_exists": "Slug \"{{slug}}\" is already in use",
+        "created": "Model created successfully",
+        "updated": "Model updated successfully",
+        "deleted": "Model deleted successfully",
+        "save_failed": "Could not save the model. Please try again.",
+        "delete_failed": "Could not delete the model. Please try again.",
+        "confirm_delete": "Delete model \"{{name}}\"? This action cannot be undone."
+      },
+      "modal": {
+        "new_title": "New Model",
+        "edit_title": "Edit Model"
+      },
+      "fields": {
+        "name": "Model name",
+        "name_placeholder": "Enter model name",
+        "slug": "Slug",
+        "slug_help": "Lowercase URL-friendly identifier (auto-generated from the name).",
+        "category": "Category",
+        "texture_hints": "Texture hints",
+        "texture_hints_placeholder": "e.g. satin finish\npolished stone",
+        "texture_hints_help": "One hint per line. Example finishes, texture cues, or collection aliases.",
+        "default_tags": "Default tags",
+        "default_tags_placeholder": "e.g. premium, flagship, hashpower",
+        "default_tags_help": "Comma separated tags applied by default to new products in this model.",
+        "active": "Active"
+      }
+    },
+    "settings": {
+      "title": "Settings & Configuration",
+      "subtitle": "Manage site settings, integrations, and configurations",
+      "actions": {
+        "save": "Save All Settings",
+        "saving": "Saving...",
+        "lock": "Lock",
+        "unlock": "Unlock",
+        "show": "Show",
+        "hide": "Hide"
+      },
+      "states": {
+        "enabled": "Enabled",
+        "disabled": "Disabled"
+      },
+      "feedback": {
+        "success": "Settings saved successfully!",
+        "error_details": "Failed to save settings: {{message}}"
+      }
+    },
+    "total_revenue": "Total Revenue"
+  },
+  "maintenance": {
+    "title": "We'll be right back",
+    "support": "Need immediate help? Contact our team:",
+    "email_label": "Email:",
+    "phone_label": "Call us:",
+    "admin_link": "Admin login"
   }
 }

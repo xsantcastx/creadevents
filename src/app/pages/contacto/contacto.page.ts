@@ -5,6 +5,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { EmailService } from '../../services/email.service';
 import { AnalyticsService } from '../../services/analytics.service';
 import { PageHeaderComponent, Breadcrumb } from '../../shared/components/page-header/page-header.component';
+import { MetaService } from '../../services/meta.service';
 
 interface ContactFormData {
   nombre: string;
@@ -25,6 +26,7 @@ interface ContactFormData {
 export class ContactoPageComponent {
   private platformId = inject(PLATFORM_ID);
   private analyticsService = inject(AnalyticsService);
+  private metaService = inject(MetaService);
   
   // Breadcrumbs for navigation
   breadcrumbs: Breadcrumb[] = [
@@ -42,6 +44,12 @@ export class ContactoPageComponent {
     private fb: FormBuilder,
     private emailService: EmailService
   ) {
+    // Set page meta tags from settings
+    this.metaService.setPageMeta({
+      title: 'CONTACT.TITLE',
+      description: 'CONTACT.DESCRIPTION'
+    });
+
     this.contactForm = this.fb.group({
       nombre: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(100)]],
       email: ['', [Validators.required, Validators.email, Validators.maxLength(150)]],

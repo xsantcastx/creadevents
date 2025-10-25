@@ -8,6 +8,7 @@ import { Tag } from '../../models/catalog';
 import { TagService } from '../../services/tag.service';
 import { PageHeaderComponent, Breadcrumb } from '../../shared/components/page-header/page-header.component';
 import { LoadingComponentBase } from '../../core/classes/loading-component.base';
+import { MetaService } from '../../services/meta.service';
 
 @Component({
   selector: 'app-galeria-page',
@@ -27,6 +28,7 @@ export class GaleriaPageComponent extends LoadingComponentBase implements OnInit
   private platformId = inject(PLATFORM_ID);
   private isBrowser = isPlatformBrowser(this.platformId);
   private tagService = inject(TagService);
+  private metaService = inject(MetaService);
 
   // Breadcrumbs for navigation
   breadcrumbs: Breadcrumb[] = [
@@ -41,6 +43,12 @@ export class GaleriaPageComponent extends LoadingComponentBase implements OnInit
   }
 
   ngOnInit() {
+    // Set page meta tags from settings
+    this.metaService.setPageMeta({
+      title: 'GALLERY.TITLE',
+      description: 'GALLERY.DESCRIPTION'
+    });
+
     // Load gallery from Firestore only
     if (this.isBrowser) {
       this.loadTagsAndGallery();

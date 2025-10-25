@@ -2,33 +2,50 @@ import { Injectable, inject } from '@angular/core';
 import { loadStripe, Stripe, StripeElements, StripeCardElement, PaymentIntent } from '@stripe/stripe-js';
 import { environment } from '../../environments/environment';
 import { Observable, from, BehaviorSubject } from 'rxjs';
+import { SettingsService } from './settings.service';
 
 /**
  * Service for Stripe payment processing
  * Handles card tokenization, payment confirmation, and 3D Secure authentication
+ * Now reads Stripe publishable key from Settings instead of environment
  */
 @Injectable({
   providedIn: 'root'
 })
 export class StripeService {
-  private stripePromise: Promise<Stripe | null>;
+  private settingsService = inject(SettingsService);
+  private stripePromise: Promise<Stripe | null> | null = null;
   private stripe$ = new BehaviorSubject<Stripe | null>(null);
   
   constructor() {
-    // Load Stripe.js asynchronously
-    this.stripePromise = loadStripe(environment.stripe.publishableKey);
-    this.initializeStripe();
+    // Initialize Stripe with settings
+    this.initializeStripeFromSettings();
   }
 
   /**
-   * Initialize Stripe instance
+   * Initialize Stripe with publishable key from settings
    */
-  private async initializeStripe() {
+  private async initializeStripeFromSettings() {
     try {
+      const settings = await this.settingsService.getSettings();
+      const publishableKey = settings.stripePublicKey || environment.stripe.publishableKey;
+      
+      if (!publishableKey) {
+        console.error('No Stripe publishable key found in settings or environment');
+        return;
+      }
+
+      console.log('Initializing Stripe with key from:', settings.stripePublicKey ? 'Settings' : 'Environment');
+      
+      this.stripePromise = loadStripe(publishableKey);
       const stripe = await this.stripePromise;
       this.stripe$.next(stripe);
     } catch (error) {
-      console.error('Failed to load Stripe:', error);
+      console.error('Failed to initialize Stripe:', error);
+      // Fallback to environment key
+      this.stripePromise = loadStripe(environment.stripe.publishableKey);
+      const stripe = await this.stripePromise;
+      this.stripe$.next(stripe);
     }
   }
 
