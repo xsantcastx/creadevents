@@ -33,7 +33,7 @@ export class EmailService {
       return { success: true, disabled: true };
     }
     
-    const recipientEmail = settings.contactEmail || 'xsantcastx@xsantcastx.com';
+    const recipientEmail = settings.contactEmail || 'Luxmining1@gmail.com';
     console.log(`[EmailService] Sending cart email to: ${recipientEmail}`);
     
     const rows = items.map((i, idx) =>
@@ -93,7 +93,7 @@ export class EmailService {
 
     // Get settings
     const settings = await this.settingsService.getSettings();
-    const recipientEmail = settings.contactEmail || 'xsantcastx@xsantcastx.com';
+    const recipientEmail = settings.contactEmail || 'Luxmining1@gmail.com';
     console.log(`[EmailService] Sending contact form to: ${recipientEmail}`);
 
     const html = `

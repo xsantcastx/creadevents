@@ -20,7 +20,6 @@ interface CartViewModel {
       name: string;
       imageUrl?: string;
       sku?: string;
-      grosor?: string;
       price: number;
     };
     qty: number;
@@ -100,7 +99,6 @@ export class CartPage implements OnInit {
           name: item.name,
           imageUrl: item.imageUrl,
           sku: item.sku,
-          grosor: item.grosor,
           price: item.unitPrice
         },
         qty: item.qty

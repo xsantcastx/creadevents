@@ -389,8 +389,7 @@ export class CartService {
         currency: 'USD',
         priceSnapshotAtAdd: product.price || 0,
         ...(product.imageUrl && { imageUrl: product.imageUrl }),
-        ...(product.sku && { sku: product.sku }),
-        ...(product.grosor && { grosor: product.grosor })
+        ...(product.sku && { sku: product.sku })
       };
       console.log('[CartService] Created new cart item:', newItem);
       currentCart.items.push(newItem);
@@ -521,8 +520,7 @@ export class CartService {
           currency: 'USD',
           priceSnapshotAtAdd: legacyItem.product.price || 0,
           imageUrl: legacyItem.product.imageUrl,
-          sku: legacyItem.product.sku,
-          grosor: legacyItem.product.grosor
+          sku: legacyItem.product.sku
         };
         currentCart.items.push(newItem);
       }

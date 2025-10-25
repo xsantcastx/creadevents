@@ -47,7 +47,7 @@
       "queryScope": "COLLECTION",
       "fields": [
         {
-          "fieldPath": "grosor",
+          "fieldPath": "status",
           "order": "ASCENDING"
         },
         {

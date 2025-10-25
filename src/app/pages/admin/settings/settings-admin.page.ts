@@ -6,6 +6,7 @@ import { AdminQuickActionsComponent } from '../../../shared/components/admin-qui
 import { ImagePickerComponent } from '../../../shared/components/image-picker/image-picker.component';
 import { LoadingComponentBase } from '../../../core/classes/loading-component.base';
 import { SettingsService, AppSettings } from '../../../services/settings.service';
+import { StatsService, SiteStats } from '../../../services/stats.service';
 
 interface SettingSection {
   title: string;
@@ -41,6 +42,7 @@ type MessageType = 'success' | 'error' | 'info';
 })
 export class SettingsAdminComponent extends LoadingComponentBase implements OnInit {
   private settingsService = inject(SettingsService);
+  private statsService = inject(StatsService);
   
   sections: SettingSection[] = [];
   isSaving = false;
@@ -48,11 +50,17 @@ export class SettingsAdminComponent extends LoadingComponentBase implements OnIn
   messageType: 'success' | 'error' | 'info' = 'info';
   messageParams: Record<string, unknown> = {};
   
+  // Stats management
+  isUpdatingStats = false;
+  currentStats: SiteStats | null = null;
+  statsLastUpdated: string | null = null;
+  
   private currentSettings: AppSettings | null = null;
   private messageTimeout: any = null;
 
   async ngOnInit() {
     await this.loadSettings();
+    await this.loadCurrentStats();
   }
 
   async loadSettings() {
@@ -60,6 +68,40 @@ export class SettingsAdminComponent extends LoadingComponentBase implements OnIn
       this.currentSettings = await this.settingsService.getSettings();
       this.buildSections();
     });
+  }
+
+  async loadCurrentStats() {
+    this.statsService.getStats().subscribe(stats => {
+      this.currentStats = stats;
+      // Try to get last updated time from settings/public
+      this.loadStatsTimestamp();
+    });
+  }
+
+  private async loadStatsTimestamp() {
+    try {
+      const settings = await this.settingsService.getPublicSettings();
+      if (settings && settings['stats'] && settings['stats']['lastUpdated']) {
+        const date = new Date(settings['stats']['lastUpdated']);
+        this.statsLastUpdated = date.toLocaleString();
+      }
+    } catch (error) {
+      console.error('Error loading stats timestamp:', error);
+    }
+  }
+
+  async updateSiteStats() {
+    this.isUpdatingStats = true;
+    try {
+      await this.statsService.updatePublicStats();
+      this.showMessage('Stats updated successfully!', 'success');
+      await this.loadCurrentStats();
+    } catch (error) {
+      console.error('Error updating stats:', error);
+      this.showMessage('Error updating stats', 'error');
+    } finally {
+      this.isUpdatingStats = false;
+    }
   }
   
   private buildSections() {

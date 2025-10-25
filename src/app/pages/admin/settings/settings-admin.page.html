@@ -173,6 +173,56 @@
       }
     </div>
 
+    <!-- Site Statistics Management -->
+    <div class="mb-8 p-6 bg-bitcoin-dark/30 rounded-xl border border-bitcoin-orange/20">
+      <div class="flex items-center justify-between mb-4">
+        <div>
+          <h3 class="text-lg font-semibold bitcoin-gradient-text flex items-center gap-2">
+            📊 Site Statistics
+          </h3>
+          <p class="text-sm text-bitcoin-gray mt-1">Update homepage statistics display</p>
+        </div>
+        <button
+          (click)="updateSiteStats()"
+          [disabled]="isUpdatingStats"
+          class="px-6 py-2 bg-bitcoin-gold/20 text-bitcoin-gold rounded-lg font-semibold hover:bg-bitcoin-gold/30 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2">
+          @if (isUpdatingStats) {
+            <svg class="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            Updating...
+          } @else {
+            🔄 Refresh Stats
+          }
+        </button>
+      </div>
+
+      @if (currentStats) {
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mt-4">
+          <div class="p-4 bg-bitcoin-dark/50 rounded-lg border border-bitcoin-orange/10">
+            <div class="text-sm text-bitcoin-gray mb-1">Total Sales</div>
+            <div class="text-2xl font-bold bitcoin-gradient-text">{{ currentStats.totalSales }}</div>
+          </div>
+          <div class="p-4 bg-bitcoin-dark/50 rounded-lg border border-bitcoin-orange/10">
+            <div class="text-sm text-bitcoin-gray mb-1">Customer Satisfaction</div>
+            <div class="text-2xl font-bold bitcoin-gradient-text">{{ currentStats.customerSatisfaction }}%</div>
+          </div>
+          <div class="p-4 bg-bitcoin-dark/50 rounded-lg border border-bitcoin-orange/10">
+            <div class="text-sm text-bitcoin-gray mb-1">Uptime</div>
+            <div class="text-2xl font-bold bitcoin-gradient-text">{{ currentStats.uptimeGuarantee }}%</div>
+          </div>
+          <div class="p-4 bg-bitcoin-dark/50 rounded-lg border border-bitcoin-orange/10">
+            <div class="text-sm text-bitcoin-gray mb-1">Years Experience</div>
+            <div class="text-2xl font-bold bitcoin-gradient-text">{{ currentStats.yearsExperience }}</div>
+          </div>
+        </div>
+        <div class="text-xs text-bitcoin-gray mt-3">
+          Last updated: {{ statsLastUpdated || 'Never' }}
+        </div>
+      }
+    </div>
+
     <!-- Save Button -->
     <div class="mt-8 flex justify-end">
       <button

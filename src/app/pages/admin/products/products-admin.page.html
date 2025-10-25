@@ -999,7 +999,7 @@
                 <app-gallery-uploader
                   [existingMediaIds]="galleryMediaIds"
                   [productSlug]="currentProductSlug"
-                  [productGrosor]="currentProductGrosor"
+                  [productCategorySlug]="currentProductCategorySlug"
                   [availableTags]="availableTagNames"
                   (mediaIdsChange)="onGalleryMediaIdsChange($event)"
                 ></app-gallery-uploader>
@@ -1084,7 +1084,7 @@
         @if (productToDelete) {
           <div class="mb-6 p-4 bg-bitcoin-dark/40 border border-bitcoin-gray/20 rounded-xl">
             <p class="text-sm font-medium text-white">{{ productToDelete.name }}</p>
-            <p class="text-xs text-bitcoin-gray mt-1">{{ productToDelete.size }} - {{ productToDelete.grosor }}</p>
+            <p class="text-xs text-bitcoin-gray mt-1">{{ productToDelete.size }}</p>
           </div>
         }
         <div class="flex gap-3">

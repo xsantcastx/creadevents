@@ -57,13 +57,12 @@ export class StorageService {
    * Upload product image
    * @param file - The image file
    * @param productSlug - The product slug for the path
-   * @param grosor - The thickness (12mm, 15mm, 20mm)
    * @returns Observable with upload progress
    */
-  uploadProductImage(file: File, productSlug: string, grosor: string): Observable<UploadProgress> {
+  uploadProductImage(file: File, productSlug: string): Observable<UploadProgress> {
     const timestamp = Date.now();
     const extension = file.name.split('.').pop();
-    const path = `products/${grosor}/${productSlug}-${timestamp}.${extension}`;
+    const path = `products/${productSlug}-${timestamp}.${extension}`;
     return this.uploadFile(file, path);
   }
 

@@ -186,6 +186,25 @@ export class SettingsService {
   }
 
   /**
+   * Get public settings document (includes stats)
+   */
+  async getPublicSettings(): Promise<any> {
+    try {
+      const docRef = doc(this.firestore, 'settings', this.PUBLIC_SETTINGS_DOC_ID);
+      const docSnap = await getDoc(docRef);
+      
+      if (docSnap.exists()) {
+        return docSnap.data();
+      }
+      
+      return null;
+    } catch (error) {
+      console.error('Error getting public settings:', error);
+      return null;
+    }
+  }
+
+  /**
    * Save application settings to Firestore
    * Admin-only: Saves full settings to 'app' doc and public copy to 'public' doc
    */
@@ -222,7 +241,7 @@ export class SettingsService {
       // General
       siteName: 'TheLuxMining',
       siteDescription: 'Premium Bitcoin mining equipment',
-      contactEmail: 'contact@theluxmining.com',
+      contactEmail: 'Luxmining1@gmail.com',
       contactPhone: '+1 (800) 555 0199',
       contactAddress: '100 Greyrock Pl F119\nStamford, CT 06901',
       maintenanceMode: false,

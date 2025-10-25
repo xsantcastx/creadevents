@@ -27,7 +27,7 @@ interface GalleryImagePreview {
 export class GalleryUploaderComponent implements OnInit {
   @Input() existingMediaIds: string[] = [];
   @Input() productSlug: string = '';
-  @Input() productGrosor: string = '';
+  @Input() productCategorySlug: string = '';
   @Input() availableTags: string[] = []; // Custom tags from parent component
   @Output() mediaIdsChange = new EventEmitter<string[]>();
 
@@ -214,12 +214,11 @@ export class GalleryUploaderComponent implements OnInit {
       const timestamp = Date.now();
       const filename = `${timestamp}_${preview.file.name}`;
       
-      // Upload to Storage (will go to productos/{grosor}/{slug}/ path)
+      // Upload to Storage (will go to productos/{slug}/gallery/ path)
       const downloadURL = await new Promise<string>((resolve, reject) => {
         this.storageService.uploadProductImage(
           preview.file,
-          `${this.productSlug}/gallery`,
-          this.productGrosor
+          `${this.productSlug}/gallery`
         ).subscribe({
           next: (progress) => {
             preview.uploadProgress = progress.progress;
@@ -232,7 +231,7 @@ export class GalleryUploaderComponent implements OnInit {
       });
 
       // Extract storage path from download URL
-      const storagePath = `productos/${this.productGrosor}/${this.productSlug}/gallery/${preview.file.name}`;
+      const storagePath = `productos/${this.productSlug}/gallery/${preview.file.name}`;
 
       // Create Media document
       const mediaInput: MediaCreateInput = {

@@ -96,6 +96,21 @@ export class ProductsService {
   }
 
   /**
+   * Get a single product by ID
+   */
+  getProduct(id: string): Observable<Product | null> {
+    const docRef = doc(this.firestore, `products/${id}`);
+    return from(getDoc(docRef)).pipe(
+      map(docSnap => {
+        if (docSnap.exists()) {
+          return { id: docSnap.id, ...docSnap.data() } as Product;
+        }
+        return null;
+      })
+    );
+  }
+
+  /**
    * Get a product by slug
    */
   getProductBySlug(slug: string): Observable<Product | null> {

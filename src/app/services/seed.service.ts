@@ -45,7 +45,6 @@ export class SeedService {
         icon: 'layers',
         defaultSpecOverrides: {
           thicknessMm: 12,
-          grosor: '12mm',
           size: '160×320cm'
         },
         active: true
@@ -57,7 +56,6 @@ export class SeedService {
         icon: 'layers',
         defaultSpecOverrides: {
           thicknessMm: 15,
-          grosor: '15mm',
           size: '160×320cm'
         },
         active: true
@@ -69,7 +67,6 @@ export class SeedService {
         icon: 'layers',
         defaultSpecOverrides: {
           thicknessMm: 20,
-          grosor: '20mm',
           size: '160×320cm'
         },
         active: true
