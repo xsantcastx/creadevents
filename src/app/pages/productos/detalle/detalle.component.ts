@@ -39,14 +39,12 @@ export class DetalleComponent implements OnInit {
   productosRelacionados: Product[] = [];
   coverImage: Media | undefined;
   galleryImages: Media[] = [];
-  categoryParam = '';
   loading = true;
   lightboxOpen = false;
   currentLightboxImage = '';
   currentLightboxAlt = '';
 
   async ngOnInit() {
-    this.categoryParam = this.route.snapshot.paramMap.get('category') || '';
     const slug = this.route.snapshot.paramMap.get('slug');
     
     if (slug) {
@@ -60,13 +58,12 @@ export class DetalleComponent implements OnInit {
     // Only load from service if in browser (not during SSR)
     if (isPlatformBrowser(this.platformId)) {
       try {
-        // Query product by slug and category
+        // Query product by slug
         const products = await firstValueFrom(this.productsService.getAllProducts());
         
-        // Find product matching slug and category, filter by published status
+        // Find product matching slug, filter by published status
         this.producto = products.find(p => 
-          p.slug === slug && 
-          p.grosor === this.categoryParam &&
+          p.slug === slug &&
           p.status === 'published'
         );
         
@@ -122,22 +119,20 @@ export class DetalleComponent implements OnInit {
   private async loadProductosRelacionados(todosLosProductos: Product[]) {
     if (!this.producto) return;
     
-    // Get other published products from the same thickness and category
+    // Get other published products from the same category
     let related = todosLosProductos
       .filter(p => 
         p.status === 'published' &&
-        p.grosor === this.producto!.grosor && 
         p.id !== this.producto!.id &&
         p.categoryId === this.producto!.categoryId
       )
       .slice(0, 3);
     
-    // If not enough from same category, fill with same thickness
+    // If not enough from same category, fill with any published products
     if (related.length < 3) {
       const additional = todosLosProductos
         .filter(p => 
           p.status === 'published' &&
-          p.grosor === this.producto!.grosor && 
           p.id !== this.producto!.id &&
           !related.find(r => r.id === p.id)
         )
@@ -186,11 +181,7 @@ export class DetalleComponent implements OnInit {
   }
 
   goBack() {
-    if (this.categoryParam) {
-      this.router.navigate(['/products', this.categoryParam]);
-    } else {
-      this.router.navigate(['/productos']);
-    }
+    this.router.navigate(['/productos']);
   }
 
   openLightbox(imageUrl?: string, altText?: string) {
@@ -209,7 +200,7 @@ export class DetalleComponent implements OnInit {
     if (!this.producto?.specs) return [];
     
     const knownKeys = [
-      'grosor', 'size', 'finish', 'thicknessMm', 'usage',
+      'size', 'finish', 'thicknessMm', 'usage',
       'hashRate', 'powerConsumption', 'efficiency', 'algorithm',
       'chipType', 'cooling', 'dimensions', 'weight', 'temperature',
       'network', 'voltage', 'warranty',

@@ -55,11 +55,8 @@
                   @if (product.dimensions || product.size) {
                     {{product.dimensions || product.size}}
                   }
-                  @if (product.thickness || product.grosor) {
-                    <span class="text-bitcoin-gold"> · {{product.thickness || product.grosor}}</span>
-                  }
                 </p>
-                <a [routerLink]="['/products', product.thickness || product.grosor, product.slug]" 
+                <a [routerLink]="['/products', product.slug]" 
                    class="text-bitcoin-gold hover:text-luxury-gold font-medium transition-colors">
                   View specs →
                 </a>

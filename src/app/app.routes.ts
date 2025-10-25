@@ -19,12 +19,7 @@ export const routes: Routes = [
     title: 'TheLuxMining | Mining Products'
   },
   {
-    path: 'products/:category',
-    loadComponent: () => import('./pages/productos/grosor/grosor.component').then(m => m.GrosorComponent),
-    title: 'TheLuxMining | Mining Hardware by Category'
-  },
-  {
-    path: 'products/:category/:slug',
+    path: 'products/:slug',
     loadComponent: () => import('./pages/productos/detalle/detalle.component').then(m => m.DetalleComponent),
     title: 'TheLuxMining | Product Details'
   },

@@ -40,7 +40,6 @@ export class ProductsService {
       const placeholders: Record<string, string> = {
         name: formData.name,
         model: model.name,
-        grosor: category.slug, // '12mm', '15mm', '20mm'
         size: category.defaultSpecOverrides?.size || '160×320cm',
         aplicaciones: formData.specs?.usage?.join(', ') || 'cocinas, baños, fachadas',
         // Add more placeholders as needed
@@ -97,47 +96,13 @@ export class ProductsService {
   }
 
   /**
-   * Get products by thickness
+   * Get a product by slug
    */
-  getProductsByGrosor(grosor: string): Observable<Product[]> {
-    const productsCol = collection(this.firestore, 'products');
-    const q = query(
-      productsCol, 
-      where('grosor', '==', grosor),
-      orderBy('name', 'asc')
-    );
-    return from(getDocs(q)).pipe(
-      map(snapshot => snapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data()
-      } as Product)))
-    );
-  }
-
-  /**
-   * Get a single product by ID
-   */
-  getProduct(id: string): Observable<Product | null> {
-    const docRef = doc(this.firestore, `products/${id}`);
-    return from(getDoc(docRef)).pipe(
-      map(docSnap => {
-        if (docSnap.exists()) {
-          return { id: docSnap.id, ...docSnap.data() } as Product;
-        }
-        return null;
-      })
-    );
-  }
-
-  /**
-   * Get a product by slug and thickness
-   */
-  getProductBySlug(slug: string, grosor: string): Observable<Product | null> {
+  getProductBySlug(slug: string): Observable<Product | null> {
     const productsCol = collection(this.firestore, 'products');
     const q = query(
       productsCol,
-      where('slug', '==', slug),
-      where('grosor', '==', grosor)
+      where('slug', '==', slug)
     );
     return from(getDocs(q)).pipe(
       map(snapshot => {
@@ -287,17 +252,15 @@ export class ProductsService {
   /**
    * Check if a slug already exists for a given thickness
    */
-  async slugExists(slug: string, grosor: string, excludeId?: string): Promise<boolean> {
+  async slugExists(slug: string, excludeId?: string): Promise<boolean> {
     try {
       console.log('🔎 slugExists called with:');
       console.log('  - slug:', slug);
-      console.log('  - grosor:', grosor);
       console.log('  - excludeId:', excludeId);
       const productsCol = collection(this.firestore, 'products');
       const q = query(
         productsCol,
-        where('slug', '==', slug),
-        where('grosor', '==', grosor)
+        where('slug', '==', slug)
       );
       const snapshot = await getDocs(q);
       

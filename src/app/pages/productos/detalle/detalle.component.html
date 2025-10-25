@@ -475,7 +475,7 @@
               @if (relacionado.price) {
                 <p class="text-lg font-semibold text-bitcoin-gold mb-4">{{relacionado.price | currency:'USD':'symbol':'1.2-2'}}</p>
               }
-              <a [routerLink]="['/products', relacionado.grosor, relacionado.slug]" 
+              <a [routerLink]="['/products', relacionado.slug]" 
                  class="text-bitcoin-orange hover:text-bitcoin-gold font-medium transition-colors">
                 View Details →
               </a>

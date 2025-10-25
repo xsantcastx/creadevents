@@ -4,7 +4,6 @@ export interface Product {
   id?: string;             // Firestore document ID
   name: string;            // "Saint Laurent"
   slug: string;            // "saint-laurent" (URL-friendly)
-  grosor: string;          // Category identifier (dynamic)
   size: string;            // e.g., "160×320cm"
   imageUrl: string;        // Main product image URL (legacy or computed from coverImage)
   description?: string;    // Product description
@@ -54,7 +53,6 @@ export interface CartState {
 }
 
 export interface ProductSpecs {
-  grosor?: string;  // Dynamic category identifier
   size?: string;
   finish?: string;
   thicknessMm?: number;
