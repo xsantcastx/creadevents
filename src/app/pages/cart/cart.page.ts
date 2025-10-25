@@ -19,7 +19,7 @@ interface CartViewModel {
       id: string;
       name: string;
       imageUrl?: string;
-      sku: string;
+      sku?: string;
       grosor?: string;
       price: number;
     };
