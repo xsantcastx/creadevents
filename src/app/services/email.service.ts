@@ -1,5 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { addDoc, collection, Firestore } from '@angular/fire/firestore';
+import { SettingsService } from './settings.service';
 
 export interface ContactFormData {
   nombre: string;
@@ -13,6 +14,7 @@ export interface ContactFormData {
 @Injectable({ providedIn: 'root' })
 export class EmailService {
   private db = inject(Firestore);
+  private settingsService = inject(SettingsService);
 
   async sendCartEmail(payload: { contact: any, items: any[] }) {
     const { contact, items } = payload;
@@ -21,6 +23,18 @@ export class EmailService {
     if (!contact?.name || !contact?.email || !items?.length) {
       throw new Error('Missing required fields: name, email, or items');
     }
+    
+    // Get settings
+    const settings = await this.settingsService.getSettings();
+    
+    // Check if order emails are enabled
+    if (!settings.orderEmailEnabled) {
+      console.log('[EmailService] Order emails are disabled in settings. Email not sent.');
+      return { success: true, disabled: true };
+    }
+    
+    const recipientEmail = settings.contactEmail || 'xsantcastx@xsantcastx.com';
+    console.log(`[EmailService] Sending cart email to: ${recipientEmail}`);
     
     const rows = items.map((i, idx) =>
       `<tr><td style="padding:6px;border:1px solid #eee">${idx+1}</td>
@@ -56,14 +70,14 @@ export class EmailService {
     try {
       // Write to Firestore - the Trigger Email extension will automatically send this
       const docRef = await addDoc(collection(this.db, 'mail'), {
-        to: ['xsantcastx@xsantcastx.com'], // Must match Firestore security rules
+        to: [recipientEmail], // Use recipient from settings
         message: { 
           subject: 'TheLuxMining · Selección de carrito', 
           html 
         }
       });
       
-      console.log('Email queued successfully with ID:', docRef.id);
+      console.log('Email queued successfully with ID:', docRef.id, 'to:', recipientEmail);
       return docRef;
     } catch (error) {
       console.error('Failed to queue email:', error);
@@ -76,6 +90,11 @@ export class EmailService {
     if (!formData?.nombre || !formData?.email || !formData?.mensaje) {
       throw new Error('Missing required fields: nombre, email, or mensaje');
     }
+
+    // Get settings
+    const settings = await this.settingsService.getSettings();
+    const recipientEmail = settings.contactEmail || 'xsantcastx@xsantcastx.com';
+    console.log(`[EmailService] Sending contact form to: ${recipientEmail}`);
 
     const html = `
       <div style="font-family:Inter,Segoe UI,Arial,sans-serif">
@@ -103,18 +122,39 @@ export class EmailService {
     try {
       // Write to Firestore - the Trigger Email extension will automatically send this
       const docRef = await addDoc(collection(this.db, 'mail'), {
-        to: ['xsantcastx@xsantcastx.com'], // Must match Firestore security rules
+        to: [recipientEmail], // Use recipient from settings
         message: { 
           subject: `TheLuxMining · Contacto de ${formData.nombre}`, 
           html 
         }
       });
       
-      console.log('Contact email queued successfully with ID:', docRef.id);
+      console.log('Contact email queued successfully with ID:', docRef.id, 'to:', recipientEmail);
       return docRef;
     } catch (error) {
       console.error('Failed to queue contact email:', error);
       throw new Error('No se pudo enviar el mensaje. Por favor, intenta más tarde.');
+    }
+  }
+
+  /**
+   * Queue a custom email to the mail collection for Trigger Email extension
+   */
+  async queueEmail(emailData: { to: string; subject: string; html: string }): Promise<{ success: boolean }> {
+    try {
+      const docRef = await addDoc(collection(this.db, 'mail'), {
+        to: [emailData.to],
+        message: {
+          subject: emailData.subject,
+          html: emailData.html
+        }
+      });
+      
+      console.log('[EmailService] Email queued successfully with ID:', docRef.id);
+      return { success: true };
+    } catch (error) {
+      console.error('[EmailService] Failed to queue email:', error);
+      return { success: false };
     }
   }
 }

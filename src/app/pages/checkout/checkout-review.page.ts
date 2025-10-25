@@ -2,13 +2,14 @@ import { Component, inject, OnInit, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { Auth } from '@angular/fire/auth';
 import { combineLatest, map, switchMap, of, startWith } from 'rxjs';
 
 import { CartService } from '../../services/cart.service';
 import { AddressService } from '../../services/address.service';
 import { ShippingService, ShippingMethod } from '../../services/shipping.service';
+import { SettingsService, AppSettings } from '../../services/settings.service';
 import { Address } from '../../models/cart';
 
 interface CartItemDisplay {
@@ -35,6 +36,8 @@ export class CheckoutReviewPage implements OnInit {
   private cartService = inject(CartService);
   private addressService = inject(AddressService);
   private shippingService = inject(ShippingService);
+  private settingsService = inject(SettingsService);
+  private translate = inject(TranslateService);
 
   // State
   loading = signal(true);
@@ -48,6 +51,7 @@ export class CheckoutReviewPage implements OnInit {
   selectedAddress = signal<Address | null>(null);
   shippingMethods = signal<ShippingMethod[]>([]);
   selectedShippingMethod = signal<ShippingMethod | null>(null);
+  shippingSettings = signal<AppSettings | null>(null);
 
   // Form for address selection
   form = this.fb.group({
@@ -189,8 +193,12 @@ export class CheckoutReviewPage implements OnInit {
     const method = this.shippingMethods().find(m => m.id === methodId);
     if (method) {
       this.selectedShippingMethod.set(method);
-      // TODO: Update cart with selected shipping method
-      // For now, the cloud function applies standard by default
+      const settings = this.shippingSettings();
+      if (settings && !settings.shippingEnabled) {
+        this.cartService.updateShippingCost(method.cost, method.id);
+        return;
+      }
+      // TODO: When dynamic shipping is enabled, invoke the Cloud Function to reprice the cart
     }
   }
 
@@ -331,6 +339,60 @@ export class CheckoutReviewPage implements OnInit {
   /**
    * Format currency
    */
+  private applyStaticShipping(_address?: Address | null): boolean {
+    const settings = this.shippingSettings();
+    if (!settings || settings.shippingEnabled) {
+      return false;
+    }
+
+    const cartSnapshot = this.cartService.snapshot();
+    if (!cartSnapshot) {
+      this.calculatingShipping.set(false);
+      return true;
+    }
+
+    const subtotal = cartSnapshot.subtotal || 0;
+    const freeThreshold = settings.freeShippingThreshold ?? 0;
+    const baseCost = settings.defaultShippingCost ?? 0;
+    const shippingCost = freeThreshold > 0 && subtotal >= freeThreshold ? 0 : baseCost;
+
+    const currentShipping = cartSnapshot.shipping ?? 0;
+    const currentMethod = cartSnapshot.shippingMethodId;
+    if (Math.abs(currentShipping - shippingCost) < 0.01 && currentMethod === 'flat-rate') {
+      if (!this.shippingMethods().length) {
+        const methodSnapshot: ShippingMethod = {
+          id: 'flat-rate',
+          name: this.translate.instant('cart.shipping.flat_rate'),
+          description: settings.shippingEstimate || this.translate.instant('cart.shipping.estimate_default'),
+          cost: shippingCost,
+          currency: cartSnapshot.currency || 'USD',
+          estimatedDays: settings.shippingEstimate || ''
+        };
+        this.shippingMethods.set([methodSnapshot]);
+        this.selectedShippingMethod.set(methodSnapshot);
+        this.form.patchValue({ shippingMethodId: methodSnapshot.id }, { emitEvent: false });
+      }
+      this.calculatingShipping.set(false);
+      return true;
+    }
+
+    const method: ShippingMethod = {
+      id: 'flat-rate',
+      name: this.translate.instant('cart.shipping.flat_rate'),
+      description: settings.shippingEstimate || this.translate.instant('cart.shipping.estimate_default'),
+      cost: shippingCost,
+      currency: cartSnapshot.currency || 'USD',
+      estimatedDays: settings.shippingEstimate || ''
+    };
+
+    this.shippingMethods.set([method]);
+    this.selectedShippingMethod.set(method);
+    this.form.patchValue({ shippingMethodId: method.id }, { emitEvent: false });
+    this.cartService.updateShippingCost(shippingCost, method.id);
+    this.calculatingShipping.set(false);
+    return true;
+  }
+
   formatCurrency(amount: number, currency: string = 'USD'): string {
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
@@ -338,3 +400,7 @@ export class CheckoutReviewPage implements OnInit {
     }).format(amount);
   }
 }
+
+
+
+

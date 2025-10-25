@@ -2,7 +2,7 @@
   "home": {
     "hero": {
       "title": "Mina il Tuo Futuro",
-      "subtitle": "💠 Dove la tecnologia crypto diventa stile di vita.\nEsplora attrezzatura di mining, storage sicuro e gadget che mostrano la tua passione per il futuro decentralizzato.\n🔥 Innovazione, sicurezza e design — senza limiti.",
+      "subtitle": "\u00f0\u0178\u2019\u00a0 Dove la tecnologia crypto diventa stile di vita.\nEsplora attrezzatura di mining, storage sicuro e gadget che mostrano la tua passione per il futuro decentralizzato.\n\u00f0\u0178\u201d\u00a5 Innovazione, sicurezza e design \u00e2\u20ac\u201d senza limiti.",
       "description": "Unisciti alla rivoluzione. Massimizza i tuoi profitti con miner ASIC all'avanguardia progettati per prestazioni di punta ed efficienza senza pari.",
       "cta_primary": "Esplora Miner",
       "cta_secondary": "Richiedi Preventivo"
@@ -19,14 +19,14 @@
     "gallery_preview": {
       "title": "Galleria Farm di Mining",
       "subtitle": "Esplora le nostre installazioni e configurazioni di mining professionali",
-      "view_full": "Vedi Galleria Completa →"
+      "view_full": "Vedi Galleria Completa \u00e2\u2020\u2019"
     },
     "why_choose": {
-      "title": "Perché Scegliere TheLuxMining?",
-      "subtitle": "Il Tuo Successo È la Nostra Missione",
+      "title": "Perch\u00c3\u00a9 Scegliere TheLuxMining?",
+      "subtitle": "Il Tuo Successo \u00c3\u02c6 la Nostra Missione",
       "hashrate": {
         "title": "Tasso di Hash Massimo",
-        "description": "Prestazioni di hash rate leader del settore con tecnologia ASIC all'avanguardia, massimizzando la tua redditività nel mining Bitcoin."
+        "description": "Prestazioni di hash rate leader del settore con tecnologia ASIC all'avanguardia, massimizzando la tua redditivit\u00c3\u00a0 nel mining Bitcoin."
       },
       "efficiency": {
         "title": "Efficienza Superiore",
@@ -34,7 +34,7 @@
       },
       "roi": {
         "title": "ROI Massimo",
-        "description": "Affidabilità di livello aziendale e garanzie di uptime, assicurando rendimenti costanti sul tuo investimento nel mining."
+        "description": "Affidabilit\u00c3\u00a0 di livello aziendale e garanzie di uptime, assicurando rendimenti costanti sul tuo investimento nel mining."
       }
     },
     "cta": {
@@ -125,14 +125,14 @@
     "subtitle": "Hardware di Mining Bitcoin Premium e Accessori",
     "product_available": "prodotto disponibile",
     "products_available": "prodotti disponibili",
-    "view_mode": "Modalità di Visualizzazione",
+    "view_mode": "Modalit\u00c3\u00a0 di Visualizzazione",
     "grid": "Griglia",
     "list": "Lista",
     "no_products": "Nessun Prodotto Disponibile",
     "no_products_desc": "Attualmente nessun prodotto disponibile nella categoria {{category}}.",
     "view_all_products": "Visualizza Tutti i Prodotti",
     "cta": {
-      "title": "Hai Bisogno di Più Informazioni?",
+      "title": "Hai Bisogno di Pi\u00c3\u00b9 Informazioni?",
       "description": "Contatta il nostro team per consigli personalizzati sull'hardware di mining Bitcoin.",
       "contact_us": "Contattaci",
       "all_products": "Tutti i Prodotti"
@@ -149,7 +149,7 @@
     "recommended_apps": "Applicazioni Consigliate",
     "request_quote": "Richiedi Preventivo",
     "in_stock": "Disponibile",
-    "units_available": "{{count}} unità disponibili",
+    "units_available": "{{count}} unit\u00c3\u00a0 disponibili",
     "pre_order": "Pre-Ordine Disponibile",
     "back_to_products": "Torna ai Prodotti",
     "technical_support": "Assistenza tecnica 24/7",
@@ -168,7 +168,7 @@
     "related_products": "Prodotti Correlati",
     "view_all_products": "Visualizza Tutti i Prodotti",
     "cta": {
-      "title": "Hai Bisogno di Più Informazioni?",
+      "title": "Hai Bisogno di Pi\u00c3\u00b9 Informazioni?",
       "description": "Contatta il nostro team per consigli personalizzati sull'hardware di mining Bitcoin.",
       "contact_us": "Contattaci"
     }
@@ -192,7 +192,7 @@
     "display_name": "Nome Visualizzato",
     "company": "Azienda",
     "address": "Indirizzo",
-    "city": "Città",
+    "city": "Citt\u00c3\u00a0",
     "postal_code": "Codice Postale",
     "country": "Paese",
     "save_changes": "Salva Modifiche",
@@ -201,7 +201,7 @@
     "sign_in": "Accedi al tuo account",
     "dont_have_account": "Non hai un account?",
     "sign_up_here": "Registrati qui",
-    "already_have_account": "Hai già un account?",
+    "already_have_account": "Hai gi\u00c3\u00a0 un account?",
     "sign_in_here": "Accedi qui",
     "create_account": "Crea il tuo account",
     "order_history": "Storico Ordini",
@@ -243,7 +243,7 @@
     "subtitle": "Mettiti in contatto con i nostri esperti di mining crypto. Che tu abbia bisogno di aiuto per scegliere il miner giusto, domande sull'archiviazione a freddo, o voglia discutere ordini all'ingrosso.",
     "form_title": "Inviaci la tua richiesta",
     "success_message": "Grazie per il tuo messaggio! Ti contatteremo presto.",
-    "error_message": "Si è verificato un errore durante l'invio del messaggio. Per favore riprova.",
+    "error_message": "Si \u00c3\u00a8 verificato un errore durante l'invio del messaggio. Per favore riprova.",
     "full_name": "Nome completo",
     "full_name_placeholder": "Mario Rossi",
     "email_placeholder": "satoshi@bitcoin.com",
@@ -267,21 +267,30 @@
     "selection": "Selezione",
     "subtitle": "Rivedi la tua selezione di prodotti e inviaci i tuoi dati per ricevere un preventivo personalizzato",
     "remove": "Rimuovi",
-    "quantity": "Quantità",
-    "empty_title": "Il tuo carrello è vuoto",
-    "empty_message": "Esplora i nostri prodotti e aggiungi quelli che ti piacciono di più",
+    "quantity": "Quantit\u00c3\u00a0",
+    "empty_title": "Il tuo carrello \u00c3\u00a8 vuoto",
+    "empty_message": "Esplora i nostri prodotti e aggiungi quelli che ti piacciono di pi\u00c3\u00b9",
     "explore_products": "Esplora prodotti",
     "clear_cart": "Svuota carrello",
     "contact_data": "Dati di Contatto",
     "full_name_required": "Nome completo *",
-    "name_error": "Il nome è obbligatorio (minimo 2 caratteri)",
+    "name_error": "Il nome \u00c3\u00a8 obbligatorio (minimo 2 caratteri)",
     "email_required": "Email *",
     "email_error": "Inserisci un'email valida",
     "phone_optional": "Telefono (facoltativo)",
     "message_optional": "Messaggio aggiuntivo (facoltativo)",
     "send_selection": "Invia selezione per email",
     "sending": "Invio in corso...",
-    "required_fields_note": "I campi contrassegnati con * sono obbligatori"
+    "required_fields_note": "I campi contrassegnati con * sono obbligatori",
+    "shipping": {
+      "flat_rate": "Spedizione a tariffa fissa",
+      "estimate_default": "Spedizione in 3-5 giorni lavorativi"
+    },
+    "summary": {
+      "shipping_dynamic": "Spedizione e tasse calcolate al checkout",
+      "shipping_flat": "Spedizione calcolata automaticamente. {{estimate}}",
+      "free_shipping": "Spedizione gratuita"
+    }
   },
   "notfound": {
     "title": "Pagina non trovata",
@@ -289,7 +298,7 @@
     "go_home": "Torna alla home",
     "view_products": "Visualizza prodotti",
     "looking_for": "Cosa stavi cercando?",
-    "explore_sections": "Esplora le nostre sezioni principali o utilizza i link di navigazione per trovare ciò di cui hai bisogno.",
+    "explore_sections": "Esplora le nostre sezioni principali o utilizza i link di navigazione per trovare ci\u00c3\u00b2 di cui hai bisogno.",
     "links": {
       "home_title": "Home",
       "home_desc": "Scopri la nostra collezione in evidenza ed esplora TheLuxMining.",
@@ -331,12 +340,12 @@
     "manage_orders": "Gestisci Ordini",
     "manage_gallery": "Gestisci Galleria",
     "manage_users": "Gestisci Utenti",
-    "recent_activity": "Attività Recente",
-    "no_recent_activity": "Nessuna attività recente",
+    "recent_activity": "Attivit\u00c3\u00a0 Recente",
+    "no_recent_activity": "Nessuna attivit\u00c3\u00a0 recente",
     "setup_required": "Configurazione Richiesta",
-    "need_categories_and_models": "È necessario creare categorie e modelli prima di aggiungere prodotti.",
-    "need_category": "È necessario creare almeno una categoria prima di aggiungere prodotti.",
-    "need_model": "È necessario creare almeno un modello prima di aggiungere prodotti.",
+    "need_categories_and_models": "\u00c3\u02c6 necessario creare categorie e modelli prima di aggiungere prodotti.",
+    "need_category": "\u00c3\u02c6 necessario creare almeno una categoria prima di aggiungere prodotti.",
+    "need_model": "\u00c3\u02c6 necessario creare almeno un modello prima di aggiungere prodotti.",
     "goto_catalog": "Vai a Gestione Catalogo",
     "new_status": "Nuovo Stato",
     "users_description": "Gestisci account utente e permessi",
@@ -370,7 +379,7 @@
       "title": "Inizializzazione Database",
       "subtitle": "Inizializzare Firestore con categorie, modelli e template",
       "operations": "Operazioni di Inizializzazione",
-      "operations_hint": "Questo creerà dati iniziali in Firestore",
+      "operations_hint": "Questo creer\u00c3\u00a0 dati iniziali in Firestore",
       "run_seed": "Esegui Inizializzazione",
       "seeding": "Inizializzazione in corso...",
       "categories": "Categorie",
@@ -383,11 +392,150 @@
       "templates_count": "3 template globali",
       "templates_list": "Descrizione, SEO, Meta",
       "success_title": "Inizializzazione Completata con Successo!",
-      "success_message": "Il tuo database Firestore è stato inizializzato con i dati di partenza.",
+      "success_message": "Il tuo database Firestore \u00c3\u00a8 stato inizializzato con i dati di partenza.",
       "error_title": "Inizializzazione Fallita",
       "console_output": "Output Console",
       "clear": "Cancella",
       "back_to_products": "Torna a Prodotti Admin"
-    }
+    },
+    "analytics": {
+      "title": "Dashboard analitica",
+      "subtitle": "Monitora conversioni, attivita clienti e stato del catalogo",
+      "eyebrow": "Panoramica",
+      "period": {
+        "today": "Oggi",
+        "week": "Ultimi 7 giorni",
+        "month": "Questo mese",
+        "year": "Quest anno"
+      },
+      "metrics": {
+        "total_orders": "Ordini",
+        "revenue": "Ricavi",
+        "average_order_value": "Scontrino medio",
+        "new_customers": "Nuovi clienti",
+        "products_updated": "Modelli aggiornati",
+        "gallery_uploads": "Aggiunte galleria"
+      },
+      "recent_activity": "Attivita recente",
+      "showing_period": "Mostrando dati per {{period}}",
+      "no_activity": "Nessuna attivita in questo periodo",
+      "future_title": "Nuove analisi in arrivo",
+      "future_description": "Stiamo preparando dashboard interattivi con trend di ricavi, performance prodotto, domanda geografica e funnel di conversione. Ecco lo stato dei lavori.",
+      "future_status": {
+        "in_discovery": "In discovery",
+        "in_design": "In design",
+        "in_development": "In sviluppo",
+        "internal_beta": "Beta interna"
+      },
+      "future_items": {
+        "charts": {
+          "title": "Grafici di ricavo interattivi",
+          "description": "Report in tempo reale su ricavi, profitti e ROI con filtri per modello e export CSV.",
+          "status": "admin.analytics.future_status.internal_beta"
+        },
+        "top_products": {
+          "title": "Modelli piu performanti",
+          "description": "Analisi segmentate per evidenziare i miner con piu conversioni e gli andamenti stagionali.",
+          "status": "admin.analytics.future_status.in_development"
+        },
+        "geo": {
+          "title": "Distribuzione geografica",
+          "description": "Heatmap di richieste e conversioni per pianificare lespansione in LATAM, UE e APAC.",
+          "status": "admin.analytics.future_status.in_design"
+        },
+        "funnels": {
+          "title": "Funnel di conversione",
+          "description": "Monitoraggio di ogni step dal primo contatto allordine pagato per individuare i punti di abbandono.",
+          "status": "admin.analytics.future_status.in_discovery"
+        }
+      }
+    },
+    "models": {
+      "title": "Libreria modelli",
+      "subtitle": "Gestisci modelli, valori di default e organizzazione del catalogo",
+      "actions": {
+        "add": "Aggiungi modello",
+        "edit": "Modifica",
+        "delete": "Elimina",
+        "create": "Crea modello",
+        "update": "Aggiorna modello",
+        "cancel": "Annulla",
+        "create_first": "Crea il primo modello"
+      },
+      "filters": {
+        "search_placeholder": "Cerca modelli...",
+        "status_label": "Stato",
+        "status_all": "Tutti",
+        "status_active": "Attivi",
+        "status_inactive": "Inattivi"
+      },
+      "table": {
+        "name": "Nome",
+        "slug": "Slug",
+        "category": "Categoria",
+        "status": "Stato",
+        "actions": "Azioni",
+        "active": "Attivo",
+        "inactive": "Inattivo",
+        "unassigned": "Non assegnato"
+      },
+      "empty": "Nessun modello corrisponde ai filtri",
+      "messages": {
+        "name_required": "Il nome e obbligatorio",
+        "slug_exists": "Lo slug \"{{slug}}\" esiste gia",
+        "created": "Modello creato con successo",
+        "updated": "Modello aggiornato con successo",
+        "deleted": "Modello eliminato con successo",
+        "save_failed": "Impossibile salvare il modello. Riprova.",
+        "delete_failed": "Impossibile eliminare il modello. Riprova.",
+        "confirm_delete": "Eliminare il modello \"{{name}}\"? Azione irreversibile."
+      },
+      "modal": {
+        "new_title": "Nuovo modello",
+        "edit_title": "Modifica modello"
+      },
+      "fields": {
+        "name": "Nome modello",
+        "name_placeholder": "Inserisci il nome",
+        "slug": "Slug",
+        "slug_help": "Identificativo minuscolo senza spazi.",
+        "category": "Categoria",
+        "texture_hints": "Suggerimenti texture",
+        "texture_hints_placeholder": "es. finitura satinata\npietra lucida",
+        "texture_hints_help": "Una riga per suggerimento. Esempi di finitura o alias.",
+        "default_tags": "Tag predefiniti",
+        "default_tags_placeholder": "es. premium, flagship, hashpower",
+        "default_tags_help": "Separate da virgola. Aggiunte ai nuovi prodotti del modello.",
+        "active": "Attivo"
+      }
+    },
+    "settings": {
+      "title": "Impostazioni e configurazione",
+      "subtitle": "Gestisci le impostazioni del sito, le integrazioni e i parametri principali.",
+      "actions": {
+        "save": "Salva tutte le impostazioni",
+        "saving": "Salvataggio...",
+        "lock": "Blocca",
+        "unlock": "Sblocca",
+        "show": "Mostra",
+        "hide": "Nascondi"
+      },
+      "states": {
+        "enabled": "Attivo",
+        "disabled": "Disattivo"
+      },
+      "feedback": {
+        "success": "Impostazioni salvate con successo.",
+        "error_details": "Impossibile salvare le impostazioni: {{message}}"
+      }
+    },
+    "total_revenue": "Ricavi totali"
+  },
+  "maintenance": {
+    "title": "Torniamo subito online",
+    "support": "Serve supporto immediato? Contatta il nostro team:",
+    "email_label": "Email:",
+    "phone_label": "Telefono:",
+    "admin_link": "Login amministratore"
   }
 }

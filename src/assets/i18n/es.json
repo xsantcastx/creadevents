@@ -2,14 +2,14 @@
   "home": {
     "hero": {
       "title": "Mina Tu Futuro",
-      "subtitle": "💠 Donde la tecnología cripto se convierte en estilo de vida.\nExplora equipo de minería, almacenamiento seguro y gadgets que muestran tu pasión por el futuro descentralizado.\n🔥 Innovación, seguridad y diseño — sin límites.",
-      "description": "Únete a la revolución. Maximiza tus ganancias con mineros ASIC de última generación diseñados para el máximo rendimiento y eficiencia incomparable.",
+      "subtitle": "\u00f0\u0178\u2019\u00a0 Donde la tecnolog\u00c3\u00ada cripto se convierte en estilo de vida.\nExplora equipo de miner\u00c3\u00ada, almacenamiento seguro y gadgets que muestran tu pasi\u00c3\u00b3n por el futuro descentralizado.\n\u00f0\u0178\u201d\u00a5 Innovaci\u00c3\u00b3n, seguridad y dise\u00c3\u00b1o \u00e2\u20ac\u201d sin l\u00c3\u00admites.",
+      "description": "\u00c3\u0161nete a la revoluci\u00c3\u00b3n. Maximiza tus ganancias con mineros ASIC de \u00c3\u00baltima generaci\u00c3\u00b3n dise\u00c3\u00b1ados para el m\u00c3\u00a1ximo rendimiento y eficiencia incomparable.",
       "cta_primary": "Explorar Mineros",
-      "cta_secondary": "Solicitar Cotización"
+      "cta_secondary": "Solicitar Cotizaci\u00c3\u00b3n"
     },
     "featured": {
-      "title": "Hardware de Minería Destacado",
-      "subtitle": "Descubre nuestras últimas soluciones de minería Bitcoin",
+      "title": "Hardware de Miner\u00c3\u00ada Destacado",
+      "subtitle": "Descubre nuestras \u00c3\u00baltimas soluciones de miner\u00c3\u00ada Bitcoin",
       "latest": "Productos Recientes",
       "flagship": "Mineros Insignia",
       "professional": "Serie Profesional",
@@ -17,74 +17,74 @@
       "view_all": "Ver Todos"
     },
     "gallery_preview": {
-      "title": "Galería de Granja de Minería",
-      "subtitle": "Explora nuestras instalaciones y configuraciones de minería profesionales",
-      "view_full": "Ver Galería Completa →"
+      "title": "Galer\u00c3\u00ada de Granja de Miner\u00c3\u00ada",
+      "subtitle": "Explora nuestras instalaciones y configuraciones de miner\u00c3\u00ada profesionales",
+      "view_full": "Ver Galer\u00c3\u00ada Completa \u00e2\u2020\u2019"
     },
     "why_choose": {
-      "title": "¿Por Qué Elegir TheLuxMining?",
-      "subtitle": "Tu Éxito Es Nuestra Misión",
+      "title": "\u00c2\u00bfPor Qu\u00c3\u00a9 Elegir TheLuxMining?",
+      "subtitle": "Tu \u00c3\u2030xito Es Nuestra Misi\u00c3\u00b3n",
       "hashrate": {
-        "title": "Tasa de Hash Máxima",
-        "description": "Rendimiento líder en la industria con tecnología ASIC de vanguardia, maximizando tu rentabilidad en minería Bitcoin."
+        "title": "Tasa de Hash M\u00c3\u00a1xima",
+        "description": "Rendimiento l\u00c3\u00adder en la industria con tecnolog\u00c3\u00ada ASIC de vanguardia, maximizando tu rentabilidad en miner\u00c3\u00ada Bitcoin."
       },
       "efficiency": {
         "title": "Eficiencia Superior",
-        "description": "Consumo de energía optimizado con sistemas de enfriamiento avanzados, entregando la mejor relación J/TH del mercado."
+        "description": "Consumo de energ\u00c3\u00ada optimizado con sistemas de enfriamiento avanzados, entregando la mejor relaci\u00c3\u00b3n J/TH del mercado."
       },
       "roi": {
-        "title": "ROI Máximo",
-        "description": "Confiabilidad de nivel empresarial y garantías de tiempo de actividad, asegurando retornos consistentes en tu inversión minera."
+        "title": "ROI M\u00c3\u00a1ximo",
+        "description": "Confiabilidad de nivel empresarial y garant\u00c3\u00adas de tiempo de actividad, asegurando retornos consistentes en tu inversi\u00c3\u00b3n minera."
       }
     },
     "cta": {
       "gallery": {
-        "title": "Explora Configuraciones de Minería",
-        "button": "Ver Galería"
+        "title": "Explora Configuraciones de Miner\u00c3\u00ada",
+        "button": "Ver Galer\u00c3\u00ada"
       },
       "contact": {
-        "title": "¿Listo para Comenzar a Minar?",
-        "button": "Obtener Cotización Personalizada"
+        "title": "\u00c2\u00bfListo para Comenzar a Minar?",
+        "button": "Obtener Cotizaci\u00c3\u00b3n Personalizada"
       }
     },
     "stats": {
       "miners_deployed": "Mineros Desplegados Mundialmente",
-      "customer_satisfaction": "Satisfacción del Cliente",
-      "uptime_guarantee": "Garantía de Tiempo Activo",
-      "years_experience": "Años de Excelencia"
+      "customer_satisfaction": "Satisfacci\u00c3\u00b3n del Cliente",
+      "uptime_guarantee": "Garant\u00c3\u00ada de Tiempo Activo",
+      "years_experience": "A\u00c3\u00b1os de Excelencia"
     }
   },
   "nav": {
     "home": "Inicio",
     "products": "Productos",
     "all_products": "Todos los Productos",
-    "gallery": "Galería",
-    "technical": "Especificaciones Técnicas",
+    "gallery": "Galer\u00c3\u00ada",
+    "technical": "Especificaciones T\u00c3\u00a9cnicas",
     "contact": "Contacto",
-    "login": "Iniciar Sesión",
+    "login": "Iniciar Sesi\u00c3\u00b3n",
     "cart": "Carrito"
   },
   "footer": {
     "rights": "Todos los derechos reservados",
-    "privacy": "Política de Privacidad",
-    "terms": "Términos y Condiciones",
-    "description": "Tu destino principal para hardware de minería cripto, mineros solo, soluciones de almacenamiento en frío, llaveros Bitcoin y gadgets exclusivos de criptomonedas.",
-    "quick_links": "Enlaces Rápidos",
+    "privacy": "Pol\u00c3\u00adtica de Privacidad",
+    "terms": "T\u00c3\u00a9rminos y Condiciones",
+    "description": "Tu destino principal para hardware de miner\u00c3\u00ada cripto, mineros solo, soluciones de almacenamiento en fr\u00c3\u00ado, llaveros Bitcoin y gadgets exclusivos de criptomonedas.",
+    "quick_links": "Enlaces R\u00c3\u00a1pidos",
     "products_title": "Productos",
     "contact_info": "Contacto",
-    "phone": "Teléfono",
+    "phone": "Tel\u00c3\u00a9fono",
     "email": "Correo",
-    "address": "Dirección",
-    "business_hours": "Horario de Atención"
+    "address": "Direcci\u00c3\u00b3n",
+    "business_hours": "Horario de Atenci\u00c3\u00b3n"
   },
   "products": {
     "hero": {
-      "title": "Hardware de Minería Bitcoin",
-      "subtitle": "Equipo de minería de criptomonedas premium disponible en diferentes configuraciones y niveles de rendimiento para satisfacer las necesidades de tu operación minera."
+      "title": "Hardware de Miner\u00c3\u00ada Bitcoin",
+      "subtitle": "Equipo de miner\u00c3\u00ada de criptomonedas premium disponible en diferentes configuraciones y niveles de rendimiento para satisfacer las necesidades de tu operaci\u00c3\u00b3n minera."
     },
     "filters": {
-      "category": "Categoría",
-      "all_categories": "Todas las Categorías",
+      "category": "Categor\u00c3\u00ada",
+      "all_categories": "Todas las Categor\u00c3\u00adas",
       "model": "Modelo",
       "all_models": "Todos los Modelos",
       "search": "Buscar",
@@ -93,26 +93,26 @@
       "filter_by_tags": "Filtrar por Etiquetas"
     },
     "results": {
-      "loading": "Cargando hardware de minería...",
+      "loading": "Cargando hardware de miner\u00c3\u00ada...",
       "showing": "Mostrando {{current}} de {{total}} productos"
     },
     "empty": {
       "title": "No se Encontraron Productos",
-      "message": "Intenta ajustar los filtros o elimínalos para ver todo el equipo de minería disponible.",
+      "message": "Intenta ajustar los filtros o elim\u00c3\u00adnalos para ver todo el equipo de miner\u00c3\u00ada disponible.",
       "clear_button": "Limpiar Filtros"
     },
     "section": {
-      "title": "Hardware de Minería",
-      "subtitle": "Equipo de minería de criptomonedas premium"
+      "title": "Hardware de Miner\u00c3\u00ada",
+      "subtitle": "Equipo de miner\u00c3\u00ada de criptomonedas premium"
     },
-    "title": "Hardware de Minería",
+    "title": "Hardware de Miner\u00c3\u00ada",
     "subtitle": "Equipo Profesional",
     "specs": "Especificaciones",
     "hashrate": "Tasa de Hash",
-    "power": "Consumo de Energía",
+    "power": "Consumo de Energ\u00c3\u00ada",
     "efficiency": "Eficiencia",
     "add_to_cart": "Agregar al Carrito",
-    "request_quote": "Solicitar Cotización",
+    "request_quote": "Solicitar Cotizaci\u00c3\u00b3n",
     "filterBy": "Filtrar por",
     "thickness": "Grosor"
   },
@@ -121,20 +121,20 @@
       "home": "Inicio",
       "products": "Productos"
     },
-    "collection": "Colección",
-    "subtitle": "Hardware de Minería Bitcoin Premium y Accesorios",
+    "collection": "Colecci\u00c3\u00b3n",
+    "subtitle": "Hardware de Miner\u00c3\u00ada Bitcoin Premium y Accesorios",
     "product_available": "producto disponible",
     "products_available": "productos disponibles",
     "view_mode": "Modo de Vista",
-    "grid": "Cuadrícula",
+    "grid": "Cuadr\u00c3\u00adcula",
     "list": "Lista",
     "no_products": "No Hay Productos Disponibles",
-    "no_products_desc": "Actualmente no hay productos disponibles en la categoría {{category}}.",
+    "no_products_desc": "Actualmente no hay productos disponibles en la categor\u00c3\u00ada {{category}}.",
     "view_all_products": "Ver Todos los Productos",
     "cta": {
-      "title": "¿Necesitas Más Información?",
-      "description": "Contacta a nuestro equipo para asesoría personalizada sobre hardware de minería Bitcoin.",
-      "contact_us": "Contáctanos",
+      "title": "\u00c2\u00bfNecesitas M\u00c3\u00a1s Informaci\u00c3\u00b3n?",
+      "description": "Contacta a nuestro equipo para asesor\u00c3\u00ada personalizada sobre hardware de miner\u00c3\u00ada Bitcoin.",
+      "contact_us": "Cont\u00c3\u00a1ctanos",
       "all_products": "Todos los Productos"
     }
   },
@@ -143,34 +143,34 @@
       "home": "Inicio",
       "products": "Productos"
     },
-    "category": "Categoría:",
+    "category": "Categor\u00c3\u00ada:",
     "model": "Modelo:",
-    "premium_label": "Hardware de Minería Premium",
+    "premium_label": "Hardware de Miner\u00c3\u00ada Premium",
     "recommended_apps": "Aplicaciones Recomendadas",
-    "request_quote": "Solicitar Cotización",
+    "request_quote": "Solicitar Cotizaci\u00c3\u00b3n",
     "in_stock": "En Stock",
     "units_available": "{{count}} unidades disponibles",
     "pre_order": "Pre-Orden Disponible",
     "back_to_products": "Volver a Productos",
-    "technical_support": "Asistencia técnica 24/7",
-    "specs_title": "Especificaciones Técnicas",
+    "technical_support": "Asistencia t\u00c3\u00a9cnica 24/7",
+    "specs_title": "Especificaciones T\u00c3\u00a9cnicas",
     "hash_rate": "Tasa de Hash",
-    "power_consumption": "Consumo de Energía",
+    "power_consumption": "Consumo de Energ\u00c3\u00ada",
     "efficiency": "Eficiencia",
-    "cooling": "Refrigeración",
+    "cooling": "Refrigeraci\u00c3\u00b3n",
     "dimensions": "Dimensiones",
     "weight": "Peso",
     "noise_level": "Nivel de Ruido",
-    "operating_temp": "Temperatura de Operación",
-    "network": "Conexión de Red",
-    "warranty": "Garantía",
+    "operating_temp": "Temperatura de Operaci\u00c3\u00b3n",
+    "network": "Conexi\u00c3\u00b3n de Red",
+    "warranty": "Garant\u00c3\u00ada",
     "benefits_title": "Beneficios del Producto",
     "related_products": "Productos Relacionados",
     "view_all_products": "Ver Todos los Productos",
     "cta": {
-      "title": "¿Necesitas Más Información?",
-      "description": "Contacta a nuestro equipo para asesoría personalizada sobre hardware de minería Bitcoin.",
-      "contact_us": "Contáctanos"
+      "title": "\u00c2\u00bfNecesitas M\u00c3\u00a1s Informaci\u00c3\u00b3n?",
+      "description": "Contacta a nuestro equipo para asesor\u00c3\u00ada personalizada sobre hardware de miner\u00c3\u00ada Bitcoin.",
+      "contact_us": "Cont\u00c3\u00a1ctanos"
     }
   },
   "common": {
@@ -178,40 +178,40 @@
     "search": "Buscar..."
   },
   "client": {
-    "login": "Iniciar Sesión",
+    "login": "Iniciar Sesi\u00c3\u00b3n",
     "register": "Registrarse",
-    "logout": "Cerrar Sesión",
+    "logout": "Cerrar Sesi\u00c3\u00b3n",
     "my_account": "Mi Cuenta",
     "my_orders": "Mis Pedidos",
     "pending": "Pendiente",
     "name": "Nombre",
     "email": "Correo",
-    "phone": "Teléfono",
-    "password": "Contraseña",
-    "confirm_password": "Confirmar Contraseña",
+    "phone": "Tel\u00c3\u00a9fono",
+    "password": "Contrase\u00c3\u00b1a",
+    "confirm_password": "Confirmar Contrase\u00c3\u00b1a",
     "display_name": "Nombre para Mostrar",
     "company": "Empresa",
-    "address": "Dirección",
+    "address": "Direcci\u00c3\u00b3n",
     "city": "Ciudad",
-    "postal_code": "Código Postal",
-    "country": "País",
+    "postal_code": "C\u00c3\u00b3digo Postal",
+    "country": "Pa\u00c3\u00ads",
     "save_changes": "Guardar Cambios",
     "profile_updated": "Perfil actualizado exitosamente",
     "welcome_back": "Bienvenido de nuevo",
-    "sign_in": "Inicia sesión en tu cuenta",
-    "dont_have_account": "¿No tienes una cuenta?",
-    "sign_up_here": "Regístrate aquí",
-    "already_have_account": "¿Ya tienes una cuenta?",
-    "sign_in_here": "Inicia sesión aquí",
+    "sign_in": "Inicia sesi\u00c3\u00b3n en tu cuenta",
+    "dont_have_account": "\u00c2\u00bfNo tienes una cuenta?",
+    "sign_up_here": "Reg\u00c3\u00adstrate aqu\u00c3\u00ad",
+    "already_have_account": "\u00c2\u00bfYa tienes una cuenta?",
+    "sign_in_here": "Inicia sesi\u00c3\u00b3n aqu\u00c3\u00ad",
     "create_account": "Crea tu cuenta",
     "order_history": "Historial de Pedidos",
-    "no_orders_yet": "Aún no tienes pedidos",
+    "no_orders_yet": "A\u00c3\u00ban no tienes pedidos",
     "order_details": "Detalles del Pedido",
     "order_date": "Fecha del Pedido",
     "order_status": "Estado",
     "order_total": "Total",
-    "shipping_address": "Dirección de Envío",
-    "items": "Artículos",
+    "shipping_address": "Direcci\u00c3\u00b3n de Env\u00c3\u00ado",
+    "items": "Art\u00c3\u00adculos",
     "processing": "Procesando",
     "shipped": "Enviado",
     "delivered": "Entregado",
@@ -219,44 +219,44 @@
   },
   "gallery": {
     "project": "Proyecto",
-    "title": "Galería",
-    "subtitle": "Explora nuestra colección de hardware premium de minería cripto, mineros solo, soluciones de almacenamiento en frío, llaveros Bitcoin y gadgets exclusivos de criptomonedas",
+    "title": "Galer\u00c3\u00ada",
+    "subtitle": "Explora nuestra colecci\u00c3\u00b3n de hardware premium de miner\u00c3\u00ada cripto, mineros solo, soluciones de almacenamiento en fr\u00c3\u00ado, llaveros Bitcoin y gadgets exclusivos de criptomonedas",
     "projects": "Proyectos",
     "all_projects": "Todos los Proyectos",
     "showing_all": "Mostrando todos los proyectos",
     "showing": "Mostrando",
-    "description": "Descripción",
+    "description": "Descripci\u00c3\u00b3n",
     "view": "Ver",
     "no_projects": "No Hay Proyectos Disponibles",
-    "no_projects_message": "No se encontraron proyectos para esta categoría. Intenta seleccionar otra categoría o ver todos los proyectos.",
+    "no_projects_message": "No se encontraron proyectos para esta categor\u00c3\u00ada. Intenta seleccionar otra categor\u00c3\u00ada o ver todos los proyectos.",
     "of": "de",
     "tags": {
       "kitchens": "Cocinas",
-      "bathrooms": "Baños",
+      "bathrooms": "Ba\u00c3\u00b1os",
       "modern": "Moderno",
-      "classic": "Clásico",
+      "classic": "Cl\u00c3\u00a1sico",
       "luxury": "Lujo"
     }
   },
   "contact": {
     "title": "Contacto",
-    "subtitle": "Ponte en contacto con nuestros expertos en minería crypto. Ya sea que necesites ayuda para elegir el minero adecuado, tengas preguntas sobre almacenamiento en frío, o quieras discutir pedidos al por mayor.",
-    "form_title": "Envíanos tu consulta",
-    "success_message": "¡Gracias por tu mensaje! Te contactaremos pronto.",
-    "error_message": "Hubo un error al enviar el mensaje. Por favor, inténtalo de nuevo.",
+    "subtitle": "Ponte en contacto con nuestros expertos en miner\u00c3\u00ada crypto. Ya sea que necesites ayuda para elegir el minero adecuado, tengas preguntas sobre almacenamiento en fr\u00c3\u00ado, o quieras discutir pedidos al por mayor.",
+    "form_title": "Env\u00c3\u00adanos tu consulta",
+    "success_message": "\u00c2\u00a1Gracias por tu mensaje! Te contactaremos pronto.",
+    "error_message": "Hubo un error al enviar el mensaje. Por favor, int\u00c3\u00a9ntalo de nuevo.",
     "full_name": "Nombre completo",
-    "full_name_placeholder": "Juan Pérez",
+    "full_name_placeholder": "Juan P\u00c3\u00a9rez",
     "email_placeholder": "satoshi@bitcoin.com",
     "phone_placeholder": "+1 203 555 0123",
-    "company_placeholder": "Tu operación de minería o empresa (opcional)",
+    "company_placeholder": "Tu operaci\u00c3\u00b3n de miner\u00c3\u00ada o empresa (opcional)",
     "message": "Mensaje",
-    "message_placeholder": "Me interesan los mineros ASIC, configuraciones de minería solo, carteras frías... ¡Dinos qué necesitas!",
-    "accept_privacy": "Acepto el tratamiento de mis datos personales según la política de privacidad",
-    "privacy_required": "Debes aceptar la política de privacidad",
+    "message_placeholder": "Me interesan los mineros ASIC, configuraciones de miner\u00c3\u00ada solo, carteras fr\u00c3\u00adas... \u00c2\u00a1Dinos qu\u00c3\u00a9 necesitas!",
+    "accept_privacy": "Acepto el tratamiento de mis datos personales seg\u00c3\u00ban la pol\u00c3\u00adtica de privacidad",
+    "privacy_required": "Debes aceptar la pol\u00c3\u00adtica de privacidad",
     "send_message": "Enviar mensaje",
     "sending": "Enviando...",
-    "info_title": "Información de contacto",
-    "address_label": "Dirección",
+    "info_title": "Informaci\u00c3\u00b3n de contacto",
+    "address_label": "Direcci\u00c3\u00b3n",
     "address_line1": "100 Greyrock Pl F119",
     "address_line2": "Stamford, CT 06901",
     "email_label": "Email"
@@ -264,43 +264,52 @@
   "cart": {
     "title": "Carrito",
     "your": "Tu",
-    "selection": "Selección",
-    "subtitle": "Revisa tu selección de productos y envíanos tus datos para recibir un presupuesto personalizado",
+    "selection": "Selecci\u00c3\u00b3n",
+    "subtitle": "Revisa tu selecci\u00c3\u00b3n de productos y env\u00c3\u00adanos tus datos para recibir un presupuesto personalizado",
     "remove": "Quitar",
     "quantity": "Cantidad",
-    "empty_title": "Tu carrito está vacío",
-    "empty_message": "Explora nuestros productos y añade los que más te gusten",
+    "empty_title": "Tu carrito est\u00c3\u00a1 vac\u00c3\u00ado",
+    "empty_message": "Explora nuestros productos y a\u00c3\u00b1ade los que m\u00c3\u00a1s te gusten",
     "explore_products": "Explorar productos",
     "clear_cart": "Vaciar carrito",
     "contact_data": "Datos de contacto",
     "full_name_required": "Nombre completo *",
-    "name_error": "El nombre es requerido (mínimo 2 caracteres)",
+    "name_error": "El nombre es requerido (m\u00c3\u00adnimo 2 caracteres)",
     "email_required": "Email *",
-    "email_error": "Ingresa un email válido",
-    "phone_optional": "Teléfono (opcional)",
+    "email_error": "Ingresa un email v\u00c3\u00a1lido",
+    "phone_optional": "Tel\u00c3\u00a9fono (opcional)",
     "message_optional": "Mensaje adicional (opcional)",
-    "send_selection": "Enviar selección por correo",
+    "send_selection": "Enviar selecci\u00c3\u00b3n por correo",
     "sending": "Enviando...",
-    "required_fields_note": "Los campos marcados con * son obligatorios"
+    "required_fields_note": "Los campos marcados con * son obligatorios",
+    "shipping": {
+      "flat_rate": "Env\u00edo con tarifa fija",
+      "estimate_default": "Se env\u00eda en 3-5 d\u00edas h\u00e1biles"
+    },
+    "summary": {
+      "shipping_dynamic": "El env\u00edo e impuestos se calculan durante el pago",
+      "shipping_flat": "El env\u00edo se calcula autom\u00e1ticamente. {{estimate}}",
+      "free_shipping": "Env\u00edo gratis"
+    }
   },
   "notfound": {
-    "title": "Página no encontrada",
-    "description": "Lo sentimos, la página que buscas no existe. Es posible que haya sido movida o eliminada.",
+    "title": "P\u00c3\u00a1gina no encontrada",
+    "description": "Lo sentimos, la p\u00c3\u00a1gina que buscas no existe. Es posible que haya sido movida o eliminada.",
     "go_home": "Ir al inicio",
     "view_products": "Ver productos",
-    "looking_for": "¿Qué estabas buscando?",
-    "explore_sections": "Explora nuestras secciones principales o utiliza los enlaces de navegación para encontrar lo que necesitas.",
+    "looking_for": "\u00c2\u00bfQu\u00c3\u00a9 estabas buscando?",
+    "explore_sections": "Explora nuestras secciones principales o utiliza los enlaces de navegaci\u00c3\u00b3n para encontrar lo que necesitas.",
     "links": {
       "home_title": "Inicio",
-      "home_desc": "Descubre nuestra colección destacada y explora TheLuxMining.",
+      "home_desc": "Descubre nuestra colecci\u00c3\u00b3n destacada y explora TheLuxMining.",
       "products_title": "Productos",
-      "products_desc": "Explora nuestro catálogo completo de hardware de minería premium.",
+      "products_desc": "Explora nuestro cat\u00c3\u00a1logo completo de hardware de miner\u00c3\u00ada premium.",
       "contact_title": "Contacto",
       "contact_desc": "Ponte en contacto con nuestro equipo de expertos."
     }
   },
   "admin": {
-    "title": "Panel de Administración",
+    "title": "Panel de Administraci\u00c3\u00b3n",
     "welcome": "Bienvenido",
     "dashboard": {
       "title": "Panel de Control"
@@ -312,7 +321,7 @@
       "title": "Pedidos"
     },
     "gallery": {
-      "title": "Galería"
+      "title": "Galer\u00c3\u00ada"
     },
     "users": {
       "title": "Usuarios"
@@ -322,28 +331,28 @@
     },
     "total_products": "Total de Productos",
     "total_orders": "Total de Pedidos",
-    "gallery_images": "Imágenes de Galería",
+    "gallery_images": "Im\u00c3\u00a1genes de Galer\u00c3\u00ada",
     "total_users": "Total de Usuarios",
-    "quick_actions": "Acciones Rápidas",
+    "quick_actions": "Acciones R\u00c3\u00a1pidas",
     "add_product": "Agregar Producto",
     "upload_image": "Subir Imagen",
     "manage_products": "Gestionar Productos",
     "manage_orders": "Gestionar Pedidos",
-    "manage_gallery": "Gestionar Galería",
+    "manage_gallery": "Gestionar Galer\u00c3\u00ada",
     "manage_users": "Gestionar Usuarios",
     "recent_activity": "Actividad Reciente",
     "no_recent_activity": "Sin actividad reciente",
-    "setup_required": "Configuración Requerida",
-    "need_categories_and_models": "Necesitas crear categorías y modelos antes de añadir productos.",
-    "need_category": "Necesitas crear al menos una categoría antes de añadir productos.",
-    "need_model": "Necesitas crear al menos un modelo antes de añadir productos.",
-    "goto_catalog": "Ir a Gestión de Catálogo",
+    "setup_required": "Configuraci\u00c3\u00b3n Requerida",
+    "need_categories_and_models": "Necesitas crear categor\u00c3\u00adas y modelos antes de a\u00c3\u00b1adir productos.",
+    "need_category": "Necesitas crear al menos una categor\u00c3\u00ada antes de a\u00c3\u00b1adir productos.",
+    "need_model": "Necesitas crear al menos un modelo antes de a\u00c3\u00b1adir productos.",
+    "goto_catalog": "Ir a Gesti\u00c3\u00b3n de Cat\u00c3\u00a1logo",
     "seed_missing": "No se encontraron productos",
-    "seed_missing_hint": "Parece que aún no has inicializado tu base de datos",
-    "run_seed": "Ejecutar Script de Inicialización",
+    "seed_missing_hint": "Parece que a\u00c3\u00ban no has inicializado tu base de datos",
+    "run_seed": "Ejecutar Script de Inicializaci\u00c3\u00b3n",
     "product_image": "Imagen",
     "product_name": "Nombre",
-    "product_category": "Categoría",
+    "product_category": "Categor\u00c3\u00ada",
     "product_thickness": "Grosor",
     "product_price": "Precio",
     "actions": "Acciones",
@@ -354,28 +363,28 @@
     "edit": "Editar",
     "delete": "Eliminar",
     "edit_product": "Editar Producto",
-    "product_wizard_hint": "Completa los detalles del producto a continuación",
-    "catalog_title": "Seleccionar del Catálogo",
-    "catalog_hint": "Busca y selecciona un modelo existente de nuestro catálogo",
-    "catalog_search_placeholder": "Buscar en catálogo...",
-    "catalog_empty": "No se encontraron elementos en el catálogo",
-    "manual_selection": "Selección Manual",
-    "manual_selection_hint": "O selecciona modelo y categoría manualmente",
+    "product_wizard_hint": "Completa los detalles del producto a continuaci\u00c3\u00b3n",
+    "catalog_title": "Seleccionar del Cat\u00c3\u00a1logo",
+    "catalog_hint": "Busca y selecciona un modelo existente de nuestro cat\u00c3\u00a1logo",
+    "catalog_search_placeholder": "Buscar en cat\u00c3\u00a1logo...",
+    "catalog_empty": "No se encontraron elementos en el cat\u00c3\u00a1logo",
+    "manual_selection": "Selecci\u00c3\u00b3n Manual",
+    "manual_selection_hint": "O selecciona modelo y categor\u00c3\u00ada manualmente",
     "product_model": "Modelo",
     "select_model": "Seleccionar modelo...",
-    "select_category": "Seleccionar categoría...",
-    "size": "Tamaño",
+    "select_category": "Seleccionar categor\u00c3\u00ada...",
+    "size": "Tama\u00c3\u00b1o",
     "refresh_autofill": "Actualizar Auto-completado",
-    "auto_fill_hint": "El auto-completado rellenará los campos según tu selección",
+    "auto_fill_hint": "El auto-completado rellenar\u00c3\u00a1 los campos seg\u00c3\u00ban tu selecci\u00c3\u00b3n",
     "template_warnings": "Advertencias de Plantilla",
     "template_warning_hint": "Revisa estas advertencias antes de publicar",
-    "product_description": "Descripción",
+    "product_description": "Descripci\u00c3\u00b3n",
     "unlock": "Desbloquear",
     "lock": "Bloquear",
-    "description_locked": "La descripción está bloqueada y no se auto-completará",
-    "seo_settings": "Configuración SEO",
-    "seo_title": "Título SEO",
-    "seo_description": "Descripción SEO",
+    "description_locked": "La descripci\u00c3\u00b3n est\u00c3\u00a1 bloqueada y no se auto-completar\u00c3\u00a1",
+    "seo_settings": "Configuraci\u00c3\u00b3n SEO",
+    "seo_title": "T\u00c3\u00adtulo SEO",
+    "seo_description": "Descripci\u00c3\u00b3n SEO",
     "finish": "Acabado",
     "usage": "Uso",
     "price": "Precio",
@@ -385,14 +394,14 @@
     "cover_required": "Imagen de Portada Requerida",
     "cover_placeholder": "Subir imagen de portada",
     "cancel": "Cancelar",
-    "back": "Atrás",
+    "back": "Atr\u00c3\u00a1s",
     "next": "Siguiente",
     "save_draft": "Guardar como Borrador",
     "publish": "Publicar",
     "delete_product": "Eliminar Producto",
-    "confirm_delete": "¿Estás seguro de que quieres eliminar este elemento?",
+    "confirm_delete": "\u00c2\u00bfEst\u00c3\u00a1s seguro de que quieres eliminar este elemento?",
     "save": "Guardar",
-    "no_images": "No se encontraron imágenes",
+    "no_images": "No se encontraron im\u00c3\u00a1genes",
     "upload_first_image": "Sube tu primera imagen",
     "image_file": "Archivo de Imagen",
     "delete_image": "Eliminar Imagen",
@@ -411,10 +420,10 @@
     "total": "Total",
     "view_detail": "Ver Detalles",
     "update_status": "Actualizar Estado",
-    "customer_info": "Información del Cliente",
-    "shipping_info": "Información de Envío",
+    "customer_info": "Informaci\u00c3\u00b3n del Cliente",
+    "shipping_info": "Informaci\u00c3\u00b3n de Env\u00c3\u00ado",
     "tracking": "Seguimiento",
-    "order_items": "Artículos del Pedido",
+    "order_items": "Art\u00c3\u00adculos del Pedido",
     "notes": "Notas",
     "new_status": "Nuevo Estado",
     "users_description": "Gestionar cuentas de usuario y permisos",
@@ -439,51 +448,190 @@
     "new_role": "Nuevo Rol",
     "confirm": "Confirmar",
     "catalog": {
-      "title": "Gestión de Catálogo",
-      "subtitle": "Gestionar modelos, categorías y atributos de productos",
-      "categories": "Categorías",
+      "title": "Gesti\u00c3\u00b3n de Cat\u00c3\u00a1logo",
+      "subtitle": "Gestionar modelos, categor\u00c3\u00adas y atributos de productos",
+      "categories": "Categor\u00c3\u00adas",
       "models": "Modelos",
       "tags": "Etiquetas",
-      "sizes": "Tamaños",
-      "new_category": "Nueva Categoría",
-      "no_categories": "No se encontraron categorías",
+      "sizes": "Tama\u00c3\u00b1os",
+      "new_category": "Nueva Categor\u00c3\u00ada",
+      "no_categories": "No se encontraron categor\u00c3\u00adas",
       "inactive": "Inactivo",
       "slug": "Slug",
       "order": "Orden",
-      "edit_category": "Editar Categoría",
+      "edit_category": "Editar Categor\u00c3\u00ada",
       "saving": "Guardando...",
       "edit_model": "Editar Modelo",
       "new_model": "Nuevo Modelo",
-      "edit_size": "Editar Tamaño",
-      "new_size": "Nuevo Tamaño",
-      "confirm_delete_title": "Confirmar Eliminación",
-      "confirm_delete_message": "¿Estás seguro de que quieres eliminar",
-      "confirm_delete_warning": "Esta acción no se puede deshacer.",
+      "edit_size": "Editar Tama\u00c3\u00b1o",
+      "new_size": "Nuevo Tama\u00c3\u00b1o",
+      "confirm_delete_title": "Confirmar Eliminaci\u00c3\u00b3n",
+      "confirm_delete_message": "\u00c2\u00bfEst\u00c3\u00a1s seguro de que quieres eliminar",
+      "confirm_delete_warning": "Esta acci\u00c3\u00b3n no se puede deshacer.",
       "deleting": "Eliminando..."
     },
     "seed": {
       "title": "Semilla de Base de Datos",
-      "subtitle": "Inicializar Firestore con categorías, modelos y plantillas",
+      "subtitle": "Inicializar Firestore con categor\u00c3\u00adas, modelos y plantillas",
       "operations": "Operaciones de Semilla",
-      "operations_hint": "Esto creará datos iniciales en Firestore",
+      "operations_hint": "Esto crear\u00c3\u00a1 datos iniciales en Firestore",
       "run_seed": "Ejecutar Semilla",
       "seeding": "Sembrando...",
-      "categories": "Categorías",
+      "categories": "Categor\u00c3\u00adas",
       "categories_count": "3 tipos de grosor",
-      "categories_list": "Categorías de Hardware de Minería",
+      "categories_list": "Categor\u00c3\u00adas de Hardware de Miner\u00c3\u00ada",
       "email_orders": "Pedidos por Email",
       "models": "Modelos",
       "models_count": "12 modelos de hardware",
       "models_list": "Black Gold, Saint Laurent...",
       "templates": "Plantillas",
       "templates_count": "3 plantillas globales",
-      "templates_list": "Descripción, SEO, Meta",
-      "success_title": "¡Semilla Completada Exitosamente!",
+      "templates_list": "Descripci\u00c3\u00b3n, SEO, Meta",
+      "success_title": "\u00c2\u00a1Semilla Completada Exitosamente!",
       "success_message": "Tu base de datos Firestore ha sido inicializada con datos de semilla.",
-      "error_title": "Falló la Semilla",
+      "error_title": "Fall\u00c3\u00b3 la Semilla",
       "console_output": "Salida de Consola",
       "clear": "Limpiar",
       "back_to_products": "Volver a Productos Admin"
-    }
+    },
+    "analytics": {
+      "title": "Panel de Analitica",
+      "subtitle": "Monitorea tendencias de conversion, actividad de clientes y estado del catalogo",
+      "eyebrow": "Resumen de rendimiento",
+      "period": {
+        "today": "Hoy",
+        "week": "Ultimos 7 dias",
+        "month": "Este mes",
+        "year": "Este ano"
+      },
+      "metrics": {
+        "total_orders": "Pedidos",
+        "revenue": "Ingresos",
+        "average_order_value": "Ticket promedio",
+        "new_customers": "Nuevos clientes",
+        "products_updated": "Modelos actualizados",
+        "gallery_uploads": "Subidas de galeria"
+      },
+      "recent_activity": "Actividad reciente",
+      "showing_period": "Mostrando estadisticas de {{period}}",
+      "no_activity": "Sin actividad registrada en este periodo",
+      "future_title": "Nuevas metricas muy pronto",
+      "future_description": "Estamos desarrollando paneles interactivos con ingresos, rendimiento por modelo, demanda geografica y embudos de conversion. Este es el estado del roadmap.",
+      "future_status": {
+        "in_discovery": "Descubrimiento",
+        "in_design": "En diseno",
+        "in_development": "En desarrollo",
+        "internal_beta": "Beta interna"
+      },
+      "future_items": {
+        "charts": {
+          "title": "Graficas de ingresos interactivos",
+          "description": "Dashboard en tiempo real con ingresos, beneficios y ROI, filtros por modelo y exportacion CSV.",
+          "status": "admin.analytics.future_status.internal_beta"
+        },
+        "top_products": {
+          "title": "Modelos con mejor rendimiento",
+          "description": "Reportes segmentados para detectar los mineros con mayor conversion, picos estacionales y ventas asociadas.",
+          "status": "admin.analytics.future_status.in_development"
+        },
+        "geo": {
+          "title": "Mapa de demanda geografica",
+          "description": "Heatmaps de solicitudes y conversiones para priorizar expansion en LATAM, Europa y APAC.",
+          "status": "admin.analytics.future_status.in_design"
+        },
+        "funnels": {
+          "title": "Embudos de conversion",
+          "description": "Seguimiento paso a paso desde la vista inicial hasta el pedido pagado, identificando puntos de fuga.",
+          "status": "admin.analytics.future_status.in_discovery"
+        }
+      }
+    },
+    "models": {
+      "title": "Biblioteca de modelos",
+      "subtitle": "Gestiona modelos, valores por defecto y organizacion del catalogo",
+      "actions": {
+        "add": "Agregar modelo",
+        "edit": "Editar",
+        "delete": "Eliminar",
+        "create": "Crear modelo",
+        "update": "Actualizar modelo",
+        "cancel": "Cancelar",
+        "create_first": "Crear primer modelo"
+      },
+      "filters": {
+        "search_placeholder": "Buscar modelos...",
+        "status_label": "Estado",
+        "status_all": "Todos",
+        "status_active": "Activos",
+        "status_inactive": "Inactivos"
+      },
+      "table": {
+        "name": "Nombre",
+        "slug": "Slug",
+        "category": "Categoria",
+        "status": "Estado",
+        "actions": "Acciones",
+        "active": "Activo",
+        "inactive": "Inactivo",
+        "unassigned": "Sin asignar"
+      },
+      "empty": "No hay modelos que coincidan con los filtros",
+      "messages": {
+        "name_required": "El nombre es obligatorio",
+        "slug_exists": "El slug \"{{slug}}\" ya existe",
+        "created": "Modelo creado correctamente",
+        "updated": "Modelo actualizado correctamente",
+        "deleted": "Modelo eliminado correctamente",
+        "save_failed": "No se pudo guardar el modelo. Intenta nuevamente.",
+        "delete_failed": "No se pudo eliminar el modelo. Intenta nuevamente.",
+        "confirm_delete": "Eliminar el modelo \"{{name}}\"? Esta accion no se puede deshacer."
+      },
+      "modal": {
+        "new_title": "Nuevo modelo",
+        "edit_title": "Editar modelo"
+      },
+      "fields": {
+        "name": "Nombre del modelo",
+        "name_placeholder": "Ingresa el nombre",
+        "slug": "Slug",
+        "slug_help": "Identificador en minusculas sin espacios.",
+        "category": "Categoria",
+        "texture_hints": "Pistas de textura",
+        "texture_hints_placeholder": "ej. acabado satinado\npiedra pulida",
+        "texture_hints_help": "Una pista por linea. Ejemplos de acabados o alias.",
+        "default_tags": "Etiquetas por defecto",
+        "default_tags_placeholder": "ej. premium, flagship, hashpower",
+        "default_tags_help": "Separadas por coma. Se agregan a los productos nuevos de este modelo.",
+        "active": "Activo"
+      }
+    },
+    "settings": {
+      "title": "Configuracion y ajustes",
+      "subtitle": "Gestiona la configuracion del sitio, las integraciones y los ajustes clave.",
+      "actions": {
+        "save": "Guardar todos los ajustes",
+        "saving": "Guardando...",
+        "lock": "Bloquear",
+        "unlock": "Desbloquear",
+        "show": "Mostrar",
+        "hide": "Ocultar"
+      },
+      "states": {
+        "enabled": "Activado",
+        "disabled": "Desactivado"
+      },
+      "feedback": {
+        "success": "Configuraci\u00f3n guardada correctamente.",
+        "error_details": "No se pudieron guardar los ajustes: {{message}}"
+      }
+    },
+    "total_revenue": "Ingresos totales"
+  },
+  "maintenance": {
+    "title": "Volvemos en breve",
+    "support": "\u00bfNecesitas ayuda urgente? Contacta a nuestro equipo:",
+    "email_label": "Correo:",
+    "phone_label": "Tel\u00e9fono:",
+    "admin_link": "Acceso administradores"
   }
 }

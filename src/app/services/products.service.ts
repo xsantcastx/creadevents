@@ -6,6 +6,8 @@ import { Product as CatalogProduct, TemplateComposition, ProductFormData } from 
 import { CategoryService } from './category.service';
 import { ModelService } from './model.service';
 import { TemplateService } from './template.service';
+import { SettingsService } from './settings.service';
+import { EmailService } from './email.service';
 
 @Injectable({
   providedIn: 'root'
@@ -15,6 +17,8 @@ export class ProductsService {
   private categoryService = inject(CategoryService);
   private modelService = inject(ModelService);
   private templateService = inject(TemplateService);
+  private settingsService = inject(SettingsService);
+  private emailService = inject(EmailService);
 
   /**
    * Generate auto-filled data for a product based on templates
@@ -184,9 +188,57 @@ export class ProductsService {
       const cleanedData = this.removeUndefinedFields(updateData);
       
       await updateDoc(docRef, cleanedData);
+      
+      // Check for low stock alert after update
+      if (updates.stock !== undefined) {
+        await this.checkLowStockAlert(id, updates.stock, updates.name || 'Product');
+      }
     } catch (error) {
       console.error('Error updating product:', error);
       throw error;
+    }
+  }
+
+  /**
+   * Check if product stock is low and send alert email if enabled
+   */
+  private async checkLowStockAlert(productId: string, stock: number, productName: string): Promise<void> {
+    try {
+      const settings = await this.settingsService.getSettings();
+      
+      // Only send alert if lowStockAlerts is enabled and stock is below threshold
+      if (settings.lowStockAlerts && stock <= settings.lowStockThreshold) {
+        console.log(`[ProductsService] Low stock detected for ${productName}: ${stock} units (threshold: ${settings.lowStockThreshold})`);
+        
+        const emailData = {
+          to: settings.notificationEmail || settings.contactEmail,
+          subject: `⚠️ Low Stock Alert: ${productName}`,
+          html: `
+            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+              <h2 style="color: #d97706;">⚠️ Low Stock Alert</h2>
+              <p>The following product has low stock and needs attention:</p>
+              <div style="background-color: #fef3c7; border-left: 4px solid #f59e0b; padding: 15px; margin: 20px 0;">
+                <h3 style="margin: 0 0 10px 0;">${productName}</h3>
+                <p style="margin: 5px 0;"><strong>Product ID:</strong> ${productId}</p>
+                <p style="margin: 5px 0;"><strong>Current Stock:</strong> ${stock} units</p>
+                <p style="margin: 5px 0;"><strong>Low Stock Threshold:</strong> ${settings.lowStockThreshold} units</p>
+              </div>
+              <p>Please consider restocking this product to avoid running out of inventory.</p>
+              <p style="color: #6b7280; font-size: 12px; margin-top: 30px;">
+                This is an automated notification from TheLuxMining inventory system.
+              </p>
+            </div>
+          `
+        };
+        
+        const result = await this.emailService.queueEmail(emailData);
+        if (result.success) {
+          console.log(`[ProductsService] Low stock alert email queued for ${productName}`);
+        }
+      }
+    } catch (error) {
+      console.error('[ProductsService] Error sending low stock alert:', error);
+      // Don't throw - alert failure shouldn't break product update
     }
   }
 

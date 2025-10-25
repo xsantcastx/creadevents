@@ -7,6 +7,7 @@ import { GalleryService, GalleryImage } from '../../services/gallery.service';
 import { HomeHeroComponent } from '../../features/home/home-hero/home-hero.component';
 import { HomeStatsComponent } from '../../features/home/home-stats/home-stats.component';
 import { LoadingComponentBase } from '../../core/classes/loading-component.base';
+import { MetaService } from '../../services/meta.service';
 import { take } from 'rxjs/operators';
 
 @Component({
@@ -20,6 +21,7 @@ export class HomePageComponent extends LoadingComponentBase implements OnInit {
   private platformId = inject(PLATFORM_ID);
   private productService = inject(ProductFirestoreService);
   private galleryService = inject(GalleryService);
+  private metaService = inject(MetaService);
   
   // Dynamic product data from Firestore
   featuredProducts: FirestoreProduct[] = [];
@@ -27,6 +29,12 @@ export class HomePageComponent extends LoadingComponentBase implements OnInit {
   hasProducts = false;
 
   ngOnInit() {
+    // Set page meta tags from settings
+    this.metaService.setPageMeta({
+      title: 'HOME.TITLE',
+      description: 'HOME.DESCRIPTION'
+    });
+
     // Only load from service if in browser (not during SSR)
     if (isPlatformBrowser(this.platformId)) {
       this.loadLatestProducts();

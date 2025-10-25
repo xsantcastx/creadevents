@@ -4,6 +4,8 @@ import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angula
 import { Router, RouterLink } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { AuthService } from '../../../services/auth.service';
+import { SettingsService } from '../../../services/settings.service';
+import { RecaptchaService } from '../../../services/recaptcha.service';
 
 @Component({
   selector: 'app-register-page',
@@ -16,12 +18,15 @@ export class RegisterPageComponent {
   private fb = inject(FormBuilder);
   private authService = inject(AuthService);
   private router = inject(Router);
+  private settingsService = inject(SettingsService);
+  private recaptchaService = inject(RecaptchaService);
 
   registerForm: FormGroup;
   isLoading = false;
   errorMessage = '';
   showPassword = false;
   showConfirmPassword = false;
+  passwordMinLength = 6; // Default, will be updated from settings
 
   constructor() {
     this.registerForm = this.fb.group({
@@ -32,6 +37,26 @@ export class RegisterPageComponent {
       password: ['', [Validators.required, Validators.minLength(6)]],
       confirmPassword: ['', [Validators.required]]
     }, { validators: this.passwordMatchValidator });
+    
+    // Load password min length from settings
+    this.loadPasswordRequirements();
+  }
+
+  async loadPasswordRequirements() {
+    const settings = await this.settingsService.getSettings();
+    this.passwordMinLength = settings.passwordMinLength;
+    
+    // Update password validator with new min length
+    const passwordControl = this.registerForm.get('password');
+    if (passwordControl) {
+      passwordControl.setValidators([
+        Validators.required, 
+        Validators.minLength(settings.passwordMinLength)
+      ]);
+      passwordControl.updateValueAndValidity();
+    }
+    
+    console.log('[RegisterPage] Password min length set to:', settings.passwordMinLength);
   }
 
   passwordMatchValidator(group: FormGroup) {
@@ -58,6 +83,12 @@ export class RegisterPageComponent {
     this.errorMessage = '';
 
     try {
+      // Execute reCAPTCHA if enabled
+      const recaptchaToken = await this.recaptchaService.execute('register');
+      if (recaptchaToken) {
+        console.log('[RegisterPage] reCAPTCHA token obtained for registration');
+      }
+
       const { email, password, displayName, company } = this.registerForm.value;
       await this.authService.register(email, password, displayName, company);
       
@@ -72,7 +103,7 @@ export class RegisterPageComponent {
       } else if (error.code === 'auth/weak-password') {
         this.errorMessage = 'client.errors.weak_password';
       } else {
-        this.errorMessage = 'client.errors.registration_failed';
+        this.errorMessage = error.message || 'client.errors.registration_failed';
       }
     } finally {
       this.isLoading = false;

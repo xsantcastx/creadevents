@@ -111,12 +111,6 @@ export const routes: Routes = [
     title: 'TheLuxMining | Gallery Management'
   },
   {
-    path: 'admin/catalog',
-    loadComponent: () => import('./pages/admin/catalog/catalog-admin.page').then(m => m.CatalogAdminComponent),
-    canActivate: [adminGuard],
-    title: 'TheLuxMining | Catalog Management'
-  },
-  {
     path: 'admin/orders',
     loadComponent: () => import('./pages/admin/orders/orders-admin.page').then(m => m.OrdersAdminComponent),
     canActivate: [adminGuard],
@@ -133,6 +127,30 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/admin/benefit-templates/benefit-templates-admin.page').then(m => m.BenefitTemplatesAdminComponent),
     canActivate: [adminGuard],
     title: 'TheLuxMining | Benefit Templates'
+  },
+  {
+    path: 'admin/analytics',
+    loadComponent: () => import('./pages/admin/analytics/analytics-admin.page').then(m => m.AnalyticsAdminComponent),
+    canActivate: [adminGuard],
+    title: 'TheLuxMining | Analytics Dashboard'
+  },
+  {
+    path: 'admin/settings',
+    loadComponent: () => import('./pages/admin/settings/settings-admin.page').then(m => m.SettingsAdminComponent),
+    canActivate: [adminGuard],
+    title: 'TheLuxMining | Settings'
+  },
+  {
+    path: 'admin/email-templates',
+    loadComponent: () => import('./pages/admin/email-templates/email-templates-admin.page').then(m => m.EmailTemplatesAdminComponent),
+    canActivate: [adminGuard],
+    title: 'TheLuxMining | Email Templates'
+  },
+  {
+    path: 'admin/size-groups',
+    loadComponent: () => import('./pages/admin/size-groups/size-groups-admin.page').then(m => m.SizeGroupsAdminComponent),
+    canActivate: [adminGuard],
+    title: 'TheLuxMining | Size Groups Management'
   },
   {
     path: '404',

@@ -20,6 +20,8 @@ import {
   orderBy
 } from '@angular/fire/firestore';
 import { Observable, from, of, switchMap } from 'rxjs';
+import { SettingsService } from './settings.service';
+import { EmailService } from './email.service';
 
 export interface UserProfile {
   uid: string;
@@ -32,6 +34,9 @@ export interface UserProfile {
   updatedAt?: Date;
   disabled?: boolean;
   lastLogin?: Date;
+  loginAttempts?: number;
+  lastFailedLogin?: Date;
+  lockedUntil?: Date;
 }
 
 @Injectable({
@@ -40,6 +45,8 @@ export interface UserProfile {
 export class AuthService {
   private auth = inject(Auth);
   private firestore = inject(Firestore);
+  private settingsService = inject(SettingsService);
+  private emailService = inject(EmailService);
   
   // Observable of current user
   user$ = user(this.auth);
@@ -54,6 +61,30 @@ export class AuthService {
 
   // Register new user
   async register(email: string, password: string, displayName: string, company?: string): Promise<User> {
+    // Get security settings
+    const settings = await this.settingsService.getSettings();
+    
+    // Validate email domain if allowedDomains is configured
+    if (settings.allowedDomains && settings.allowedDomains.trim()) {
+      const emailDomain = email.split('@')[1]?.toLowerCase();
+      const allowedDomains = settings.allowedDomains
+        .split(',')
+        .map(d => d.trim().toLowerCase())
+        .filter(d => d.length > 0);
+      
+      if (allowedDomains.length > 0 && !allowedDomains.includes(emailDomain)) {
+        console.warn(`[AuthService] Email domain ${emailDomain} not in allowed list:`, allowedDomains);
+        throw new Error(`Registration is restricted to the following email domains: ${settings.allowedDomains}`);
+      }
+      
+      console.log(`[AuthService] Email domain ${emailDomain} is allowed`);
+    }
+    
+    // Validate password length
+    if (password.length < settings.passwordMinLength) {
+      throw new Error(`Password must be at least ${settings.passwordMinLength} characters long`);
+    }
+
     const userCredential = await createUserWithEmailAndPassword(this.auth, email, password);
     const user = userCredential.user;
 
@@ -67,16 +98,103 @@ export class AuthService {
       displayName: displayName,
       company: company,
       role: 'client',
-      createdAt: new Date()
+      createdAt: new Date(),
+      loginAttempts: 0
     });
+    
+    // Send new user notification email if enabled
+    await this.sendNewUserNotification(user.uid, email, displayName);
 
     return user;
   }
 
   // Sign in
   async signIn(email: string, password: string): Promise<User> {
-    const userCredential = await signInWithEmailAndPassword(this.auth, email, password);
-    return userCredential.user;
+    // Get security settings
+    const settings = await this.settingsService.getSettings();
+    
+    try {
+      // Check if we can find the user profile by email to check for locks
+      const usersCol = collection(this.firestore, 'users');
+      const snapshot = await getDocs(usersCol);
+      const userDocs = snapshot.docs.filter(doc => doc.data()['email'] === email);
+      
+      if (userDocs.length > 0) {
+        const userData = userDocs[0].data() as UserProfile;
+        
+        // Check if account is locked
+        if (userData.lockedUntil) {
+          const lockedUntil = (userData.lockedUntil as any)?.toDate ? (userData.lockedUntil as any).toDate() : userData.lockedUntil;
+          if (lockedUntil && new Date() < new Date(lockedUntil)) {
+            const minutesLeft = Math.ceil((new Date(lockedUntil).getTime() - Date.now()) / 60000);
+            throw new Error(`Account locked due to too many failed login attempts. Try again in ${minutesLeft} minute(s).`);
+          } else if (lockedUntil && new Date() >= new Date(lockedUntil)) {
+            // Lock expired, reset attempts
+            await updateDoc(doc(this.firestore, `users/${userData.uid}`), {
+              loginAttempts: 0,
+              lockedUntil: null,
+              updatedAt: new Date()
+            });
+          }
+        }
+      }
+      
+      // Attempt sign in
+      const userCredential = await signInWithEmailAndPassword(this.auth, email, password);
+      const user = userCredential.user;
+      
+      // Reset login attempts on successful login
+      const userDoc = doc(this.firestore, `users/${user.uid}`);
+      await updateDoc(userDoc, {
+        lastLogin: new Date(),
+        loginAttempts: 0,
+        lockedUntil: null,
+        updatedAt: new Date()
+      });
+      
+      console.log('[AuthService] Successful login, reset attempts for:', user.email);
+      return user;
+      
+    } catch (error: any) {
+      // Handle failed login attempt
+      if (error.code === 'auth/invalid-credential' || error.code === 'auth/wrong-password' || error.code === 'auth/user-not-found') {
+        // Find user profile and increment failed attempts
+        const usersCol = collection(this.firestore, 'users');
+        const snapshot = await getDocs(usersCol);
+        const userDocs = snapshot.docs.filter(doc => doc.data()['email'] === email);
+        
+        if (userDocs.length > 0) {
+          const userData = userDocs[0].data() as UserProfile;
+          const currentAttempts = (userData.loginAttempts || 0) + 1;
+          
+          console.log(`[AuthService] Failed login attempt ${currentAttempts}/${settings.maxLoginAttempts} for:`, email);
+          
+          const updateData: any = {
+            loginAttempts: currentAttempts,
+            lastFailedLogin: new Date(),
+            updatedAt: new Date()
+          };
+          
+          // Lock account if max attempts reached
+          if (currentAttempts >= settings.maxLoginAttempts) {
+            const lockDuration = 15; // Lock for 15 minutes
+            const lockedUntil = new Date(Date.now() + lockDuration * 60000);
+            updateData.lockedUntil = lockedUntil;
+            
+            console.warn(`[AuthService] Account locked until ${lockedUntil} for:`, email);
+            await updateDoc(doc(this.firestore, `users/${userData.uid}`), updateData);
+            
+            throw new Error(`Too many failed login attempts. Account locked for ${lockDuration} minutes.`);
+          }
+          
+          await updateDoc(doc(this.firestore, `users/${userData.uid}`), updateData);
+        }
+        
+        throw new Error('Invalid email or password');
+      }
+      
+      throw error;
+    }
   }
 
   // Sign out
@@ -156,5 +274,92 @@ export class AuthService {
       disabled,
       updatedAt: new Date()
     });
+  }
+
+  /**
+   * Validate password meets minimum length requirement from settings
+   */
+  async validatePassword(password: string): Promise<{ valid: boolean; message?: string }> {
+    const settings = await this.settingsService.getSettings();
+    
+    if (password.length < settings.passwordMinLength) {
+      return {
+        valid: false,
+        message: `Password must be at least ${settings.passwordMinLength} characters long`
+      };
+    }
+    
+    return { valid: true };
+  }
+
+  /**
+   * Check if user session is still valid based on session timeout setting
+   */
+  async isSessionValid(uid: string): Promise<boolean> {
+    const settings = await this.settingsService.getSettings();
+    
+    // If session timeout is 0 or negative, sessions never expire
+    if (settings.sessionTimeout <= 0) {
+      return true;
+    }
+    
+    const profile = await this.getUserProfile(uid);
+    if (!profile || !profile.lastLogin) {
+      return false;
+    }
+    
+    const lastLoginTime = profile.lastLogin instanceof Date 
+      ? profile.lastLogin.getTime() 
+      : (profile.lastLogin as any).toDate().getTime();
+    const sessionTimeoutMs = settings.sessionTimeout * 60000; // Convert minutes to ms
+    const timeSinceLogin = Date.now() - lastLoginTime;
+    
+    return timeSinceLogin <= sessionTimeoutMs;
+  }
+
+  /**
+   * Send new user registration notification email if enabled in settings
+   */
+  private async sendNewUserNotification(uid: string, email: string, displayName: string): Promise<void> {
+    try {
+      const settings = await this.settingsService.getSettings();
+      
+      if (!settings.newUserNotifications) {
+        console.log('[AuthService] New user notifications disabled, skipping email');
+        return;
+      }
+      
+      const recipientEmail = settings.notificationEmail || settings.contactEmail;
+      console.log('[AuthService] Sending new user notification to:', recipientEmail);
+      
+      const emailData = {
+        to: recipientEmail,
+        subject: '🎉 New User Registration - TheLuxMining',
+        html: `
+          <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+            <h2 style="color: #059669;">🎉 New User Registration</h2>
+            <p>A new user has registered on TheLuxMining:</p>
+            <div style="background-color: #d1fae5; border-left: 4px solid #10b981; padding: 15px; margin: 20px 0;">
+              <p style="margin: 5px 0;"><strong>Name:</strong> ${displayName}</p>
+              <p style="margin: 5px 0;"><strong>Email:</strong> ${email}</p>
+              <p style="margin: 5px 0;"><strong>User ID:</strong> ${uid}</p>
+              <p style="margin: 5px 0;"><strong>Registration Date:</strong> ${new Date().toLocaleString('es-ES')}</p>
+            </div>
+            <p>You can manage this user from the admin panel.</p>
+            <p style="color: #6b7280; font-size: 12px; margin-top: 30px;">
+              This is an automated notification from TheLuxMining user management system.
+            </p>
+          </div>
+        `
+      };
+      
+      const result = await this.emailService.queueEmail(emailData);
+      if (result.success) {
+        console.log('[AuthService] New user notification email queued successfully');
+      }
+    } catch (error) {
+      console.error('[AuthService] Error sending new user notification:', error);
+      // Don't throw - notification failure shouldn't break registration
+    }
   }
 }
