@@ -97,7 +97,6 @@
                       [value]="setting.sensitive && setting.showValue ? getDisplayValue(setting) : setting.value"
                       (input)="setting.sensitive && setting.showValue ? null : setting.value = $any($event.target).value"
                       [readonly]="setting.sensitive && setting.showValue"
-                      [ngModelOptions]="{ standalone: true }"
                       [attr.id]="getFieldId(section.title, setting.key)"
                       [attr.name]="getFieldId(section.title, setting.key)"
                       [disabled]="isDisabled(setting)"
