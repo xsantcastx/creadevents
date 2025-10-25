@@ -6,6 +6,15 @@
 
 @include theme.apply-theme(light);
 
+/* Hide reCAPTCHA v3 badge (invisible CAPTCHA) */
+/* Google allows hiding if you include disclosure in privacy policy/terms */
+/* See: https://developers.google.com/recaptcha/docs/faq#id-like-to-hide-the-recaptcha-badge.-what-is-allowed */
+.grecaptcha-badge {
+  visibility: hidden;
+  opacity: 0;
+  pointer-events: none;
+}
+
 :root {
   --ts-accent: #f7931a; /* Bitcoin Orange */
   --bitcoin-gold: #ffb81c;

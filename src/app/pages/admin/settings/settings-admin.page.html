@@ -1,0 +1,192 @@
+
+<div class="min-h-screen bg-ts-bg">
+  <!-- Header -->
+  <div class="bg-gradient-to-r from-ts-bg via-gray-900 to-ts-bg border-b border-white/10">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <h1 class="text-3xl font-bold bitcoin-gradient-text mb-2">
+        {{ 'admin.settings.title' | translate }}
+      </h1>
+      <p class="text-white/70">{{ 'admin.settings.subtitle' | translate }}</p>
+    </div>
+  </div>
+
+  <!-- Quick Actions -->
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-8">
+    <app-admin-quick-actions [currentPage]="'/admin/settings'"></app-admin-quick-actions>
+  </div>
+
+  <!-- Message -->
+  @if (messageKey) {
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-4">
+      <div class="p-4 rounded-xl border"
+           [class.bg-green-500/10]="messageType === 'success'"
+           [class.border-green-500/30]="messageType === 'success'"
+           [class.text-green-400]="messageType === 'success'"
+           [class.bg-red-500/10]="messageType === 'error'"
+           [class.border-red-500/30]="messageType === 'error'"
+           [class.text-red-400]="messageType === 'error'"
+           [class.bg-blue-500/10]="messageType === 'info'"
+           [class.border-blue-500/30]="messageType === 'info'"
+           [class.text-blue-400]="messageType === 'info'">
+        {{ messageKey | translate: messageParams }}
+      </div>
+    </div>
+  }
+
+  <!-- Main Content -->
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    
+    <div class="space-y-6">
+      @for (section of sections; track section.title) {
+        <div class="bg-gray-800/50 border border-white/10 rounded-xl overflow-hidden">
+          <!-- Section Header (Clickable) -->
+          <button 
+            type="button"
+            (click)="toggleSection(section, $event)"
+            class="w-full px-6 py-4 border-b border-white/10 flex items-center gap-3 hover:bg-white/5 transition-colors">
+            <div [class]="getSectionColorClasses(section.color) + ' p-2 rounded-lg border'">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" [attr.d]="section.icon"></path>
+              </svg>
+            </div>
+            <h2 class="text-xl font-bold text-white flex-1 text-left">{{ section.title }}</h2>
+            <!-- Chevron Icon -->
+            <svg 
+              class="w-5 h-5 text-white/70 transition-transform duration-200"
+              [class.rotate-180]="section.expanded"
+              fill="none" 
+              stroke="currentColor" 
+              viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+            </svg>
+          </button>
+
+          <!-- Settings (Collapsible) -->
+          @if (section.expanded) {
+            <div class="p-6 space-y-4">
+              @for (setting of section.settings; track setting.key) {
+              <div>
+                <div class="flex items-center justify-between gap-3 mb-2">
+                  <label class="block text-sm font-medium text-white/70" [attr.for]="setting.type === 'boolean' ? null : getFieldId(section.title, setting.key)">
+                    {{ setting.label }}
+                    @if (setting.description) {
+                      <span class="text-xs text-white/60 font-normal ml-2">{{ setting.description }}</span>
+                    }
+                  </label>
+
+                  <div class="flex items-center gap-2">
+                    @if (setting.sensitive) {
+                      <button type="button"
+                              class="px-2 py-1 text-xs rounded-lg border border-white/20 text-white/70 hover:text-white hover:border-white/50 transition-colors"
+                              (click)="toggleVisibility(setting, $event)">
+                        {{ setting.showValue ? ('admin.settings.actions.hide' | translate) : ('admin.settings.actions.show' | translate) }}
+                      </button>
+                    }
+                    <button type="button"
+                            class="px-2 py-1 text-xs rounded-lg border border-white/20 text-white/70 hover:text-white hover:border-white/50 transition-colors"
+                            (click)="toggleLock(setting, $event)">
+                      {{ setting.locked ? ('admin.settings.actions.unlock' | translate) : ('admin.settings.actions.lock' | translate) }}
+                    </button>
+                  </div>
+                </div>
+
+                @switch (setting.type) {
+                  @case ('text') {
+                    <input
+                      [type]="getInputType(setting)"
+                      [(ngModel)]="setting.value"
+                      [ngModelOptions]="{ standalone: true }"
+                      [attr.id]="getFieldId(section.title, setting.key)"
+                      [attr.name]="getFieldId(section.title, setting.key)"
+                      [disabled]="isDisabled(setting)"
+                      [placeholder]="setting.placeholder || ''"
+                      class="w-full px-4 py-2 bg-gray-900/50 border border-white/10 rounded-lg text-white placeholder-white/60 focus:border-bitcoin-orange focus:ring-1 focus:ring-bitcoin-orange transition-all disabled:opacity-60 disabled:cursor-not-allowed">
+                  }
+                  @case ('textarea') {
+                    <textarea
+                      [(ngModel)]="setting.value"
+                      [ngModelOptions]="{ standalone: true }"
+                      [attr.id]="getFieldId(section.title, setting.key)"
+                      [attr.name]="getFieldId(section.title, setting.key)"
+                      [disabled]="isDisabled(setting)"
+                      [placeholder]="setting.placeholder || ''"
+                      rows="3"
+                      class="w-full px-4 py-2 bg-gray-900/50 border border-white/10 rounded-lg text-white placeholder-white/60 focus:border-bitcoin-orange focus:ring-1 focus:ring-bitcoin-orange transition-all disabled:opacity-60 disabled:cursor-not-allowed"></textarea>
+                  }
+                  @case ('number') {
+                    <input
+                      type="number"
+                      [(ngModel)]="setting.value"
+                      [ngModelOptions]="{ standalone: true }"
+                      [attr.id]="getFieldId(section.title, setting.key)"
+                      [attr.name]="getFieldId(section.title, setting.key)"
+                      [disabled]="isDisabled(setting)"
+                      [placeholder]="setting.placeholder || ''"
+                      class="w-full px-4 py-2 bg-gray-900/50 border border-white/10 rounded-lg text-white placeholder-white/60 focus:border-bitcoin-orange focus:ring-1 focus:ring-bitcoin-orange transition-all disabled:opacity-60 disabled:cursor-not-allowed">
+                  }
+                  @case ('boolean') {
+                    <label class="relative inline-flex items-center cursor-pointer">
+                      <input
+                        type="checkbox"
+                        [(ngModel)]="setting.value"
+                        [ngModelOptions]="{ standalone: true }"
+                        [attr.id]="getFieldId(section.title, setting.key)"
+                        [attr.name]="getFieldId(section.title, setting.key)"
+                        [disabled]="isDisabled(setting)"
+                        class="sr-only peer">
+                      <div class="w-11 h-6 bg-gray-700 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-bitcoin-orange rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-bitcoin-orange"></div>
+                      <span class="ml-3 text-sm font-medium text-white/70">
+                        {{ setting.value ? ('admin.settings.states.enabled' | translate) : ('admin.settings.states.disabled' | translate) }}
+                      </span>
+                    </label>
+                  }
+                  @case ('select') {
+                    <select
+                      [(ngModel)]="setting.value"
+                      [ngModelOptions]="{ standalone: true }"
+                      [attr.id]="getFieldId(section.title, setting.key)"
+                      [attr.name]="getFieldId(section.title, setting.key)"
+                      [disabled]="isDisabled(setting)"
+                      class="w-full px-4 py-2 bg-gray-900/50 border border-white/10 rounded-lg text-white focus:border-bitcoin-orange focus:ring-1 focus:ring-bitcoin-orange transition-all">
+                      @for (option of setting.options; track option.value) {
+                        <option [value]="option.value">{{ option.label }}</option>
+                      }
+                    </select>
+                  }
+                  @case ('image') {
+                    <app-image-picker
+                      [(imageUrl)]="setting.value"
+                      [label]="setting.label"
+                      [storagePath]="setting.storagePath || 'settings'"
+                      [disabled]="isDisabled(setting)"
+                      [helpText]="setting.helpText || 'Upload an image'">
+                    </app-image-picker>
+                  }
+                }
+              </div>
+            }
+          </div>
+          }
+        </div>
+      }
+    </div>
+
+    <!-- Save Button -->
+    <div class="mt-8 flex justify-end">
+      <button
+        (click)="saveSettings()"
+        [disabled]="isSaving"
+        class="px-8 py-3 bg-bitcoin-orange text-white rounded-xl font-semibold hover:bg-bitcoin-orange/90 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2">
+        @if (isSaving) {
+          <svg class="animate-spin h-5 w-5" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+          </svg>
+          {{ 'admin.settings.actions.saving' | translate }}
+        } @else {
+          💾 Save All Settings
+        }
+      </button>
+    </div>
+  </div>
+</div>

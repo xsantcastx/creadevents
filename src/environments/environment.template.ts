@@ -12,6 +12,9 @@ export const environment = {
   stripe: {
     publishableKey: 'pk_test_YOUR_STRIPE_PUBLISHABLE_KEY_HERE' // Stripe test key
   },
+  recaptcha: {
+    siteKey: 'YOUR_RECAPTCHA_V3_SITE_KEY_HERE' // Get from https://www.google.com/recaptcha/admin
+  },
   useEmulators: true // Set to false in production
 };
 
@@ -19,4 +22,5 @@ export const environment = {
 // 1. Copy this file to environment.ts
 // 2. Replace the placeholder values with your actual Firebase config
 // 3. Add your Stripe test publishable key (starts with pk_test_)
-// 4. The actual environment.ts file is gitignored for security
+// 4. Add your reCAPTCHA v3 site key
+// 5. The actual environment.ts file is gitignored for security

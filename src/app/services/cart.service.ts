@@ -6,6 +6,7 @@ import { Cart, CartItem } from '../models/cart';
 import { Firestore, doc, docData, setDoc, Timestamp, serverTimestamp, updateDoc } from '@angular/fire/firestore';
 import { Auth } from '@angular/fire/auth';
 import { switchMap, catchError, tap } from 'rxjs/operators';
+import { SettingsService } from './settings.service';
 
 // Legacy support for old CartItem interface
 interface LegacyCartItem {
@@ -25,6 +26,7 @@ export class CartService {
   private platformId = inject(PLATFORM_ID);
   private firestore = inject(Firestore);
   private auth = inject(Auth);
+  private settingsService = inject(SettingsService);
   
   private cartState$ = new BehaviorSubject<Cart | null>(null);
   readonly cart$ = this.cartState$.asObservable();
@@ -219,6 +221,23 @@ export class CartService {
   }
 
   /**
+   * Update shipping cost manually (used when dynamic shipping is disabled)
+   */
+  async updateShippingCost(cost: number, methodId?: string): Promise<void> {
+    const currentCart = this.cartState$.value;
+    if (!currentCart) {
+      return;
+    }
+
+    currentCart.shipping = Math.max(0, Number.isFinite(cost) ? cost : 0);
+    if (methodId) {
+      currentCart.shippingMethodId = methodId;
+    }
+
+    await this.saveCart(currentCart);
+  }
+
+  /**
    * Save cart to Firestore
    */
   private async saveCart(cart: Cart): Promise<void> {
@@ -279,6 +298,34 @@ export class CartService {
       qty 
     });
 
+    // Get inventory settings
+    const settings = await this.settingsService.getSettings();
+    
+    // Check inventory if tracking is enabled
+    if (settings.trackInventory) {
+      const productStock = product.stock || 0;
+      
+      // Check if product is out of stock and backorders are disabled
+      if (productStock <= 0 && !settings.allowBackorders) {
+        console.warn('[CartService] Product out of stock and backorders disabled:', product.name);
+        throw new Error(`Product "${product.name}" is out of stock`);
+      }
+      
+      // Check if requested quantity exceeds available stock (when backorders disabled)
+      if (!settings.allowBackorders && qty > productStock) {
+        console.warn('[CartService] Requested quantity exceeds stock:', { requested: qty, available: productStock });
+        throw new Error(`Only ${productStock} units available for "${product.name}"`);
+      }
+      
+      console.log('[CartService] Inventory check passed:', { 
+        stock: productStock, 
+        requested: qty, 
+        allowBackorders: settings.allowBackorders 
+      });
+    } else {
+      console.log('[CartService] Inventory tracking disabled, allowing unlimited quantity');
+    }
+
     let currentCart = this.cartState$.value;
     
     // If no cart exists, create one
@@ -314,6 +361,21 @@ export class CartService {
     );
 
     if (existingItemIndex >= 0) {
+      // Check total quantity if inventory tracking enabled
+      if (settings.trackInventory && !settings.allowBackorders) {
+        const newTotalQty = currentCart.items[existingItemIndex].qty + qty;
+        const productStock = product.stock || 0;
+        if (newTotalQty > productStock) {
+          console.warn('[CartService] Total cart quantity would exceed stock:', { 
+            currentQty: currentCart.items[existingItemIndex].qty, 
+            adding: qty, 
+            total: newTotalQty, 
+            available: productStock 
+          });
+          throw new Error(`Cannot add more. Only ${productStock} units available for "${product.name}"`);
+        }
+      }
+      
       // Update quantity
       currentCart.items[existingItemIndex].qty += qty;
       console.log('[CartService] Updated existing item quantity:', currentCart.items[existingItemIndex]);

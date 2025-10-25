@@ -2,15 +2,35 @@ import { Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { CartService } from '../../services/cart.service';
 import { AddressService } from '../../services/address.service';
 import { ShippingService, ShippingMethod } from '../../services/shipping.service';
+import { SettingsService, AppSettings } from '../../services/settings.service';
 import { Auth } from '@angular/fire/auth';
 import { map, startWith } from 'rxjs/operators';
-import { combineLatest } from 'rxjs';
+import { combineLatest, Observable } from 'rxjs';
 import { PageHeaderComponent, Breadcrumb } from '../../shared/components/page-header/page-header.component';
 import { Address } from '../../models/cart';
+
+interface CartViewModel {
+  items: Array<{
+    product: {
+      id: string;
+      name: string;
+      imageUrl?: string;
+      sku: string;
+      grosor?: string;
+      price: number;
+    };
+    qty: number;
+  }>;
+  subtotal: number;
+  shipping: number;
+  tax: number;
+  total: number;
+  currency: string;
+}
 
 @Component({
   standalone: true,
@@ -25,6 +45,8 @@ export class CartPage implements OnInit {
   private fb = inject(FormBuilder);
   private addressService = inject(AddressService);
   private shippingService = inject(ShippingService);
+  private settingsService = inject(SettingsService);
+  private translate = inject(TranslateService);
   cart = inject(CartService);
 
   // State
@@ -36,6 +58,7 @@ export class CartPage implements OnInit {
   shippingMethods = signal<ShippingMethod[]>([]);
   selectedShippingMethod = signal<ShippingMethod | null>(null);
   cartId = signal<string | null>(null);
+  shippingSettings = signal<AppSettings | null>(null);
 
   // Breadcrumbs for navigation
   breadcrumbs: Breadcrumb[] = [
@@ -66,7 +89,7 @@ export class CartPage implements OnInit {
   });
 
   // Map cart to display-friendly format
-  vm$ = combineLatest([
+  vm$: Observable<CartViewModel> = combineLatest([
     this.cart.cart$,
     this.checkoutForm.valueChanges.pipe(startWith(this.checkoutForm.value))
   ]).pipe(
@@ -91,10 +114,22 @@ export class CartPage implements OnInit {
   );
 
   ngOnInit() {
+    this.settingsService.settings$.subscribe(settings => {
+      this.shippingSettings.set(settings);
+      if (settings && !settings.shippingEnabled) {
+        this.applyStaticShipping();
+      }
+    });
+    this.settingsService.getSettings().then(settings => this.shippingSettings.set(settings));
+
     // Subscribe to cart changes to track cart ID
     this.cart.cart$.subscribe(cart => {
       if (cart?.id) {
         this.cartId.set(cart.id);
+      }
+      const settings = this.shippingSettings();
+      if (settings && !settings.shippingEnabled && cart?.items?.length) {
+        this.applyStaticShipping();
       }
     });
     
@@ -177,6 +212,11 @@ export class CartPage implements OnInit {
     const method = this.shippingMethods().find(m => m.id === methodId);
     if (method) {
       this.selectedShippingMethod.set(method);
+      const settings = this.shippingSettings();
+      if (settings && !settings.shippingEnabled) {
+        this.cart.updateShippingCost(method.cost, method.id);
+        return;
+      }
       
       // Recalculate cart totals with the new shipping method
       const address = this.selectedAddress();
@@ -210,6 +250,10 @@ export class CartPage implements OnInit {
 
     this.calculatingShipping.set(true);
 
+    if (this.applyStaticShipping(address)) {
+      return;
+    }
+
     this.shippingService.calculateShipping(cartSnapshot.id, {
       country: address.country,
       region: address.region,
@@ -229,9 +273,65 @@ export class CartPage implements OnInit {
       },
       error: (err) => {
         console.error('Shipping calculation error:', err);
-        this.calculatingShipping.set(false);
+        if (!this.applyStaticShipping(address)) {
+          this.calculatingShipping.set(false);
+        }
       }
     });
+  }
+
+  private applyStaticShipping(_address?: Address | null): boolean {
+    const settings = this.shippingSettings();
+    if (!settings || settings.shippingEnabled) {
+      return false;
+    }
+
+    const cartSnapshot = this.cart.snapshot();
+    if (!cartSnapshot) {
+      this.calculatingShipping.set(false);
+      return true;
+    }
+
+    const subtotal = cartSnapshot.subtotal || 0;
+    const freeThreshold = settings.freeShippingThreshold ?? 0;
+    const baseCost = settings.defaultShippingCost ?? 0;
+    const shippingCost = freeThreshold > 0 && subtotal >= freeThreshold ? 0 : baseCost;
+
+    const currentShipping = cartSnapshot.shipping ?? 0;
+    const currentMethod = cartSnapshot.shippingMethodId;
+    if (Math.abs(currentShipping - shippingCost) < 0.01 && currentMethod === 'flat-rate') {
+      if (!this.shippingMethods().length) {
+        const methodSnapshot: ShippingMethod = {
+          id: 'flat-rate',
+          name: this.translate.instant('cart.shipping.flat_rate'),
+          description: settings.shippingEstimate || this.translate.instant('cart.shipping.estimate_default'),
+          cost: shippingCost,
+          currency: cartSnapshot.currency || 'USD',
+          estimatedDays: settings.shippingEstimate || ''
+        };
+        this.shippingMethods.set([methodSnapshot]);
+        this.selectedShippingMethod.set(methodSnapshot);
+        this.checkoutForm.patchValue({ shippingMethodId: methodSnapshot.id }, { emitEvent: false });
+      }
+      this.calculatingShipping.set(false);
+      return true;
+    }
+
+    const method: ShippingMethod = {
+      id: 'flat-rate',
+      name: this.translate.instant('cart.shipping.flat_rate'),
+      description: settings.shippingEstimate || this.translate.instant('cart.shipping.estimate_default'),
+      cost: shippingCost,
+      currency: cartSnapshot.currency || 'USD',
+      estimatedDays: settings.shippingEstimate || ''
+    };
+
+    this.shippingMethods.set([method]);
+    this.selectedShippingMethod.set(method);
+    this.checkoutForm.patchValue({ shippingMethodId: method.id }, { emitEvent: false });
+    this.cart.updateShippingCost(shippingCost, method.id);
+    this.calculatingShipping.set(false);
+    return true;
   }
 
   /**
@@ -388,3 +488,5 @@ export class CartPage implements OnInit {
     }).format(amount);
   }
 }
+
+

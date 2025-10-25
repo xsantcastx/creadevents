@@ -1,9 +1,10 @@
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import { Router, RouterLink } from '@angular/router';
+import { Router, RouterLink, ActivatedRoute } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { AuthService } from '../../../services/auth.service';
+import { RecaptchaService } from '../../../services/recaptcha.service';
 
 @Component({
   selector: 'app-login-page',
@@ -16,16 +17,26 @@ export class LoginPageComponent {
   private fb = inject(FormBuilder);
   private authService = inject(AuthService);
   private router = inject(Router);
+  private route = inject(ActivatedRoute);
+  private recaptchaService = inject(RecaptchaService);
 
   loginForm: FormGroup;
   isLoading = false;
   errorMessage = '';
   showPassword = false;
+  sessionExpiredMessage = '';
 
   constructor() {
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(6)]]
+    });
+    
+    // Check if redirected due to session expiration
+    this.route.queryParams.subscribe(params => {
+      if (params['sessionExpired'] === 'true') {
+        this.sessionExpiredMessage = 'Your session has expired. Please log in again.';
+      }
     });
   }
 
@@ -43,6 +54,12 @@ export class LoginPageComponent {
     this.errorMessage = '';
 
     try {
+      // Execute reCAPTCHA if enabled
+      const recaptchaToken = await this.recaptchaService.execute('login');
+      if (recaptchaToken) {
+        console.log('[LoginPage] reCAPTCHA token obtained for login');
+      }
+
       const { email, password } = this.loginForm.value;
       await this.authService.signIn(email, password);
       
@@ -59,7 +76,7 @@ export class LoginPageComponent {
       } else if (error.code === 'auth/invalid-credential') {
         this.errorMessage = 'client.errors.invalid_credentials';
       } else {
-        this.errorMessage = 'client.errors.login_failed';
+        this.errorMessage = error.message || 'client.errors.login_failed';
       }
     } finally {
       this.isLoading = false;

@@ -1,10 +1,51 @@
-<app-navbar></app-navbar>
+@if (shouldShowMaintenancePage) {
+  <section class="min-h-screen bg-gradient-to-br from-[#0a0b0d] via-[#13151a] to-[#0a0b0d] flex items-center justify-center px-6 py-16 text-center">
+    <div class="max-w-3xl space-y-8">
+      <div class="space-y-4">
+        <h1 class="text-3xl md:text-4xl font-bold bitcoin-gradient-text">{{ 'maintenance.title' | translate }}</h1>
+        <p class="text-white/70 text-base md:text-lg whitespace-pre-line">{{ maintenanceMessage }}</p>
+      </div>
 
-<main id="main-content" class="min-h-screen">
-  <router-outlet></router-outlet>
-</main>
+      <div class="bg-bitcoin-dark/60 border border-bitcoin-orange/30 rounded-2xl px-6 py-8 space-y-4">
+        <p class="text-white/70">{{ 'maintenance.support' | translate }}</p>
+        <div class="space-y-2 text-sm text-white/80">
+          @if (contactEmail) {
+            <a [href]="'mailto:' + contactEmail" class="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-xl bg-bitcoin-orange/20 text-bitcoin-orange border border-bitcoin-orange/40 hover:bg-bitcoin-orange/30 transition-colors">
+              <span>{{ 'maintenance.email_label' | translate }}</span>
+              <span class="font-semibold">{{ contactEmail }}</span>
+            </a>
+          }
+          @if (contactPhone) {
+            <div class="flex items-center justify-center gap-2">
+              <span>{{ 'maintenance.phone_label' | translate }}</span>
+              <span class="font-semibold text-white">{{ contactPhone }}</span>
+            </div>
+          }
+          @if (contactAddress) {
+            <p class="text-white/60 text-sm whitespace-pre-line">{{ contactAddress }}</p>
+          }
+        </div>
+      </div>
 
-<app-footer></app-footer>
+      <div>
+        <a (click)="navigateToLogin()" class="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-transparent border border-white/30 text-white/80 hover:text-white hover:border-white transition-colors cursor-pointer">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 3h4a2 2 0 012 2v4M9 21H5a2 2 0 01-2-2v-4m4 0l3 3m0 0l3-3m-3 3V8" />
+          </svg>
+          <span>{{ 'maintenance.admin_link' | translate }}</span>
+        </a>
+      </div>
+    </div>
+  </section>
+} @else {
+  <app-navbar></app-navbar>
+
+  <main id="main-content" class="min-h-screen">
+    <router-outlet></router-outlet>
+  </main>
+
+  <app-footer></app-footer>
+}
 
 <!-- Cookie Consent Banner (GDPR Compliant) -->
 <app-cookie-banner></app-cookie-banner>

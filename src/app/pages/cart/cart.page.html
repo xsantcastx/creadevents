@@ -150,13 +150,6 @@
 
       <!-- Shipping Address Section (only for logged in users with items) -->
       <div class="space-y-6" *ngIf="vm.items.length > 0 && auth.currentUser">
-        <!-- Debug Info (remove after testing) -->
-        <div class="p-4 bg-red-900/20 border border-red-500/30 rounded-lg text-xs">
-          <p class="text-red-300 mb-1">Debug: Addresses count: {{ addresses().length }}</p>
-          <p class="text-red-300 mb-1">Selected: {{ selectedAddress()?.id || 'none' }}</p>
-          <p class="text-red-300">Form value: {{ checkoutForm.value.addressId }}</p>
-        </div>
-        
         <!-- Start checkoutForm here, BEFORE address section div -->
         <form [formGroup]="checkoutForm">
         <div class="rounded-2xl border border-bitcoin-orange/20 p-6 bg-gradient-to-br from-bitcoin-dark/60 to-bitcoin-dark/40 backdrop-blur-sm hover:border-bitcoin-orange/30 transition-all">
@@ -385,7 +378,7 @@
             Shipping Method
           </h2>
 
-          <div *ngIf="calculatingShipping()" class="flex items-center gap-3 text-bitcoin-gray mb-4">
+          <div *ngIf="(shippingSettings()?.shippingEnabled ?? true) && calculatingShipping()" class="flex items-center gap-3 text-bitcoin-gray mb-4">
             <svg class="animate-spin h-5 w-5" fill="none" viewBox="0 0 24 24">
               <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
               <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
@@ -465,11 +458,16 @@
               </div>
             </div>
             
-            <p class="text-xs text-bitcoin-gray text-center mb-5 pb-4 border-b border-bitcoin-gray/10">
+            <p class="text-xs text-white/70 text-center mb-5 pb-4 border-b border-white/10">
               <svg class="w-4 h-4 inline-block mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
               </svg>
-              Shipping & taxes calculated at checkout
+              <ng-container *ngIf="shippingSettings()?.shippingEnabled ?? true; else staticShippingMsg">
+                {{ 'cart.summary.shipping_dynamic' | translate }}
+              </ng-container>
+              <ng-template #staticShippingMsg>
+                {{ 'cart.summary.shipping_flat' | translate:{ estimate: shippingSettings()?.shippingEstimate || ('cart.shipping.estimate_default' | translate) } }}
+              </ng-template>
             </p>
             
             <!-- Checkout Button -->
