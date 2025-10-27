@@ -24,8 +24,8 @@ export class EmailService {
       throw new Error('Missing required fields: name, email, or items');
     }
     
-    // Get settings
-    const settings = await this.settingsService.getSettings();
+    // Get settings with force refresh to ensure we have latest values
+    const settings = await this.settingsService.getSettings(true);
     
     // Check if order emails are enabled
     if (!settings.orderEmailEnabled) {
@@ -91,8 +91,8 @@ export class EmailService {
       throw new Error('Missing required fields: nombre, email, or mensaje');
     }
 
-    // Get settings
-    const settings = await this.settingsService.getSettings();
+    // Get settings with force refresh to ensure we have latest values
+    const settings = await this.settingsService.getSettings(true);
     const recipientEmail = settings.contactEmail || 'Luxmining1@gmail.com';
     console.log(`[EmailService] Sending contact form to: ${recipientEmail}`);
 
