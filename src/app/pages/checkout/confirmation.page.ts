@@ -5,6 +5,7 @@ import { Firestore, collection, query, where, getDocs, Timestamp } from '@angula
 import { Auth } from '@angular/fire/auth';
 import { CartService } from '../../services/cart.service';
 import { InvoiceService } from '../../services/invoice.service';
+import { AnalyticsService } from '../../services/analytics.service';
 
 interface OrderItem {
   productId: string;
@@ -49,6 +50,7 @@ export class ConfirmationPage implements OnInit {
   private auth = inject(Auth);
   private cartService = inject(CartService);
   private invoiceService = inject(InvoiceService);
+  private analyticsService = inject(AnalyticsService);
 
   // State
   order = signal<Order | null>(null);
@@ -58,6 +60,7 @@ export class ConfirmationPage implements OnInit {
   retryCount = 0;
   maxRetries = 5;
   cartCleared = false; // Track if cart has been cleared
+  private purchaseTracked = false;
 
   ngOnInit() {
     // Get payment_intent from query params (redirected from payment page)
@@ -132,6 +135,28 @@ export class ConfirmationPage implements OnInit {
       this.order.set(order);
       this.orderId.set(orderDoc.id);
       this.loading.set(false);
+
+      if (!this.purchaseTracked) {
+        const itemsPayload = order.items.map(item => ({
+          productId: item.productId,
+          sku: item.sku,
+          name: item.name,
+          quantity: item.qty,
+          price: item.unitPrice
+        }));
+
+        this.analyticsService.trackPurchase({
+          transactionId: order.orderNumber || orderDoc.id,
+          currency: order.currency || 'USD',
+          value: order.total,
+          tax: order.tax,
+          shipping: order.shipping,
+          discount: order.discount,
+          items: itemsPayload
+        });
+
+        this.purchaseTracked = true;
+      }
       
       // Clear the cart AFTER the order is successfully loaded
       if (!this.cartCleared) {

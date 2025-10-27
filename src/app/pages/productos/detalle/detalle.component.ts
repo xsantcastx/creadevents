@@ -1,4 +1,4 @@
-import { Component, OnInit, PLATFORM_ID, inject } from '@angular/core';
+import { Component, OnInit, AfterViewInit, PLATFORM_ID, inject, ChangeDetectorRef } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
@@ -21,7 +21,7 @@ import { firstValueFrom } from 'rxjs';
   imports: [CommonModule, RouterLink, TranslateModule, ImageLightboxComponent],
   templateUrl: './detalle.component.html'
 })
-export class DetalleComponent implements OnInit {
+export class DetalleComponent implements OnInit, AfterViewInit {
   private platformId = inject(PLATFORM_ID);
   private productsService = inject(ProductsService);
   private mediaService = inject(MediaService);
@@ -32,6 +32,7 @@ export class DetalleComponent implements OnInit {
   private router = inject(Router);
   private titleService = inject(Title);
   private metaService = inject(Meta);
+  private cdr = inject(ChangeDetectorRef);
   
   producto: Product | undefined;
   category: Category | undefined;
@@ -43,6 +44,7 @@ export class DetalleComponent implements OnInit {
   lightboxOpen = false;
   currentLightboxImage = '';
   currentLightboxAlt = '';
+  private dataLoaded = false;
 
   async ngOnInit() {
     const slug = this.route.snapshot.paramMap.get('slug');
@@ -54,65 +56,73 @@ export class DetalleComponent implements OnInit {
     }
   }
 
+  async ngAfterViewInit() {
+    // Ensure data loads even if ngOnInit was skipped during SSR
+    if (!this.dataLoaded && isPlatformBrowser(this.platformId)) {
+      const slug = this.route.snapshot.paramMap.get('slug');
+      if (slug && !this.producto) {
+        await this.loadProducto(slug);
+        this.cdr.detectChanges();
+      }
+    }
+  }
+
   private async loadProducto(slug: string) {
-    // Only load from service if in browser (not during SSR)
-    if (isPlatformBrowser(this.platformId)) {
-      try {
-        // Query product by slug
-        const products = await firstValueFrom(this.productsService.getAllProducts());
-        
-        // Find product matching slug, filter by published status
-        this.producto = products.find(p => 
-          p.slug === slug &&
-          p.status === 'published'
-        );
-        
-        if (this.producto) {
-          // Load category information
-          if (this.producto.categoryId) {
-            const cat = await firstValueFrom(this.categoryService.getCategory(this.producto.categoryId));
-            this.category = cat || undefined;
-          }
-          
-          // Load model information
-          if (this.producto.modelId) {
-            const mod = await firstValueFrom(this.modelService.getModel(this.producto.modelId));
-            this.model = mod || undefined;
-          }
-          
-          // Load cover image
-          if (this.producto.coverImage) {
-            const isMediaId = !this.producto.coverImage.includes('http');
-            if (isMediaId) {
-              const media = await this.mediaService.getMediaById(this.producto.coverImage);
-              this.coverImage = media || undefined;
-            }
-          }
-          
-          // Load gallery images
-          if (this.producto.galleryImageIds && this.producto.galleryImageIds.length > 0) {
-            this.galleryImages = await this.mediaService.getMediaByIds(this.producto.galleryImageIds);
-          }
-          
-          // Update page title and meta tags
-          this.updateSEO();
-          
-          // Load related products
-          await this.loadProductosRelacionados(products);
-        } else {
-          // Product not found or not published - redirect to 404
-          this.router.navigate(['/404']);
+    try {
+      // Mark as loaded to prevent duplicate loads
+      this.dataLoaded = true;
+      
+      // Query product by slug
+      const products = await firstValueFrom(this.productsService.getAllProducts());
+      
+      // Find product matching slug, filter by published status
+      this.producto = products.find(p => 
+        p.slug === slug &&
+        p.status === 'published'
+      );
+      
+      if (this.producto) {
+        // Load category information
+        if (this.producto.categoryId) {
+          const cat = await firstValueFrom(this.categoryService.getCategory(this.producto.categoryId));
+          this.category = cat || undefined;
         }
         
-        this.loading = false;
-      } catch (error) {
-        console.error('Error loading product:', error);
-        this.loading = false;
+        // Load model information
+        if (this.producto.modelId) {
+          const mod = await firstValueFrom(this.modelService.getModel(this.producto.modelId));
+          this.model = mod || undefined;
+        }
+        
+        // Load cover image
+        if (this.producto.coverImage) {
+          const isMediaId = !this.producto.coverImage.includes('http');
+          if (isMediaId) {
+            const media = await this.mediaService.getMediaById(this.producto.coverImage);
+            this.coverImage = media || undefined;
+          }
+        }
+        
+        // Load gallery images
+        if (this.producto.galleryImageIds && this.producto.galleryImageIds.length > 0) {
+          this.galleryImages = await this.mediaService.getMediaByIds(this.producto.galleryImageIds);
+        }
+        
+        // Update page title and meta tags
+        this.updateSEO();
+        
+        // Load related products
+        await this.loadProductosRelacionados(products);
+      } else {
+        // Product not found or not published - redirect to 404
         this.router.navigate(['/404']);
       }
-    } else {
-      // Basic SSR fallback
+      
       this.loading = false;
+    } catch (error) {
+      console.error('Error loading product:', error);
+      this.loading = false;
+      this.router.navigate(['/404']);
     }
   }
 

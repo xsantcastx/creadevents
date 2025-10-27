@@ -1,0 +1,247 @@
+<div class="space-y-6">
+  <!-- Header -->
+  <div class="flex items-center justify-between">
+    <div>
+      <h3 class="text-lg font-semibold text-white">Home Hero Images</h3>
+      <p class="text-sm text-white/60 mt-1">Manage the rotating images shown on the homepage hero section</p>
+    </div>
+    <button
+      (click)="addNewImage()"
+      class="px-4 py-2 bg-[#f5a623] text-[#0a0b0d] rounded-lg font-semibold hover:bg-[#f5a623]/90 transition-colors flex items-center gap-2">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+      </svg>
+      Add Image
+    </button>
+  </div>
+
+  <!-- Message -->
+  @if (message) {
+    <div class="p-4 rounded-lg border"
+         [class.bg-green-500/10]="messageType === 'success'"
+         [class.border-green-500/30]="messageType === 'success'"
+         [class.text-green-400]="messageType === 'success'"
+         [class.bg-red-500/10]="messageType === 'error'"
+         [class.border-red-500/30]="messageType === 'error'"
+         [class.text-red-400]="messageType === 'error'"
+         [class.bg-blue-500/10]="messageType === 'info'"
+         [class.border-blue-500/30]="messageType === 'info'"
+         [class.text-blue-400]="messageType === 'info'">
+      {{ message }}
+    </div>
+  }
+
+  <!-- Images List -->
+  <div class="space-y-4">
+    @if (heroImages.length === 0) {
+      <div class="text-center py-12 border border-white/10 rounded-lg">
+        <svg class="w-16 h-16 mx-auto text-white/30 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+        </svg>
+        <p class="text-white/60">No hero images configured. Click "Add Image" to get started.</p>
+      </div>
+    }
+
+    @for (image of heroImages; track image.id) {
+      <div class="bg-gray-800/50 border border-white/10 rounded-lg overflow-hidden">
+        @if (editingImage?.id === image.id) {
+          <!-- Edit Mode -->
+          <div class="p-6 space-y-4">
+            <div class="flex items-start gap-4">
+              <!-- Image Preview -->
+              <div class="flex-shrink-0">
+                @if (image.url) {
+                  <img [src]="image.url" [alt]="image.alt" class="w-32 h-32 object-cover rounded-lg border border-white/20">
+                } @else {
+                  <div class="w-32 h-32 bg-gray-700 rounded-lg border border-white/20 flex items-center justify-center">
+                    <svg class="w-8 h-8 text-white/30" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                    </svg>
+                  </div>
+                }
+              </div>
+
+              <!-- Form -->
+              <div class="flex-1 space-y-3">
+                <!-- Upload Button -->
+                <div>
+                  <label class="block text-sm font-medium text-white/70 mb-2">Image File</label>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    (change)="onFileSelected($event)"
+                    [disabled]="uploadingImage"
+                    class="block w-full text-sm text-white/70 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-[#f5a623] file:text-[#0a0b0d] hover:file:bg-[#f5a623]/90 file:cursor-pointer cursor-pointer">
+                  @if (uploadingImage) {
+                    <div class="mt-2">
+                      <div class="h-2 bg-gray-700 rounded-full overflow-hidden">
+                        <div class="h-full bg-[#f5a623] transition-all duration-300" [style.width.%]="uploadProgress"></div>
+                      </div>
+                      <p class="text-xs text-white/60 mt-1">Uploading: {{ uploadProgress }}%</p>
+                    </div>
+                  }
+                </div>
+
+                <!-- Title -->
+                <div>
+                  <label class="block text-sm font-medium text-white/70 mb-2">Title *</label>
+                  <input
+                    type="text"
+                    [(ngModel)]="editingImage!.title"
+                    placeholder="e.g., Antminer S19 Pro"
+                    class="w-full px-4 py-2 bg-gray-700 border border-white/20 rounded-lg text-white placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-[#f5a623]">
+                </div>
+
+                <!-- Description -->
+                <div>
+                  <label class="block text-sm font-medium text-white/70 mb-2">Description</label>
+                  <input
+                    type="text"
+                    [(ngModel)]="editingImage!.description"
+                    placeholder="e.g., Industry-leading hashrate with optimized efficiency"
+                    class="w-full px-4 py-2 bg-gray-700 border border-white/20 rounded-lg text-white placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-[#f5a623]">
+                </div>
+
+                <!-- Alt Text -->
+                <div>
+                  <label class="block text-sm font-medium text-white/70 mb-2">Alt Text *</label>
+                  <input
+                    type="text"
+                    [(ngModel)]="editingImage!.alt"
+                    placeholder="e.g., Antminer S19 Pro mining setup"
+                    class="w-full px-4 py-2 bg-gray-700 border border-white/20 rounded-lg text-white placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-[#f5a623]">
+                </div>
+
+                <!-- Image URL (Read-only if uploaded) -->
+                @if (image.url) {
+                  <div>
+                    <label class="block text-sm font-medium text-white/70 mb-2">Image URL</label>
+                    <input
+                      type="text"
+                      [value]="image.url"
+                      readonly
+                      class="w-full px-4 py-2 bg-gray-900 border border-white/20 rounded-lg text-white/60 text-sm">
+                  </div>
+                }
+              </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="flex items-center justify-end gap-3 pt-4 border-t border-white/10">
+              <button
+                (click)="cancelEdit()"
+                type="button"
+                class="px-4 py-2 border border-white/20 text-white/70 rounded-lg hover:border-white/40 hover:text-white transition-colors">
+                Cancel
+              </button>
+              <button
+                (click)="saveImage()"
+                type="button"
+                [disabled]="!editingImage?.url || !editingImage?.title || !editingImage?.alt"
+                class="px-4 py-2 bg-[#f5a623] text-[#0a0b0d] rounded-lg font-semibold hover:bg-[#f5a623]/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+                Save Image
+              </button>
+            </div>
+          </div>
+        } @else {
+          <!-- View Mode -->
+          <div class="p-4 flex items-center gap-4">
+            <!-- Drag Handle & Order -->
+            <div class="flex flex-col items-center gap-1">
+              <button
+                (click)="moveUp(image)"
+                [disabled]="heroImages[0].id === image.id"
+                class="p-1 text-white/50 hover:text-white disabled:opacity-20 disabled:cursor-not-allowed">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"></path>
+                </svg>
+              </button>
+              <span class="text-xs text-white/40 font-mono">{{ image.order }}</span>
+              <button
+                (click)="moveDown(image)"
+                [disabled]="heroImages[heroImages.length - 1].id === image.id"
+                class="p-1 text-white/50 hover:text-white disabled:opacity-20 disabled:cursor-not-allowed">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                </svg>
+              </button>
+            </div>
+
+            <!-- Image Preview -->
+            <img [src]="image.url" [alt]="image.alt" class="w-20 h-20 object-cover rounded-lg border border-white/20">
+
+            <!-- Info -->
+            <div class="flex-1 min-w-0">
+              <h4 class="text-white font-semibold truncate">{{ image.title }}</h4>
+              <p class="text-sm text-white/60 truncate">{{ image.description }}</p>
+              <div class="flex items-center gap-2 mt-1">
+                <span class="inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full"
+                      [class.bg-green-500/20]="image.active"
+                      [class.text-green-400]="image.active"
+                      [class.bg-gray-500/20]="!image.active"
+                      [class.text-gray-400]="!image.active">
+                  <span class="w-1.5 h-1.5 rounded-full"
+                        [class.bg-green-400]="image.active"
+                        [class.bg-gray-400]="!image.active"></span>
+                  {{ image.active ? 'Active' : 'Inactive' }}
+                </span>
+              </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="flex items-center gap-2">
+              <button
+                (click)="toggleActive(image)"
+                [title]="image.active ? 'Deactivate' : 'Activate'"
+                class="p-2 text-white/50 hover:text-white hover:bg-white/10 rounded-lg transition-colors">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  @if (image.active) {
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                  } @else {
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"></path>
+                  }
+                </svg>
+              </button>
+              <button
+                (click)="editImage(image)"
+                title="Edit"
+                class="p-2 text-white/50 hover:text-white hover:bg-white/10 rounded-lg transition-colors">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                </svg>
+              </button>
+              <button
+                (click)="deleteImage(image)"
+                title="Delete"
+                class="p-2 text-red-400 hover:text-red-300 hover:bg-red-500/10 rounded-lg transition-colors">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                </svg>
+              </button>
+            </div>
+          </div>
+        }
+      </div>
+    }
+  </div>
+
+  <!-- Info -->
+  <div class="p-4 bg-blue-500/10 border border-blue-500/30 rounded-lg">
+    <div class="flex gap-3">
+      <svg class="w-5 h-5 text-blue-400 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+      </svg>
+      <div class="text-sm text-blue-400">
+        <p class="font-semibold mb-1">Tips:</p>
+        <ul class="list-disc list-inside space-y-1 text-blue-400/80">
+          <li>Images are automatically optimized and converted to WebP</li>
+          <li>Recommended size: 1920x1080 pixels</li>
+          <li>Use the arrows to change display order</li>
+          <li>Inactive images won't show on the homepage</li>
+          <li>At least one image should be active</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>

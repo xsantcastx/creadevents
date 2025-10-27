@@ -1,3 +1,4 @@
+<div class="section-stack">
 <!-- Page Header Component -->
 <app-page-header
   title="{{ 'gallery.project' | translate }}"
@@ -8,8 +9,8 @@
 </app-page-header>
 
 <!-- Enhanced Category Filters with Tag Icons & Colors -->
-<section class="py-8 bg-gradient-to-r from-bitcoin-dark to-bitcoin-gray/30 backdrop-blur-sm border-b border-bitcoin-orange/20">
-  <div class="max-w-7xl mx-auto px-6">
+<section class="section-gap--tight bg-gradient-to-r from-bitcoin-dark to-bitcoin-gray/30 backdrop-blur-sm border-b border-bitcoin-orange/20">
+  <div class="page-container">
     <div class="flex flex-wrap items-center justify-center gap-3">
       <!-- All Categories Pill -->
       <button 
@@ -76,8 +77,8 @@
 </section>
 
 <!-- Premium Masonry Gallery -->
-<section class="py-16 bg-gradient-to-b from-bitcoin-dark to-[#13151a] min-h-screen">
-  <div class="max-w-7xl mx-auto px-6">
+<section class="section-gap bg-gradient-to-b from-bitcoin-dark to-[#13151a] min-h-screen">
+  <div class="page-container">
     <!-- Loading State -->
     @if (isLoading) {
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
@@ -252,3 +253,4 @@
     </div>
   </div>
 }
+</div>

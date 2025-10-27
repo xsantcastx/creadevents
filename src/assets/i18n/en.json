@@ -89,7 +89,11 @@
     "technical": "Technical Specs",
     "contact": "Contact",
     "login": "Login",
-    "cart": "Cart"
+    "cart": "Cart",
+    "follow_us": "Follow Us",
+    "language": "Language",
+    "account": "Account",
+    "get_started": "Get Started"
   },
   "footer": {
     "rights": "All rights reserved",

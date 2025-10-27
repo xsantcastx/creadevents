@@ -10,6 +10,7 @@ import { StripeService } from '../../services/stripe.service';
 import { CartService } from '../../services/cart.service';
 import { AddressService } from '../../services/address.service';
 import { Address } from '../../models/cart';
+import { AnalyticsService } from '../../services/analytics.service';
 
 @Component({
   standalone: true,
@@ -26,6 +27,7 @@ export class PaymentPage implements OnInit, AfterViewInit, OnDestroy {
   private stripeService = inject(StripeService);
   private cartService = inject(CartService);
   private addressService = inject(AddressService);
+  private analyticsService = inject(AnalyticsService);
 
   // State
   loading = signal(true);
@@ -223,6 +225,8 @@ export class PaymentPage implements OnInit, AfterViewInit, OnDestroy {
       this.error.set('Invalid cart. Please return to cart and try again.');
       return;
     }
+
+    this.analyticsService.trackAddPaymentInfo(cart, 'card');
 
     this.processing.set(true);
     this.error.set(null);

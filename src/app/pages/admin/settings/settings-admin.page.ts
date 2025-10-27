@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { AdminQuickActionsComponent } from '../../../shared/components/admin-quick-actions/admin-quick-actions.component';
 import { ImagePickerComponent } from '../../../shared/components/image-picker/image-picker.component';
+import { HeroImagesManagerComponent } from '../../../shared/components/hero-images-manager/hero-images-manager.component';
 import { LoadingComponentBase } from '../../../core/classes/loading-component.base';
 import { SettingsService, AppSettings } from '../../../services/settings.service';
 import { StatsService, SiteStats } from '../../../services/stats.service';
@@ -14,6 +15,7 @@ interface SettingSection {
   color: string;
   settings: Setting[];
   expanded?: boolean;
+  isCustomComponent?: boolean;
 }
 
 interface Setting {
@@ -36,7 +38,7 @@ type MessageType = 'success' | 'error' | 'info';
 @Component({
   selector: 'app-settings-admin-page',
   standalone: true,
-  imports: [CommonModule, FormsModule, TranslateModule, AdminQuickActionsComponent, ImagePickerComponent],
+  imports: [CommonModule, FormsModule, TranslateModule, AdminQuickActionsComponent, ImagePickerComponent, HeroImagesManagerComponent],
   templateUrl: './settings-admin.page.html',
   styleUrl: './settings-admin.page.scss'
 })
@@ -122,6 +124,14 @@ export class SettingsAdminComponent extends LoadingComponentBase implements OnIn
           { key: 'maintenanceMode', label: 'Maintenance Mode', type: 'boolean', value: this.currentSettings.maintenanceMode, description: 'Enable to show maintenance page to visitors' },
           { key: 'maintenanceMessage', label: 'Maintenance Message', type: 'textarea', value: this.currentSettings.maintenanceMessage, placeholder: 'We are performing scheduled maintenance. Please check back soon.' }
         ]
+      },
+      {
+        title: 'Home Hero Images',
+        icon: 'M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z',
+        color: 'orange',
+        expanded: false,
+        settings: [],
+        isCustomComponent: true
       },
       {
         title: 'Stripe Configuration',
@@ -292,6 +302,9 @@ export class SettingsAdminComponent extends LoadingComponentBase implements OnIn
     this.clearMessage();
 
     try {
+      // CRITICAL: Fetch fresh settings from Firestore to get latest heroImagesJson
+      const freshSettings = await this.settingsService.getSettings(true);
+      
       const updatedSettings: AppSettings = {
         // General
         siteName: '',
@@ -368,7 +381,9 @@ export class SettingsAdminComponent extends LoadingComponentBase implements OnIn
         allowBackorders: false,
         autoRestockEnabled: true,
         hideOutOfStock: false,
-        stockReserveTime: 15
+        stockReserveTime: 15,
+        // Hero Images - PRESERVE fresh value from Firestore
+        heroImagesJson: freshSettings.heroImagesJson || ''
       };
 
       this.sections.forEach(section => {

@@ -83,6 +83,7 @@ export class NavbarComponent implements OnInit {
   onKey(e: KeyboardEvent) {
     if (e.key === 'Escape') {
       this.showUserMenu = false;
+      this.mobileOpen = false;
     }
   }
 

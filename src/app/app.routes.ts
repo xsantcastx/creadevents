@@ -148,6 +148,11 @@ export const routes: Routes = [
     title: 'TheLuxMining | page_titles.size_groups'
   },
   {
+    path: 'maintenance',
+    loadComponent: () => import('./pages/maintenance/maintenance.page').then(m => m.MaintenancePage),
+    title: 'Site Maintenance - TheLuxMining'
+  },
+  {
     path: '404',
     loadComponent: () => import('./pages/not-found/not-found.page').then(m => m.NotFoundPageComponent),
     title: 'TheLuxMining | page_titles.not_found'

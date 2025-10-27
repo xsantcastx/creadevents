@@ -3,6 +3,8 @@
   background: linear-gradient(135deg, #13151a 0%, #0a0b0d 100%);
   position: relative;
   overflow: hidden;
+  // Ensure stats section is below hero section
+  z-index: 1;
 
   &::before {
     content: '';

@@ -1,6 +1,7 @@
 import { ApplicationConfig, provideBrowserGlobalErrorListeners, provideZonelessChangeDetection, importProvidersFrom } from '@angular/core';
 import { provideRouter, TitleStrategy } from '@angular/router';
 import { provideHttpClient, withFetch, HttpClient } from '@angular/common/http';
+import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { provideFirebaseApp, initializeApp } from '@angular/fire/app';
 import { provideFirestore, getFirestore } from '@angular/fire/firestore';
 import { provideAuth, getAuth } from '@angular/fire/auth';
@@ -25,6 +26,7 @@ export const appConfig: ApplicationConfig = {
     provideBrowserGlobalErrorListeners(),
     provideZonelessChangeDetection(),
     provideRouter(routes),
+    provideAnimationsAsync(),
     { provide: TitleStrategy, useClass: PageTitleStrategy },
     provideClientHydration(withEventReplay()),
     provideHttpClient(withFetch()),
@@ -49,8 +51,8 @@ export const appConfig: ApplicationConfig = {
       // }
       return functions;
     }),
-    // Analytics with browser support check and production-only
-    ...(environment.production ? [
+    // Analytics with browser support check and production-only (browser only)
+    ...(environment.production && typeof window !== 'undefined' ? [
       provideAnalytics(() => {
         const analytics = getAnalytics();
         return analytics;

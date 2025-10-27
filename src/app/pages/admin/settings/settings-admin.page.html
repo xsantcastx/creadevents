@@ -1,5 +1,5 @@
 
-<div class="min-h-screen bg-ts-bg">
+<div class="section-stack min-h-screen bg-ts-bg">
   <!-- Header -->
   <div class="bg-gradient-to-r from-ts-bg via-gray-900 to-ts-bg border-b border-white/10">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -64,6 +64,9 @@
           <!-- Settings (Collapsible) -->
           @if (section.expanded) {
             <div class="p-6 space-y-4">
+              @if (section.isCustomComponent && section.title === 'Home Hero Images') {
+                <app-hero-images-manager></app-hero-images-manager>
+              } @else {
               @for (setting of section.settings; track setting.key) {
               <div>
                 <div class="flex items-center justify-between gap-3 mb-2">
@@ -166,6 +169,7 @@
                   }
                 }
               </div>
+            }
             }
           </div>
           }

@@ -1,11 +1,15 @@
 import { Injectable, inject } from '@angular/core';
 import { Storage, ref, uploadBytesResumable, getDownloadURL, deleteObject, UploadTaskSnapshot } from '@angular/fire/storage';
 import { Observable, from, map } from 'rxjs';
+import { ImageOptimizationService } from './image-optimization.service';
 
 export interface UploadProgress {
   progress: number;
   downloadURL?: string;
+  webpURL?: string;
+  thumbnailURL?: string;
   error?: string;
+  optimizing?: boolean;
 }
 
 @Injectable({
@@ -13,6 +17,128 @@ export interface UploadProgress {
 })
 export class StorageService {
   private storage = inject(Storage);
+  private imageOptimizer = inject(ImageOptimizationService);
+
+  /**
+   * Upload an optimized image with automatic WebP conversion and thumbnails
+   * @param file - The image file to upload
+   * @param path - The storage path (without extension)
+   * @param optimize - Whether to optimize the image (default: true)
+   * @returns Observable that emits upload progress and final URLs
+   */
+  uploadOptimizedImage(file: File, path: string, optimize: boolean = true): Observable<UploadProgress> {
+    return new Observable(observer => {
+      (async () => {
+        try {
+          // Notify that optimization is starting
+          if (optimize) {
+            observer.next({ progress: 0, optimizing: true });
+          }
+
+          let mainBlob: Blob = file;
+          let webpBlob: Blob | undefined;
+          let thumbnailBlob: Blob | undefined;
+          
+          // Optimize image if requested
+          if (optimize) {
+            const optimized = await this.imageOptimizer.optimizeImage(file, {
+              maxWidth: 1920,
+              maxHeight: 1080,
+              quality: 0.85,
+              createThumbnail: true,
+              thumbnailSize: 400
+            });
+
+            mainBlob = optimized.original;
+            webpBlob = optimized.webp;
+            thumbnailBlob = optimized.thumbnail;
+
+            console.log('Image optimized:', {
+              originalSize: `${this.imageOptimizer.getFileSizeMB(file).toFixed(2)}MB`,
+              optimizedSize: `${this.imageOptimizer.getFileSizeMB(mainBlob).toFixed(2)}MB`,
+              webpSize: webpBlob ? `${this.imageOptimizer.getFileSizeMB(webpBlob).toFixed(2)}MB` : 'N/A',
+              dimensions: `${optimized.width}x${optimized.height}`
+            });
+          }
+
+          observer.next({ progress: 10, optimizing: false });
+
+          // Upload main image (JPEG)
+          const mainPath = `${path}.jpg`;
+          const mainURL = await this.uploadBlob(mainBlob, mainPath, observer, 10, 40);
+
+          // Upload WebP version if available
+          let webpURL: string | undefined;
+          if (webpBlob) {
+            const webpPath = `${path}.webp`;
+            webpURL = await this.uploadBlob(webpBlob, webpPath, observer, 40, 70);
+          }
+
+          // Upload thumbnail if available
+          let thumbnailURL: string | undefined;
+          if (thumbnailBlob) {
+            const thumbPath = `${path}-thumb.jpg`;
+            thumbnailURL = await this.uploadBlob(thumbnailBlob, thumbPath, observer, 70, 100);
+          }
+
+          // Complete
+          observer.next({
+            progress: 100,
+            downloadURL: mainURL,
+            webpURL,
+            thumbnailURL
+          });
+          observer.complete();
+        } catch (error: any) {
+          console.error('Upload error:', error);
+          observer.next({ progress: 0, error: error.message });
+          observer.error(error);
+        }
+      })();
+    });
+  }
+
+  /**
+   * Upload a blob to Firebase Storage
+   * @param blob - The blob to upload
+   * @param path - The storage path
+   * @param observer - The observer to notify progress
+   * @param startProgress - Starting progress percentage
+   * @param endProgress - Ending progress percentage
+   * @returns Promise with download URL
+   */
+  private uploadBlob(
+    blob: Blob,
+    path: string,
+    observer: any,
+    startProgress: number,
+    endProgress: number
+  ): Promise<string> {
+    return new Promise((resolve, reject) => {
+      const storageRef = ref(this.storage, path);
+      const uploadTask = uploadBytesResumable(storageRef, blob);
+
+      uploadTask.on(
+        'state_changed',
+        (snapshot: UploadTaskSnapshot) => {
+          const fileProgress = (snapshot.bytesTransferred / snapshot.totalBytes);
+          const totalProgress = startProgress + (fileProgress * (endProgress - startProgress));
+          observer.next({ progress: totalProgress });
+        },
+        (error) => {
+          reject(error);
+        },
+        async () => {
+          try {
+            const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+            resolve(downloadURL);
+          } catch (error) {
+            reject(error);
+          }
+        }
+      );
+    });
+  }
 
   /**
    * Upload a file to Firebase Storage with progress tracking
@@ -54,29 +180,27 @@ export class StorageService {
   }
 
   /**
-   * Upload product image
+   * Upload product image with automatic optimization
    * @param file - The image file
    * @param productSlug - The product slug for the path
-   * @returns Observable with upload progress
+   * @returns Observable with upload progress and URLs
    */
   uploadProductImage(file: File, productSlug: string): Observable<UploadProgress> {
     const timestamp = Date.now();
-    const extension = file.name.split('.').pop();
-    const path = `products/${productSlug}-${timestamp}.${extension}`;
-    return this.uploadFile(file, path);
+    const pathWithoutExt = `products/${productSlug}-${timestamp}`;
+    return this.uploadOptimizedImage(file, pathWithoutExt);
   }
 
   /**
-   * Upload gallery image
+   * Upload gallery image with automatic optimization
    * @param file - The image file
    * @param category - The gallery category (kitchens, bathrooms, etc.)
-   * @returns Observable with upload progress
+   * @returns Observable with upload progress and URLs
    */
   uploadGalleryImage(file: File, category: string): Observable<UploadProgress> {
     const timestamp = Date.now();
-    const extension = file.name.split('.').pop();
-    const path = `gallery/${category}/${timestamp}.${extension}`;
-    return this.uploadFile(file, path);
+    const pathWithoutExt = `gallery/${category}/${timestamp}`;
+    return this.uploadOptimizedImage(file, pathWithoutExt);
   }
 
   /**

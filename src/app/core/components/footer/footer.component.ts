@@ -21,7 +21,7 @@ interface Category {
   imports: [CommonModule, RouterModule, TranslateModule],
   template: `
     <footer class="bg-gradient-to-b from-[#13151a] to-[#0a0b0d] py-16 border-t border-bitcoin-orange/20">
-      <div class="max-w-7xl mx-auto px-6">
+      <div class="page-container">
         <div class="grid md:grid-cols-4 gap-8 mb-12">
           <div class="md:col-span-2">
             <div class="flex items-center gap-3 mb-4">

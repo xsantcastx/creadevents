@@ -1,4 +1,4 @@
-<section *ngIf="producto" class="bg-bitcoin-dark min-h-screen">
+<section *ngIf="producto" class="section-stack bg-bitcoin-dark min-h-screen">
   <!-- Breadcrumb Navigation -->
   <div class="max-w-7xl mx-auto px-6 pt-8">
     <nav class="mb-6">
@@ -38,23 +38,32 @@
         </div>
         
         <!-- Gallery thumbnails -->
-        <div class="grid grid-cols-4 gap-2">
-          @for (galleryImage of galleryImages; track galleryImage.id) {
-            <div class="aspect-square rounded-lg bg-black/40 border border-bitcoin-orange/20 overflow-hidden cursor-pointer hover:ring-2 hover:ring-bitcoin-orange transition-all"
-                 (click)="openLightbox(galleryImage.url, producto.name)">
-              <img [src]="galleryImage.thumbnailUrl || galleryImage.url" 
-                   [alt]="galleryImage.altText || producto.name"
-                   class="w-full h-full object-cover"
-                   loading="lazy"/>
-            </div>
-          }
-          @if (galleryImages.length === 0) {
+        @if (galleryImages.length > 0) {
+          <div class="grid gap-2"
+               [ngClass]="{
+                 'grid-cols-1': galleryImages.length === 1,
+                 'grid-cols-2': galleryImages.length === 2,
+                 'grid-cols-3': galleryImages.length === 3,
+                 'grid-cols-4': galleryImages.length >= 4
+               }">
+            @for (galleryImage of galleryImages; track galleryImage.id) {
+              <div class="aspect-square rounded-lg bg-black/40 border border-bitcoin-orange/20 overflow-hidden cursor-pointer hover:ring-2 hover:ring-bitcoin-orange transition-all"
+                   (click)="openLightbox(galleryImage.url, producto.name)">
+                <img [src]="galleryImage.thumbnailUrl || galleryImage.url" 
+                     [alt]="galleryImage.altText || producto.name"
+                     class="w-full h-full object-cover"
+                     loading="lazy"/>
+              </div>
+            }
+          </div>
+        } @else {
+          <div class="grid grid-cols-4 gap-2">
             <div class="aspect-square rounded-lg bg-black/20 border border-bitcoin-gray/20 opacity-40"></div>
             <div class="aspect-square rounded-lg bg-black/20 border border-bitcoin-gray/20 opacity-40"></div>
             <div class="aspect-square rounded-lg bg-black/20 border border-bitcoin-gray/20 opacity-40"></div>
             <div class="aspect-square rounded-lg bg-black/20 border border-bitcoin-gray/20 opacity-40"></div>
-          }
-        </div>
+          </div>
+        }
       </div>
       
       <!-- Product Information -->

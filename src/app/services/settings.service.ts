@@ -91,6 +91,20 @@ export interface AppSettings {
   autoRestockEnabled: boolean;
   hideOutOfStock: boolean;
   stockReserveTime: number;
+
+  // Home Hero Images
+  heroImagesJson: string; // JSON string of HeroImage[]
+}
+
+export interface HeroImage {
+  id: string;
+  url: string;
+  webpUrl?: string;
+  alt: string;
+  title: string;
+  description: string;
+  order: number;
+  active: boolean;
 }
 
 // Sensitive fields that should never be sent to frontend
@@ -150,7 +164,8 @@ export class SettingsService {
       const defaults = this.getDefaultSettings();
       
       if (docSnap.exists()) {
-        const settings = { ...defaults, ...docSnap.data() } as AppSettings;
+        const docData = docSnap.data();
+        const settings = { ...defaults, ...docData } as AppSettings;
         
         // For non-admins, ensure sensitive fields are empty
         if (!isAdmin) {
@@ -210,12 +225,19 @@ export class SettingsService {
    */
   async saveSettings(settings: AppSettings): Promise<void> {
     try {
+      // Convert settings to plain object (remove any Firestore metadata/proxies)
+      const plainSettings = JSON.parse(JSON.stringify(settings));
+      
       // Save full settings (admin only)
       const adminDocRef = doc(this.firestore, 'settings', this.SETTINGS_DOC_ID);
-      await setDoc(adminDocRef, settings, { merge: true });
+      await setDoc(adminDocRef, plainSettings, { merge: true });
+      
+      // Verify the save by reading it back immediately
+      const verifyDocSnap = await getDoc(adminDocRef);
+      const verifyData = verifyDocSnap.data();
       
       // Create public copy without sensitive fields
-      const publicSettings = { ...settings };
+      const publicSettings = { ...plainSettings };
       SENSITIVE_FIELDS.forEach(field => {
         delete (publicSettings as any)[field];
       });
@@ -225,8 +247,6 @@ export class SettingsService {
       
       this.settingsCache = settings;
       this.settingsSubject.next(settings);
-      
-      console.log('✅ Settings saved: Full settings to admin doc, public settings to public doc');
     } catch (error) {
       console.error('Error saving settings:', error);
       throw error;
@@ -241,7 +261,7 @@ export class SettingsService {
       // General
       siteName: 'TheLuxMining',
       siteDescription: 'Premium Bitcoin mining equipment',
-      contactEmail: 'Luxmining1@gmail.com',
+      contactEmail: 'support@theluxmining.com',
       contactPhone: '+1 (800) 555 0199',
       contactAddress: '100 Greyrock Pl F119\nStamford, CT 06901',
       maintenanceMode: false,
@@ -324,7 +344,44 @@ export class SettingsService {
       allowBackorders: false,
       autoRestockEnabled: true,
       hideOutOfStock: false,
-      stockReserveTime: 15
+      stockReserveTime: 15,
+
+      // Home Hero Images - empty by default, managed from admin
+      heroImagesJson: ''
     };
+  }
+
+  /**
+   * Get hero images from settings
+   */
+  getHeroImages(): HeroImage[] {
+    try {
+      const heroImagesJson = this.settingsCache?.heroImagesJson || this.getDefaultSettings().heroImagesJson;
+      
+      if (!heroImagesJson || heroImagesJson.trim() === '') {
+        return [];
+      }
+      
+      const images: HeroImage[] = JSON.parse(heroImagesJson);
+      
+      const activeImages = images
+        .filter(img => img.active)
+        .sort((a, b) => a.order - b.order);
+      
+      return activeImages;
+    } catch (error) {
+      console.error('Error parsing hero images:', error);
+      return [];
+    }
+  }
+
+  /**
+   * Update hero images
+   */
+  async updateHeroImages(images: HeroImage[]): Promise<void> {
+    const settings = await this.getSettings();
+    const jsonString = JSON.stringify(images);
+    settings.heroImagesJson = jsonString;
+    await this.saveSettings(settings);
   }
 }
