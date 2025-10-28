@@ -160,8 +160,6 @@ export class SettingsService {
       const isAdmin = await this.isUserAdmin();
       const docId = isAdmin ? this.SETTINGS_DOC_ID : this.PUBLIC_SETTINGS_DOC_ID;
       
-      console.log('fetchSettings - isAdmin:', isAdmin, 'docId:', docId);
-      
       const docRef = doc(this.firestore, 'settings', docId);
       const docSnap = await getDoc(docRef);
       const defaults = this.getDefaultSettings();
@@ -170,18 +168,12 @@ export class SettingsService {
         const docData = docSnap.data();
         const settings = { ...defaults, ...docData } as AppSettings;
         
-        console.log('fetchSettings - stripeSecretKey from Firestore:', 
-          docData['stripeSecretKey'] ? `${docData['stripeSecretKey'].substring(0, 7)}...${docData['stripeSecretKey'].slice(-4)}` : 'empty or undefined');
-        
         // For non-admins, ensure sensitive fields are empty
         if (!isAdmin) {
           SENSITIVE_FIELDS.forEach(field => {
             (settings[field] as any) = '';
           });
         }
-        
-        console.log('fetchSettings - final stripeSecretKey:', 
-          settings.stripeSecretKey ? `${settings.stripeSecretKey.substring(0, 7)}...${settings.stripeSecretKey.slice(-4)}` : 'empty');
         
         return settings;
       }
@@ -199,12 +191,22 @@ export class SettingsService {
    */
   private async isUserAdmin(): Promise<boolean> {
     const user = await this.waitForAuthUser();
-    if (!user) return false;
+    
+    if (!user) {
+      return false;
+    }
     
     try {
       const userDoc = await getDoc(doc(this.firestore, 'users', user.uid));
-      return userDoc.exists() && userDoc.data()?.['role'] === 'admin';
-    } catch {
+      
+      if (userDoc.exists()) {
+        const role = userDoc.data()?.['role'];
+        return role === 'admin';
+      }
+      
+      return false;
+    } catch (error) {
+      console.error('Error checking admin status:', error);
       return false;
     }
   }
@@ -286,9 +288,7 @@ export class SettingsService {
    */
   async saveSettings(settings: AppSettings): Promise<void> {
     try {
-      // Debug: Check current user
       const currentUser = this.auth.currentUser;
-      console.log('saveSettings - Current user:', currentUser?.uid);
       
       if (!currentUser) {
         throw new Error('No authenticated user. Please sign in again.');
@@ -297,7 +297,6 @@ export class SettingsService {
       // Check if user is admin
       const userDoc = await getDoc(doc(this.firestore, 'users', currentUser.uid));
       const userData = userDoc.data();
-      console.log('saveSettings - User role:', userData?.['role']);
       
       if (userData?.['role'] !== 'admin') {
         throw new Error('Unauthorized: Only admins can save settings.');
@@ -306,20 +305,9 @@ export class SettingsService {
       // Convert settings to plain object (remove any Firestore metadata/proxies)
       const plainSettings = JSON.parse(JSON.stringify(settings));
       
-      // Debug log
-      console.log('SettingsService.saveSettings - stripeSecretKey:', 
-        plainSettings.stripeSecretKey ? `${plainSettings.stripeSecretKey.substring(0, 7)}...${plainSettings.stripeSecretKey.slice(-4)} (length: ${plainSettings.stripeSecretKey.length})` : 'empty');
-      
       // Save full settings (admin only)
       const adminDocRef = doc(this.firestore, 'settings', this.SETTINGS_DOC_ID);
       await setDoc(adminDocRef, plainSettings, { merge: true });
-      
-      // Verify the save by reading it back immediately
-      const verifyDocSnap = await getDoc(adminDocRef);
-      const verifyData = verifyDocSnap.data();
-      
-      console.log('Verified save - stripeSecretKey in Firestore:', 
-        verifyData?.['stripeSecretKey'] ? `${verifyData['stripeSecretKey'].substring(0, 7)}...${verifyData['stripeSecretKey'].slice(-4)} (length: ${verifyData['stripeSecretKey'].length})` : 'empty');
       
       // Create public copy without sensitive fields
       const publicSettings = { ...plainSettings };
@@ -334,8 +322,6 @@ export class SettingsService {
       this.settingsSubject.next(settings);
     } catch (error: any) {
       console.error('Error saving settings:', error);
-      console.error('Error code:', error?.code);
-      console.error('Error message:', error?.message);
       throw error;
     }
   }

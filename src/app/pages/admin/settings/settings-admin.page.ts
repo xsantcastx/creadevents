@@ -522,36 +522,19 @@ export class SettingsAdminComponent extends LoadingComponentBase implements OnIn
         section.settings.forEach(setting => {
           const key = setting.key;
           const value = setting.value;
-          
-          // Debug log for ALL fields to see what's happening
-          if (section.title === 'Stripe Configuration') {
-            console.log(`[${section.title}] ${key}:`, {
-              value: value,
-              locked: setting.locked,
-              sensitive: setting.sensitive,
-              displayValue: value ? (typeof value === 'string' && value.length > 10 ? `${value.substring(0, 7)}...${value.slice(-4)}` : value) : 'empty'
-            });
-          }
-          
           (updatedSettings as any)[key] = value;
         });
       });
 
-      console.log('About to save settings with stripeSecretKey:', 
-        updatedSettings.stripeSecretKey ? `${updatedSettings.stripeSecretKey.substring(0, 7)}...${updatedSettings.stripeSecretKey.slice(-4)}` : 'empty');
-      
       // CRITICAL: Ensure empty strings don't overwrite existing values
       // If a sensitive field is empty/undefined, preserve the existing value from Firestore
       if (!updatedSettings.stripeSecretKey && this.currentSettings?.stripeSecretKey) {
-        console.log('Preserving existing stripeSecretKey from currentSettings');
         updatedSettings.stripeSecretKey = this.currentSettings.stripeSecretKey;
       }
       if (!updatedSettings.stripePublicKey && this.currentSettings?.stripePublicKey) {
-        console.log('Preserving existing stripePublicKey from currentSettings');
         updatedSettings.stripePublicKey = this.currentSettings.stripePublicKey;
       }
       if (!updatedSettings.emailApiKey && this.currentSettings?.emailApiKey) {
-        console.log('Preserving existing emailApiKey from currentSettings');
         updatedSettings.emailApiKey = this.currentSettings.emailApiKey;
       }
       
