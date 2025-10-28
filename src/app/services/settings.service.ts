@@ -286,6 +286,23 @@ export class SettingsService {
    */
   async saveSettings(settings: AppSettings): Promise<void> {
     try {
+      // Debug: Check current user
+      const currentUser = this.auth.currentUser;
+      console.log('saveSettings - Current user:', currentUser?.uid);
+      
+      if (!currentUser) {
+        throw new Error('No authenticated user. Please sign in again.');
+      }
+      
+      // Check if user is admin
+      const userDoc = await getDoc(doc(this.firestore, 'users', currentUser.uid));
+      const userData = userDoc.data();
+      console.log('saveSettings - User role:', userData?.['role']);
+      
+      if (userData?.['role'] !== 'admin') {
+        throw new Error('Unauthorized: Only admins can save settings.');
+      }
+      
       // Convert settings to plain object (remove any Firestore metadata/proxies)
       const plainSettings = JSON.parse(JSON.stringify(settings));
       
@@ -315,8 +332,10 @@ export class SettingsService {
       
       this.settingsCache = settings;
       this.settingsSubject.next(settings);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error saving settings:', error);
+      console.error('Error code:', error?.code);
+      console.error('Error message:', error?.message);
       throw error;
     }
   }
