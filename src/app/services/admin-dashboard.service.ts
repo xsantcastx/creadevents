@@ -225,6 +225,11 @@ export class AdminDashboardService {
     }
   }
 
+  async getRecentActivityFeed(maxItems = 6): Promise<AdminActivityItem[]> {
+    const currencyCode = await this.resolveCurrencyCode();
+    return this.getRecentActivity(currencyCode, maxItems);
+  }
+
   private async resolveCurrencyCode(): Promise<string> {
     if (this.cachedCurrencyCode) {
       return this.cachedCurrencyCode;

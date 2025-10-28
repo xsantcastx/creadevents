@@ -6,6 +6,7 @@ import { ProductFirestoreService, FirestoreProduct } from '../../services/produc
 import { GalleryService, GalleryImage } from '../../services/gallery.service';
 import { HomeHeroComponent } from '../../features/home/home-hero/home-hero.component';
 import { HomeStatsComponent } from '../../features/home/home-stats/home-stats.component';
+import { HomeReviewsComponent } from '../../features/home/home-reviews/home-reviews.component';
 import { LoadingComponentBase } from '../../core/classes/loading-component.base';
 import { MetaService } from '../../services/meta.service';
 import { take } from 'rxjs/operators';
@@ -13,7 +14,7 @@ import { take } from 'rxjs/operators';
 @Component({
   selector: 'app-home-page',
   standalone: true,
-  imports: [CommonModule, RouterModule, TranslateModule, HomeHeroComponent, HomeStatsComponent],
+  imports: [CommonModule, RouterModule, TranslateModule, HomeHeroComponent, HomeStatsComponent, HomeReviewsComponent],
   templateUrl: './home.page.html',
   styleUrl: './home.page.scss'
 })

@@ -8,6 +8,8 @@ import { HeroImagesManagerComponent } from '../../../shared/components/hero-imag
 import { LoadingComponentBase } from '../../../core/classes/loading-component.base';
 import { SettingsService, AppSettings } from '../../../services/settings.service';
 import { StatsService, SiteStats } from '../../../services/stats.service';
+import { AdminDashboardService, AdminActivityItem } from '../../../services/admin-dashboard.service';
+import { firstValueFrom } from 'rxjs';
 
 interface SettingSection {
   title: string;
@@ -35,6 +37,16 @@ interface Setting {
 
 type MessageType = 'success' | 'error' | 'info';
 
+interface NotificationSummaryCard {
+  key: keyof AppSettings;
+  title: string;
+  description: string;
+  iconPath: string;
+  accentClass: string;
+  enabled: boolean;
+  meta?: string | null;
+}
+
 @Component({
   selector: 'app-settings-admin-page',
   standalone: true,
@@ -45,6 +57,7 @@ type MessageType = 'success' | 'error' | 'info';
 export class SettingsAdminComponent extends LoadingComponentBase implements OnInit {
   private settingsService = inject(SettingsService);
   private statsService = inject(StatsService);
+  private dashboardService = inject(AdminDashboardService);
   
   sections: SettingSection[] = [];
   isSaving = false;
@@ -56,28 +69,110 @@ export class SettingsAdminComponent extends LoadingComponentBase implements OnIn
   isUpdatingStats = false;
   currentStats: SiteStats | null = null;
   statsLastUpdated: string | null = null;
+  statsForm: SiteStats = {
+    totalSales: 0,
+    customerSatisfaction: 98,
+    uptimeGuarantee: 99.9,
+    yearsExperience: 1
+  };
+  isSavingStats = false;
+
+  // Notification overview
+  notificationCards: NotificationSummaryCard[] = [];
+  notificationEmail = '';
+  notificationEmailSource: 'custom' | 'contact' | 'missing' = 'missing';
+
+  // Recent activity
+  recentActivity: AdminActivityItem[] = [];
+  isLoadingActivity = false;
+  activityError: string | null = null;
   
   private currentSettings: AppSettings | null = null;
   private messageTimeout: any = null;
+  private readonly notificationDefinitions: Array<Omit<NotificationSummaryCard, 'enabled' | 'meta'>> = [
+    {
+      key: 'orderEmailEnabled',
+      title: 'Order confirmations',
+      description: 'Send customers an email immediately after checkout is completed.',
+      iconPath: 'M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z',
+      accentClass: 'bg-bitcoin-gold/10 border-bitcoin-gold/30 text-bitcoin-gold'
+    },
+    {
+      key: 'lowStockAlerts',
+      title: 'Low stock alerts',
+      description: 'Notify the operations team when inventory drops below the configured threshold.',
+      iconPath: 'M12 9v2m0 4h.01M5.64 17h12.72c.89 0 1.45-.95.99-1.73L13.99 4.27c-.44-.76-1.54-.76-1.98 0L4.65 15.27C4.19 16.05 4.75 17 5.64 17z',
+      accentClass: 'bg-red-500/10 border-red-500/30 text-red-300'
+    },
+    {
+      key: 'dailyReportEnabled',
+      title: 'Daily sales report',
+      description: "Receive a morning summary with yesterday's sales performance.",
+      iconPath: 'M9 17v-6h6v6m-7 4h8a2 2 0 002-2V9.5l-6-4-6 4V19a2 2 0 002 2z',
+      accentClass: 'bg-green-500/10 border-green-500/30 text-green-300'
+    },
+    {
+      key: 'newUserNotifications',
+      title: 'New user alerts',
+      description: 'Send an internal notification whenever a customer registers.',
+      iconPath: 'M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z',
+      accentClass: 'bg-indigo-500/10 border-indigo-500/30 text-indigo-300'
+    },
+    {
+      key: 'autoRestockEnabled',
+      title: 'Auto restock notifications',
+      description: 'Alert the team when inventory replenishment is triggered.',
+      iconPath: 'M4 4v5h.582l2.873-2.872a7 7 0 119.46 9.46l1.415 1.415A9 9 0 004.582 4H4zm15.418 11H20v5h-5v-.582l2.872-2.873A7 7 0 015.46 7.085L4.045 5.67A9 9 0 0019.418 15z',
+      accentClass: 'bg-bitcoin-orange/10 border-bitcoin-orange/30 text-bitcoin-orange'
+    }
+  ];
+  private readonly activityIconMap: Record<AdminActivityItem['type'], string> = {
+    order: 'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2',
+    product: 'M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4',
+    gallery: 'M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z',
+    user: 'M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z'
+  };
+
+  private readonly activityAccentMap: Record<AdminActivityItem['type'], string> = {
+    order: 'bg-bitcoin-orange/15 border-bitcoin-orange/30 text-bitcoin-orange',
+    product: 'bg-bitcoin-gold/15 border-bitcoin-gold/30 text-bitcoin-gold',
+    gallery: 'bg-luxury-gold/15 border-luxury-gold/30 text-luxury-gold',
+    user: 'bg-indigo-500/15 border-indigo-500/30 text-indigo-300'
+  };
+
 
   async ngOnInit() {
     await this.loadSettings();
     await this.loadCurrentStats();
+    await this.loadRecentActivity();
   }
 
   async loadSettings() {
     await this.withLoading(async () => {
       this.currentSettings = await this.settingsService.getSettings();
       this.buildSections();
+      this.updateNotificationSummary();
     });
   }
 
   async loadCurrentStats() {
-    this.statsService.getStats().subscribe(stats => {
+    try {
+      const stats = await firstValueFrom(this.statsService.getStats());
       this.currentStats = stats;
-      // Try to get last updated time from settings/public
-      this.loadStatsTimestamp();
-    });
+      this.syncStatsForm(stats);
+      await this.loadStatsTimestamp();
+    } catch (error) {
+      console.error('Error loading stats:', error);
+    }
+  }
+
+  private syncStatsForm(stats: SiteStats) {
+    this.statsForm = {
+      totalSales: stats.totalSales,
+      customerSatisfaction: stats.customerSatisfaction,
+      uptimeGuarantee: stats.uptimeGuarantee,
+      yearsExperience: stats.yearsExperience
+    };
   }
 
   private async loadStatsTimestamp() {
@@ -96,13 +191,50 @@ export class SettingsAdminComponent extends LoadingComponentBase implements OnIn
     this.isUpdatingStats = true;
     try {
       await this.statsService.updatePublicStats();
-      this.showMessage('Stats updated successfully!', 'success');
+      this.showMessage('admin.settings.feedback.success', 'success');
       await this.loadCurrentStats();
     } catch (error) {
       console.error('Error updating stats:', error);
-      this.showMessage('Error updating stats', 'error');
+      this.showMessage('admin.settings.feedback.error_details', 'error', { message: (error as any)?.message || 'Unknown error' });
     } finally {
       this.isUpdatingStats = false;
+    }
+  }
+
+  resetStatsForm() {
+    if (this.currentStats) {
+      this.syncStatsForm(this.currentStats);
+    }
+  }
+
+  async saveSiteStats() {
+    if (this.isSavingStats) {
+      return;
+    }
+
+    const toNumber = (value: unknown, fallback = 0): number => {
+      const parsed = typeof value === 'string' ? parseFloat(value) : Number(value);
+      return Number.isFinite(parsed) ? parsed : fallback;
+    };
+
+    const statsToSave: SiteStats = {
+      totalSales: toNumber(this.statsForm.totalSales),
+      customerSatisfaction: toNumber(this.statsForm.customerSatisfaction),
+      uptimeGuarantee: toNumber(this.statsForm.uptimeGuarantee),
+      yearsExperience: toNumber(this.statsForm.yearsExperience, 1)
+    };
+
+    this.isSavingStats = true;
+    try {
+      await this.statsService.saveStats(statsToSave);
+      this.showMessage('admin.settings.feedback.success', 'success');
+      await this.loadCurrentStats();
+    } catch (error: any) {
+      console.error('Error saving stats:', error);
+      const message = error?.message || 'Unknown error';
+      this.showMessage('admin.settings.feedback.error_details', 'error', { message });
+    } finally {
+      this.isSavingStats = false;
     }
   }
   
@@ -388,13 +520,45 @@ export class SettingsAdminComponent extends LoadingComponentBase implements OnIn
 
       this.sections.forEach(section => {
         section.settings.forEach(setting => {
-          (updatedSettings as any)[setting.key] = setting.value;
+          const key = setting.key;
+          const value = setting.value;
+          
+          // Debug log for ALL fields to see what's happening
+          if (section.title === 'Stripe Configuration') {
+            console.log(`[${section.title}] ${key}:`, {
+              value: value,
+              locked: setting.locked,
+              sensitive: setting.sensitive,
+              displayValue: value ? (typeof value === 'string' && value.length > 10 ? `${value.substring(0, 7)}...${value.slice(-4)}` : value) : 'empty'
+            });
+          }
+          
+          (updatedSettings as any)[key] = value;
         });
       });
 
+      console.log('About to save settings with stripeSecretKey:', 
+        updatedSettings.stripeSecretKey ? `${updatedSettings.stripeSecretKey.substring(0, 7)}...${updatedSettings.stripeSecretKey.slice(-4)}` : 'empty');
+      
+      // CRITICAL: Ensure empty strings don't overwrite existing values
+      // If a sensitive field is empty/undefined, preserve the existing value from Firestore
+      if (!updatedSettings.stripeSecretKey && this.currentSettings?.stripeSecretKey) {
+        console.log('Preserving existing stripeSecretKey from currentSettings');
+        updatedSettings.stripeSecretKey = this.currentSettings.stripeSecretKey;
+      }
+      if (!updatedSettings.stripePublicKey && this.currentSettings?.stripePublicKey) {
+        console.log('Preserving existing stripePublicKey from currentSettings');
+        updatedSettings.stripePublicKey = this.currentSettings.stripePublicKey;
+      }
+      if (!updatedSettings.emailApiKey && this.currentSettings?.emailApiKey) {
+        console.log('Preserving existing emailApiKey from currentSettings');
+        updatedSettings.emailApiKey = this.currentSettings.emailApiKey;
+      }
+      
       await this.settingsService.saveSettings(updatedSettings);
       this.currentSettings = updatedSettings;
       this.buildSections();
+      this.updateNotificationSummary();
       this.showMessage('admin.settings.feedback.success', 'success');
     } catch (error: any) {
       const message = error?.message || 'Unknown error';
@@ -496,13 +660,113 @@ export class SettingsAdminComponent extends LoadingComponentBase implements OnIn
       return setting.value || '';
     }
 
-    // If showing value and it's sensitive, only show last 8 characters
-    if (setting.showValue && typeof setting.value === 'string' && setting.value.length > 8) {
-      const lastChars = setting.value.slice(-8);
-      const maskedLength = setting.value.length - 8;
+    // Always mask sensitive fields - show only last 4 characters for security
+    if (typeof setting.value === 'string' && setting.value.length > 4) {
+      const lastChars = setting.value.slice(-4);
+      const maskedLength = Math.min(setting.value.length - 4, 20); // Cap mask length
       return '•'.repeat(maskedLength) + lastChars;
     }
 
     return setting.value;
   }
+
+  /**
+   * Handle input for sensitive fields
+   */
+  onSensitiveInput(setting: Setting, event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const newValue = input.value;
+    
+    // Only update if it's not the masked display value
+    if (!newValue.includes('•')) {
+      setting.value = newValue;
+    }
+    this.onSettingValueChange();
+  }
+
+  onSettingValueChange(): void {
+    this.updateNotificationSummary();
+  }
+
+  async loadRecentActivity(): Promise<void> {
+    this.isLoadingActivity = true;
+    this.activityError = null;
+    try {
+      this.recentActivity = await this.dashboardService.getRecentActivityFeed(6);
+    } catch (error) {
+      console.error('Error loading recent activity:', error);
+      const message = (error as any)?.message || 'Unable to load activity.';
+      this.activityError = message;
+      this.recentActivity = [];
+    } finally {
+      this.isLoadingActivity = false;
+    }
+  }
+
+  private updateNotificationSummary(): void {
+    if (!this.sections.length) {
+      return;
+    }
+
+    const explicitEmail = (this.getSettingValueFromSections('notificationEmail') || '') as string;
+    const contactEmail = (this.getSettingValueFromSections('contactEmail') || '') as string;
+
+    if (explicitEmail && explicitEmail.trim()) {
+      this.notificationEmail = explicitEmail.trim();
+      this.notificationEmailSource = 'custom';
+    } else if (contactEmail && contactEmail.trim()) {
+      this.notificationEmail = contactEmail.trim();
+      this.notificationEmailSource = 'contact';
+    } else {
+      this.notificationEmail = '';
+      this.notificationEmailSource = 'missing';
+    }
+
+    const lowStockThreshold = Number(
+      this.getSettingValueFromSections('lowStockThreshold') ??
+        this.currentSettings?.lowStockThreshold ??
+        0
+    );
+
+    this.notificationCards = this.notificationDefinitions.map(def => {
+      const enabled = Boolean(this.getSettingValueFromSections(def.key));
+      let meta: string | null = null;
+
+      if (def.key === 'lowStockAlerts' && enabled) {
+        meta = `Threshold: ${lowStockThreshold || 0} units`;
+      } else if (def.key === 'dailyReportEnabled' && enabled) {
+        meta = 'Sent daily at 08:00 server time';
+      } else if (def.key === 'autoRestockEnabled' && enabled) {
+        meta = 'Monitors product stock levels automatically';
+      }
+
+      return {
+        ...def,
+        enabled,
+        meta
+      };
+    });
+  }
+
+  private getSettingValueFromSections(key: keyof AppSettings): unknown {
+    for (const section of this.sections) {
+      const match = section.settings.find(setting => setting.key === key);
+      if (match) {
+        return match.value;
+      }
+    }
+    return this.currentSettings ? this.currentSettings[key] : undefined;
+  }
+  getActivityIcon(type: AdminActivityItem['type']): string {
+    return this.activityIconMap[type] ?? this.activityIconMap['order'];
+  }
+
+  getActivityAccent(type: AdminActivityItem['type']): string {
+    return this.activityAccentMap[type] ?? 'bg-white/10 border-white/20 text-white/70';
+  }
 }
+
+
+
+
+

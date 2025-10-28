@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { Firestore, doc, getDoc, setDoc } from '@angular/fire/firestore';
-import { Auth } from '@angular/fire/auth';
+import { Auth, onAuthStateChanged } from '@angular/fire/auth';
 import { ReplaySubject } from 'rxjs';
 
 export interface AppSettings {
@@ -124,6 +124,7 @@ export class SettingsService {
   private settingsCache: AppSettings | null = null;
   private settingsPromise: Promise<AppSettings> | null = null;
   private settingsSubject = new ReplaySubject<AppSettings>(1);
+  private authUserPromise: Promise<any> | null = null;
 
   /** Observable stream of settings changes */
   settings$ = this.settingsSubject.asObservable();
@@ -159,6 +160,8 @@ export class SettingsService {
       const isAdmin = await this.isUserAdmin();
       const docId = isAdmin ? this.SETTINGS_DOC_ID : this.PUBLIC_SETTINGS_DOC_ID;
       
+      console.log('fetchSettings - isAdmin:', isAdmin, 'docId:', docId);
+      
       const docRef = doc(this.firestore, 'settings', docId);
       const docSnap = await getDoc(docRef);
       const defaults = this.getDefaultSettings();
@@ -167,12 +170,18 @@ export class SettingsService {
         const docData = docSnap.data();
         const settings = { ...defaults, ...docData } as AppSettings;
         
+        console.log('fetchSettings - stripeSecretKey from Firestore:', 
+          docData['stripeSecretKey'] ? `${docData['stripeSecretKey'].substring(0, 7)}...${docData['stripeSecretKey'].slice(-4)}` : 'empty or undefined');
+        
         // For non-admins, ensure sensitive fields are empty
         if (!isAdmin) {
           SENSITIVE_FIELDS.forEach(field => {
             (settings[field] as any) = '';
           });
         }
+        
+        console.log('fetchSettings - final stripeSecretKey:', 
+          settings.stripeSecretKey ? `${settings.stripeSecretKey.substring(0, 7)}...${settings.stripeSecretKey.slice(-4)}` : 'empty');
         
         return settings;
       }
@@ -189,7 +198,7 @@ export class SettingsService {
    * Check if current user is admin
    */
   private async isUserAdmin(): Promise<boolean> {
-    const user = this.auth.currentUser;
+    const user = await this.waitForAuthUser();
     if (!user) return false;
     
     try {
@@ -198,6 +207,58 @@ export class SettingsService {
     } catch {
       return false;
     }
+  }
+
+  /**
+   * Wait for the initial auth user (handles Firebase async auth init)
+   */
+  private async waitForAuthUser(timeoutMs = 1500): Promise<any> {
+    const currentUser = this.auth.currentUser;
+    if (currentUser) {
+      return currentUser;
+    }
+
+    if (typeof window === 'undefined') {
+      return null;
+    }
+
+    if (!this.authUserPromise) {
+      this.authUserPromise = new Promise(resolve => {
+        let resolved = false;
+        let timerId: ReturnType<typeof setTimeout> | undefined;
+        let unsubscribe: (() => void) | null = null;
+
+        const finish = (user: any) => {
+          if (resolved) {
+            return;
+          }
+          resolved = true;
+          this.authUserPromise = null;
+          if (timerId !== undefined) {
+            clearTimeout(timerId);
+            timerId = undefined;
+          }
+          if (unsubscribe) {
+            unsubscribe();
+            unsubscribe = null;
+          }
+          resolve(user ?? null);
+        };
+
+        timerId = setTimeout(() => finish(this.auth.currentUser), timeoutMs);
+        unsubscribe = onAuthStateChanged(
+          this.auth,
+          user => finish(user),
+          () => finish(null)
+        );
+        if (resolved && unsubscribe) {
+          unsubscribe();
+          unsubscribe = null;
+        }
+      });
+    }
+
+    return this.authUserPromise;
   }
 
   /**
@@ -228,6 +289,10 @@ export class SettingsService {
       // Convert settings to plain object (remove any Firestore metadata/proxies)
       const plainSettings = JSON.parse(JSON.stringify(settings));
       
+      // Debug log
+      console.log('SettingsService.saveSettings - stripeSecretKey:', 
+        plainSettings.stripeSecretKey ? `${plainSettings.stripeSecretKey.substring(0, 7)}...${plainSettings.stripeSecretKey.slice(-4)} (length: ${plainSettings.stripeSecretKey.length})` : 'empty');
+      
       // Save full settings (admin only)
       const adminDocRef = doc(this.firestore, 'settings', this.SETTINGS_DOC_ID);
       await setDoc(adminDocRef, plainSettings, { merge: true });
@@ -235,6 +300,9 @@ export class SettingsService {
       // Verify the save by reading it back immediately
       const verifyDocSnap = await getDoc(adminDocRef);
       const verifyData = verifyDocSnap.data();
+      
+      console.log('Verified save - stripeSecretKey in Firestore:', 
+        verifyData?.['stripeSecretKey'] ? `${verifyData['stripeSecretKey'].substring(0, 7)}...${verifyData['stripeSecretKey'].slice(-4)} (length: ${verifyData['stripeSecretKey'].length})` : 'empty');
       
       // Create public copy without sensitive fields
       const publicSettings = { ...plainSettings };

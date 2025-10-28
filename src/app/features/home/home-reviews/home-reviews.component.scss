@@ -1,0 +1,11 @@
+:host {
+  display: block;
+}
+
+.luxury-overlay {
+  opacity: 0.3;
+}
+
+button:disabled {
+  cursor: not-allowed;
+}
