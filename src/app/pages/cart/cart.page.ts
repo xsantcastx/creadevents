@@ -77,12 +77,12 @@ export class CartPage implements OnInit {
     firstName: ['', [Validators.required, Validators.minLength(2)]],
     lastName: ['', [Validators.required, Validators.minLength(2)]],
     email: ['', [Validators.required, Validators.email]],
-    phoneE164: ['', [Validators.required, Validators.pattern(/^\+[1-9]\d{1,14}$/)]],
-    line1: ['', Validators.required],
+    phoneE164: ['', [Validators.required, Validators.pattern(/^\+?[1-9]\d{1,14}$/)]],
+    line1: ['', [Validators.required, Validators.minLength(3)]],
     line2: [''],
-    city: ['', Validators.required],
+    city: ['', [Validators.required, Validators.minLength(2)]],
     region: ['', Validators.required],
-    postalCode: ['', Validators.required],
+    postalCode: ['', [Validators.required, Validators.pattern(/^\d{5}(-\d{4})?$/)]],
     country: ['US', Validators.required],
     isDefault: [true]
   });
