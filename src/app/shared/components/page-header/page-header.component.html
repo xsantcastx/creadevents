@@ -1,4 +1,4 @@
-<section class="relative overflow-hidden border-b border-bitcoin-orange/10" [class.py-12]="compact" [class.py-16]="!compact">
+<section class="page-hero section-stack" [class.page-hero--compact]="compact">
   <!-- Animated Background -->
   <div class="absolute inset-0">
     <div class="absolute inset-0 bg-gradient-to-br from-bitcoin-orange/5 via-transparent to-bitcoin-gold/5"></div>
@@ -6,14 +6,14 @@
     <div class="absolute bottom-0 right-1/4 w-96 h-96 bg-bitcoin-gold/10 rounded-full blur-3xl opacity-20 animate-pulse" style="animation-delay: 1s;"></div>
   </div>
   
-  <div class="relative max-w-7xl mx-auto px-6">
+  <div class="page-container page-hero__inner">
     <!-- Breadcrumb Navigation -->
-    <nav class="mb-6" *ngIf="breadcrumbs.length > 0">
-      <ol class="flex items-center space-x-2 text-sm">
+    <nav class="page-hero__breadcrumbs" *ngIf="breadcrumbs.length > 0">
+      <ol class="page-hero__breadcrumbs-list">
         <li *ngFor="let crumb of breadcrumbs; let last = last">
           <a *ngIf="crumb.url && !last" 
              [routerLink]="crumb.url" 
-             class="text-bitcoin-gray hover:text-bitcoin-orange transition-colors flex items-center gap-1">
+             class="page-hero__breadcrumb-link">
             <svg *ngIf="crumb.icon === 'home'" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
             </svg>
@@ -22,31 +22,31 @@
             </svg>
             <span>{{ crumb.label | translate }}</span>
           </a>
-          <span *ngIf="last" class="text-bitcoin-orange font-medium flex items-center gap-1">
+          <span *ngIf="last" class="page-hero__breadcrumb-current">
             <svg *ngIf="crumb.icon" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
             </svg>
             <span>{{ crumb.label | translate }}</span>
           </span>
-          <span *ngIf="!last" class="text-bitcoin-gray mx-2">/</span>
+          <span *ngIf="!last" class="page-hero__breadcrumb-separator">/</span>
         </li>
       </ol>
     </nav>
     
     <!-- Header Content -->
-    <div class="flex items-center justify-between">
-      <div>
-        <h1 class="font-serif text-white mb-2 leading-tight" [class.text-3xl]="compact" [class.lg:text-5xl]="compact" [class.text-4xl]="!compact" [class.lg:text-6xl]="!compact">
+    <div class="page-hero__content">
+      <div class="page-hero__heading">
+        <h1 class="page-hero__title font-serif" [class.page-hero__title--compact]="compact">
           <span *ngIf="title">{{ title | translate }}</span>
           <span *ngIf="titleHighlight" class="bitcoin-gradient-text"> {{ titleHighlight | translate }}</span>
         </h1>
-        <p class="text-bitcoin-gray" [class.text-base]="compact" [class.lg:text-lg]="compact" [class.text-lg]="!compact" [class.lg:text-xl]="!compact" *ngIf="subtitle">
+        <p class="page-hero__subtitle text-bitcoin-gray" [class.page-hero__subtitle--compact]="compact" *ngIf="subtitle">
           {{ subtitle | translate }}
         </p>
       </div>
       
       <!-- Icon Badge (if provided) -->
-      <div *ngIf="icon" class="hidden lg:flex items-center justify-center w-16 h-16 rounded-2xl bg-bitcoin-orange/10 border border-bitcoin-orange/20">
+      <div *ngIf="icon" class="page-hero__icon">
         <div class="relative">
           <!-- Cart Icon -->
           <svg *ngIf="icon === 'cart'" class="w-8 h-8 text-bitcoin-orange" fill="none" stroke="currentColor" viewBox="0 0 24 24">

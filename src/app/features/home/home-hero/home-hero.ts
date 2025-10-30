@@ -1,14 +1,7 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, PLATFORM_ID, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { CommonModule } from '@angular/common';
-
-interface CarouselImage {
-  id: string;
-  url: string;
-  alt: string;
-  title: string;
-  description: string;
-}
+import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { SettingsService, HeroImage } from '../../../services/settings.service';
 
 @Component({
   selector: 'app-home-hero',
@@ -18,47 +11,40 @@ interface CarouselImage {
   styleUrl: './home-hero.scss'
 })
 export class HomeHeroComponent implements OnInit, OnDestroy {
+  private settingsService = inject(SettingsService);
+  private platformId = inject(PLATFORM_ID);
+  
   currentImageIndex = 0;
   autoPlay = true;
   private intervalId: any;
   
-  rotatingImages: CarouselImage[] = [
-    {
-      id: '1',
-      url: '/assets/productos/antminer-s19.jpg',
-      alt: 'Antminer S19 Pro Mining Setup',
-      title: 'Antminer S19 Pro',
-      description: 'Industry-leading hashrate with optimized efficiency'
-    },
-    {
-      id: '2',
-      url: '/assets/galeria/cocinas/cocina-1.jpg',
-      alt: 'Professional Mining Farm',
-      title: 'Enterprise Mining Solutions',
-      description: 'Scalable infrastructure for maximum ROI'
-    },
-    {
-      id: '3',
-      url: '/assets/galeria/banos/bano-1.jpg',
-      alt: 'Advanced Cooling Systems',
-      title: 'Thermal Management',
-      description: 'Advanced cooling for peak performance'
-    },
-    {
-      id: '4',
-      url: '/assets/productos/whatsminer-m30s.jpg',
-      alt: 'WhatsMiner M30S+',
-      title: 'WhatsMiner M30S+',
-      description: 'Power-efficient mining at its finest'
-    }
-  ];
+  rotatingImages: HeroImage[] = [];
 
-  ngOnInit() {
-    this.startAutoPlay();
+  async ngOnInit() {
+    console.log('🚀 HomeHero ngOnInit CALLED');
+    await this.loadHeroImages();
+    if (isPlatformBrowser(this.platformId)) {
+      this.startAutoPlay();
+    }
   }
 
   ngOnDestroy() {
     this.stopAutoPlay();
+  }
+
+  /**
+   * Load hero images from settings
+   */
+  async loadHeroImages() {
+    try {
+      const settings = await this.settingsService.getSettings(true);
+      this.rotatingImages = this.settingsService.getHeroImages();
+      
+      console.log('✅ Loaded', this.rotatingImages.length, 'hero images');
+    } catch (error) {
+      console.error('Error loading hero images:', error);
+      this.rotatingImages = [];
+    }
   }
 
   startAutoPlay() {

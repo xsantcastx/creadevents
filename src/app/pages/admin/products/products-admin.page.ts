@@ -977,16 +977,14 @@ export class ProductsAdminComponent extends LoadingComponentBase implements OnIn
   // Get current product slug for gallery uploader
   get currentProductSlug(): string {
     const formData = this.productForm.value;
-    const category = this.categories.find(c => c.id === formData.categoryId);
-    const grosor = category?.slug || '12mm';
-    return this.getProductSlug(formData.name, grosor);
+    return this.getProductSlug(formData.name);
   }
 
-  // Get current product grosor for gallery uploader
-  get currentProductGrosor(): string {
+  // Get current product category slug for gallery uploader
+  get currentProductCategorySlug(): string {
     const formData = this.productForm.value;
     const category = this.categories.find(c => c.id === formData.categoryId);
-    return category?.slug || '12mm';
+    return category?.slug || '';
   }
 
   async saveDraft() {
@@ -1037,9 +1035,7 @@ export class ProductsAdminComponent extends LoadingComponentBase implements OnIn
 
     try {
       const category = this.categories.find(c => c.id === formData.categoryId);
-      const grosor = category?.slug || '12mm';
-
-      const slug = this.getProductSlug(formData.name, grosor);
+      const slug = this.getProductSlug(formData.name);
 
       // Check slug duplicates only when creating or if the slug has actually changed
       const slugChanged = this.isEditMode && this.selectedProduct 
@@ -1058,11 +1054,9 @@ export class ProductsAdminComponent extends LoadingComponentBase implements OnIn
       if (slugChanged) {
         console.log('🔎 Calling slugExists with:');
         console.log('  - slug:', slug);
-        console.log('  - grosor:', grosor);
         console.log('  - excludeId:', this.selectedProduct?.id);
         const slugExists = await this.productsService.slugExists(
           slug,
-          grosor,
           this.selectedProduct?.id
         );
         console.log('📋 Slug exists check result:', slugExists);
@@ -1078,7 +1072,7 @@ export class ProductsAdminComponent extends LoadingComponentBase implements OnIn
       let coverImageUrl = this.selectedProduct?.imageUrl || '';
       
       if (this.selectedCoverFile) {
-        const uploadResult = await this.uploadCoverImage(slug, grosor, existingCover);
+        const uploadResult = await this.uploadCoverImage(slug, existingCover);
         coverImage = uploadResult.mediaId;
         coverImageUrl = uploadResult.url;
       }
@@ -1105,7 +1099,6 @@ export class ProductsAdminComponent extends LoadingComponentBase implements OnIn
         coverImage,
         galleryImageIds: this.galleryMediaIds.length > 0 ? this.galleryMediaIds : (this.selectedProduct?.galleryImageIds || []),
         specs: {
-          grosor,
           size: formData.size,
           finish: formData.finish,
           thicknessMm: category?.defaultSpecOverrides?.thicknessMm,
@@ -1123,7 +1116,6 @@ export class ProductsAdminComponent extends LoadingComponentBase implements OnIn
         specsLocked: this.specsLocked,
         seoLocked: this.seoLocked,
         // Compatibility fields
-        grosor,
         size: formData.size,
         imageUrl: coverImageUrl, // Use the actual download URL, not Media ID
         price: formData.price ? parseFloat(formData.price) : undefined,
@@ -1170,7 +1162,7 @@ export class ProductsAdminComponent extends LoadingComponentBase implements OnIn
     }
   }
 
-  private getProductSlug(name: string, grosor: string): string {
+  private getProductSlug(name: string): string {
     const baseSlug = this.storageService.generateSlug(name);
     if (this.isEditMode && this.selectedProduct?.slug === baseSlug) {
       return baseSlug;
@@ -1178,7 +1170,7 @@ export class ProductsAdminComponent extends LoadingComponentBase implements OnIn
     return baseSlug;
   }
 
-  private async uploadCoverImage(slug: string, grosor: string, existingCover?: string | null): Promise<{ mediaId: string; url: string }> {
+  private async uploadCoverImage(slug: string, existingCover?: string | null): Promise<{ mediaId: string; url: string }> {
     if (!this.selectedCoverFile) {
       return { mediaId: existingCover || '', url: existingCover || '' };
     }
@@ -1208,8 +1200,7 @@ export class ProductsAdminComponent extends LoadingComponentBase implements OnIn
       const downloadURL = await new Promise<string>((resolve, reject) => {
         this.storageService.uploadProductImage(
           this.selectedCoverFile!,
-          slug,
-          grosor
+          slug
         ).subscribe({
           next: (progress) => {
             this.uploadProgress = progress.progress;
@@ -1224,7 +1215,7 @@ export class ProductsAdminComponent extends LoadingComponentBase implements OnIn
       });
 
       // Extract storage path from URL for future deletion
-      const storagePath = `productos/${grosor}/${slug}/${this.selectedCoverFile.name}`;
+      const storagePath = `productos/${slug}/${this.selectedCoverFile.name}`;
 
       // Create Media document
       const mediaInput: MediaCreateInput = {

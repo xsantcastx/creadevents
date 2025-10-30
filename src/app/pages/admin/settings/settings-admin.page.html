@@ -1,5 +1,4 @@
-
-<div class="min-h-screen bg-ts-bg">
+<div class="section-stack min-h-screen bg-ts-bg">
   <!-- Header -->
   <div class="bg-gradient-to-r from-ts-bg via-gray-900 to-ts-bg border-b border-white/10">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -64,6 +63,9 @@
           <!-- Settings (Collapsible) -->
           @if (section.expanded) {
             <div class="p-6 space-y-4">
+              @if (section.isCustomComponent && section.title === 'Home Hero Images') {
+                <app-hero-images-manager></app-hero-images-manager>
+              } @else {
               @for (setting of section.settings; track setting.key) {
               <div>
                 <div class="flex items-center justify-between gap-3 mb-2">
@@ -92,19 +94,31 @@
 
                 @switch (setting.type) {
                   @case ('text') {
-                    <input
-                      [type]="getInputType(setting)"
-                      [(ngModel)]="setting.value"
-                      [ngModelOptions]="{ standalone: true }"
-                      [attr.id]="getFieldId(section.title, setting.key)"
-                      [attr.name]="getFieldId(section.title, setting.key)"
-                      [disabled]="isDisabled(setting)"
-                      [placeholder]="setting.placeholder || ''"
-                      class="w-full px-4 py-2 bg-gray-900/50 border border-white/10 rounded-lg text-white placeholder-white/60 focus:border-bitcoin-orange focus:ring-1 focus:ring-bitcoin-orange transition-all disabled:opacity-60 disabled:cursor-not-allowed">
+                    @if (setting.sensitive && setting.locked) {
+                      <!-- Sensitive field LOCKED: show masked value, readonly -->
+                      <input
+                        type="password"
+                        [value]="getDisplayValue(setting)"
+                        readonly
+                        class="w-full px-4 py-2 bg-gray-900/50 border border-white/10 rounded-lg text-white placeholder-white/60 opacity-60 cursor-not-allowed">
+                    } @else {
+                      <input
+                        type="text"
+                        [(ngModel)]="setting.value"
+                        (ngModelChange)="onSettingValueChange()"
+                        [ngModelOptions]="{ standalone: true }"
+                        [attr.id]="getFieldId(section.title, setting.key)"
+                        [attr.name]="getFieldId(section.title, setting.key)"
+                        [disabled]="isDisabled(setting)"
+                        [placeholder]="setting.placeholder || ''"
+                        class="w-full px-4 py-2 bg-gray-900/50 border border-white/10 rounded-lg text-white placeholder-white/60 focus:border-bitcoin-orange focus:ring-1 focus:ring-bitcoin-orange transition-all disabled:opacity-60 disabled:cursor-not-allowed"
+                        (input)="setting.sensitive ? onSensitiveInput(setting, $event) : null">
+                    }
                   }
                   @case ('textarea') {
                     <textarea
                       [(ngModel)]="setting.value"
+                      (ngModelChange)="onSettingValueChange()"
                       [ngModelOptions]="{ standalone: true }"
                       [attr.id]="getFieldId(section.title, setting.key)"
                       [attr.name]="getFieldId(section.title, setting.key)"
@@ -117,6 +131,7 @@
                     <input
                       type="number"
                       [(ngModel)]="setting.value"
+                      (ngModelChange)="onSettingValueChange()"
                       [ngModelOptions]="{ standalone: true }"
                       [attr.id]="getFieldId(section.title, setting.key)"
                       [attr.name]="getFieldId(section.title, setting.key)"
@@ -129,6 +144,7 @@
                       <input
                         type="checkbox"
                         [(ngModel)]="setting.value"
+                        (ngModelChange)="onSettingValueChange()"
                         [ngModelOptions]="{ standalone: true }"
                         [attr.id]="getFieldId(section.title, setting.key)"
                         [attr.name]="getFieldId(section.title, setting.key)"
@@ -143,6 +159,7 @@
                   @case ('select') {
                     <select
                       [(ngModel)]="setting.value"
+                      (ngModelChange)="onSettingValueChange()"
                       [ngModelOptions]="{ standalone: true }"
                       [attr.id]="getFieldId(section.title, setting.key)"
                       [attr.name]="getFieldId(section.title, setting.key)"
@@ -165,8 +182,249 @@
                 }
               </div>
             }
+            }
           </div>
           }
+        </div>
+      }
+    </div>
+
+        <div class="grid grid-cols-1 xl:grid-cols-3 gap-6 mb-8">
+      <section class="xl:col-span-2 bg-gray-800/50 border border-white/10 rounded-2xl p-6 space-y-6">
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+          <div>
+            <h3 class="text-lg font-semibold bitcoin-gradient-text">Notification center</h3>
+            <p class="text-sm text-white/60">Review automated alerts and customer-facing emails.</p>
+          </div>
+          <div class="text-sm text-right md:text-left">
+            <div class="text-white/70">Primary email</div>
+            <div class="font-semibold text-white">
+              @if (notificationEmail) {
+                {{ notificationEmail }}
+              } @else {
+                <span class="text-white/40">Not configured</span>
+              }
+            </div>
+            <div class="text-xs text-white/50 mt-1">
+              @switch (notificationEmailSource) {
+                @case ('custom') { Uses dedicated notification address. }
+                @case ('contact') { Falling back to the contact email until a notification email is provided. }
+                @default { Add a notification email to make sure operational alerts reach the right inbox. }
+              }
+            </div>
+          </div>
+        </div>
+
+        <div class="grid sm:grid-cols-2 xl:grid-cols-3 gap-4">
+          @for (card of notificationCards; track card.key) {
+            <div class="bg-gray-900/60 border border-white/10 rounded-xl p-4 h-full flex flex-col gap-3">
+              <div class="flex items-start gap-3">
+                <div class="w-10 h-10 flex items-center justify-center rounded-lg border"
+                     [ngClass]="card.enabled ? card.accentClass : 'bg-gray-800/70 border-white/10 text-white/40'">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" [attr.d]="card.iconPath"></path>
+                  </svg>
+                </div>
+                <div class="flex-1 min-w-0">
+                  <div class="flex items-center gap-2 flex-wrap">
+                    <h4 class="text-white font-semibold">{{ card.title }}</h4>
+                    <span class="px-2 py-0.5 text-xs rounded-full border"
+                          [ngClass]="card.enabled ? 'border-green-500/40 bg-green-500/10 text-green-300' : 'border-white/20 text-white/50'">
+                      {{ card.enabled ? 'Enabled' : 'Disabled' }}
+                    </span>
+                  </div>
+                  <p class="text-sm text-white/60 mt-1 leading-snug">{{ card.description }}</p>
+                  @if (card.meta) {
+                    <div class="text-xs text-white/40 mt-2">
+                      {{ card.meta }}
+                    </div>
+                  }
+                </div>
+              </div>
+            </div>
+          }
+        </div>
+      </section>
+
+      <section class="bg-gray-800/50 border border-white/10 rounded-2xl p-6 flex flex-col gap-4">
+        <div class="flex items-center justify-between">
+          <div>
+            <h3 class="text-lg font-semibold text-white">Recent activity</h3>
+            <p class="text-sm text-white/60">Latest customer and catalog updates.</p>
+          </div>
+          <button type="button"
+                  class="px-3 py-1.5 text-xs font-medium rounded-lg border border-white/20 text-white/70 hover:text-white hover:border-white/40 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  (click)="loadRecentActivity()"
+                  [disabled]="isLoadingActivity">
+            @if (isLoadingActivity) { Refreshing... } @else { Refresh }
+          </button>
+        </div>
+
+        @if (isLoadingActivity) {
+          <div class="flex items-center justify-center py-6 text-white/60 text-sm">
+            <svg class="h-5 w-5 animate-spin mr-3" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            Loading activity...
+          </div>
+        } @else if (activityError) {
+          <div class="p-4 border border-red-500/40 bg-red-500/10 rounded-xl text-red-200 text-sm">
+            {{ activityError }}
+          </div>
+        } @else if (!recentActivity.length) {
+          <div class="text-sm text-white/50">
+            No recent events detected in the last few days.
+          </div>
+        } @else {
+          <ul class="space-y-3">
+            @for (activity of recentActivity; track activity.id) {
+              <li class="flex items-start gap-3">
+                <div class="w-10 h-10 rounded-lg border flex items-center justify-center"
+                     [ngClass]="getActivityAccent(activity.type)">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" [attr.d]="getActivityIcon(activity.type)"></path>
+                  </svg>
+                </div>
+                <div class="flex-1 min-w-0">
+                  <div class="text-sm text-white leading-snug">{{ activity.description }}</div>
+                  <div class="text-xs text-white/50 mt-1">
+                    {{ activity.timestamp | date:'medium' }}
+                  </div>
+                </div>
+              </li>
+            }
+          </ul>
+        }
+      </section>
+    </div>
+    <!-- Site Statistics Management -->
+    <div class="mb-8 p-6 bg-bitcoin-dark/30 rounded-xl border border-bitcoin-orange/20">
+      <div class="flex flex-col xl:flex-row xl:items-center xl:justify-between gap-4 mb-6">
+        <div>
+          <h3 class="text-lg font-semibold bitcoin-gradient-text flex items-center gap-2">
+            Site Statistics
+          </h3>
+          <p class="text-sm text-bitcoin-gray mt-1">Adjust the metrics displayed on the homepage.</p>
+        </div>
+        <div class="flex flex-wrap gap-3">
+          <button
+            type="button"
+            (click)="resetStatsForm()"
+            [disabled]="!currentStats || isSavingStats || isUpdatingStats"
+            class="px-4 py-2 bg-gray-800/60 text-white/80 rounded-lg border border-white/10 hover:border-white/40 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed">
+            Reset to current
+          </button>
+          <button
+            type="button"
+            (click)="updateSiteStats()"
+            [disabled]="isUpdatingStats"
+            class="px-6 py-2 bg-bitcoin-gold/20 text-bitcoin-gold rounded-lg font-semibold hover:bg-bitcoin-gold/30 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2">
+            @if (isUpdatingStats) {
+              <svg class="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+              </svg>
+              Refreshing...
+            } @else {
+              Refresh from data
+            }
+          </button>
+        </div>
+      </div>
+
+      @if (!currentStats) {
+        <div class="text-sm text-bitcoin-gray">
+          Statistics will be available once the current values load.
+        </div>
+      } @else {
+        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
+          <div class="p-4 bg-bitcoin-dark/50 rounded-lg border border-bitcoin-orange/10">
+            <label class="block text-sm font-medium text-white/70 mb-2" for="stats-total-sales">
+              Total Deployments
+            </label>
+            <input
+              id="stats-total-sales"
+              name="stats-total-sales"
+              type="number"
+              min="0"
+              step="1"
+              [(ngModel)]="statsForm.totalSales"
+              [ngModelOptions]="{ standalone: true }"
+              [disabled]="isSavingStats"
+              class="w-full px-4 py-2 bg-gray-900/50 border border-white/10 rounded-lg text-white focus:border-bitcoin-orange focus:ring-1 focus:ring-bitcoin-orange transition-all">
+          </div>
+
+          <div class="p-4 bg-bitcoin-dark/50 rounded-lg border border-bitcoin-orange/10">
+            <label class="block text-sm font-medium text-white/70 mb-2" for="stats-satisfaction">
+              Customer Satisfaction (%)
+            </label>
+            <input
+              id="stats-satisfaction"
+              name="stats-satisfaction"
+              type="number"
+              min="0"
+              max="100"
+              step="1"
+              [(ngModel)]="statsForm.customerSatisfaction"
+              [ngModelOptions]="{ standalone: true }"
+              [disabled]="isSavingStats"
+              class="w-full px-4 py-2 bg-gray-900/50 border border-white/10 rounded-lg text-white focus:border-bitcoin-orange focus:ring-1 focus:ring-bitcoin-orange transition-all">
+          </div>
+
+          <div class="p-4 bg-bitcoin-dark/50 rounded-lg border border-bitcoin-orange/10">
+            <label class="block text-sm font-medium text-white/70 mb-2" for="stats-uptime">
+              Uptime Guarantee (%)
+            </label>
+            <input
+              id="stats-uptime"
+              name="stats-uptime"
+              type="number"
+              min="0"
+              max="100"
+              step="0.1"
+              [(ngModel)]="statsForm.uptimeGuarantee"
+              [ngModelOptions]="{ standalone: true }"
+              [disabled]="isSavingStats"
+              class="w-full px-4 py-2 bg-gray-900/50 border border-white/10 rounded-lg text-white focus:border-bitcoin-orange focus:ring-1 focus:ring-bitcoin-orange transition-all">
+          </div>
+
+          <div class="p-4 bg-bitcoin-dark/50 rounded-lg border border-bitcoin-orange/10">
+            <label class="block text-sm font-medium text-white/70 mb-2" for="stats-experience">
+              Years of Experience
+            </label>
+            <input
+              id="stats-experience"
+              name="stats-experience"
+              type="number"
+              min="0"
+              step="0.1"
+              [(ngModel)]="statsForm.yearsExperience"
+              [ngModelOptions]="{ standalone: true }"
+              [disabled]="isSavingStats"
+              class="w-full px-4 py-2 bg-gray-900/50 border border-white/10 rounded-lg text-white focus:border-bitcoin-orange focus:ring-1 focus:ring-bitcoin-orange transition-all">
+          </div>
+        </div>
+
+        <div class="mt-6 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+          <div class="text-xs text-bitcoin-gray">
+            Last updated: {{ statsLastUpdated || 'Never' }}
+          </div>
+          <button
+            type="button"
+            (click)="saveSiteStats()"
+            [disabled]="isSavingStats"
+            class="px-6 py-2 bg-bitcoin-orange text-white rounded-lg font-semibold hover:bg-bitcoin-orange/90 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2">
+            @if (isSavingStats) {
+              <svg class="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+              </svg>
+              Saving stats...
+            } @else {
+              Save statistics
+            }
+          </button>
         </div>
       }
     </div>
@@ -184,9 +442,10 @@
           </svg>
           {{ 'admin.settings.actions.saving' | translate }}
         } @else {
-          💾 Save All Settings
+          Save All Settings
         }
       </button>
     </div>
   </div>
 </div>
+

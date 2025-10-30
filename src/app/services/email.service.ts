@@ -24,8 +24,8 @@ export class EmailService {
       throw new Error('Missing required fields: name, email, or items');
     }
     
-    // Get settings
-    const settings = await this.settingsService.getSettings();
+    // Get settings with force refresh to ensure we have latest values
+    const settings = await this.settingsService.getSettings(true);
     
     // Check if order emails are enabled
     if (!settings.orderEmailEnabled) {
@@ -33,7 +33,7 @@ export class EmailService {
       return { success: true, disabled: true };
     }
     
-    const recipientEmail = settings.contactEmail || 'xsantcastx@xsantcastx.com';
+    const recipientEmail = settings.contactEmail || 'support@theluxmining.com';
     console.log(`[EmailService] Sending cart email to: ${recipientEmail}`);
     
     const rows = items.map((i, idx) =>
@@ -91,9 +91,9 @@ export class EmailService {
       throw new Error('Missing required fields: nombre, email, or mensaje');
     }
 
-    // Get settings
-    const settings = await this.settingsService.getSettings();
-    const recipientEmail = settings.contactEmail || 'xsantcastx@xsantcastx.com';
+    // Get settings with force refresh to ensure we have latest values
+    const settings = await this.settingsService.getSettings(true);
+    const recipientEmail = settings.contactEmail || 'support@theluxmining.com';
     console.log(`[EmailService] Sending contact form to: ${recipientEmail}`);
 
     const html = `

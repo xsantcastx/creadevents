@@ -1,6 +1,8 @@
 import { Injectable, inject } from '@angular/core';
 import { Meta, Title } from '@angular/platform-browser';
 import { SettingsService } from './settings.service';
+import { TranslateService } from '@ngx-translate/core';
+import { firstValueFrom } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -9,6 +11,31 @@ export class MetaService {
   private meta = inject(Meta);
   private title = inject(Title);
   private settingsService = inject(SettingsService);
+  private translate = inject(TranslateService);
+
+  private readonly translationKeyPattern = /^[A-Za-z0-9_-]+\.[A-Za-z0-9_.-]+$/;
+
+  private async resolveValue(value?: string): Promise<string | undefined> {
+    if (!value) {
+      return value;
+    }
+
+    if (!this.translationKeyPattern.test(value)) {
+      return value;
+    }
+
+    const instant = this.translate.instant(value);
+    if (instant !== value) {
+      return instant;
+    }
+
+    try {
+      const resolved = await firstValueFrom(this.translate.get(value));
+      return resolved;
+    } catch {
+      return value;
+    }
+  }
 
   /**
    * Set page title and meta tags
@@ -23,17 +50,25 @@ export class MetaService {
     url?: string;
   }): Promise<void> {
     const settings = await this.settingsService.getSettings();
-    
+    const siteName = settings.siteName || 'TheLuxMining';
+
+    const resolvedTitle = await this.resolveValue(config?.title);
+    const resolvedDescription = await this.resolveValue(config?.description);
+    const resolvedKeywords = await this.resolveValue(config?.keywords);
+
     // Title
-    const pageTitle = config?.title || settings.metaTitle || settings.siteName;
+    const titleBase = resolvedTitle || settings.metaTitle || siteName;
+    const pageTitle = resolvedTitle && !titleBase.includes(siteName)
+      ? `${siteName} | ${resolvedTitle}`
+      : titleBase;
     this.title.setTitle(pageTitle);
 
     // Description
-    const description = config?.description || settings.metaDescription || settings.siteDescription;
+    const description = resolvedDescription || settings.metaDescription || settings.siteDescription;
     this.meta.updateTag({ name: 'description', content: description });
 
     // Keywords
-    const keywords = config?.keywords || settings.metaKeywords || '';
+    const keywords = resolvedKeywords || settings.metaKeywords || '';
     if (keywords) {
       this.meta.updateTag({ name: 'keywords', content: keywords });
     }

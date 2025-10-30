@@ -1,9 +1,36 @@
 {
+  "page_titles": {
+    "home": "Hardware Premium de Minería Bitcoin",
+    "products": "Productos de Minería",
+    "product_details": "Detalles del Producto",
+    "gallery": "Galería",
+    "contact": "Contacto",
+    "cart": "Carrito de Compras",
+    "checkout_review": "Revisión de Compra",
+    "payment": "Pago",
+    "order_confirmation": "Confirmación de Pedido",
+    "login": "Iniciar Sesión",
+    "register": "Registrarse",
+    "profile": "Mi Perfil",
+    "orders": "Mis Pedidos",
+    "admin_dashboard": "Panel de Administración",
+    "product_management": "Gestión de Productos",
+    "quick_add_product": "Agregar Producto Rápido",
+    "gallery_management": "Gestión de Galería",
+    "order_management": "Gestión de Pedidos",
+    "user_management": "Gestión de Usuarios",
+    "benefit_templates": "Plantillas de Beneficios",
+    "analytics": "Panel de Analítica",
+    "settings": "Configuración",
+    "email_templates": "Plantillas de Email",
+    "size_groups": "Gestión de Grupos de Tamaño",
+    "not_found": "Página No Encontrada"
+  },
   "home": {
     "hero": {
       "title": "Mina Tu Futuro",
-      "subtitle": "\u00f0\u0178\u2019\u00a0 Donde la tecnolog\u00c3\u00ada cripto se convierte en estilo de vida.\nExplora equipo de miner\u00c3\u00ada, almacenamiento seguro y gadgets que muestran tu pasi\u00c3\u00b3n por el futuro descentralizado.\n\u00f0\u0178\u201d\u00a5 Innovaci\u00c3\u00b3n, seguridad y dise\u00c3\u00b1o \u00e2\u20ac\u201d sin l\u00c3\u00admites.",
-      "description": "\u00c3\u0161nete a la revoluci\u00c3\u00b3n. Maximiza tus ganancias con mineros ASIC de \u00c3\u00baltima generaci\u00c3\u00b3n dise\u00c3\u00b1ados para el m\u00c3\u00a1ximo rendimiento y eficiencia incomparable.",
+      "subtitle": " Donde la tecnologia cripto se convierte en estilo de vida.\nExplora equipo de minera, almacenamiento seguro y gadgets que muestran tu pasion por el futuro descentralizado.\n Innovacion, seguridad y diseño  sin límites.",
+      "description": "Únete a la revolución. Maximiza tus ganancias con mineros ASIC de última generación diseñados para el máximo rendimiento y eficiencia incomparable.",
       "cta_primary": "Explorar Mineros",
       "cta_secondary": "Solicitar Cotizaci\u00c3\u00b3n"
     },
@@ -62,12 +89,17 @@
     "technical": "Especificaciones T\u00c3\u00a9cnicas",
     "contact": "Contacto",
     "login": "Iniciar Sesi\u00c3\u00b3n",
-    "cart": "Carrito"
+    "cart": "Carrito",
+    "follow_us": "Síguenos",
+    "language": "Idioma",
+    "account": "Cuenta",
+    "get_started": "Comenzar"
   },
   "footer": {
     "rights": "Todos los derechos reservados",
     "privacy": "Pol\u00c3\u00adtica de Privacidad",
     "terms": "T\u00c3\u00a9rminos y Condiciones",
+    "returns": "Pol\u00c3\u00adtica de Devoluciones",
     "description": "Tu destino principal para hardware de miner\u00c3\u00ada cripto, mineros solo, soluciones de almacenamiento en fr\u00c3\u00ado, llaveros Bitcoin y gadgets exclusivos de criptomonedas.",
     "quick_links": "Enlaces R\u00c3\u00a1pidos",
     "products_title": "Productos",

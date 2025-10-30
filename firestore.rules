@@ -17,6 +17,22 @@ service cloud.firestore {
              get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
     }
 
+    // Reviews - Public read, users can manage their own review
+    match /reviews/{userId} {
+      allow read: if true;
+      allow create: if isSignedIn()
+        && userId == request.auth.uid
+        && request.resource.data.uid == request.auth.uid
+        && request.resource.data.rating is number
+        && request.resource.data.rating >= 1
+        && request.resource.data.rating <= 5
+        && request.resource.data.comment is string
+        && request.resource.data.comment.size() <= 1000;
+      allow update: if isSignedIn()
+        && userId == request.auth.uid;
+      allow delete: if isAdmin() || (isSignedIn() && userId == request.auth.uid);
+    }
+
     // Products - Public read, Admin write
     match /products/{productId} {
       allow read: if true;
@@ -133,6 +149,13 @@ service cloud.firestore {
       allow delete: if isAdmin();
     }
 
+    // Surveys - Public read for stats, authenticated users can create
+    match /surveys/{surveyId} {
+      allow read: if true; // Public read for calculating stats
+      allow create: if isSignedIn(); // Users can submit surveys
+      allow update, delete: if isAdmin(); // Only admins can modify
+    }
+
     // Payments - Read-only for users (their own), write access for backend/webhooks only
     match /payments/{paymentId} {
       allow read: if isAdmin() || 
@@ -153,10 +176,12 @@ service cloud.firestore {
       allow write: if isAdmin();
     }
 
-    // Settings - Public read, Admin write
+    // Settings
     match /settings/{settingId} {
-      allow read: if true;
-      allow write: if isAdmin();
+      // Allow admins to read and write all settings documents
+      allow read, write: if isAdmin();
+      // Allow public read for the 'public' document
+      allow read: if settingId == 'public';
     }
 
     // Mail collection for contact form (Brevo integration)

@@ -21,7 +21,7 @@ interface Category {
   imports: [CommonModule, RouterModule, TranslateModule],
   template: `
     <footer class="bg-gradient-to-b from-[#13151a] to-[#0a0b0d] py-16 border-t border-bitcoin-orange/20">
-      <div class="max-w-7xl mx-auto px-6">
+      <div class="page-container">
         <div class="grid md:grid-cols-4 gap-8 mb-12">
           <div class="md:col-span-2">
             <div class="flex items-center gap-3 mb-4">
@@ -33,7 +33,7 @@ interface Category {
             </p>
             @if (supportHours) {
               <p class="text-white/60 text-sm mb-4">
-                <span class="text-bitcoin-orange">{{ 'footer.support_hours' | translate }}:</span> {{ supportHours }}
+                <span class="text-bitcoin-orange">{{ 'footer.business_hours' | translate }}:</span> {{ supportHours }}
               </p>
             }
             <div class="flex gap-4">
@@ -137,9 +137,13 @@ interface Category {
               </span>
             </p>
             <div class="flex gap-6 text-sm">
-              <a [routerLink]="privacyPolicyUrl" class="text-white/70 hover:text-bitcoin-orange transition-colors">{{ 'footer.privacy' | translate }}</a>
-              <a [routerLink]="termsOfServiceUrl" class="text-white/70 hover:text-bitcoin-orange transition-colors">{{ 'footer.terms' | translate }}</a>
-              @if (returnPolicyUrl) {
+              @if (privacyPolicyUrl && privacyPolicyUrl !== '/privacy-policy') {
+                <a [routerLink]="privacyPolicyUrl" class="text-white/70 hover:text-bitcoin-orange transition-colors">{{ 'footer.privacy' | translate }}</a>
+              }
+              @if (termsOfServiceUrl && termsOfServiceUrl !== '/terms') {
+                <a [routerLink]="termsOfServiceUrl" class="text-white/70 hover:text-bitcoin-orange transition-colors">{{ 'footer.terms' | translate }}</a>
+              }
+              @if (returnPolicyUrl && returnPolicyUrl !== '/return-policy') {
                 <a [routerLink]="returnPolicyUrl" class="text-white/70 hover:text-bitcoin-orange transition-colors">{{ 'footer.returns' | translate }}</a>
               }
             </div>

@@ -20,8 +20,8 @@ service firebase.storage {
     }
     
     // Product images - Admin can write, everyone can read
-    // Supports both cover images (2 levels) and gallery images (deeper nesting)
-    match /products/{grosor}/{allPaths=**} {
+    // Supports both cover images and gallery images
+    match /products/{allPaths=**} {
       allow read: if true;
       allow write: if isAdmin() && isValidImage();
       allow delete: if isAdmin();
@@ -37,6 +37,20 @@ service firebase.storage {
     
     // Legacy gallery with category path (kept for backward compatibility)
     match /gallery/{category}/{imageName} {
+      allow read: if true;
+      allow write: if isAdmin() && isValidImage();
+      allow delete: if isAdmin();
+    }
+    
+    // Hero images - Admin can write, everyone can read
+    match /hero-images/{imageName} {
+      allow read: if true;
+      allow write: if isAdmin() && isValidImage();
+      allow delete: if isAdmin();
+    }
+    
+    // Settings images (OG images, logos, etc.) - Admin can write, everyone can read
+    match /settings/{allPaths=**} {
       allow read: if true;
       allow write: if isAdmin() && isValidImage();
       allow delete: if isAdmin();

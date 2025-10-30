@@ -1,0 +1,41 @@
+// Maintenance Page Styles
+
+:host {
+  display: block;
+  min-height: 100vh;
+}
+
+// Animation for the maintenance icon
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+// Add smooth fade-in animation
+:host ::ng-deep {
+  animation: fadeIn 0.5s ease-in;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// Ensure links are accessible
+a {
+  &:focus-visible {
+    outline: 2px solid #f5a623;
+    outline-offset: 4px;
+    border-radius: 9999px;
+  }
+}

@@ -119,8 +119,6 @@ export class ProductosPageComponent extends LoadingComponentBase implements OnIn
         });
       });
       
-      console.log('📦 All products loaded:', products.length, products);
-      
       // Filter only published products
       let publishedProducts = products.filter(p => p.status === 'published');
       
@@ -130,14 +128,10 @@ export class ProductosPageComponent extends LoadingComponentBase implements OnIn
           const stock = p.stock || 0;
           return stock > 0;
         });
-        console.log(`🚫 Hiding out-of-stock products (hideOutOfStock=${settings.hideOutOfStock}):`, publishedProducts.length);
       }
-      
-      console.log('✅ Published products:', publishedProducts.length, publishedProducts);
       
       // Load cover images from media
       this.allProducts = await this.loadProductCovers(publishedProducts);
-      console.log('🖼️ Products with covers:', this.allProducts);
       
       // Extract all unique tags
       this.extractAllTags();

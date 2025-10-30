@@ -1,5 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { Firestore, doc, getDoc, setDoc } from '@angular/fire/firestore';
+import { Auth, onAuthStateChanged } from '@angular/fire/auth';
 import { ReplaySubject } from 'rxjs';
 
 export interface AppSettings {
@@ -90,17 +91,40 @@ export interface AppSettings {
   autoRestockEnabled: boolean;
   hideOutOfStock: boolean;
   stockReserveTime: number;
+
+  // Home Hero Images
+  heroImagesJson: string; // JSON string of HeroImage[]
 }
+
+export interface HeroImage {
+  id: string;
+  url: string;
+  webpUrl?: string;
+  alt: string;
+  title: string;
+  description: string;
+  order: number;
+  active: boolean;
+}
+
+// Sensitive fields that should never be sent to frontend
+const SENSITIVE_FIELDS: (keyof AppSettings)[] = [
+  'stripeSecretKey',
+  'emailApiKey',
+];
 
 @Injectable({
   providedIn: 'root'
 })
 export class SettingsService {
   private firestore = inject(Firestore);
-  private readonly SETTINGS_DOC_ID = 'app-settings';
+  private auth = inject(Auth);
+  private readonly SETTINGS_DOC_ID = 'app';
+  private readonly PUBLIC_SETTINGS_DOC_ID = 'public';
   private settingsCache: AppSettings | null = null;
   private settingsPromise: Promise<AppSettings> | null = null;
   private settingsSubject = new ReplaySubject<AppSettings>(1);
+  private authUserPromise: Promise<any> | null = null;
 
   /** Observable stream of settings changes */
   settings$ = this.settingsSubject.asObservable();
@@ -132,12 +156,26 @@ export class SettingsService {
 
   private async fetchSettings(): Promise<AppSettings> {
     try {
-      const docRef = doc(this.firestore, 'settings', this.SETTINGS_DOC_ID);
+      // Check if user is admin (has access to full settings)
+      const isAdmin = await this.isUserAdmin();
+      const docId = isAdmin ? this.SETTINGS_DOC_ID : this.PUBLIC_SETTINGS_DOC_ID;
+      
+      const docRef = doc(this.firestore, 'settings', docId);
       const docSnap = await getDoc(docRef);
       const defaults = this.getDefaultSettings();
       
       if (docSnap.exists()) {
-        return { ...defaults, ...docSnap.data() } as AppSettings;
+        const docData = docSnap.data();
+        const settings = { ...defaults, ...docData } as AppSettings;
+        
+        // For non-admins, ensure sensitive fields are empty
+        if (!isAdmin) {
+          SENSITIVE_FIELDS.forEach(field => {
+            (settings[field] as any) = '';
+          });
+        }
+        
+        return settings;
       }
       
       // Return default settings if none exist
@@ -149,15 +187,140 @@ export class SettingsService {
   }
 
   /**
+   * Check if current user is admin
+   */
+  private async isUserAdmin(): Promise<boolean> {
+    const user = await this.waitForAuthUser();
+    
+    if (!user) {
+      return false;
+    }
+    
+    try {
+      const userDoc = await getDoc(doc(this.firestore, 'users', user.uid));
+      
+      if (userDoc.exists()) {
+        const role = userDoc.data()?.['role'];
+        return role === 'admin';
+      }
+      
+      return false;
+    } catch (error) {
+      console.error('Error checking admin status:', error);
+      return false;
+    }
+  }
+
+  /**
+   * Wait for the initial auth user (handles Firebase async auth init)
+   */
+  private async waitForAuthUser(timeoutMs = 1500): Promise<any> {
+    const currentUser = this.auth.currentUser;
+    if (currentUser) {
+      return currentUser;
+    }
+
+    if (typeof window === 'undefined') {
+      return null;
+    }
+
+    if (!this.authUserPromise) {
+      this.authUserPromise = new Promise(resolve => {
+        let resolved = false;
+        let timerId: ReturnType<typeof setTimeout> | undefined;
+        let unsubscribe: (() => void) | null = null;
+
+        const finish = (user: any) => {
+          if (resolved) {
+            return;
+          }
+          resolved = true;
+          this.authUserPromise = null;
+          if (timerId !== undefined) {
+            clearTimeout(timerId);
+            timerId = undefined;
+          }
+          if (unsubscribe) {
+            unsubscribe();
+            unsubscribe = null;
+          }
+          resolve(user ?? null);
+        };
+
+        timerId = setTimeout(() => finish(this.auth.currentUser), timeoutMs);
+        unsubscribe = onAuthStateChanged(
+          this.auth,
+          user => finish(user),
+          () => finish(null)
+        );
+        if (resolved && unsubscribe) {
+          unsubscribe();
+          unsubscribe = null;
+        }
+      });
+    }
+
+    return this.authUserPromise;
+  }
+
+  /**
+   * Get public settings document (includes stats)
+   */
+  async getPublicSettings(): Promise<any> {
+    try {
+      const docRef = doc(this.firestore, 'settings', this.PUBLIC_SETTINGS_DOC_ID);
+      const docSnap = await getDoc(docRef);
+      
+      if (docSnap.exists()) {
+        return docSnap.data();
+      }
+      
+      return null;
+    } catch (error) {
+      console.error('Error getting public settings:', error);
+      return null;
+    }
+  }
+
+  /**
    * Save application settings to Firestore
+   * Admin-only: Saves full settings to 'app' doc and public copy to 'public' doc
    */
   async saveSettings(settings: AppSettings): Promise<void> {
     try {
-      const docRef = doc(this.firestore, 'settings', this.SETTINGS_DOC_ID);
-      await setDoc(docRef, settings, { merge: true });
+      const currentUser = this.auth.currentUser;
+      
+      if (!currentUser) {
+        throw new Error('No authenticated user. Please sign in again.');
+      }
+      
+      // Check if user is admin
+      const userDoc = await getDoc(doc(this.firestore, 'users', currentUser.uid));
+      const userData = userDoc.data();
+      
+      if (userData?.['role'] !== 'admin') {
+        throw new Error('Unauthorized: Only admins can save settings.');
+      }
+      
+      // Convert settings to plain object (remove any Firestore metadata/proxies)
+      const plainSettings = JSON.parse(JSON.stringify(settings));
+      
+      // Save full settings (admin only)
+      const adminDocRef = doc(this.firestore, 'settings', this.SETTINGS_DOC_ID);
+      await setDoc(adminDocRef, plainSettings, { merge: true });
+      
+      // Create public copy without sensitive fields
+      const publicSettings = { ...plainSettings };
+      SENSITIVE_FIELDS.forEach(field => {
+        delete (publicSettings as any)[field];
+      });
+      
+      const publicDocRef = doc(this.firestore, 'settings', this.PUBLIC_SETTINGS_DOC_ID);
+      await setDoc(publicDocRef, publicSettings, { merge: true });
+      
       this.settingsCache = settings;
       this.settingsSubject.next(settings);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error saving settings:', error);
       throw error;
     }
@@ -171,7 +334,7 @@ export class SettingsService {
       // General
       siteName: 'TheLuxMining',
       siteDescription: 'Premium Bitcoin mining equipment',
-      contactEmail: 'contact@theluxmining.com',
+      contactEmail: 'support@theluxmining.com',
       contactPhone: '+1 (800) 555 0199',
       contactAddress: '100 Greyrock Pl F119\nStamford, CT 06901',
       maintenanceMode: false,
@@ -254,7 +417,44 @@ export class SettingsService {
       allowBackorders: false,
       autoRestockEnabled: true,
       hideOutOfStock: false,
-      stockReserveTime: 15
+      stockReserveTime: 15,
+
+      // Home Hero Images - empty by default, managed from admin
+      heroImagesJson: ''
     };
+  }
+
+  /**
+   * Get hero images from settings
+   */
+  getHeroImages(): HeroImage[] {
+    try {
+      const heroImagesJson = this.settingsCache?.heroImagesJson || this.getDefaultSettings().heroImagesJson;
+      
+      if (!heroImagesJson || heroImagesJson.trim() === '') {
+        return [];
+      }
+      
+      const images: HeroImage[] = JSON.parse(heroImagesJson);
+      
+      const activeImages = images
+        .filter(img => img.active)
+        .sort((a, b) => a.order - b.order);
+      
+      return activeImages;
+    } catch (error) {
+      console.error('Error parsing hero images:', error);
+      return [];
+    }
+  }
+
+  /**
+   * Update hero images
+   */
+  async updateHeroImages(images: HeroImage[]): Promise<void> {
+    const settings = await this.getSettings();
+    const jsonString = JSON.stringify(images);
+    settings.heroImagesJson = jsonString;
+    await this.saveSettings(settings);
   }
 }

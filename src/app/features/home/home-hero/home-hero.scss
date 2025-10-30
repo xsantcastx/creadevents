@@ -1,3 +1,36 @@
+// Home Hero Section - adjust height to account for navbar overlap
+.home-hero {
+  // Use calc to ensure proper height: full viewport - navbar height
+  // This prevents overlap with the next section
+  min-height: calc(100vh - var(--nav-height));
+  // Extra padding at bottom so carousel dots are fully visible and clickable
+  padding-bottom: 6rem !important;
+  // Add margin to prevent next section from overlapping
+  margin-bottom: 3rem !important;
+  // Ensure hero is above next section
+  position: relative;
+  z-index: 10;
+  
+  @media (max-width: 768px) {
+    min-height: 110vh; // More height on tablets
+    padding-bottom: 12rem !important; // Large padding on mobile
+    margin-bottom: 6rem !important;
+    z-index: 10;
+  }
+  
+  @media (max-width: 480px) {
+    min-height: 120vh; // Even more height on small phones
+    padding-bottom: 15rem !important; // Massive padding for narrow screens
+    margin-bottom: 8rem !important;
+  }
+  
+  @media (max-width: 420px) {
+    min-height: 130vh; // Extra height for very narrow screens like 412px
+    padding-bottom: 18rem !important; // Extra large padding
+    margin-bottom: 10rem !important;
+  }
+}
+
 .hero {
   padding-top: 6rem;
   padding-bottom: 5rem;

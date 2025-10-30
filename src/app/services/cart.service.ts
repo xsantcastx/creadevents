@@ -7,6 +7,7 @@ import { Firestore, doc, docData, setDoc, Timestamp, serverTimestamp, updateDoc 
 import { Auth } from '@angular/fire/auth';
 import { switchMap, catchError, tap } from 'rxjs/operators';
 import { SettingsService } from './settings.service';
+import { AnalyticsService } from './analytics.service';
 
 // Legacy support for old CartItem interface
 interface LegacyCartItem {
@@ -27,6 +28,7 @@ export class CartService {
   private firestore = inject(Firestore);
   private auth = inject(Auth);
   private settingsService = inject(SettingsService);
+  private analyticsService = inject(AnalyticsService);
   
   private cartState$ = new BehaviorSubject<Cart | null>(null);
   readonly cart$ = this.cartState$.asObservable();
@@ -42,14 +44,14 @@ export class CartService {
     if (typeof window !== 'undefined') {
       (window as any).checkAuthState = () => {
         const user = this.auth.currentUser;
-        console.log('=== AUTH STATE DEBUG ===');
+
         console.log('Current User:', user ? {
           uid: user.uid,
           email: user.email,
           displayName: user.displayName
         } : 'NOT LOGGED IN');
         console.log('Cart State:', this.cartState$.value);
-        console.log('=======================');
+
         return user;
       };
     }
@@ -61,18 +63,15 @@ export class CartService {
       
       // Skip if this is the same user we already loaded
       if (userId === this.currentUserId) {
-        console.log('[CartService] Auth state unchanged, skipping reload');
         return;
       }
       
-      console.log('[CartService] Auth state changed:', user ? `User: ${user.uid} (${user.email})` : 'No user (anonymous)');
       this.currentUserId = userId;
       
       if (user) {
-        console.log('[CartService] User authenticated, loading cart for:', user.uid);
         this.loadUserCart(user.uid);
       } else {
-        console.log('[CartService] No user, loading anonymous cart');
+
         this.loadAnonymousCart();
       }
     });
@@ -81,7 +80,7 @@ export class CartService {
     setTimeout(() => {
       const currentUser = this.auth.currentUser;
       if (currentUser && currentUser.uid !== this.currentUserId) {
-        console.log('[CartService] User already logged in on init, ensuring cart is loaded:', currentUser.uid);
+
         // Only reload if cart is still anonymous
         const currentCart = this.cartState$.value;
         if (!currentCart || currentCart.id?.startsWith('anon_') || !currentCart.id) {
@@ -96,14 +95,11 @@ export class CartService {
    * Load user's cart from Firestore
    */
   private async loadUserCart(uid: string) {
-    console.log('[CartService] loadUserCart called for uid:', uid);
-    
     // Check if we have an anonymous cart to migrate
     const currentCart = this.cartState$.value;
     const hasAnonymousCart = currentCart && currentCart.id?.startsWith('anon_') && currentCart.items.length > 0;
     
     if (hasAnonymousCart) {
-      console.log('[CartService] Found anonymous cart with items, migrating to user cart:', currentCart);
       // Migrate anonymous cart to user cart
       const userCart = {
         ...currentCart,
@@ -117,20 +113,19 @@ export class CartService {
         localStorage.removeItem(ANON_CART_KEY);
       }
       
-      console.log('[CartService] Migrated anonymous cart to user cart');
       return;
     }
     
     // Load existing user cart
     const cartRef = doc(this.firestore, `carts/${uid}`);
     docData(cartRef, { idField: 'id' }).pipe(
-      tap(cart => console.log('[CartService] Loaded user cart from Firestore:', cart)),
+
       catchError(err => {
         console.error('[CartService] Error loading user cart:', err);
         // Create empty cart with user ID
         const emptyCart = this.createEmptyCart(uid);
         emptyCart.uid = uid;
-        console.log('[CartService] Creating empty user cart:', emptyCart);
+
         return of(emptyCart);
       })
     ).subscribe(cart => {
@@ -144,7 +139,7 @@ export class CartService {
       const cartWithTotals = cartData && cartData.items?.length > 0 
         ? this.calculateTotals(cartData) 
         : cartData;
-      console.log('[CartService] User cart with recalculated totals:', cartWithTotals);
+
       this.cartState$.next(cartWithTotals);
     });
   }
@@ -202,15 +197,12 @@ export class CartService {
   private calculateTotals(cart: Cart): Cart {
     const subtotal = cart.items.reduce((sum, item) => {
       const itemTotal = (item.unitPrice * item.qty);
-      console.log(`[CartService] Item: ${item.name}, Price: ${item.unitPrice}, Qty: ${item.qty}, Subtotal: ${itemTotal}`);
       return sum + itemTotal;
     }, 0);
     const shipping = cart.shipping || 0;
     const tax = cart.tax || 0;
     const discount = cart.discount || 0;
     const total = subtotal + shipping + tax - discount;
-
-    console.log(`[CartService] Cart totals - Subtotal: ${subtotal}, Shipping: ${shipping}, Tax: ${tax}, Discount: ${discount}, Total: ${total}`);
 
     return {
       ...cart,
@@ -291,13 +283,6 @@ export class CartService {
    * Add product to cart
    */
   async add(product: Product, qty = 1): Promise<void> {
-    console.log('[CartService] Adding product to cart:', { 
-      id: product.id, 
-      name: product.name, 
-      price: product.price,
-      qty 
-    });
-
     // Get inventory settings
     const settings = await this.settingsService.getSettings();
     
@@ -316,28 +301,19 @@ export class CartService {
         console.warn('[CartService] Requested quantity exceeds stock:', { requested: qty, available: productStock });
         throw new Error(`Only ${productStock} units available for "${product.name}"`);
       }
-      
-      console.log('[CartService] Inventory check passed:', { 
-        stock: productStock, 
-        requested: qty, 
-        allowBackorders: settings.allowBackorders 
-      });
-    } else {
-      console.log('[CartService] Inventory tracking disabled, allowing unlimited quantity');
     }
 
     let currentCart = this.cartState$.value;
     
     // If no cart exists, create one
     if (!currentCart || !currentCart.id) {
-      console.log('[CartService] No cart exists, creating new cart');
+
       const user = this.auth.currentUser;
       
       if (user) {
         // Create user cart
         currentCart = this.createEmptyCart(user.uid);
         currentCart.uid = user.uid;
-        console.log('[CartService] Created user cart:', currentCart);
       } else {
         // Create anonymous cart
         if (isPlatformBrowser(this.platformId)) {
@@ -347,7 +323,6 @@ export class CartService {
             localStorage.setItem(ANON_CART_KEY, anonId);
           }
           currentCart = this.createEmptyCart(anonId);
-          console.log('[CartService] Created anonymous cart:', currentCart);
         } else {
           console.error('[CartService] Cannot create cart on server');
           return;
@@ -378,7 +353,7 @@ export class CartService {
       
       // Update quantity
       currentCart.items[existingItemIndex].qty += qty;
-      console.log('[CartService] Updated existing item quantity:', currentCart.items[existingItemIndex]);
+
     } else {
       // Add new item
       const newItem: CartItem = {
@@ -389,14 +364,14 @@ export class CartService {
         currency: 'USD',
         priceSnapshotAtAdd: product.price || 0,
         ...(product.imageUrl && { imageUrl: product.imageUrl }),
-        ...(product.sku && { sku: product.sku }),
-        ...(product.grosor && { grosor: product.grosor })
+        ...(product.sku && { sku: product.sku })
       };
-      console.log('[CartService] Created new cart item:', newItem);
+
       currentCart.items.push(newItem);
     }
 
     await this.saveCart(currentCart);
+    this.analyticsService.trackAddToCart(product, qty, currentCart.currency);
   }
 
   /**
@@ -521,8 +496,7 @@ export class CartService {
           currency: 'USD',
           priceSnapshotAtAdd: legacyItem.product.price || 0,
           imageUrl: legacyItem.product.imageUrl,
-          sku: legacyItem.product.sku,
-          grosor: legacyItem.product.grosor
+          sku: legacyItem.product.sku
         };
         currentCart.items.push(newItem);
       }
@@ -566,7 +540,5 @@ export class CartService {
 
     // Update local state
     this.cartState$.next(emptyCart);
-    
-    console.log('[CartService] Cart cleared after purchase');
   }
 }

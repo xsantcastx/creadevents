@@ -1,4 +1,4 @@
-<div class="min-h-screen bg-gradient-to-b from-[#0a0b0d] to-[#13151a]">
+<div class="section-stack min-h-screen bg-gradient-to-b from-[#0a0b0d] to-[#13151a]">
   <!-- Page Header Component -->
   <app-page-header
     *ngIf="(vm$ | async) as vm"
@@ -59,9 +59,6 @@
                         {{ it.product.name }}
                       </h3>
                       <div class="flex flex-wrap items-center gap-2 text-sm text-bitcoin-gray/80">
-                        <span *ngIf="it.product.grosor" class="px-2 py-0.5 bg-bitcoin-gray/10 rounded-md border border-bitcoin-gray/20">
-                          {{ it.product.grosor }}
-                        </span>
                         <span *ngIf="it.product.sku" class="px-2 py-0.5 bg-bitcoin-gray/10 rounded-md border border-bitcoin-gray/20 font-mono text-xs">
                           SKU: {{ it.product.sku }}
                         </span>
@@ -239,43 +236,69 @@
                   <div>
                     <label class="block text-sm font-medium text-bitcoin-gray mb-1">First Name *</label>
                     <input type="text" formControlName="firstName"
-                           class="w-full px-3 py-2 bg-bitcoin-dark border border-bitcoin-gray/30 rounded-lg text-white focus:ring-2 focus:ring-bitcoin-orange focus:border-bitcoin-orange">
+                           class="w-full px-3 py-2 bg-bitcoin-dark border border-bitcoin-gray/30 rounded-lg text-white focus:ring-2 focus:ring-bitcoin-orange focus:border-bitcoin-orange"
+                           [class.border-red-500]="addressForm.get('firstName')?.invalid && addressForm.get('firstName')?.touched">
+                    @if (addressForm.get('firstName')?.invalid && addressForm.get('firstName')?.touched) {
+                      <p class="text-xs text-red-400 mt-1">First name is required (min 2 characters)</p>
+                    }
                   </div>
                   <div>
                     <label class="block text-sm font-medium text-bitcoin-gray mb-1">Last Name *</label>
                     <input type="text" formControlName="lastName"
-                           class="w-full px-3 py-2 bg-bitcoin-dark border border-bitcoin-gray/30 rounded-lg text-white focus:ring-2 focus:ring-bitcoin-orange focus:border-bitcoin-orange">
+                           class="w-full px-3 py-2 bg-bitcoin-dark border border-bitcoin-gray/30 rounded-lg text-white focus:ring-2 focus:ring-bitcoin-orange focus:border-bitcoin-orange"
+                           [class.border-red-500]="addressForm.get('lastName')?.invalid && addressForm.get('lastName')?.touched">
+                    @if (addressForm.get('lastName')?.invalid && addressForm.get('lastName')?.touched) {
+                      <p class="text-xs text-red-400 mt-1">Last name is required (min 2 characters)</p>
+                    }
                   </div>
                 </div>
 
                 <div>
                   <label class="block text-sm font-medium text-bitcoin-gray mb-1">Email *</label>
                   <input type="email" formControlName="email"
-                         class="w-full px-3 py-2 bg-bitcoin-dark border border-bitcoin-gray/30 rounded-lg text-white focus:ring-2 focus:ring-bitcoin-orange focus:border-bitcoin-orange">
+                         class="w-full px-3 py-2 bg-bitcoin-dark border border-bitcoin-gray/30 rounded-lg text-white focus:ring-2 focus:ring-bitcoin-orange focus:border-bitcoin-orange"
+                         [class.border-red-500]="addressForm.get('email')?.invalid && addressForm.get('email')?.touched">
+                  @if (addressForm.get('email')?.invalid && addressForm.get('email')?.touched) {
+                    <p class="text-xs text-red-400 mt-1">Please enter a valid email address</p>
+                  }
                 </div>
 
                 <div>
                   <label class="block text-sm font-medium text-bitcoin-gray mb-1">Phone *</label>
                   <input type="tel" formControlName="phoneE164" placeholder="+14155551234"
-                         class="w-full px-3 py-2 bg-bitcoin-dark border border-bitcoin-gray/30 rounded-lg text-white focus:ring-2 focus:ring-bitcoin-orange focus:border-bitcoin-orange">
+                         class="w-full px-3 py-2 bg-bitcoin-dark border border-bitcoin-gray/30 rounded-lg text-white focus:ring-2 focus:ring-bitcoin-orange focus:border-bitcoin-orange"
+                         [class.border-red-500]="addressForm.get('phoneE164')?.invalid && addressForm.get('phoneE164')?.touched">
+                  <p class="text-xs text-bitcoin-gray/60 mt-1">Format: +1 (country code) followed by phone number</p>
+                  @if (addressForm.get('phoneE164')?.invalid && addressForm.get('phoneE164')?.touched) {
+                    <p class="text-xs text-red-400 mt-1">Please enter a valid phone number with country code (e.g., +14155551234)</p>
+                  }
                 </div>
 
                 <div>
                   <label class="block text-sm font-medium text-bitcoin-gray mb-1">Address *</label>
-                  <input type="text" formControlName="line1"
-                         class="w-full px-3 py-2 bg-bitcoin-dark border border-bitcoin-gray/30 rounded-lg text-white focus:ring-2 focus:ring-bitcoin-orange focus:border-bitcoin-orange">
+                  <input type="text" formControlName="line1" placeholder="123 Main Street"
+                         class="w-full px-3 py-2 bg-bitcoin-dark border border-bitcoin-gray/30 rounded-lg text-white focus:ring-2 focus:ring-bitcoin-orange focus:border-bitcoin-orange"
+                         [class.border-red-500]="addressForm.get('line1')?.invalid && addressForm.get('line1')?.touched">
+                  @if (addressForm.get('line1')?.invalid && addressForm.get('line1')?.touched) {
+                    <p class="text-xs text-red-400 mt-1">Please enter a valid street address</p>
+                  }
                 </div>
 
                 <div class="grid grid-cols-2 gap-4">
                   <div>
                     <label class="block text-sm font-medium text-bitcoin-gray mb-1">City *</label>
                     <input type="text" formControlName="city"
-                           class="w-full px-3 py-2 bg-bitcoin-dark border border-bitcoin-gray/30 rounded-lg text-white focus:ring-2 focus:ring-bitcoin-orange focus:border-bitcoin-orange">
+                           class="w-full px-3 py-2 bg-bitcoin-dark border border-bitcoin-gray/30 rounded-lg text-white focus:ring-2 focus:ring-bitcoin-orange focus:border-bitcoin-orange"
+                           [class.border-red-500]="addressForm.get('city')?.invalid && addressForm.get('city')?.touched">
+                    @if (addressForm.get('city')?.invalid && addressForm.get('city')?.touched) {
+                      <p class="text-xs text-red-400 mt-1">Please enter a city</p>
+                    }
                   </div>
                   <div>
                     <label class="block text-sm font-medium text-bitcoin-gray mb-1">State *</label>
                     <select formControlName="region"
-                            class="w-full px-3 py-2 bg-bitcoin-dark border border-bitcoin-gray/30 rounded-lg text-white focus:ring-2 focus:ring-bitcoin-orange focus:border-bitcoin-orange">
+                            class="w-full px-3 py-2 bg-bitcoin-dark border border-bitcoin-gray/30 rounded-lg text-white focus:ring-2 focus:ring-bitcoin-orange focus:border-bitcoin-orange"
+                            [class.border-red-500]="addressForm.get('region')?.invalid && addressForm.get('region')?.touched">
                       <option value="">Select a state...</option>
                       <option value="AL">Alabama</option>
                       <option value="AK">Alaska</option>
@@ -329,14 +352,21 @@
                       <option value="WY">Wyoming</option>
                       <option value="DC">District of Columbia</option>
                     </select>
+                    @if (addressForm.get('region')?.invalid && addressForm.get('region')?.touched) {
+                      <p class="text-xs text-red-400 mt-1">Please select a state</p>
+                    }
                   </div>
                 </div>
 
                 <div class="grid grid-cols-2 gap-4">
                   <div>
                     <label class="block text-sm font-medium text-bitcoin-gray mb-1">ZIP Code *</label>
-                    <input type="text" formControlName="postalCode"
-                           class="w-full px-3 py-2 bg-bitcoin-dark border border-bitcoin-gray/30 rounded-lg text-white focus:ring-2 focus:ring-bitcoin-orange focus:border-bitcoin-orange">
+                    <input type="text" formControlName="postalCode" placeholder="12345 or 12345-6789"
+                           class="w-full px-3 py-2 bg-bitcoin-dark border border-bitcoin-gray/30 rounded-lg text-white focus:ring-2 focus:ring-bitcoin-orange focus:border-bitcoin-orange"
+                           [class.border-red-500]="addressForm.get('postalCode')?.invalid && addressForm.get('postalCode')?.touched">
+                    @if (addressForm.get('postalCode')?.invalid && addressForm.get('postalCode')?.touched) {
+                      <p class="text-xs text-red-400 mt-1">Please enter a valid 5-digit ZIP code</p>
+                    }
                   </div>
                   <div>
                     <label class="block text-sm font-medium text-bitcoin-gray mb-1">Country *</label>

@@ -41,9 +41,6 @@ export interface Specs {
   usage?: string[];
   features?: string[];
   benefits?: ProductBenefit[];
-  
-  // Legacy field - now dynamic category identifier
-  grosor?: string;
 }
 
 export interface ProductVariant {
