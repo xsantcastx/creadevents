@@ -30,8 +30,8 @@ export class ContactoPageComponent {
   
   // Breadcrumbs for navigation
   breadcrumbs: Breadcrumb[] = [
-    { label: 'NAV.HOME', url: '/', icon: 'home' },
-    { label: 'CONTACT.TITLE', icon: 'contact' }
+    { label: 'nav.home', url: '/', icon: 'home' },
+    { label: 'nav.contact', icon: 'contact' }
   ];
   
   contactForm: FormGroup;

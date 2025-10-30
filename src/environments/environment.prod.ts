@@ -18,5 +18,12 @@ export const environment = {
     // Add your production domain to the allowed domains list
     siteKey: '6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI'
   },
+  appCheck: {
+    // Using standard reCAPTCHA v3 (free) for App Check
+    // Get your key from: https://www.google.com/recaptcha/admin (same as above)
+    // OR register in Firebase Console > App Check with reCAPTCHA v3
+    provider: 'recaptcha',
+    siteKey: '6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI' // Use same reCAPTCHA v3 key
+  },
   useEmulators: false
 };

@@ -10,6 +10,19 @@ import { PageHeaderComponent, Breadcrumb } from '../../shared/components/page-he
 import { LoadingComponentBase } from '../../core/classes/loading-component.base';
 import { MetaService } from '../../services/meta.service';
 
+// Gallery Project interface - groups multiple images by project name
+interface GalleryProject {
+  id: string; // Unique project identifier (slugified project name)
+  name: string; // Project name (from altText)
+  description: string; // Project description (from caption)
+  location: string; // Location extracted from caption
+  tags: string[]; // All tags from images in this project
+  images: Media[]; // All images belonging to this project
+  featuredImage: Media; // First/main image to display
+  photoCount: number; // Total number of photos
+  uploadedAt: Date; // Most recent upload date
+}
+
 @Component({
   selector: 'app-galeria-page',
   standalone: true,
@@ -21,6 +34,13 @@ export class GaleriaPageComponent extends LoadingComponentBase implements OnInit
   categorias: CategoriaGaleria[] = [];
   categoriaActiva = 'todos';
   itemsVisible: GaleriaItem[] = [];
+  
+  // Project-based properties
+  allProjects: GalleryProject[] = [];
+  filteredProjects: GalleryProject[] = [];
+  selectedProject: GalleryProject | null = null;
+  currentImageIndex = 0;
+  
   modalItem: GaleriaItem | null = null;
   modalIndex = 0;
   availableTags: Tag[] = [];
@@ -32,8 +52,8 @@ export class GaleriaPageComponent extends LoadingComponentBase implements OnInit
 
   // Breadcrumbs for navigation
   breadcrumbs: Breadcrumb[] = [
-    { label: 'NAV.HOME', url: '/', icon: 'home' },
-    { label: 'GALLERY.TITLE', icon: 'gallery' }
+    { label: 'nav.home', url: '/', icon: 'home' },
+    { label: 'nav.gallery', icon: 'gallery' }
   ];
 
   constructor(
@@ -104,92 +124,112 @@ export class GaleriaPageComponent extends LoadingComponentBase implements OnInit
       console.log('📸 Gallery loaded from Firestore:', mediaItems.length, 'images');
       
       if (mediaItems.length > 0) {
-        // Group media by tags (using tags as categories)
-        this.categorias = this.groupMediaByTags(mediaItems);
+        // Group media by project name (altText)
+        this.allProjects = this.groupMediaByProjects(mediaItems);
         this.filtrarPorCategoria(this.categoriaActiva);
       } else {
         console.log('ℹ️ No gallery images found in Firestore');
-        this.categorias = [];
-        this.itemsVisible = [];
+        this.allProjects = [];
+        this.filteredProjects = [];
       }
     });
   }
 
-  // Group media by tags - Map to category structure using dynamic tags from Firestore
-  private groupMediaByTags(mediaItems: Media[]): CategoriaGaleria[] {
-    // Create a map of tag slugs to tag objects for quick lookup
-    const tagMap = new Map<string, Tag>();
-    this.availableTags.forEach(tag => {
-      tagMap.set(tag.slug, tag);
-    });
-
-    // Group images by their first tag
-    const categoriesMap = new Map<string, GaleriaItem[]>();
+  // Group media by project name - Create project objects from media items
+  private groupMediaByProjects(mediaItems: Media[]): GalleryProject[] {
+    const projectsMap = new Map<string, GalleryProject>();
 
     mediaItems.forEach(media => {
-      if (!media.tags || media.tags.length === 0) {
-        // Default to 'other' if no tags
-        if (!categoriesMap.has('other')) {
-          categoriesMap.set('other', []);
-        }
-        categoriesMap.get('other')!.push({
-          src: media.url,
-          alt: media.altText || 'TheLuxMining Project',
-          producto: 'Other',
-          proyecto: media.altText || '',
-          ubicacion: media.caption || ''
+      // Extract base project name (remove numbering like "(1/5)")
+      const baseProjectName = this.extractBaseProjectName(media.altText || 'Untitled Project');
+      const projectId = this.slugify(baseProjectName);
+
+      // Extract location from caption (text before first dash or full caption)
+      const location = this.extractLocation(media.caption || '');
+
+      if (!projectsMap.has(projectId)) {
+        // Create new project
+        const uploadDate = media.uploadedAt instanceof Date 
+          ? media.uploadedAt 
+          : (media.uploadedAt as any).toDate();
+
+        projectsMap.set(projectId, {
+          id: projectId,
+          name: baseProjectName,
+          description: media.caption || '',
+          location: location,
+          tags: [...media.tags],
+          images: [media],
+          featuredImage: media,
+          photoCount: 1,
+          uploadedAt: uploadDate
         });
-        return;
-      }
-
-      const firstTag = media.tags[0]; // Use first tag as category
-      const tag = tagMap.get(firstTag);
-      
-      if (!tag) {
-        // Unknown tag - add to 'other'
-        if (!categoriesMap.has('other')) {
-          categoriesMap.set('other', []);
-        }
-        categoriesMap.get('other')!.push({
-          src: media.url,
-          alt: media.altText || 'TheLuxMining Project',
-          producto: 'Other',
-          proyecto: media.altText || '',
-          ubicacion: media.caption || ''
+      } else {
+        // Add to existing project
+        const project = projectsMap.get(projectId)!;
+        project.images.push(media);
+        project.photoCount++;
+        
+        // Merge tags (unique only)
+        media.tags.forEach(tag => {
+          if (!project.tags.includes(tag)) {
+            project.tags.push(tag);
+          }
         });
-        return;
-      }
 
-      if (!categoriesMap.has(tag.slug)) {
-        categoriesMap.set(tag.slug, []);
+        // Update uploadedAt to most recent
+        const mediaDate = media.uploadedAt instanceof Date 
+          ? media.uploadedAt 
+          : (media.uploadedAt as any).toDate();
+        
+        if (mediaDate > project.uploadedAt) {
+          project.uploadedAt = mediaDate;
+        }
       }
-
-      categoriesMap.get(tag.slug)!.push({
-        src: media.url,
-        alt: media.altText || 'TheLuxMining Project',
-        producto: tag.name,
-        proyecto: media.altText || '',
-        ubicacion: media.caption || ''
-      });
     });
 
-    // Convert map to array of categories using tag information
-    return Array.from(categoriesMap.entries()).map(([slug, items]) => {
-      const tag = tagMap.get(slug);
-      return {
-        slug,
-        titulo: tag?.name || (slug === 'other' ? 'Others' : slug),
-        items
-      };
-    }).sort((a, b) => {
-      // Sort by tag order if available
-      const tagA = tagMap.get(a.slug);
-      const tagB = tagMap.get(b.slug);
-      if (tagA && tagB) {
-        return (tagA.order || 999) - (tagB.order || 999);
-      }
-      return 0;
-    });
+    // Convert map to array and sort by upload date (newest first)
+    const projects = Array.from(projectsMap.values()).sort((a, b) => 
+      b.uploadedAt.getTime() - a.uploadedAt.getTime()
+    );
+
+    console.log('📁 Created', projects.length, 'projects from', mediaItems.length, 'images');
+    return projects;
+  }
+
+  // Extract base project name by removing numbering patterns like "(1/5)" or " - 1"
+  private extractBaseProjectName(altText: string): string {
+    // Remove patterns like "(1/5)", "(1 of 5)", "- 1", etc.
+    return altText
+      .replace(/\s*\(\d+\/\d+\)\s*$/i, '')
+      .replace(/\s*\(\d+\s+of\s+\d+\)\s*$/i, '')
+      .replace(/\s*-\s*\d+\s*$/i, '')
+      .replace(/\s*#\d+\s*$/i, '')
+      .trim();
+  }
+
+  // Extract location from caption (text before dash or full text)
+  private extractLocation(caption: string): string {
+    const dashIndex = caption.indexOf('-');
+    if (dashIndex > 0) {
+      return caption.substring(0, dashIndex).trim();
+    }
+    // Try comma separation (e.g., "Texas, USA")
+    const commaIndex = caption.indexOf(',');
+    if (commaIndex > 0) {
+      return caption.substring(0, commaIndex + 4).trim(); // Include country code
+    }
+    return caption.trim();
+  }
+
+  // Create URL-friendly slug from project name
+  private slugify(text: string): string {
+    return text
+      .toLowerCase()
+      .replace(/[^\w\s-]/g, '')
+      .replace(/\s+/g, '-')
+      .replace(/-+/g, '-')
+      .trim();
   }
 
   // Get tag by slug for accessing color/icon
@@ -197,25 +237,46 @@ export class GaleriaPageComponent extends LoadingComponentBase implements OnInit
     return this.availableTags.find(t => t.slug === slug);
   }
 
-  filtrarPorCategoria(categoria: string) {
-    this.categoriaActiva = categoria;
+  // Get unique tags from all projects for filter buttons
+  getAvailableProjectTags(): Tag[] {
+    const tagSlugs = new Set<string>();
+    this.allProjects.forEach(project => {
+      project.tags.forEach(tag => tagSlugs.add(tag));
+    });
+
+    return this.availableTags.filter(tag => tagSlugs.has(tag.slug));
+  }
+
+  // Filter projects by tag
+  filtrarPorCategoria(tagSlug: string) {
+    this.categoriaActiva = tagSlug;
     
-    if (categoria === 'todos') {
-      this.itemsVisible = this.categorias.flatMap(cat => cat.items);
+    if (tagSlug === 'todos') {
+      this.filteredProjects = [...this.allProjects];
     } else {
-      const categoriaEncontrada = this.categorias.find(cat => cat.slug === categoria);
-      this.itemsVisible = categoriaEncontrada ? categoriaEncontrada.items : [];
+      this.filteredProjects = this.allProjects.filter(project => 
+        project.tags.includes(tagSlug)
+      );
     }
     
-    // Reset modal if open
-    if (this.modalItem) {
+    // Close modal if open
+    if (this.selectedProject) {
       this.cerrarModal();
     }
   }
 
-  abrirModal(item: GaleriaItem, index: number) {
-    this.modalItem = item;
-    this.modalIndex = index;
+  // Get count of projects for a specific tag
+  getProjectCountByTag(tagSlug: string): number {
+    if (tagSlug === 'todos') {
+      return this.allProjects.length;
+    }
+    return this.allProjects.filter(project => project.tags.includes(tagSlug)).length;
+  }
+
+  // Open project modal to view all images
+  abrirProyecto(project: GalleryProject) {
+    this.selectedProject = project;
+    this.currentImageIndex = 0;
     
     // Prevent body scroll when modal is open
     if (this.isBrowser) {
@@ -224,12 +285,31 @@ export class GaleriaPageComponent extends LoadingComponentBase implements OnInit
   }
 
   cerrarModal() {
-    this.modalItem = null;
+    this.selectedProject = null;
+    this.currentImageIndex = 0;
     
     // Restore body scroll
     if (this.isBrowser) {
       document.body.style.overflow = '';
     }
+  }
+
+  anteriorImagen() {
+    if (this.selectedProject && this.currentImageIndex > 0) {
+      this.currentImageIndex--;
+    }
+  }
+
+  siguienteImagen() {
+    if (this.selectedProject && this.currentImageIndex < this.selectedProject.images.length - 1) {
+      this.currentImageIndex++;
+    }
+  }
+
+  // Get current image from selected project
+  getCurrentImage(): Media | null {
+    if (!this.selectedProject) return null;
+    return this.selectedProject.images[this.currentImageIndex] || null;
   }
 
   anterior() {
@@ -248,38 +328,39 @@ export class GaleriaPageComponent extends LoadingComponentBase implements OnInit
 
   // Keyboard navigation
   onKeydown(event: KeyboardEvent) {
-    if (!this.modalItem) return;
+    if (!this.selectedProject) return;
     
     switch (event.key) {
       case 'Escape':
         this.cerrarModal();
         break;
       case 'ArrowLeft':
-        this.anterior();
+        this.anteriorImagen();
         break;
       case 'ArrowRight':
-        this.siguiente();
+        this.siguienteImagen();
         break;
     }
   }
 
-  // Get total items count
+  // Get total projects count
+  getTotalProjects(): number {
+    return this.filteredProjects.length;
+  }
+
+  // Get total items count (legacy - for backward compatibility)
   getTotalItems(): number {
     return this.itemsVisible.length;
   }
 
-  // Get category item count
+  // Get category item count (legacy)
   getCategoryCount(slug: string): number {
-    if (slug === 'todos') {
-      return this.categorias.flatMap(cat => cat.items).length;
-    }
-    const categoria = this.categorias.find(cat => cat.slug === slug);
-    return categoria ? categoria.items.length : 0;
+    return this.getProjectCountByTag(slug);
   }
 
-  // Get category title
+  // Get category title (legacy)
   getCategoryTitle(slug: string): string {
-    const categoria = this.categorias.find(cat => cat.slug === slug);
-    return categoria ? categoria.titulo : slug;
+    const tag = this.getTag(slug);
+    return tag ? tag.name : slug;
   }
 }

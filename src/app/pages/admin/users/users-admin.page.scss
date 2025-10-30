@@ -47,20 +47,6 @@ tbody tr:hover {
   transition: background-color 0.15s ease-in-out;
 }
 
-/* Loading state */
-.animate-spin {
-  animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-
 /* Action buttons hover */
 button {
   transition: all 0.2s ease-in-out;

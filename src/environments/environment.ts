@@ -21,5 +21,12 @@ export const environment = {
     // which works on localhost. Replace with your production key for deployment.
     siteKey: '6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI'
   },
+  appCheck: {
+    // reCAPTCHA v3 site key for App Check
+    // For development/localhost, use the debug token provider
+    // Get your App Check reCAPTCHA key from Firebase Console > App Check
+    provider: 'debug', // Use 'recaptcha' for production
+    debugToken: true // Automatically generates debug token for localhost
+  },
   useEmulators: true // Use Firebase emulators for local development
 };

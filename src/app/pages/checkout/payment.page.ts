@@ -12,11 +12,12 @@ import { CartService } from '../../services/cart.service';
 import { AddressService } from '../../services/address.service';
 import { Address } from '../../models/cart';
 import { AnalyticsService } from '../../services/analytics.service';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   standalone: true,
   selector: 'ts-payment-page',
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, TranslateModule],
   templateUrl: './payment.page.html',
   styleUrls: ['./payment.page.scss']
 })

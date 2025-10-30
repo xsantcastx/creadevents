@@ -2,9 +2,9 @@
   <!-- Page Header Component -->
   <app-page-header
     *ngIf="(vm$ | async) as vm"
-    title="Your"
-    titleHighlight="Shopping Cart"
-    subtitle="Review your mining equipment selection"
+    title="{{ 'cart.your' | translate }}"
+    titleHighlight="{{ 'cart.title' | translate }}"
+    subtitle="{{ 'cart.subtitle' | translate }}"
     [breadcrumbs]="breadcrumbs"
     icon="cart"
     [showBadge]="true"
@@ -24,9 +24,9 @@
             <svg class="w-6 h-6 text-bitcoin-orange" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
             </svg>
-            Cart Items
+            {{ 'cart.cart_items' | translate }}
           </h2>
-          <span class="text-bitcoin-gray text-sm">{{ vm.items.length }} {{ vm.items.length === 1 ? 'item' : 'items' }}</span>
+          <span class="text-bitcoin-gray text-sm">{{ vm.items.length }} {{ vm.items.length === 1 ? ('cart.item' | translate) : ('cart.items' | translate) }}</span>
         </div>
         
         <ng-container *ngIf="vm.items.length; else empty">
@@ -78,7 +78,7 @@
                   
                   <!-- Quantity Controls -->
                   <div class="flex items-center gap-3">
-                    <label class="text-sm text-bitcoin-gray font-medium">Quantity:</label>
+                      <label class="text-sm text-bitcoin-gray font-medium">{{ 'cart.quantity' | translate }}:</label>
                     <div class="flex items-center gap-2 bg-bitcoin-dark/80 border border-bitcoin-gray/20 rounded-lg px-1 py-1">
                       <button 
                         (click)="updateQty(it.product.id, (it.qty - 1).toString())"
@@ -103,7 +103,7 @@
                       </button>
                     </div>
                     <span class="text-sm text-bitcoin-gray/60 ml-auto">
-                      Subtotal: <span class="text-bitcoin-gold font-semibold">${{ (it.product.price * it.qty).toFixed(2) }}</span>
+                      {{ 'cart.subtotal' | translate }}: <span class="text-bitcoin-gold font-semibold">${{ (it.product.price * it.qty).toFixed(2) }}</span>
                     </span>
                   </div>
                 </div>
@@ -112,7 +112,7 @@
           </div>
           
           <!-- Clear Cart Button -->
-          <div class="pt-4 border-t border-bitcoin-gray/20">
+            <div class="pt-4 border-t border-bitcoin-gray/20">
             <button 
               (click)="clear()"
               class="text-sm text-bitcoin-gray hover:text-red-400 transition-colors flex items-center gap-2">
@@ -132,14 +132,14 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
               </svg>
             </div>
-            <h3 class="font-serif text-2xl bitcoin-gradient-text mb-3">Your Cart is Empty</h3>
-            <p class="text-bitcoin-gray mb-6 max-w-md mx-auto">Start adding premium mining hardware to your cart and build your mining empire!</p>
+        <h3 class="font-serif text-2xl bitcoin-gradient-text mb-3">{{ 'cart.empty_title' | translate }}</h3>
+        <p class="text-bitcoin-gray mb-6 max-w-md mx-auto">{{ 'cart.empty_message' | translate }}</p>
             <a routerLink="/productos" 
                class="inline-flex items-center gap-2 px-8 py-4 bg-bitcoin-orange hover:bg-bitcoin-orange/90 text-white rounded-xl font-semibold shadow-bitcoin hover:shadow-bitcoin-lg transition-all">
               <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
               </svg>
-              <span>Explore Mining Products</span>
+              <span>{{ 'cart.explore_products' | translate }}</span>
             </a>
           </div>
         </ng-template>
@@ -409,10 +409,7 @@
           </h2>
 
           <div *ngIf="(shippingSettings()?.shippingEnabled ?? true) && calculatingShipping()" class="flex items-center gap-3 text-bitcoin-gray mb-4">
-            <svg class="animate-spin h-5 w-5" fill="none" viewBox="0 0 24 24">
-              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-            </svg>
+            <div class="app-spinner" style="--spinner-size: 72px;"><img src="/Logo Clear.png" alt="Loading" width="96" height="96"></div>
             <span>Calculating shipping rates...</span>
           </div>
 
@@ -454,32 +451,32 @@
             <svg class="w-6 h-6 text-bitcoin-orange" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
             </svg>
-            Order Summary
+            {{ 'cart.order_summary' | translate }}
           </h2>
             
             <div class="space-y-4 mb-6">
               <!-- Subtotal -->
               <div class="flex justify-between items-center pb-3 border-b border-bitcoin-gray/10">
-                <span class="text-bitcoin-gray">Subtotal ({{ vm.items.length }} items)</span>
+                <span class="text-bitcoin-gray">{{ 'cart.subtotal' | translate }} ({{ vm.items.length }} {{ vm.items.length === 1 ? ('cart.item' | translate) : ('cart.items' | translate) }})</span>
                 <span class="text-white font-semibold text-lg">${{ vm.subtotal.toFixed(2) }}</span>
               </div>
               
               <!-- Shipping -->
               <div class="flex justify-between items-center text-sm" *ngIf="vm.shipping > 0">
-                <span class="text-bitcoin-gray">Shipping</span>
+                <span class="text-bitcoin-gray">{{ 'cart.shipping_label' | translate }}</span>
                 <span class="text-white font-medium">${{ vm.shipping.toFixed(2) }}</span>
               </div>
               
               <!-- Tax -->
               <div class="flex justify-between items-center text-sm" *ngIf="vm.tax > 0">
-                <span class="text-bitcoin-gray">Tax</span>
+                <span class="text-bitcoin-gray">{{ 'cart.tax' | translate }}</span>
                 <span class="text-white font-medium">${{ vm.tax.toFixed(2) }}</span>
               </div>
               
               <!-- Total -->
               <div class="pt-4 border-t-2 border-bitcoin-orange/30">
                 <div class="flex justify-between items-center">
-                  <span class="text-lg font-semibold text-white">Total</span>
+                  <span class="text-lg font-semibold text-white">{{ 'cart.total' | translate }}</span>
                   <div class="text-right">
                     <div class="text-2xl font-bold bitcoin-gradient-text">${{ vm.total.toFixed(2) }}</div>
                     <div class="text-xs text-bitcoin-gray">{{ vm.currency }}</div>
@@ -508,7 +505,7 @@
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"></path>
                 </svg>
-                <span>Proceed to Checkout</span>
+                <span>{{ 'cart.proceed_to_checkout' | translate }}</span>
                 <svg class="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
                 </svg>
@@ -518,19 +515,19 @@
             
             <!-- Security Badges -->
             <div class="mt-6 pt-6 border-t border-bitcoin-gray/10">
-              <div class="flex items-center justify-center gap-6 text-xs text-bitcoin-gray">
+                <div class="flex items-center justify-center gap-6 text-xs text-bitcoin-gray">
                 <div class="flex items-center gap-1.5">
                   <svg class="w-4 h-4 text-green-400" fill="currentColor" viewBox="0 0 20 20">
                     <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"></path>
                   </svg>
-                  <span>Secure</span>
+                  <span>{{ 'cart.secure' | translate }}</span>
                 </div>
                 <div class="w-px h-4 bg-bitcoin-gray/20"></div>
                 <div class="flex items-center gap-1.5">
                   <svg class="w-4 h-4 text-blue-400" fill="currentColor" viewBox="0 0 20 20">
                     <path fill-rule="evenodd" d="M2.166 4.999A11.954 11.954 0 0010 1.944 11.954 11.954 0 0017.834 5c.11.65.166 1.32.166 2.001 0 5.225-3.34 9.67-8 11.317C5.34 16.67 2 12.225 2 7c0-.682.057-1.35.166-2.001zm11.541 3.708a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
                   </svg>
-                  <span>SSL</span>
+                  <span>{{ 'cart.ssl' | translate }}</span>
                 </div>
                 <div class="w-px h-4 bg-bitcoin-gray/20"></div>
                 <div class="flex items-center gap-1.5">
@@ -538,7 +535,7 @@
                     <path d="M8 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zM15 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0z"></path>
                     <path d="M3 4a1 1 0 00-1 1v10a1 1 0 001 1h1.05a2.5 2.5 0 014.9 0H10a1 1 0 001-1V5a1 1 0 00-1-1H3zM14 7a1 1 0 00-1 1v6.05A2.5 2.5 0 0115.95 16H17a1 1 0 001-1v-5a1 1 0 00-.293-.707l-2-2A1 1 0 0015 7h-1z"></path>
                   </svg>
-                  <span>Fast Shipping</span>
+                  <span>{{ 'cart.fast_shipping' | translate }}</span>
                 </div>
               </div>
             </div>
@@ -552,7 +549,7 @@
               <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
               </svg>
-              <span>Continue Shopping</span>
+              <span>{{ 'cart.continue_shopping' | translate }}</span>
             </span>
           </a>
         </div>
@@ -560,3 +557,4 @@
     <!-- Close space-y-8 div from line 17 -->
   </section>
 </div>
+

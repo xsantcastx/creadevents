@@ -28,8 +28,8 @@ module.exports = {
         }
       },
       fontFamily: {
-        serif: ['"Playfair Display"', 'ui-serif', 'serif'],
-        sans: ['"Inter"', 'ui-sans-serif', 'system-ui']
+        serif: ['"Cib"', 'ui-serif', 'serif'],
+        sans: ['"Cib"', 'ui-sans-serif', 'system-ui']
       },
       boxShadow: {
         soft: '0 10px 30px -12px rgba(0,0,0,.35)',

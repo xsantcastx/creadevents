@@ -1,271 +1,330 @@
-<div class="section-stack min-h-screen bg-gradient-to-b from-[#0a0b0d] to-[#13151a] py-8 md:py-16 px-4">
-  <div class="max-w-4xl mx-auto">
-    
-    <!-- Header -->
-    <div class="mb-6 md:mb-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-      <div class="flex-1">
-        <h1 class="font-serif text-3xl sm:text-4xl lg:text-5xl bitcoin-gradient-text mb-2">
-          {{ 'client.profile' | translate }}
-        </h1>
-        <p class="text-bitcoin-gray text-sm md:text-base">
-          {{ 'client.profile_subtitle' | translate }}
-        </p>
+<section class="section-stack bg-gradient-to-b from-[#0a0b0d] to-[#13151a] min-h-screen">
+  <!-- Page Header Component -->
+  <app-page-header
+    title="{{ 'client.profile' | translate }}"
+    subtitle="{{ 'client.profile_subtitle' | translate }}"
+    [breadcrumbs]="breadcrumbs"
+    icon="user">
+  </app-page-header>
+
+  <div class="page-container pb-12">
+    <div class="max-w-6xl mx-auto space-y-6 md:space-y-8">
+      <div class="flex justify-end">
+        <button
+          type="button"
+          (click)="logout()"
+          class="inline-flex items-center justify-center gap-2 rounded-xl border border-red-500/40 px-4 py-2 text-sm font-medium text-red-200 transition-colors hover:bg-red-500/10">
+          <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+          </svg>
+          <span>{{ 'client.logout' | translate }}</span>
+        </button>
       </div>
-      
-      <!-- Logout Button -->
-      <button
-        (click)="logout()"
-        class="px-3 sm:px-4 py-2 text-sm sm:text-base text-bitcoin-gray hover:text-red-400 border border-bitcoin-gray/20 hover:border-red-500/30 rounded-xl transition-all duration-300 flex items-center gap-2 whitespace-nowrap">
-        <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
-        </svg>
-        <span class="hidden sm:inline">{{ 'client.logout' | translate }}</span>
-        <span class="sm:hidden">Logout</span>
-      </button>
-    </div>
 
     @if (isLoading) {
-      <!-- Loading State -->
-      <div class="bg-bitcoin-dark/40 backdrop-blur-md border border-bitcoin-orange/20 rounded-2xl shadow-bitcoin-lg p-12">
-        <div class="flex flex-col items-center justify-center gap-4">
-          <svg class="animate-spin h-10 w-10 text-bitcoin-orange" fill="none" viewBox="0 0 24 24">
-            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-          </svg>
+      <div class="rounded-2xl border border-bitcoin-orange/20 bg-bitcoin-dark/40 p-12 text-center shadow-bitcoin-lg">
+        <div class="flex flex-col items-center gap-4">
+          <div class="app-spinner" style="--spinner-size: 96px;"><img src="/Logo Clear.png" alt="Loading" width="96" height="96"></div>
           <p class="text-bitcoin-gray">{{ 'common.loading' | translate }}</p>
         </div>
       </div>
     } @else {
-      <!-- Profile Content -->
-      <div class="grid lg:grid-cols-3 gap-4 md:gap-6">
-        
-        <!-- Sidebar -->
-        <div class="lg:col-span-1">
-          <div class="bg-bitcoin-dark/40 backdrop-blur-md border border-bitcoin-orange/20 rounded-2xl shadow-bitcoin-lg p-4 md:p-6 lg:sticky lg:top-6">
-            <!-- Avatar -->
-            <div class="flex flex-row lg:flex-col items-center gap-4 lg:gap-0 mb-4 lg:mb-6">
-              <div class="w-16 h-16 md:w-20 md:h-20 lg:w-24 lg:h-24 bg-bitcoin-orange/20 border border-bitcoin-orange/30 rounded-full flex items-center justify-center flex-shrink-0">
-                <span class="text-2xl md:text-3xl font-serif text-bitcoin-orange">
-                  {{ (userProfile?.displayName || 'U').charAt(0).toUpperCase() }}
-                </span>
+      @if (successMessage) {
+        <div class="flex items-start gap-3 rounded-xl border border-emerald-500/30 bg-emerald-500/10 px-4 py-3 text-sm text-emerald-100">
+          <svg class="mt-0.5 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+          </svg>
+          <span>{{ successMessage | translate }}</span>
+        </div>
+      }
+
+      @if (errorMessage) {
+        <div class="flex items-start gap-3 rounded-xl border border-red-500/40 bg-red-500/10 px-4 py-3 text-sm text-red-200">
+          <svg class="mt-0.5 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M12 5a7 7 0 100 14 7 7 0 000-14z" />
+          </svg>
+          <span>{{ errorMessage | translate }}</span>
+        </div>
+      }
+
+      <div class="grid gap-6 lg:grid-cols-[320px,1fr]">
+        <aside class="space-y-6">
+          <div class="rounded-2xl border border-bitcoin-orange/20 bg-bitcoin-dark/40 p-6 shadow-bitcoin-lg">
+            <div class="flex flex-col items-center gap-4 text-center">
+              <div class="flex h-24 w-24 items-center justify-center rounded-full border border-bitcoin-orange/30 bg-bitcoin-orange/10 text-3xl font-semibold text-bitcoin-orange">
+                {{ (userProfile?.displayName || 'U').charAt(0).toUpperCase() }}
               </div>
-              <div class="flex-1 lg:flex-none lg:w-full text-left lg:text-center lg:mt-4">
-                <h2 class="text-lg md:text-xl font-semibold text-bitcoin-gold">
-                  {{ userProfile?.displayName }}
-                </h2>
+              <div class="space-y-1">
+                <p class="text-xl font-semibold text-white">{{ userProfile?.displayName || userProfile?.email }}</p>
                 @if (userProfile?.company) {
-                  <p class="text-xs md:text-sm text-bitcoin-gray">{{ userProfile?.company }}</p>
+                  <p class="text-sm text-bitcoin-gray">{{ userProfile?.company }}</p>
                 }
-                <span class="inline-block mt-2 px-3 py-1 bg-green-500/20 border border-green-500/30 text-green-300 text-xs font-medium rounded-full">
-                  {{ userProfile?.role === 'admin' ? 'Admin' : 'Client' }}
+                <span class="inline-flex items-center gap-2 rounded-full border border-green-500/30 bg-green-500/10 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-green-300">
+                  <svg class="h-3.5 w-3.5" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293l-4 4a1 1 0 01-1.414 0l-2-2 1.414-1.414L9 10.586l3.293-3.293 1.414 1.414z" />
+                  </svg>
+                  {{ userProfile?.role === 'admin' ? ('client.profile_role.admin' | translate) : ('client.profile_role.client' | translate) }}
                 </span>
               </div>
             </div>
 
-            <!-- Menu -->
-            <nav class="space-y-2">
-              <a routerLink="/client/profile" class="flex items-center gap-2 md:gap-3 px-3 md:px-4 py-2.5 md:py-3 bg-bitcoin-orange/20 border border-bitcoin-orange/30 text-bitcoin-orange rounded-xl text-sm md:text-base">
-                <svg class="w-4 h-4 md:w-5 md:h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+            <dl class="mt-6 space-y-4 text-sm text-bitcoin-gray">
+              <div class="flex items-start gap-3">
+                <svg class="mt-0.5 h-5 w-5 text-bitcoin-orange" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 12H8m8 0l-3 3m3-3l-3-3M5 19l2.586-2.586M5 5l2.586 2.586M19 5l-2.586 2.586M19 19l-2.586-2.586" />
                 </svg>
-                <span class="truncate">{{ 'client.profile' | translate }}</span>
-              </a>
-              <a routerLink="/client/orders" class="flex items-center gap-2 md:gap-3 px-3 md:px-4 py-2.5 md:py-3 hover:bg-bitcoin-dark/60 text-bitcoin-gray hover:text-bitcoin-orange rounded-xl transition-colors text-sm md:text-base">
-                <svg class="w-4 h-4 md:w-5 md:h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+                <div class="space-y-1">
+                  <dt class="text-xs font-medium uppercase tracking-wide text-white/70">{{ 'client.email' | translate }}</dt>
+                  <dd class="text-white">
+                    @if (userProfile?.email) {
+                      <a [href]="'mailto:' + userProfile?.email" class="hover:text-bitcoin-orange transition-colors">{{ userProfile?.email }}</a>
+                    } @else {
+                      {{ 'client.profile_metrics.not_available' | translate }}
+                    }
+                  </dd>
+                </div>
+              </div>
+              <div class="flex items-start gap-3">
+                <svg class="mt-0.5 h-5 w-5 text-bitcoin-orange" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5h2l3.6 7.59-1.35 2.44A1 1 0 008 16h10v-2H9.42a.25.25 0 01-.22-.37l.9-1.63h6.45a1 1 0 00.9-.55L21 6H7.21" />
                 </svg>
-                <span class="truncate">{{ 'client.orders' | translate }}</span>
+                <div class="space-y-1">
+                  <dt class="text-xs font-medium uppercase tracking-wide text-white/70">{{ 'client.phone' | translate }}</dt>
+                  <dd class="text-white">
+                    @if (userProfile?.phone) {
+                      <a [href]="'tel:' + userProfile?.phone" class="hover:text-bitcoin-orange transition-colors">{{ userProfile?.phone }}</a>
+                    } @else {
+                      {{ 'client.not_provided' | translate }}
+                    }
+                  </dd>
+                </div>
+              </div>
+            </dl>
+
+            <div class="mt-6 space-y-3">
+              <a routerLink="/client/orders" class="flex items-center justify-center gap-2 rounded-xl border border-bitcoin-orange/40 bg-bitcoin-orange/10 px-4 py-2 text-sm font-medium text-bitcoin-orange transition-colors hover:bg-bitcoin-orange/20">
+                <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13l-1.5 6h13M16 17a2 2 0 11-4 0" />
+                </svg>
+                <span>{{ 'client.profile_actions.view_orders' | translate }}</span>
               </a>
-              @if (userProfile?.role === 'admin') {
-                <a routerLink="/admin" class="flex items-center gap-2 md:gap-3 px-3 md:px-4 py-2.5 md:py-3 hover:bg-bitcoin-dark/60 text-bitcoin-gray hover:text-bitcoin-orange rounded-xl transition-colors text-sm md:text-base">
-                  <svg class="w-4 h-4 md:w-5 md:h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                  </svg>
-                  <span class="truncate">{{ 'admin.title' | translate }}</span>
-                </a>
-              }
-            </nav>
+              <a routerLink="/contacto" class="flex items-center justify-center gap-2 rounded-xl border border-bitcoin-gray/30 px-4 py-2 text-sm font-medium text-bitcoin-gray transition-colors hover:text-bitcoin-orange">
+                <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <span>{{ 'client.profile_actions.contact_support' | translate }}</span>
+              </a>
+            </div>
           </div>
-        </div>
+        </aside>
 
-        <!-- Main Content -->
-        <div class="lg:col-span-2">
-          <div class="bg-bitcoin-dark/40 backdrop-blur-md border border-bitcoin-orange/20 rounded-2xl shadow-bitcoin-lg p-4 md:p-6 lg:p-8">
-            
-            <!-- Success Message -->
-            @if (successMessage) {
-              <div class="mb-4 md:mb-6 p-3 md:p-4 bg-green-500/20 border border-green-500/30 rounded-xl flex items-start gap-2 md:gap-3">
-                <svg class="w-4 h-4 md:w-5 md:h-5 text-green-300 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                </svg>
-                <p class="text-xs md:text-sm text-green-300">{{ successMessage | translate }}</p>
+        <div class="space-y-6 md:space-y-8">
+          <section class="rounded-2xl border border-bitcoin-orange/20 bg-bitcoin-dark/40 p-6 shadow-bitcoin-lg">
+            <div class="mb-6 flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
+              <div>
+                <h2 class="text-lg font-semibold text-white">{{ 'client.profile_sections.account_overview' | translate }}</h2>
+                <p class="text-sm text-bitcoin-gray">{{ 'client.profile_sections.account_overview_hint' | translate }}</p>
               </div>
-            }
-
-            <!-- Error Message -->
-            @if (errorMessage) {
-              <div class="mb-4 md:mb-6 p-3 md:p-4 bg-red-500/20 border border-red-500/30 rounded-xl flex items-start gap-2 md:gap-3">
-                <svg class="w-4 h-4 md:w-5 md:h-5 text-red-300 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                </svg>
-                <p class="text-xs md:text-sm text-red-300">{{ errorMessage | translate }}</p>
-              </div>
-            }
-
-            <!-- Header with Edit Button -->
-            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4 md:mb-6">
-              <h2 class="text-xl md:text-2xl font-serif bitcoin-gradient-text">
-                {{ 'client.personal_information' | translate }}
-              </h2>
-              @if (!isEditMode) {
-                <button
-                  (click)="toggleEditMode()"
-                  class="px-3 md:px-4 py-2 bg-bitcoin-orange/30 hover:bg-bitcoin-orange/40 text-white border border-bitcoin-orange/30 hover:border-bitcoin-orange/50 rounded-xl shadow-bitcoin transition-all duration-300 flex items-center justify-center gap-2 text-sm md:text-base">
-                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
-                  </svg>
-                  {{ 'admin.edit' | translate }}
-                </button>
+            </div>
+            <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+              @for (highlight of profileHighlights; track highlight.labelKey) {
+                <article class="rounded-xl border border-white/5 bg-black/20 p-4">
+                  <div class="flex items-start gap-3">
+                    <div class="flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-black/30 text-bitcoin-orange">
+                      @switch (highlight.icon) {
+                        @case ('calendar') {
+                          <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                          </svg>
+                        }
+                        @case ('clock') {
+                          <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                          </svg>
+                        }
+                        @case ('shield') {
+                          <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                          </svg>
+                        }
+                        @default {
+                          <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                          </svg>
+                        }
+                      }
+                    </div>
+                    <div class="space-y-1">
+                      <p class="text-xs font-medium uppercase tracking-wide text-white/60">{{ highlight.labelKey | translate }}</p>
+                      <p class="text-base font-semibold text-white" [class.text-emerald-300]="highlight.tone === 'success'" [class.text-amber-300]="highlight.tone === 'warning'">
+                        {{ highlight.value }}
+                      </p>
+                    </div>
+                  </div>
+                </article>
               }
+            </div>
+          </section>
+
+          <section class="rounded-2xl border border-bitcoin-orange/20 bg-bitcoin-dark/40 p-6 shadow-bitcoin-lg">
+            <div class="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+              <div class="space-y-1">
+                <h2 class="text-lg font-semibold text-white">{{ 'client.profile_sections.contact_information' | translate }}</h2>
+                <p class="text-sm text-bitcoin-gray">{{ 'client.profile_sections.contact_information_hint' | translate }}</p>
+              </div>
+              <div class="flex flex-wrap gap-2">
+                @if (!isEditMode) {
+                  <button type="button" (click)="toggleEditMode()" class="inline-flex items-center gap-2 rounded-xl border border-bitcoin-gray/30 px-4 py-2 text-sm font-medium text-bitcoin-gray transition-colors hover:text-bitcoin-orange">
+                    <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5" />
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.5 2.5a2.121 2.121 0 113 3L12 15l-4 1 1-4 9.5-9.5z" />
+                    </svg>
+                    <span>{{ 'client.profile_actions.edit_profile' | translate }}</span>
+                  </button>
+                } @else {
+                  <button type="button" (click)="toggleEditMode()" [disabled]="isSaving" class="inline-flex items-center gap-2 rounded-xl border border-bitcoin-gray/30 px-4 py-2 text-sm font-medium text-bitcoin-gray transition-colors hover:text-white disabled:cursor-not-allowed disabled:opacity-60">
+                    {{ 'client.profile_actions.cancel' | translate }}
+                  </button>
+                }
+              </div>
             </div>
 
             @if (!isEditMode) {
-              <!-- View Mode -->
-              <div class="space-y-3 md:space-y-4">
-                <div class="p-3 md:p-4 bg-bitcoin-dark/60 border border-bitcoin-gray/20 rounded-xl">
-                  <label class="block text-xs md:text-sm font-medium text-bitcoin-gray/70 mb-1">
-                    {{ 'client.email' | translate }}
-                  </label>
-                  <p class="text-sm md:text-base text-bitcoin-gray break-all">{{ userProfile?.email }}</p>
+              <div class="grid gap-4 sm:grid-cols-2 text-sm text-white">
+                <div class="space-y-1">
+                  <p class="text-xs font-medium uppercase tracking-wide text-white/60">{{ 'client.name' | translate }}</p>
+                  <p>{{ userProfile?.displayName || ('client.profile_metrics.not_available' | translate) }}</p>
                 </div>
-
-                <div class="p-3 md:p-4 bg-bitcoin-dark/60 border border-bitcoin-gray/20 rounded-xl">
-                  <label class="block text-xs md:text-sm font-medium text-bitcoin-gray/70 mb-1">
-                    {{ 'client.name' | translate }}
-                  </label>
-                  <p class="text-sm md:text-base text-bitcoin-gray">{{ userProfile?.displayName || '-' }}</p>
+                <div class="space-y-1">
+                  <p class="text-xs font-medium uppercase tracking-wide text-white/60">{{ 'client.email' | translate }}</p>
+                  <p>{{ userProfile?.email }}</p>
+                  <p class="text-xs text-bitcoin-gray/70">{{ 'client.email_cannot_change' | translate }}</p>
                 </div>
-
-                <div class="p-3 md:p-4 bg-bitcoin-dark/60 border border-bitcoin-gray/20 rounded-xl">
-                  <label class="block text-xs md:text-sm font-medium text-bitcoin-gray/70 mb-1">
-                    {{ 'client.company' | translate }}
-                  </label>
-                  <p class="text-sm md:text-base text-bitcoin-gray">{{ userProfile?.company || '-' }}</p>
+                <div class="space-y-1">
+                  <p class="text-xs font-medium uppercase tracking-wide text-white/60">{{ 'client.company' | translate }}</p>
+                  <p>{{ userProfile?.company || ('client.not_provided' | translate) }}</p>
                 </div>
-
-                <div class="p-3 md:p-4 bg-bitcoin-dark/60 border border-bitcoin-gray/20 rounded-xl">
-                  <label class="block text-xs md:text-sm font-medium text-bitcoin-gray/70 mb-1">
-                    {{ 'client.phone' | translate }}
-                  </label>
-                  <p class="text-sm md:text-base text-bitcoin-gray">{{ userProfile?.phone || '-' }}</p>
-                </div>
-
-                <div class="p-3 md:p-4 bg-bitcoin-dark/60 border border-bitcoin-gray/20 rounded-xl">
-                  <label class="block text-xs md:text-sm font-medium text-bitcoin-gray/70 mb-1">
-                    {{ 'client.member_since' | translate }}
-                  </label>
-                  <p class="text-sm md:text-base text-bitcoin-gray">{{ userProfile?.createdAt | date:'dd/MM/yyyy' }}</p>
+                <div class="space-y-1">
+                  <p class="text-xs font-medium uppercase tracking-wide text-white/60">{{ 'client.phone' | translate }}</p>
+                  <p>{{ userProfile?.phone || ('client.not_provided' | translate) }}</p>
                 </div>
               </div>
             } @else {
-              <!-- Edit Mode -->
-              <form [formGroup]="profileForm" (ngSubmit)="onSubmit()" class="space-y-4 md:space-y-6">
-                
-                <!-- Email (read-only) -->
-                <div>
-                  <label class="block text-xs md:text-sm font-medium text-bitcoin-gray mb-1.5 md:mb-2">
-                    {{ 'client.email' | translate }}
-                  </label>
-                  <input
-                    type="email"
-                    [value]="userProfile?.email"
-                    disabled
-                    class="w-full px-3 md:px-4 py-2.5 md:py-3 bg-bitcoin-dark/40 border border-bitcoin-gray/20 rounded-xl text-bitcoin-gray/50 cursor-not-allowed text-sm md:text-base">
-                  <p class="mt-1 text-xs text-bitcoin-gray/70">{{ 'client.email_cannot_change' | translate }}</p>
+              <form [formGroup]="profileForm" (ngSubmit)="onSubmit()" class="space-y-5">
+                <div class="grid gap-4 sm:grid-cols-2">
+                  <div class="space-y-2">
+                    <label for="displayName" class="text-xs font-medium uppercase tracking-wide text-white/60">{{ 'client.name' | translate }} *</label>
+                    <input
+                      type="text"
+                      id="displayName"
+                      formControlName="displayName"
+                      class="w-full rounded-xl border border-bitcoin-gray/30 bg-bitcoin-dark/60 px-4 py-2.5 text-sm text-white placeholder:text-bitcoin-gray/50 focus:border-bitcoin-orange focus:outline-none focus:ring-2 focus:ring-bitcoin-orange/40"
+                      [class.border-red-500]="displayName?.invalid && displayName?.touched" />
+                    @if (displayName?.invalid && displayName?.touched) {
+                      <p class="text-xs text-red-300">{{ 'client.errors.name_required' | translate }}</p>
+                    }
+                  </div>
+                  <div class="space-y-2">
+                    <label class="text-xs font-medium uppercase tracking-wide text-white/60">{{ 'client.email' | translate }}</label>
+                    <div class="w-full cursor-not-allowed rounded-xl border border-white/10 bg-black/20 px-4 py-2.5 text-sm text-bitcoin-gray/70">
+                      {{ userProfile?.email }}
+                    </div>
+                  </div>
                 </div>
-
-                <!-- Name -->
-                <div>
-                  <label for="displayName" class="block text-xs md:text-sm font-medium text-bitcoin-gray mb-1.5 md:mb-2">
-                    {{ 'client.name' | translate }} *
-                  </label>
-                  <input
-                    type="text"
-                    id="displayName"
-                    formControlName="displayName"
-                    class="w-full px-3 md:px-4 py-2.5 md:py-3 bg-bitcoin-dark/60 border border-bitcoin-gray/20 text-bitcoin-gray placeholder-bitcoin-gray/50 rounded-xl focus:ring-2 focus:ring-bitcoin-orange focus:border-bitcoin-orange transition-all text-sm md:text-base"
-                    [class.border-red-500]="displayName?.invalid && displayName?.touched">
-                  @if (displayName?.invalid && displayName?.touched) {
-                    <p class="mt-2 text-xs md:text-sm text-red-400">
-                      {{ 'client.errors.name_required' | translate }}
-                    </p>
-                  }
+                <div class="grid gap-4 sm:grid-cols-2">
+                  <div class="space-y-2">
+                    <label for="company" class="text-xs font-medium uppercase tracking-wide text-white/60">{{ 'client.company' | translate }}</label>
+                    <input
+                      type="text"
+                      id="company"
+                      formControlName="company"
+                      class="w-full rounded-xl border border-bitcoin-gray/30 bg-bitcoin-dark/60 px-4 py-2.5 text-sm text-white placeholder:text-bitcoin-gray/50 focus:border-bitcoin-orange focus:outline-none focus:ring-2 focus:ring-bitcoin-orange/40" />
+                  </div>
+                  <div class="space-y-2">
+                    <label for="phone" class="text-xs font-medium uppercase tracking-wide text-white/60">{{ 'client.phone' | translate }}</label>
+                    <input
+                      type="tel"
+                      id="phone"
+                      formControlName="phone"
+                      class="w-full rounded-xl border border-bitcoin-gray/30 bg-bitcoin-dark/60 px-4 py-2.5 text-sm text-white placeholder:text-bitcoin-gray/50 focus:border-bitcoin-orange focus:outline-none focus:ring-2 focus:ring-bitcoin-orange/40" />
+                  </div>
                 </div>
-
-                <!-- Company -->
-                <div>
-                  <label for="company" class="block text-xs md:text-sm font-medium text-bitcoin-gray mb-1.5 md:mb-2">
-                    {{ 'client.company' | translate }}
-                  </label>
-                  <input
-                    type="text"
-                    id="company"
-                    formControlName="company"
-                    class="w-full px-3 md:px-4 py-2.5 md:py-3 bg-bitcoin-dark/60 border border-bitcoin-gray/20 text-bitcoin-gray placeholder-bitcoin-gray/50 rounded-xl focus:ring-2 focus:ring-bitcoin-orange focus:border-bitcoin-orange transition-all text-sm md:text-base">
-                </div>
-
-                <!-- Phone -->
-                <div>
-                  <label for="phone" class="block text-xs md:text-sm font-medium text-bitcoin-gray mb-1.5 md:mb-2">
-                    {{ 'client.phone' | translate }}
-                  </label>
-                  <input
-                    type="tel"
-                    id="phone"
-                    formControlName="phone"
-                    class="w-full px-3 md:px-4 py-2.5 md:py-3 bg-bitcoin-dark/60 border border-bitcoin-gray/20 text-bitcoin-gray placeholder-bitcoin-gray/50 rounded-xl focus:ring-2 focus:ring-bitcoin-orange focus:border-bitcoin-orange transition-all text-sm md:text-base">
-                </div>
-
-                <!-- Action Buttons -->
-                <div class="flex flex-col sm:flex-row gap-3 md:gap-4 pt-2">
-                  <button
-                    type="submit"
-                    [disabled]="isSaving"
-                    class="flex-1 py-2.5 md:py-3 px-4 md:px-6 bg-bitcoin-orange/30 hover:bg-bitcoin-orange/40 text-white rounded-xl font-medium border border-bitcoin-orange/30 hover:border-bitcoin-orange/50 shadow-bitcoin transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 text-sm md:text-base">
+                <div class="flex flex-col gap-3 sm:flex-row">
+                  <button type="submit" [disabled]="isSaving" class="flex-1 inline-flex items-center justify-center gap-2 rounded-xl border border-bitcoin-orange/30 bg-bitcoin-orange/20 px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-bitcoin-orange/30 disabled:cursor-not-allowed disabled:opacity-60">
                     @if (isSaving) {
-                      <svg class="animate-spin h-4 w-4 md:h-5 md:w-5" fill="none" viewBox="0 0 24 24">
-                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                      </svg>
+                      <div class="app-spinner" style="--spinner-size: 96px;"><img src="/Logo Clear.png" alt="Loading" width="96" height="96"></div>
                       {{ 'common.loading' | translate }}
                     } @else {
-                      {{ 'admin.save' | translate }}
+                      {{ 'client.profile_actions.save_changes' | translate }}
                     }
                   </button>
-                  <button
-                    type="button"
-                    (click)="toggleEditMode()"
-                    [disabled]="isSaving"
-                    class="flex-1 py-2.5 md:py-3 px-4 md:px-6 border border-bitcoin-gray/20 text-bitcoin-gray hover:bg-bitcoin-dark/60 rounded-xl font-medium transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed text-sm md:text-base">
-                    {{ 'admin.cancel' | translate }}
+                  <button type="button" (click)="toggleEditMode()" [disabled]="isSaving" class="flex-1 rounded-xl border border-bitcoin-gray/30 px-4 py-2.5 text-sm font-medium text-bitcoin-gray transition-colors hover:text-white disabled:cursor-not-allowed disabled:opacity-60">
+                    {{ 'client.profile_actions.cancel' | translate }}
                   </button>
                 </div>
               </form>
             }
-          </div>
+          </section>
+
+          <section class="rounded-2xl border border-bitcoin-orange/20 bg-bitcoin-dark/40 p-6 shadow-bitcoin-lg">
+            <div class="mb-4 space-y-1">
+              <h2 class="text-lg font-semibold text-white">{{ 'client.profile_sections.security' | translate }}</h2>
+              <p class="text-sm text-bitcoin-gray">{{ 'client.profile_sections.security_hint' | translate }}</p>
+            </div>
+            <div class="grid gap-4 sm:grid-cols-2 text-sm text-white">
+              <div class="rounded-xl border border-white/5 bg-black/20 p-4">
+                <p class="text-xs font-medium uppercase tracking-wide text-white/60">{{ 'client.security.email_verified' | translate }}</p>
+                <p class="mt-1 font-semibold" [class.text-emerald-300]="emailVerified" [class.text-amber-300]="!emailVerified">
+                  {{ emailVerified ? ('client.security.verified' | translate) : ('client.security.not_verified' | translate) }}
+                </p>
+              </div>
+              <div class="rounded-xl border border-white/5 bg-black/20 p-4">
+                <p class="text-xs font-medium uppercase tracking-wide text-white/60">{{ 'client.security.login_attempts' | translate }}</p>
+                <p class="mt-1 font-semibold">{{ userProfile?.loginAttempts ?? 0 }}</p>
+              </div>
+              <div class="rounded-xl border border-white/5 bg-black/20 p-4">
+                <p class="text-xs font-medium uppercase tracking-wide text-white/60">{{ 'client.security.last_failed_login' | translate }}</p>
+                <p class="mt-1 font-semibold">
+                  {{ userProfile?.lastFailedLogin ? (userProfile?.lastFailedLogin | date:'medium') : ('client.profile_metrics.not_available' | translate) }}
+                </p>
+              </div>
+              <div class="rounded-xl border border-white/5 bg-black/20 p-4">
+                <p class="text-xs font-medium uppercase tracking-wide text-white/60">{{ 'client.security.session_status' | translate }}</p>
+                <p class="mt-1 font-semibold">
+                  {{ accountStatusText || ('client.profile_metrics.not_available' | translate) }}
+                </p>
+              </div>
+            </div>
+          </section>
+
+          <section class="rounded-2xl border border-white/10 bg-black/30 p-6 shadow-lg">
+            <div class="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+              <div class="space-y-1">
+                <h2 class="text-lg font-semibold text-white">{{ 'client.profile_sections.support' | translate }}</h2>
+                <p class="text-sm text-bitcoin-gray">{{ 'client.profile_support_description' | translate }}</p>
+              </div>
+              <a routerLink="/contacto" class="inline-flex items-center gap-2 rounded-xl border border-bitcoin-orange/30 bg-bitcoin-orange/10 px-4 py-2 text-sm font-medium text-bitcoin-orange transition-colors hover:bg-bitcoin-orange/20">
+                <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
+                </svg>
+                <span>{{ 'client.profile_actions.contact_support' | translate }}</span>
+              </a>
+            </div>
+          </section>
         </div>
       </div>
     }
 
-    <!-- Back to Home -->
-    <div class="text-center mt-6">
-      <a routerLink="/" class="text-bitcoin-gray/70 hover:text-bitcoin-orange transition-colors inline-flex items-center gap-2">
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+    <div class="text-center">
+      <a routerLink="/" class="inline-flex items-center gap-2 text-sm font-medium text-bitcoin-gray transition-colors hover:text-bitcoin-orange">
+        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
         </svg>
         {{ 'common.back' | translate }}
       </a>
     </div>
+    </div>
   </div>
-</div>
+</section>
+
+

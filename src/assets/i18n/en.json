@@ -24,6 +24,7 @@
     "settings": "Settings",
     "email_templates": "Email Templates",
     "size_groups": "Size Groups Management",
+    "reviews": "Review Management",
     "not_found": "Page Not Found"
   },
   "home": {
@@ -46,7 +47,7 @@
     "gallery_preview": {
       "title": "Mining Farm Gallery",
       "subtitle": "Explore our professional mining installations and setups",
-      "view_full": "View Full Gallery \u00e2\u2020\u2019"
+      "view_full": "View Full Gallery â†’"
     },
     "why_choose": {
       "title": "Why Choose TheLuxMining?",
@@ -74,11 +75,78 @@
         "button": "Get Custom Quote"
       }
     },
+    "services": {
+      "title": "Our Services",
+      "subtitle": "Complete Bitcoin Mining Solutions",
+      "hardware": {
+        "title": "Premium Hardware",
+        "description": "Top-tier ASIC miners from trusted manufacturers, optimized for maximum hash rate and energy efficiency."
+      },
+      "setup": {
+        "title": "Professional Setup",
+        "description": "Expert installation and configuration services to get your mining operation running at peak performance."
+      },
+      "support": {
+        "title": "24/7 Support",
+        "description": "Round-the-clock technical assistance to ensure your mining rigs maintain optimal uptime and profitability."
+      },
+      "consulting": {
+        "title": "Mining Consultation",
+        "description": "Strategic guidance on hardware selection, facility planning, and ROI optimization for your mining operation."
+      }
+    },
+    "features": {
+      "title": "Why Mine with TheLuxMining",
+      "enterprise": {
+        "title": "Enterprise-Grade Equipment",
+        "description": "Access to the latest ASIC mining hardware with proven reliability and industry-leading specifications."
+      },
+      "efficiency": {
+        "title": "Maximum Efficiency",
+        "description": "Achieve the best power-to-hashrate ratio with our optimized cooling solutions and energy management systems."
+      },
+      "roi": {
+        "title": "Proven ROI",
+        "description": "Track record of helping clients achieve profitable mining operations with transparent performance metrics."
+      },
+      "security": {
+        "title": "Secure Operations",
+        "description": "Enterprise security protocols to protect your investment and ensure continuous, reliable mining operations."
+      }
+    },
     "stats": {
       "miners_deployed": "Miners Deployed Worldwide",
+      "miners_deployed_desc": "Professional mining units delivered worldwide",
       "customer_satisfaction": "Customer Satisfaction",
+      "customer_satisfaction_desc": "Verified customer happiness rating",
       "uptime_guarantee": "Uptime Guarantee",
-      "years_experience": "Years of Excellence"
+      "uptime_guarantee_desc": "Industry-leading reliability standards",
+      "years_experience": "Years of Excellence",
+      "years_experience_desc": "Years powering the Bitcoin revolution"
+    },
+    "reviews": {
+      "eyebrow": "Community Feedback",
+      "title": "Hear From Miners Who Trust TheLuxMining",
+      "subtitle": "We partner with clients around the world to deploy dependable Bitcoin mining operations. Real stories from real miners keep us accountable and help future partners feel confident.",
+      "average_rating": "Average rating",
+      "published_reviews": "Published reviews",
+      "rate_experience": "Rate your experience",
+      "rate_stars": "Rate {{stars}} stars",
+      "share_testimonial": "Share a short testimonial",
+      "testimonial_placeholder": "Tell other miners about your deployment, support experience, or ROI.",
+      "testimonial_help": "Minimum 10 characters. Mention specifics like product, speed, or support.",
+      "saving_review": "Saving your review...",
+      "update_review": "Update my review",
+      "publish_review": "Publish my review",
+      "delete_review": "Delete my review",
+      "sign_in_title": "Ready to leave a review?",
+      "sign_in_desc": "Sign in to rate your experience and help other miners choose their next hardware partner.",
+      "sign_in_button": "Sign in to share feedback",
+      "no_account": "Don't have an account yet?",
+      "create_account": "Create one in minutes.",
+      "no_reviews_title": "Reviews will appear here once clients start sharing their experience.",
+      "no_reviews_desc": "Be the first to leave a review after your deployment!",
+      "verified_purchase": "Verified Purchase"
     }
   },
   "nav": {
@@ -90,6 +158,8 @@
     "contact": "Contact",
     "login": "Login",
     "cart": "Cart",
+    "profile": "My Profile",
+    "orders": "My Orders",
     "follow_us": "Follow Us",
     "language": "Language",
     "account": "Account",
@@ -107,7 +177,10 @@
     "phone": "Phone",
     "email": "Email",
     "address": "Address",
-    "business_hours": "Business Hours"
+    "business_hours": "Business Hours",
+    "contact_title": "Contact",
+    "hardware_title": "Crypto Mining Hardware",
+    "hardware_description": "Premium miners, cold storage solutions & Bitcoin accessories"
   },
   "products": {
     "hero": {
@@ -178,27 +251,43 @@
     "category": "Category:",
     "model": "Model:",
     "premium_label": "Premium Mining Hardware",
+    "description_title": "Description",
     "recommended_apps": "Recommended Applications",
     "request_quote": "Request Quote",
+    "request_consultation": "Request Expert Consultation",
     "in_stock": "In Stock",
     "units_available": "{{count}} units available",
     "pre_order": "Pre-Order Available",
     "back_to_products": "Back to Products",
     "technical_support": "24/7 technical assistance",
+    "enterprise_equipment": "Enterprise-grade equipment",
     "specs_title": "Technical Specifications",
     "hash_rate": "Hash Rate",
     "power_consumption": "Power Consumption",
     "efficiency": "Efficiency",
-    "cooling": "Cooling",
+    "algorithm": "Algorithm",
+    "chip_type": "Chip Type",
+    "cooling": "Cooling System",
     "dimensions": "Dimensions",
     "weight": "Weight",
     "noise_level": "Noise Level",
     "operating_temp": "Operating Temperature",
     "network": "Network Connection",
+    "voltage": "Input Voltage",
     "warranty": "Warranty",
-    "benefits_title": "Product Benefits",
-    "related_products": "Related Products",
+    "warranty_included": "Warranty Included",
+    "warranty_coverage": "Factory warranty coverage",
+    "high_performance": "High Performance",
+    "expert_support": "Expert Support",
+    "secure_payment": "Secure Payment",
+    "multiple_payment": "Multiple payment options",
+    "product_not_found": "Product Not Found",
+    "product_not_found_message": "The product you're looking for is not available or has been discontinued.",
     "view_all_products": "View All Products",
+    "loading_product": "Loading product...",
+    "benefits_title": "Why Choose This Product",
+    "related_products": "You May Also Like",
+    "view_details": "View Details",
     "cta": {
       "title": "Need More Information?",
       "description": "Contact our team for personalized advice on Bitcoin mining hardware.",
@@ -210,6 +299,8 @@
     "search": "Search..."
   },
   "client": {
+    "profile": "My Profile",
+    "orders": "My Orders",
     "login": "Login",
     "register": "Register",
     "logout": "Logout",
@@ -230,6 +321,61 @@
     "save_changes": "Save Changes",
     "profile_updated": "Profile updated successfully",
     "welcome_back": "Welcome back",
+    "profile_subtitle": "Keep your details current and review the activity associated with your account.",
+    "profile_role": {
+      "admin": "Administrator",
+      "client": "Client"
+    },
+    "profile_metrics": {
+      "member_since": "Member since",
+      "last_login": "Last login",
+      "last_login_never": "No login recorded yet",
+      "account_status": "Account status",
+      "account_type": "Account type",
+      "not_available": "Not available"
+    },
+    "profile_status": {
+      "active": "Active",
+      "disabled": "Disabled",
+      "locked_until": "Locked until {{date}}"
+    },
+    "profile_sections": {
+      "account_overview": "Account overview",
+      "account_overview_hint": "A quick snapshot of your account status and recent activity.",
+      "contact_information": "Contact information",
+      "contact_information_hint": "Keep your details up to date so we can assist you with orders and hardware updates.",
+      "security": "Security & access",
+      "security_hint": "Review sign-in activity and the overall state of your account.",
+      "support": "Need help?"
+    },
+    "profile_support_description": "Contact our specialists if you need to update billing, shipping or have a mining question.",
+    "profile_actions": {
+      "view_orders": "View orders",
+      "edit_profile": "Edit profile",
+      "save_changes": "Save changes",
+      "cancel": "Cancel",
+      "contact_support": "Contact support"
+    },
+    "profile_messages": {
+      "updated": "Your profile was updated successfully.",
+      "load_error": "We couldn't load your profile right now. Refresh the page or try again later.",
+      "update_error": "We couldn't save your changes. Please review the form or try again later."
+    },
+    "email_cannot_change": "Email addresses are managed by our support team. Contact us if you need to request a change.",
+    "not_provided": "Not provided",
+    "security": {
+      "email_verified": "Email verification",
+      "verified": "Verified",
+      "not_verified": "Not verified",
+      "login_attempts": "Login attempts (last 30 days)",
+      "last_failed_login": "Last failed login",
+      "session_status": "Session status"
+    },
+    "errors": {
+      "name_required": "Please enter your name.",
+      "load_profile_failed": "Unable to load your profile. Try again later.",
+      "update_profile_failed": "Unable to update your profile. Please try again."
+    },
     "sign_in": "Sign in to your account",
     "dont_have_account": "Don't have an account?",
     "sign_up_here": "Sign up here",
@@ -237,6 +383,8 @@
     "sign_in_here": "Sign in here",
     "create_account": "Create your account",
     "order_history": "Order History",
+    "orders_subtitle": "Track your orders, view shipping details, and download invoices whenever you need them.",
+    "all_orders": "All orders",
     "no_orders_yet": "No orders yet",
     "order_details": "Order Details",
     "order_date": "Order Date",
@@ -244,6 +392,19 @@
     "order_total": "Total",
     "shipping_address": "Shipping Address",
     "items": "Items",
+    "order": "Order",
+    "tracking": "Tracking",
+    "quantity": "Quantity",
+    "reorder": "Reorder",
+    "leave_review": "Leave review",
+    "track_shipment": "Track shipment",
+    "cancel_order": "Cancel order",
+    "contact_support": "Contact support",
+    "download_invoice": "Download invoice",
+    "my_profile": "My profile",
+    "no_orders": "No orders found for this filter.",
+    "no_orders_description": "Once you place an order it will appear here with full tracking and invoice access.",
+    "start_shopping": "Start shopping",
     "processing": "Processing",
     "shipped": "Shipped",
     "delivered": "Delivered",
@@ -262,6 +423,9 @@
     "no_projects": "No Projects Available",
     "no_projects_message": "No projects found for this category. Try selecting another category or view all projects.",
     "of": "of",
+    "mining_project": "Mining Project",
+    "mining_infrastructure": "Mining Infrastructure Project",
+    "global": "Global",
     "tags": {
       "kitchens": "Kitchens",
       "bathrooms": "Bathrooms",
@@ -314,6 +478,52 @@
     "send_selection": "Send selection by email",
     "sending": "Sending...",
     "required_fields_note": "Fields marked with * are required",
+    "cart_items": "Cart Items",
+    "item": "item",
+    "items": "items",
+    "subtotal": "Subtotal",
+    "shipping_address": "Shipping Address",
+    "no_addresses": "No shipping addresses found",
+    "add_shipping_address": "Add Shipping Address",
+    "add_new_address": "Add New Address",
+    "new_shipping_address": "New Shipping Address",
+    "first_name": "First Name",
+    "first_name_required": "First name is required (min 2 characters)",
+    "last_name": "Last Name",
+    "last_name_required": "Last name is required (min 2 characters)",
+    "email": "Email",
+    "email_validation": "Please enter a valid email address",
+    "phone": "Phone",
+    "phone_format": "Format: +1 (country code) followed by phone number",
+    "phone_validation": "Please enter a valid phone number with country code (e.g., +14155551234)",
+    "address": "Address",
+    "address_placeholder": "123 Main Street",
+    "address_validation": "Please enter a valid street address",
+    "city": "City",
+    "city_validation": "Please enter a city",
+    "state": "State",
+    "state_placeholder": "Select a state...",
+    "state_validation": "Please select a state",
+    "zip_code": "ZIP Code",
+    "zip_placeholder": "12345 or 12345-6789",
+    "zip_validation": "Please enter a valid 5-digit ZIP code",
+    "country": "Country",
+    "us_only_shipping": "Currently shipping to US addresses only",
+    "save_address": "Save Address",
+    "saving_address": "Saving...",
+    "cancel": "Cancel",
+    "default": "Default",
+    "shipping_method": "Shipping Method",
+    "calculating_shipping": "Calculating shipping rates...",
+    "order_summary": "Order Summary",
+    "shipping_label": "Shipping",
+    "tax": "Tax",
+    "total": "Total",
+    "proceed_to_checkout": "Proceed to Checkout",
+    "secure": "Secure",
+    "ssl": "SSL",
+    "fast_shipping": "Fast Shipping",
+    "continue_shopping": "Continue Shopping",
     "shipping": {
       "flat_rate": "Flat rate shipping",
       "estimate_default": "Ships in 3-5 business days"
@@ -357,6 +567,9 @@
     },
     "users": {
       "title": "Users"
+    },
+    "reviews": {
+      "title": "Reviews"
     },
     "benefit_templates": {
       "title": "Benefit Templates Manager"
@@ -658,6 +871,80 @@
       }
     },
     "total_revenue": "Total Revenue"
+  },
+  "checkout": {
+    "breadcrumb": {
+      "home": "Home",
+      "cart": "Cart",
+      "review": "Review",
+      "payment": "Payment"
+    },
+    "review_title": "Review Your",
+    "review_title_highlight": "Order",
+    "review_subtitle": "Confirm your mining equipment selection and shipping details",
+    "order_items": "Order Items",
+    "edit_cart": "Edit Cart",
+    "shipping_address": "Shipping Address",
+    "no_addresses": "No shipping addresses found",
+    "no_addresses_message": "Please add a shipping address to continue",
+    "add_shipping_address": "Add Shipping Address",
+    "add_new_address": "Add New Address",
+    "new_shipping_address": "New Shipping Address",
+    "first_name": "First Name",
+    "last_name": "Last Name",
+    "email": "Email",
+    "phone": "Phone (E.164 format)",
+    "phone_hint": "Format: +[country code][number] (e.g., +14155551234)",
+    "address_line1": "Address Line 1",
+    "address_line2": "Address Line 2",
+    "city": "City",
+    "state_region": "State/Region",
+    "postal_code": "Postal Code",
+    "country": "Country",
+    "save_address": "Save Address",
+    "saving": "Saving...",
+    "cancel": "Cancel",
+    "default": "Default",
+    "shipping_method": "Shipping Method",
+    "calculating_shipping": "Calculating shipping rates...",
+    "order_summary": "Order Summary",
+    "subtotal": "Subtotal",
+    "shipping": "Shipping",
+    "tax": "Tax",
+    "discount": "Discount",
+    "total": "Total",
+    "proceed_to_payment": "Proceed to Payment",
+    "back_to_cart": "Back to Cart",
+    "secure_checkout": "Secure Checkout",
+    "ssl_encrypted": "SSL Encrypted",
+    "qty": "Qty",
+    "each": "each",
+    "sku": "SKU"
+  },
+  "payment": {
+    "title": "Secure",
+    "title_highlight": "Payment",
+    "subtitle": "Complete your purchase with confidence",
+    "payment_information": "Payment Information",
+    "cardholder_name": "Cardholder Name",
+    "cardholder_name_error": "Please enter the cardholder's name (minimum 3 characters)",
+    "card_details": "Card Details",
+    "loading_payment_form": "Loading payment form...",
+    "card_secure_message": "Your card information is encrypted and secure. We never store your full card details.",
+    "billing_address": "Billing Address",
+    "change_billing_address": "Change billing address",
+    "pay": "Pay",
+    "processing": "Processing...",
+    "back": "Back",
+    "order_summary": "Order Summary",
+    "subtotal": "Subtotal",
+    "shipping": "Shipping",
+    "tax": "Tax",
+    "discount": "Discount",
+    "total": "Total",
+    "security_ssl": "256-bit SSL Encryption",
+    "security_pci": "PCI DSS Compliant",
+    "security_stripe": "Powered by Stripe"
   },
   "maintenance": {
     "title": "We'll be right back",

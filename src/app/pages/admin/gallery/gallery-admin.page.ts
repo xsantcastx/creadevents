@@ -46,12 +46,13 @@ export class GalleryAdminComponent extends LoadingComponentBase implements OnIni
   showDeleteConfirm = false;
   mediaToDelete: Media | null = null;
   mediaToEdit: Media | null = null;
-  previewUrl: string | null = null;
+  previewUrls: string[] = [];
   uploadProgress = 0;
   isUploading = false;
+  uploadedCount = 0;
+  totalToUpload = 0;
 
-  private previewFromFile = false;
-  private selectedFile: File | null = null;
+  selectedFiles: File[] = [];
   private mediaSub: Subscription | null = null;
   private productsSub: Subscription | null = null;
   private tagsSub: Subscription | null = null;
@@ -94,7 +95,7 @@ export class GalleryAdminComponent extends LoadingComponentBase implements OnIni
     this.mediaSub?.unsubscribe();
     this.productsSub?.unsubscribe();
     this.tagsSub?.unsubscribe();
-    this.revokePreviewUrl();
+    this.revokeAllPreviewUrls();
   }
 
   private async checkAdminAccess(): Promise<void> {
@@ -194,25 +195,30 @@ export class GalleryAdminComponent extends LoadingComponentBase implements OnIni
     this.showUploadModal = true;
     this.uploadForm.reset({
       altText: '',
+      caption: '',
       tags: [],
       relatedProductIds: []
     });
-    this.selectedFile = null;
-    this.revokePreviewUrl();
+    this.selectedFiles = [];
+    this.revokeAllPreviewUrls();
     this.successMessage = '';
     this.errorMessage = '';
     this.warningMessage = '';  // Clear warning
     this.uploadProgress = 0;
+    this.uploadedCount = 0;
+    this.totalToUpload = 0;
   }
 
   closeUploadModal(): void {
     this.showUploadModal = false;
     this.uploadForm.reset();
-    this.selectedFile = null;
-    this.revokePreviewUrl();
+    this.selectedFiles = [];
+    this.revokeAllPreviewUrls();
     this.errorMessage = '';
     this.warningMessage = '';  // Clear warning
     this.uploadProgress = 0;
+    this.uploadedCount = 0;
+    this.totalToUpload = 0;
   }
 
   openEditModal(media: Media): void {
@@ -249,28 +255,62 @@ export class GalleryAdminComponent extends LoadingComponentBase implements OnIni
       return;
     }
 
-    const file = input.files[0];
+    const files = Array.from(input.files);
+    const validFiles: File[] = [];
+    let hasErrors = false;
     
-    // Validate file type
-    if (!file.type.startsWith('image/')) {
-      this.errorMessage = 'Please select a valid image file';
+    // Validate each file
+    for (const file of files) {
+      // Validate file type
+      if (!file.type.startsWith('image/')) {
+        this.errorMessage = `"${file.name}" is not a valid image file`;
+        hasErrors = true;
+        continue;
+      }
+
+      // Validate file size (10MB max)
+      const maxSize = 10 * 1024 * 1024; // 10MB
+      if (file.size > maxSize) {
+        this.errorMessage = `"${file.name}" exceeds 10MB size limit`;
+        hasErrors = true;
+        continue;
+      }
+
+      validFiles.push(file);
+    }
+
+    if (validFiles.length === 0 && hasErrors) {
       return;
     }
 
-    // Validate file size (10MB max)
-    const maxSize = 10 * 1024 * 1024; // 10MB
-    if (file.size > maxSize) {
-      this.errorMessage = 'File size must be less than 10MB';
-      return;
+    this.selectedFiles = validFiles;
+    this.errorMessage = hasErrors ? this.errorMessage : '';
+    this.warningMessage = '';
+
+    // Generate preview URLs for all selected images
+    this.revokeAllPreviewUrls();
+    this.previewUrls = validFiles.map(file => URL.createObjectURL(file));
+
+    if (validFiles.length > 0) {
+      this.successMessage = `${validFiles.length} image(s) selected for upload`;
+      setTimeout(() => this.successMessage = '', 3000);
     }
+  }
 
-    this.selectedFile = file;
-    this.errorMessage = '';
-    this.warningMessage = '';  // Clear warning when selecting new file
+  removeImage(index: number): void {
+    // Revoke the specific preview URL
+    if (this.previewUrls[index]) {
+      URL.revokeObjectURL(this.previewUrls[index]);
+    }
+    
+    // Remove from arrays
+    this.selectedFiles.splice(index, 1);
+    this.previewUrls.splice(index, 1);
 
-    this.revokePreviewUrl();
-    this.previewUrl = URL.createObjectURL(file);
-    this.previewFromFile = true;
+    if (this.selectedFiles.length === 0) {
+      this.errorMessage = '';
+      this.warningMessage = '';
+    }
   }
 
   toggleTag(tag: MediaTag, checked: boolean, isEdit = false): void {
@@ -315,16 +355,16 @@ export class GalleryAdminComponent extends LoadingComponentBase implements OnIni
     return selected.includes(productId);
   }
 
-  private revokePreviewUrl(): void {
-    if (this.previewFromFile && this.previewUrl) {
-      URL.revokeObjectURL(this.previewUrl);
-    }
-    this.previewUrl = null;
-    this.previewFromFile = false;
+  revokeAllPreviewUrls(): void {
+    this.previewUrls.forEach(url => URL.revokeObjectURL(url));
+    this.previewUrls = [];
   }
 
   async onSubmit(): Promise<void> {
-    if (this.isSaving || this.isUploading || !this.selectedFile) {
+    if (this.isSaving || this.isUploading || this.selectedFiles.length === 0) {
+      if (this.selectedFiles.length === 0) {
+        this.errorMessage = 'Please select at least one image';
+      }
       return;
     }
 
@@ -337,77 +377,90 @@ export class GalleryAdminComponent extends LoadingComponentBase implements OnIni
     const formValue = this.uploadForm.value;
     const tags: MediaTag[] = formValue.tags || [];
     const relatedProductIds: string[] = formValue.relatedProductIds || [];
+    const sharedAltText = formValue.altText || '';
+    const sharedCaption = formValue.caption || '';
+
+    if (tags.length === 0) {
+      this.errorMessage = 'Please select at least one tag';
+      return;
+    }
 
     this.isUploading = true;
     this.isSaving = true;
     this.errorMessage = '';
     this.warningMessage = '';
     this.uploadProgress = 0;
+    this.uploadedCount = 0;
+    this.totalToUpload = this.selectedFiles.length;
 
     try {
-      // Validate image dimensions (recommended: 1600x1200 or larger)
-      const validation = await this.mediaService.validateImageDimensions(this.selectedFile, 1600, 1200);
-      
-      // Show warning if image is smaller than recommended, but allow upload
-      if (!validation.valid && validation.width && validation.height) {
-        this.warningMessage = `⚠️ Image size (${validation.width}x${validation.height}px) is smaller than recommended (1600x1200px). The image may appear pixelated on larger screens. Consider using a higher resolution image for best quality.`;
-        // Continue with upload despite warning
-      } else if (!validation.valid) {
-        // If we can't even read dimensions, that's a real error
-        this.errorMessage = validation.error || 'Could not read image file';
-        this.isUploading = false;
-        this.isSaving = false;
-        return;
-      }
-
-      // Upload to Firebase Storage and create Firestore document
       const currentUser = this.authService.getCurrentUser();
       if (!currentUser) {
         throw new Error('User not authenticated');
       }
 
-      // Create media input (without URL - will be set after upload)
-      const mediaInput: Omit<MediaCreateInput, 'url'> = {
-        filename: this.selectedFile.name,
-        storagePath: `gallery/${Date.now()}_${this.selectedFile.name}`,
-        width: validation.width || 0,
-        height: validation.height || 0,
-        size: this.selectedFile.size,
-        mimeType: this.selectedFile.type,
-        uploadedBy: currentUser.uid,
-        tags: tags as string[],
-        altText: formValue.altText || '',
-        caption: formValue.caption || '',
-        relatedEntityIds: relatedProductIds.map(id => `products/${id}`),
-        relatedEntityType: 'gallery'
-      };
-
-      // Upload file to Firebase Storage and create media document
-      this.isUploading = true;
-      const mediaId = await this.mediaService.uploadMediaFile(
-        this.selectedFile,
-        mediaInput,
-        (progress) => {
-          this.uploadProgress = progress;
+      // Upload each file
+      for (let i = 0; i < this.selectedFiles.length; i++) {
+        const file = this.selectedFiles[i];
+        
+        // Validate image dimensions
+        const validation = await this.mediaService.validateImageDimensions(file, 1600, 1200);
+        
+        if (!validation.valid && validation.width && validation.height) {
+          console.warn(`⚠️ Image "${file.name}" (${validation.width}x${validation.height}px) is smaller than recommended`);
         }
-      );
 
-      console.log('✅ Media uploaded successfully with ID:', mediaId);
-      this.successMessage = 'Media uploaded successfully';
+        // Create media input with shared metadata
+        const altText = this.selectedFiles.length === 1 
+          ? sharedAltText 
+          : `${sharedAltText} (${i + 1}/${this.selectedFiles.length})`;
+
+        const mediaInput: Omit<MediaCreateInput, 'url'> = {
+          filename: file.name,
+          storagePath: `gallery/${Date.now()}_${file.name}`,
+          width: validation.width || 0,
+          height: validation.height || 0,
+          size: file.size,
+          mimeType: file.type,
+          uploadedBy: currentUser.uid,
+          tags: tags as string[],
+          altText: altText,
+          caption: sharedCaption,
+          relatedEntityIds: relatedProductIds.map(id => `products/${id}`),
+          relatedEntityType: 'gallery'
+        };
+
+        // Upload file
+        await this.mediaService.uploadMediaFile(
+          file,
+          mediaInput,
+          (progress) => {
+            // Calculate overall progress
+            const fileProgress = progress / this.totalToUpload;
+            const completedProgress = (this.uploadedCount / this.totalToUpload) * 100;
+            this.uploadProgress = Math.round(completedProgress + fileProgress);
+          }
+        );
+
+        this.uploadedCount++;
+        console.log(`✅ Uploaded ${this.uploadedCount}/${this.totalToUpload}: ${file.name}`);
+      }
+
       this.uploadProgress = 100;
+      this.successMessage = `Successfully uploaded ${this.uploadedCount} image(s)`;
       this.closeUploadModal();
 
       setTimeout(() => {
         this.successMessage = '';
-      }, 3000);
+      }, 5000);
     } catch (error) {
       console.error('Error uploading media:', error);
       this.errorMessage = error instanceof Error ? error.message : 'Error uploading media';
     } finally {
       this.isUploading = false;
       this.isSaving = false;
-      this.selectedFile = null;
-      this.revokePreviewUrl();
+      this.selectedFiles = [];
+      this.revokeAllPreviewUrls();
     }
   }
 

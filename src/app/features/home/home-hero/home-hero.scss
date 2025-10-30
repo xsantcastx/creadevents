@@ -48,9 +48,10 @@
 }
 
 .hero__copy h1 {
-  font-family: 'Playfair Display', 'Times New Roman', serif;
+  font-family: var(--font-display);
   font-size: clamp(2.5rem, 4vw, 3.5rem);
-  line-height: 1.1;
+  line-height: 1.14;
+  letter-spacing: -0.02em;
   margin-bottom: 1.5rem;
 }
 
@@ -222,15 +223,13 @@
 }
 
 .carousel-title {
-  font-family: 'Playfair Display', 'Times New Roman', serif;
+  font-family: var(--font-display);
   font-size: 1.75rem;
   font-weight: 700;
-  background: linear-gradient(135deg, #f7931a 0%, #ffb81c 50%, #d4af37 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  letter-spacing: -0.02em;
+  color: var(--ts-ink);
   margin-bottom: 0.5rem;
-  text-shadow: 0 2px 10px rgba(247, 147, 26, 0.3);
+  text-shadow: none;
 }
 
 .carousel-description {
@@ -444,17 +443,17 @@
 
 /* Bitcoin-themed effects */
 .bitcoin-gradient-text {
-  background: linear-gradient(135deg, #f7931a 0%, #ffb81c 50%, #d4af37 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  background-size: 200% auto;
-  animation: shine 3s linear infinite;
+  color: var(--ts-accent-soft);
+  background: none;
+  -webkit-background-clip: initial;
+  -webkit-text-fill-color: currentColor;
+  background-clip: initial;
+  text-shadow: none;
 }
 
 .bitcoin-glow {
-  filter: drop-shadow(0 0 10px rgba(247, 147, 26, 0.5));
-  animation: glow-pulse 2s ease-in-out infinite;
+  text-shadow: 0 16px 32px color-mix(in srgb, var(--ts-accent) 18%, transparent);
+  filter: drop-shadow(0 12px 28px color-mix(in srgb, var(--ts-accent) 14%, transparent));
 }
 
 .text-bitcoin-gold {
@@ -507,21 +506,6 @@
   }
   50% {
     opacity: 1;
-  }
-}
-
-@keyframes shine {
-  to {
-    background-position: 200% center;
-  }
-}
-
-@keyframes glow-pulse {
-  0%, 100% {
-    filter: drop-shadow(0 0 10px rgba(247, 147, 26, 0.3));
-  }
-  50% {
-    filter: drop-shadow(0 0 20px rgba(247, 147, 26, 0.6));
   }
 }
 

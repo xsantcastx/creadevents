@@ -103,4 +103,27 @@ export class AdminDashboardComponent extends LoadingComponentBase implements OnI
 
     return this.currencyFormatterCache.get(currencyCode)!.format(amount);
   }
+
+  /**
+   * Navigate to the detail page for an activity item
+   */
+  navigateToActivity(activity: AdminActivityItem) {
+    if (!activity.entityId) {
+      console.warn('No entity ID found for activity:', activity);
+      return;
+    }
+
+    const routes: Record<AdminActivityItem['type'], string> = {
+      order: `/admin/orders`,
+      product: `/admin/products`,
+      gallery: `/admin/gallery`,
+      user: `/admin/users`
+    };
+
+    const route = routes[activity.type];
+    if (route) {
+      // Navigate to the admin section - users can filter/search for the specific item
+      this.router.navigate([route]);
+    }
+  }
 }

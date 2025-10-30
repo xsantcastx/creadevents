@@ -1,4 +1,4 @@
-﻿<div class="section-stack min-h-screen bg-ts-bg">
+<div class="section-stack min-h-screen bg-ts-bg">
   <div class="bg-gradient-to-r from-ts-bg via-gray-900 to-ts-bg border-b border-white/10">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
@@ -67,7 +67,9 @@
 
     @if (isLoading) {
       <div class="flex flex-col items-center justify-center py-16 gap-4 bg-gray-900/40 border border-white/10 rounded-2xl">
-        <div class="inline-block animate-spin rounded-full h-12 w-12 border-4 border-bitcoin-orange border-t-transparent"></div>
+        <div class="app-spinner" style="--spinner-size: 48px;" aria-hidden="true">
+          <img src="/Logo Clear.png" alt="" width="64" height="64">
+        </div>
         <p class="text-white/70">{{ 'common.loading' | translate }}</p>
       </div>
     } @else if (filteredModels.length === 0) {
@@ -222,3 +224,4 @@
     </div>
   }
 </div>
+

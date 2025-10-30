@@ -32,8 +32,8 @@ export class HomePageComponent extends LoadingComponentBase implements OnInit {
   ngOnInit() {
     // Set page meta tags from settings
     this.metaService.setPageMeta({
-      title: 'HOME.TITLE',
-      description: 'HOME.DESCRIPTION'
+      title: 'page_titles.home',
+      description: 'home.hero.subtitle'
     });
 
     // Only load from service if in browser (not during SSR)

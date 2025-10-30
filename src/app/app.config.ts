@@ -1,5 +1,5 @@
 import { ApplicationConfig, provideBrowserGlobalErrorListeners, provideZonelessChangeDetection, importProvidersFrom } from '@angular/core';
-import { provideRouter, TitleStrategy } from '@angular/router';
+import { provideRouter, TitleStrategy, withPreloading, PreloadAllModules } from '@angular/router';
 import { provideHttpClient, withFetch, HttpClient } from '@angular/common/http';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { provideFirebaseApp, initializeApp } from '@angular/fire/app';
@@ -9,6 +9,7 @@ import { provideStorage, getStorage } from '@angular/fire/storage';
 import { provideFunctions, getFunctions, connectFunctionsEmulator } from '@angular/fire/functions';
 import { provideAnalytics, getAnalytics, ScreenTrackingService, UserTrackingService } from '@angular/fire/analytics';
 import { isSupported as analyticsIsSupported } from 'firebase/analytics';
+import { provideAppCheck, initializeAppCheck, ReCaptchaV3Provider, ReCaptchaEnterpriseProvider } from '@angular/fire/app-check';
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { CustomTranslateLoader } from './core/services/translate-loader';
 import { PageTitleStrategy } from './core/services/page-title.strategy';
@@ -25,7 +26,7 @@ export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
     provideZonelessChangeDetection(),
-    provideRouter(routes),
+    provideRouter(routes, withPreloading(PreloadAllModules)),
     provideAnimationsAsync(),
     { provide: TitleStrategy, useClass: PageTitleStrategy },
     provideClientHydration(withEventReplay()),
@@ -52,6 +53,29 @@ export const appConfig: ApplicationConfig = {
       const storage = getStorage();
       return storage;
     }),
+    // App Check for security (browser only)
+    ...(typeof window !== 'undefined' ? [
+      provideAppCheck(() => {
+        // Enable debug token for local development
+        if (!environment.production) {
+          (window as any).FIREBASE_APPCHECK_DEBUG_TOKEN = true;
+        }
+        
+        // Use standard reCAPTCHA v3 for both dev and production (free tier)
+        const provider = new ReCaptchaV3Provider(
+          'siteKey' in environment.appCheck 
+            ? environment.appCheck.siteKey as string 
+            : environment.recaptcha.siteKey
+        );
+          
+        const appCheck = initializeAppCheck(undefined as any, {
+          provider,
+          isTokenAutoRefreshEnabled: true
+        });
+        
+        return appCheck;
+      })
+    ] : []),
     provideFunctions(() => {
       const functions = getFunctions();
       // Optionally connect to emulator in development

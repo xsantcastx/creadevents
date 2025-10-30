@@ -7,9 +7,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   
   <!-- Favicons -->
-  <link rel="icon" type="image/jpeg" href="/assets/Logo.jpg">
-  <link rel="apple-touch-icon" href="/assets/Logo.jpg">
-  <link rel="shortcut icon" type="image/jpeg" href="/assets/Logo.jpg">
+  <link rel="icon" type="image/png" href="/Logo Clear.png">
+  <link rel="apple-touch-icon" href="/Logo Clear.png">
+  <link rel="shortcut icon" type="image/png" href="/Logo Clear.png">
   <link rel="manifest" href="/manifest.json">
   
   <!-- SEO Meta Tags -->
@@ -43,8 +43,46 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   
-  <!-- Google Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Google Fonts - Cib -->
+  <link href="https://fonts.googleapis.com/css2?family=Cib:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    #app-initial-loader {
+      position: fixed;
+      inset: 0;
+      background: #0b0d10;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      transition: opacity 0.35s ease, visibility 0.35s ease;
+    }
+
+    #app-initial-loader.hidden {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    #app-initial-loader img {
+      width: clamp(72px, 12vw, 128px);
+      height: clamp(72px, 12vw, 128px);
+      object-fit: contain;
+      filter: drop-shadow(0 12px 32px rgba(247, 147, 26, 0.35));
+      animation: subtlePulse 2.4s ease-in-out infinite;
+    }
+
+    @keyframes subtlePulse {
+      0%, 100% {
+        transform: scale(1);
+        opacity: 0.9;
+      }
+      50% {
+        transform: scale(1.04);
+        opacity: 1;
+      }
+    }
+  </style>
   
   <!-- JSON-LD Structured Data - Organization -->
   <script type="application/ld+json">
@@ -53,7 +91,7 @@
     "@type": "Organization",
     "name": "TheLuxMining",
     "url": "https://theluxmining.com",
-    "logo": "https://theluxmining.com/assets/Logo.jpg",
+    "logo": "https://theluxmining.com/Logo Clear.png",
     "description": "Premium Bitcoin mining hardware and ASIC miners for enterprise and individual miners",
     "email": "support@theluxmining.com",
     "sameAs": [
@@ -91,6 +129,9 @@
 <body class="body-dark">
   <!-- Skip link for accessibility -->
   <a href="#main-content" class="skip-link">Saltar al contenido principal</a>
+  <div id="app-initial-loader">
+    <img src="/Logo Clear.png" alt="TheLuxMining" width="120" height="120">
+  </div>
   <app-root></app-root>
 </body>
 </html>

@@ -222,6 +222,16 @@ export class SettingsService {
       return currentUser;
     }
 
+    const maybeAuthStateReady = (this.auth as Auth & { authStateReady?: () => Promise<void> }).authStateReady;
+    if (maybeAuthStateReady) {
+      try {
+        await maybeAuthStateReady.call(this.auth);
+        return this.auth.currentUser;
+      } catch (error) {
+        console.warn('[SettingsService] authStateReady() failed, falling back to listener', error);
+      }
+    }
+
     if (typeof window === 'undefined') {
       return null;
     }

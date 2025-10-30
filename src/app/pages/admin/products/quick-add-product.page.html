@@ -633,7 +633,9 @@
           @if (isUploading) {
             <div class="p-4 bg-bitcoin-dark/40 border border-bitcoin-gray/20 rounded-xl">
               <div class="flex items-center gap-3">
-                <div class="animate-spin rounded-full h-5 w-5 border-b-2 border-bitcoin-orange"></div>
+                <div class="app-spinner" style="--spinner-size: 24px; --spinner-logo-scale: 90%;" aria-hidden="true">
+                  <img src="/Logo Clear.png" alt="" width="28" height="28">
+                </div>
                 <div class="flex-1">
                   <p class="text-sm text-bitcoin-gray">Uploading images...</p>
                   <div class="mt-2 w-full bg-bitcoin-dark/60 rounded-full h-2">
@@ -649,7 +651,9 @@
             [disabled]="isSaving || productForm.invalid"
             class="w-full px-6 py-3 bg-bitcoin-orange/30 hover:bg-bitcoin-orange/40 disabled:bg-bitcoin-dark/40 text-bitcoin-orange disabled:text-bitcoin-gray border border-bitcoin-orange/30 disabled:border-bitcoin-gray/20 rounded-xl transition-all duration-300 font-semibold flex items-center justify-center gap-2">
             @if (isSaving) {
-              <div class="animate-spin rounded-full h-5 w-5 border-b-2 border-current"></div>
+              <div class="app-spinner" style="--spinner-size: 22px; --spinner-logo-scale: 92%;" aria-hidden="true">
+                <img src="/Logo Clear.png" alt="" width="26" height="26">
+              </div>
               <span>{{ isEditMode ? 'Updating...' : 'Saving...' }}</span>
             } @else {
               <span>{{ isEditMode ? 'Update Product' : 'Save Product' }}</span>
@@ -671,4 +675,5 @@
 
   </div>
 </div>
+
 

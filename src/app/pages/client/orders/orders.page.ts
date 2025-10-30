@@ -1,7 +1,8 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { PageHeaderComponent, Breadcrumb } from '../../../shared/components/page-header/page-header.component';
 import { AuthService } from '../../../services/auth.service';
 import { InvoiceService } from '../../../services/invoice.service';
 import { Firestore, collection, query, where, orderBy, getDocs, Timestamp, doc, updateDoc } from '@angular/fire/firestore';
@@ -34,15 +35,21 @@ export interface OrderItem {
 @Component({
   selector: 'app-orders-page',
   standalone: true,
-  imports: [CommonModule, RouterLink, TranslateModule],
+  imports: [CommonModule, RouterLink, TranslateModule, PageHeaderComponent],
   templateUrl: './orders.page.html',
   styleUrl: './orders.page.scss'
 })
 export class OrdersPageComponent implements OnInit {
+  private translate = inject(TranslateService);
   private authService = inject(AuthService);
   private router = inject(Router);
   private firestore = inject(Firestore);
   private invoiceService = inject(InvoiceService);
+  
+  breadcrumbs: Breadcrumb[] = [
+    { label: 'nav.home', url: '/', icon: 'home' },
+    { label: 'nav.orders', icon: 'orders' }
+  ];
 
   orders = signal<Order[]>([]);
   isLoading = signal(true);

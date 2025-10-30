@@ -62,9 +62,9 @@ export class CartPage implements OnInit {
 
   // Breadcrumbs for navigation
   breadcrumbs: Breadcrumb[] = [
-    { label: 'NAV.HOME', url: '/', icon: 'home' },
-    { label: 'NAV.PRODUCTS', url: '/productos', icon: 'products' },
-    { label: 'CART.TITLE', icon: 'cart' }
+    { label: 'nav.home', url: '/', icon: 'home' },
+    { label: 'nav.products', url: '/productos', icon: 'products' },
+    { label: 'cart.title', icon: 'cart' }
   ];
 
   // Form for address and shipping selection
