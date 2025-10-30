@@ -1,6 +1,8 @@
-import { Component, OnInit, signal, ChangeDetectorRef, inject } from '@angular/core';
+import { Component, OnInit, signal, ChangeDetectorRef, inject, DestroyRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
+import { StatsService } from '../../../services/stats.service';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-home-stats',
@@ -11,19 +13,47 @@ import { TranslateModule } from '@ngx-translate/core';
 })
 export class HomeStatsComponent implements OnInit {
   private cdr = inject(ChangeDetectorRef);
+  private statsService = inject(StatsService);
+  private destroyRef = inject(DestroyRef);
   
   minersDeployed = signal(0);
   customerSatisfaction = signal(0);
   uptimeGuarantee = signal(0);
   yearsExperience = signal(0);
 
+  constructor() {
+    // Load real stats from database in constructor (injection context)
+    this.statsService.getStats()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(stats => {
+        // Store stats for animation in ngOnInit
+        this.statsData = stats;
+      });
+  }
+
+  private statsData: any = null;
+
   ngOnInit() {
-    // Delay animation start to avoid ExpressionChangedAfterItHasBeenCheckedError
+    // Wait for stats to load, then animate
+    if (this.statsData) {
+      this.animateStats();
+    } else {
+      // If stats not loaded yet, wait a bit and check again
+      const checkInterval = setInterval(() => {
+        if (this.statsData) {
+          clearInterval(checkInterval);
+          this.animateStats();
+        }
+      }, 100);
+    }
+  }
+
+  private animateStats() {
     setTimeout(() => {
-      this.animateCounter(this.minersDeployed, 5000, 2000);
-      this.animateCounter(this.customerSatisfaction, 98, 2000);
-      this.animateCounter(this.uptimeGuarantee, 99.9, 2000, true);
-      this.animateCounter(this.yearsExperience, 5, 1500);
+      this.animateCounter(this.minersDeployed, this.statsData.totalSales, 2000);
+      this.animateCounter(this.customerSatisfaction, this.statsData.customerSatisfaction, 2000);
+      this.animateCounter(this.uptimeGuarantee, this.statsData.uptimeGuarantee, 2000, true);
+      this.animateCounter(this.yearsExperience, this.statsData.yearsExperience, 1500, this.statsData.yearsExperience % 1 !== 0);
     }, 0);
   }
 

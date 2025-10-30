@@ -1,5 +1,5 @@
 <!-- Productos Overview Page -->
-<section class="bg-gradient-to-b from-[#0a0b0d] to-[#13151a] min-h-screen">
+<section class="section-stack bg-gradient-to-b from-[#0a0b0d] to-[#13151a] min-h-screen">
   <!-- Page Header Component -->
   <app-page-header
     title="{{ 'products.hero.title' | translate }}"
@@ -9,7 +9,7 @@
   </app-page-header>
 
   <!-- Filters Section -->
-  <div class="max-w-7xl mx-auto px-6 pb-12">
+  <div class="page-container pb-12">
     <div class="bg-bitcoin-dark/40 backdrop-blur-md border border-bitcoin-orange/20 rounded-2xl shadow-bitcoin-lg p-6 mb-12">
       <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 items-end">
         <!-- Category Filter -->
@@ -110,7 +110,7 @@
 
   <!-- Loading State -->
   @if (isLoading) {
-    <div class="max-w-7xl mx-auto px-6 pb-20 text-center">
+    <div class="page-container pb-20 text-center">
       <div class="inline-flex items-center gap-3 px-6 py-4 bg-bitcoin-dark/60 backdrop-blur-md border border-bitcoin-orange/20 rounded-full shadow-bitcoin">
         <svg class="animate-spin h-5 w-5 text-bitcoin-orange" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
           <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
@@ -123,7 +123,7 @@
 
   <!-- Empty State -->
   @if (!isLoading && filteredProducts.length === 0) {
-    <div class="max-w-7xl mx-auto px-6 pb-20 text-center">
+    <div class="page-container pb-20 text-center">
       <div class="bg-bitcoin-dark/40 backdrop-blur-md border border-bitcoin-orange/20 rounded-2xl shadow-bitcoin-lg p-12">
         <svg class="w-16 h-16 text-bitcoin-gray/50 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"/>
@@ -142,7 +142,7 @@
 
   <!-- Products by Thickness -->
   @if (!isLoading && filteredProducts.length > 0) {
-    <div class="max-w-7xl mx-auto px-6 pb-20">
+    <div class="page-container pb-20">
       
       <!-- All Filtered Products -->
       <section class="mb-20">
@@ -186,16 +186,29 @@
                 </div>
                 
                 @if (producto.description) {
-                  <p class="text-sm text-bitcoin-gray/70 mb-4 line-clamp-2">
+                  <p class="text-sm text-neutral-400 mb-4 line-clamp-2">
                     {{producto.description}}
                   </p>
+                }
+                
+                <!-- Stock Badge -->
+                @if (producto.stock !== undefined) {
+                  <div class="mb-4">
+                    <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium"
+                          [class]="producto.stock > 10 ? 'bg-green-100 text-green-800' : producto.stock > 0 ? 'bg-yellow-100 text-yellow-800' : 'bg-red-100 text-red-800'">
+                      <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                        <circle cx="10" cy="10" r="8"/>
+                      </svg>
+                      {{ producto.stock > 0 ? producto.stock + ' en stock' : 'Sin stock' }}
+                    </span>
+                  </div>
                 }
                 
                 @if (producto.price) {
                   <p class="text-lg font-semibold text-bitcoin-gold mb-4">{{producto.price | currency:'USD':'symbol':'1.2-2'}}</p>
                 }
                 <div class="flex items-center justify-between">
-                  <a [routerLink]="['/products', producto.grosor, producto.slug]" 
+                  <a [routerLink]="['/products', producto.slug]" 
                      class="text-bitcoin-orange hover:text-bitcoin-gold font-medium transition-colors">
                     View Details →
                   </a>

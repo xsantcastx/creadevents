@@ -1,8 +1,35 @@
 {
+  "page_titles": {
+    "home": "Premium Bitcoin Mining Hardware",
+    "products": "Mining Products",
+    "product_details": "Product Details",
+    "gallery": "Gallery",
+    "contact": "Contact",
+    "cart": "Shopping Cart",
+    "checkout_review": "Checkout Review",
+    "payment": "Payment",
+    "order_confirmation": "Order Confirmation",
+    "login": "Login",
+    "register": "Register",
+    "profile": "My Profile",
+    "orders": "My Orders",
+    "admin_dashboard": "Admin Dashboard",
+    "product_management": "Product Management",
+    "quick_add_product": "Quick Add Product",
+    "gallery_management": "Gallery Management",
+    "order_management": "Order Management",
+    "user_management": "User Management",
+    "benefit_templates": "Benefit Templates",
+    "analytics": "Analytics Dashboard",
+    "settings": "Settings",
+    "email_templates": "Email Templates",
+    "size_groups": "Size Groups Management",
+    "not_found": "Page Not Found"
+  },
   "home": {
     "hero": {
       "title": "Mine Your Future",
-      "subtitle": "\u00f0\u0178\u2019\u00a0 Where crypto tech becomes lifestyle.\nExplore mining gear, secure storage, and gadgets that show your passion for the decentralized future.\n\u00f0\u0178\u201d\u00a5 Innovation, security, and design \u00e2\u20ac\u201d without limits.",
+      "subtitle": " Where crypto tech becomes lifestyle.\nExplore mining gear, secure storage, and gadgets that show your passion for the decentralized future. Innovation, security, and design  without limits.",
       "description": "Join the revolution. Maximize your profits with cutting-edge ASIC miners engineered for peak performance and unmatched efficiency.",
       "cta_primary": "Explore Miners",
       "cta_secondary": "Request Quote"
@@ -62,12 +89,17 @@
     "technical": "Technical Specs",
     "contact": "Contact",
     "login": "Login",
-    "cart": "Cart"
+    "cart": "Cart",
+    "follow_us": "Follow Us",
+    "language": "Language",
+    "account": "Account",
+    "get_started": "Get Started"
   },
   "footer": {
     "rights": "All rights reserved",
     "privacy": "Privacy Policy",
     "terms": "Terms and Conditions",
+    "returns": "Return Policy",
     "description": "Your premier destination for crypto mining hardware, solo miners, cold storage solutions, Bitcoin keychains, and exclusive cryptocurrency gadgets.",
     "quick_links": "Quick Links",
     "products_title": "Products",

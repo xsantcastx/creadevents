@@ -10,15 +10,48 @@ dotenv.config();
 admin.initializeApp();
 const db = admin.firestore();
 
-// Initialize Stripe
-// Set STRIPE_SECRET_KEY in functions/.env file
-const stripeSecretKey = process.env.STRIPE_SECRET_KEY || functions.config().stripe?.secret_key;
-if (!stripeSecretKey || stripeSecretKey.startsWith("sk_test_51QJ7ZtP9wy1example")) {
-  console.warn("⚠️  Stripe secret key not configured! Add STRIPE_SECRET_KEY to functions/.env file");
+/**
+ * Get Stripe configuration from Firestore settings
+ * Falls back to environment variables if not found
+ */
+async function getStripeConfig(): Promise<{ secretKey: string; webhookSecret: string | null }> {
+  try {
+    const settingsDoc = await db.collection("settings").doc("app").get();
+    const settings = settingsDoc.data();
+
+    if (settings?.stripeSecretKey) {
+      console.log("✓ Using Stripe secret key from Firestore settings");
+      return {
+        secretKey: settings.stripeSecretKey,
+        webhookSecret: process.env.STRIPE_WEBHOOK_SECRET || null,
+      };
+    }
+  } catch (error) {
+    console.error("Error fetching Stripe config from Firestore:", error);
+  }
+
+  // Fallback to environment variables
+  const envKey = process.env.STRIPE_SECRET_KEY || functions.config().stripe?.secret_key;
+  if (!envKey || envKey.startsWith("sk_test_51QJ7ZtP9wy1example")) {
+    console.warn("⚠️  Stripe secret key not configured in Firestore or .env file!");
+  }
+  
+  console.log("✓ Using Stripe secret key from environment variables");
+  return {
+    secretKey: envKey || "sk_test_placeholder",
+    webhookSecret: process.env.STRIPE_WEBHOOK_SECRET || null,
+  };
 }
-const stripe = new Stripe(stripeSecretKey || "sk_test_placeholder", {
-  apiVersion: "2023-10-16",
-});
+
+/**
+ * Get initialized Stripe instance with config from Firestore
+ */
+async function getStripe(): Promise<Stripe> {
+  const config = await getStripeConfig();
+  return new Stripe(config.secretKey, {
+    apiVersion: "2023-10-16",
+  });
+}
 
 // Shipping rates by country (in USD)
 const SHIPPING_RATES = {
@@ -395,6 +428,9 @@ export const createPaymentIntent = functions.https.onCall(async (data: any, cont
       };
     }
 
+    // Get Stripe instance with config from Firestore
+    const stripe = await getStripe();
+
     // Create PaymentIntent with Stripe
     const paymentIntent = await stripe.paymentIntents.create({
       amount,
@@ -491,6 +527,9 @@ export const handleStripeWebhook = functions.https.onRequest(async (req, res) =>
     res.status(500).send("Webhook secret not configured");
     return;
   }
+
+  // Get Stripe instance with config from Firestore
+  const stripe = await getStripe();
 
   let event: Stripe.Event;
 

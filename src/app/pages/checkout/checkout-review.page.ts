@@ -10,6 +10,7 @@ import { CartService } from '../../services/cart.service';
 import { AddressService } from '../../services/address.service';
 import { ShippingService, ShippingMethod } from '../../services/shipping.service';
 import { SettingsService, AppSettings } from '../../services/settings.service';
+import { AnalyticsService } from '../../services/analytics.service';
 import { Address } from '../../models/cart';
 
 interface CartItemDisplay {
@@ -38,6 +39,7 @@ export class CheckoutReviewPage implements OnInit {
   private shippingService = inject(ShippingService);
   private settingsService = inject(SettingsService);
   private translate = inject(TranslateService);
+  private analyticsService = inject(AnalyticsService);
 
   // State
   loading = signal(true);
@@ -145,6 +147,8 @@ export class CheckoutReviewPage implements OnInit {
         }, 2000);
         return;
       }
+
+      this.analyticsService.trackBeginCheckout(cart);
 
       // Load user addresses
       this.addressService.getUserAddresses(user.uid).subscribe({

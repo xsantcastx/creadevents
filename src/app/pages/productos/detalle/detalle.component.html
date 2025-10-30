@@ -1,4 +1,4 @@
-<section *ngIf="producto" class="bg-bitcoin-dark min-h-screen">
+<section *ngIf="producto" class="section-stack bg-bitcoin-dark min-h-screen">
   <!-- Breadcrumb Navigation -->
   <div class="max-w-7xl mx-auto px-6 pt-8">
     <nav class="mb-6">
@@ -38,23 +38,32 @@
         </div>
         
         <!-- Gallery thumbnails -->
-        <div class="grid grid-cols-4 gap-2">
-          @for (galleryImage of galleryImages; track galleryImage.id) {
-            <div class="aspect-square rounded-lg bg-black/40 border border-bitcoin-orange/20 overflow-hidden cursor-pointer hover:ring-2 hover:ring-bitcoin-orange transition-all"
-                 (click)="openLightbox(galleryImage.url, producto.name)">
-              <img [src]="galleryImage.thumbnailUrl || galleryImage.url" 
-                   [alt]="galleryImage.altText || producto.name"
-                   class="w-full h-full object-cover"
-                   loading="lazy"/>
-            </div>
-          }
-          @if (galleryImages.length === 0) {
+        @if (galleryImages.length > 0) {
+          <div class="grid gap-2"
+               [ngClass]="{
+                 'grid-cols-1': galleryImages.length === 1,
+                 'grid-cols-2': galleryImages.length === 2,
+                 'grid-cols-3': galleryImages.length === 3,
+                 'grid-cols-4': galleryImages.length >= 4
+               }">
+            @for (galleryImage of galleryImages; track galleryImage.id) {
+              <div class="aspect-square rounded-lg bg-black/40 border border-bitcoin-orange/20 overflow-hidden cursor-pointer hover:ring-2 hover:ring-bitcoin-orange transition-all"
+                   (click)="openLightbox(galleryImage.url, producto.name)">
+                <img [src]="galleryImage.thumbnailUrl || galleryImage.url" 
+                     [alt]="galleryImage.altText || producto.name"
+                     class="w-full h-full object-cover"
+                     loading="lazy"/>
+              </div>
+            }
+          </div>
+        } @else {
+          <div class="grid grid-cols-4 gap-2">
             <div class="aspect-square rounded-lg bg-black/20 border border-bitcoin-gray/20 opacity-40"></div>
             <div class="aspect-square rounded-lg bg-black/20 border border-bitcoin-gray/20 opacity-40"></div>
             <div class="aspect-square rounded-lg bg-black/20 border border-bitcoin-gray/20 opacity-40"></div>
             <div class="aspect-square rounded-lg bg-black/20 border border-bitcoin-gray/20 opacity-40"></div>
-          }
-        </div>
+          </div>
+        }
       </div>
       
       <!-- Product Information -->
@@ -112,7 +121,7 @@
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
             </svg>
-            <span>{{ 'products.addToCart' | translate }}</span>
+            <span>{{ 'products.add_to_cart' | translate }}</span>
           </button>
 
           <!-- Request Consultation -->
@@ -475,7 +484,7 @@
               @if (relacionado.price) {
                 <p class="text-lg font-semibold text-bitcoin-gold mb-4">{{relacionado.price | currency:'USD':'symbol':'1.2-2'}}</p>
               }
-              <a [routerLink]="['/products', relacionado.grosor, relacionado.slug]" 
+              <a [routerLink]="['/products', relacionado.slug]" 
                  class="text-bitcoin-orange hover:text-bitcoin-gold font-medium transition-colors">
                 View Details →
               </a>

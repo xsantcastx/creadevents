@@ -6,7 +6,7 @@ export const routes: Routes = [
   {
     path: '',
     loadComponent: () => import('./pages/home/home.page').then(m => m.HomePageComponent),
-    title: 'TheLuxMining | Premium Bitcoin Mining Hardware'
+    title: 'TheLuxMining | page_titles.home'
   },
   {
     path: 'home',
@@ -16,146 +16,146 @@ export const routes: Routes = [
   {
     path: 'productos',
     loadComponent: () => import('./pages/productos/productos.page').then(m => m.ProductosPageComponent),
-    title: 'TheLuxMining | Mining Products'
+    title: 'TheLuxMining | page_titles.products'
   },
   {
-    path: 'products/:category',
-    loadComponent: () => import('./pages/productos/grosor/grosor.component').then(m => m.GrosorComponent),
-    title: 'TheLuxMining | Mining Hardware by Category'
-  },
-  {
-    path: 'products/:category/:slug',
+    path: 'products/:slug',
     loadComponent: () => import('./pages/productos/detalle/detalle.component').then(m => m.DetalleComponent),
-    title: 'TheLuxMining | Product Details'
+    title: 'TheLuxMining | page_titles.product_details'
   },
   {
     path: 'galeria',
     loadComponent: () => import('./pages/galeria/galeria.page').then(m => m.GaleriaPageComponent),
-    title: 'TheLuxMining | Gallery'
+    title: 'TheLuxMining | page_titles.gallery'
   },
   {
     path: 'contacto',
     loadComponent: () => import('./pages/contacto/contacto.page').then(m => m.ContactoPageComponent),
-    title: 'TheLuxMining | Contact'
+    title: 'TheLuxMining | page_titles.contact'
   },
   {
     path: 'cart',
     loadComponent: () => import('./pages/cart/cart.page').then(m => m.CartPage),
-    title: 'TheLuxMining | Shopping Cart'
+    title: 'TheLuxMining | page_titles.cart'
   },
   // Checkout Routes
   {
     path: 'checkout/review',
     loadComponent: () => import('./pages/checkout/checkout-review.page').then(m => m.CheckoutReviewPage),
     canActivate: [authGuard],
-    title: 'TheLuxMining | Checkout Review'
+    title: 'TheLuxMining | page_titles.checkout_review'
   },
   {
     path: 'checkout/payment',
     loadComponent: () => import('./pages/checkout/payment.page').then(m => m.PaymentPage),
     canActivate: [authGuard],
-    title: 'TheLuxMining | Payment'
+    title: 'TheLuxMining | page_titles.payment'
   },
   {
     path: 'checkout/confirmation',
     loadComponent: () => import('./pages/checkout/confirmation.page').then(m => m.ConfirmationPage),
     canActivate: [authGuard],
-    title: 'TheLuxMining | Order Confirmation'
+    title: 'TheLuxMining | page_titles.order_confirmation'
   },
   // Client Area Routes
   {
     path: 'client/login',
     loadComponent: () => import('./pages/client/login/login.page').then(m => m.LoginPageComponent),
-    title: 'TheLuxMining | Login'
+    title: 'TheLuxMining | page_titles.login'
   },
   {
     path: 'client/register',
     loadComponent: () => import('./pages/client/register/register.page').then(m => m.RegisterPageComponent),
-    title: 'TheLuxMining | Register'
+    title: 'TheLuxMining | page_titles.register'
   },
   {
     path: 'client/profile',
     loadComponent: () => import('./pages/client/profile/profile.page').then(m => m.ProfilePageComponent),
     canActivate: [authGuard],
-    title: 'TheLuxMining | My Profile'
+    title: 'TheLuxMining | page_titles.profile'
   },
   {
     path: 'client/orders',
     loadComponent: () => import('./pages/client/orders/orders.page').then(m => m.OrdersPageComponent),
     canActivate: [authGuard],
-    title: 'TheLuxMining | My Orders'
+    title: 'TheLuxMining | page_titles.orders'
   },
   // Admin Panel Routes
   {
     path: 'admin',
     loadComponent: () => import('./pages/admin/dashboard/dashboard.page').then(m => m.AdminDashboardComponent),
     canActivate: [adminGuard],
-    title: 'TheLuxMining | Admin Dashboard'
+    title: 'TheLuxMining | page_titles.admin_dashboard'
   },
   {
     path: 'admin/products',
     loadComponent: () => import('./pages/admin/products/products-admin.page').then(m => m.ProductsAdminComponent),
     canActivate: [adminGuard],
-    title: 'TheLuxMining | Product Management'
+    title: 'TheLuxMining | page_titles.product_management'
   },
   {
     path: 'admin/products/quick-add',
     loadComponent: () => import('./pages/admin/products/quick-add-product.page').then(m => m.QuickAddProductComponent),
     canActivate: [adminGuard],
-    title: 'TheLuxMining | Quick Add Product'
+    title: 'TheLuxMining | page_titles.quick_add_product'
   },
   {
     path: 'admin/gallery',
     loadComponent: () => import('./pages/admin/gallery/gallery-admin.page').then(m => m.GalleryAdminComponent),
     canActivate: [adminGuard],
-    title: 'TheLuxMining | Gallery Management'
+    title: 'TheLuxMining | page_titles.gallery_management'
   },
   {
     path: 'admin/orders',
     loadComponent: () => import('./pages/admin/orders/orders-admin.page').then(m => m.OrdersAdminComponent),
     canActivate: [adminGuard],
-    title: 'TheLuxMining | Order Management'
+    title: 'TheLuxMining | page_titles.order_management'
   },
   {
     path: 'admin/users',
     loadComponent: () => import('./pages/admin/users/users-admin.page').then(m => m.UsersAdminComponent),
     canActivate: [adminGuard],
-    title: 'TheLuxMining | User Management'
+    title: 'TheLuxMining | page_titles.user_management'
   },
   {
     path: 'admin/benefit-templates',
     loadComponent: () => import('./pages/admin/benefit-templates/benefit-templates-admin.page').then(m => m.BenefitTemplatesAdminComponent),
     canActivate: [adminGuard],
-    title: 'TheLuxMining | Benefit Templates'
+    title: 'TheLuxMining | page_titles.benefit_templates'
   },
   {
     path: 'admin/analytics',
     loadComponent: () => import('./pages/admin/analytics/analytics-admin.page').then(m => m.AnalyticsAdminComponent),
     canActivate: [adminGuard],
-    title: 'TheLuxMining | Analytics Dashboard'
+    title: 'TheLuxMining | page_titles.analytics'
   },
   {
     path: 'admin/settings',
     loadComponent: () => import('./pages/admin/settings/settings-admin.page').then(m => m.SettingsAdminComponent),
     canActivate: [adminGuard],
-    title: 'TheLuxMining | Settings'
+    title: 'TheLuxMining | page_titles.settings'
   },
   {
     path: 'admin/email-templates',
     loadComponent: () => import('./pages/admin/email-templates/email-templates-admin.page').then(m => m.EmailTemplatesAdminComponent),
     canActivate: [adminGuard],
-    title: 'TheLuxMining | Email Templates'
+    title: 'TheLuxMining | page_titles.email_templates'
   },
   {
     path: 'admin/size-groups',
     loadComponent: () => import('./pages/admin/size-groups/size-groups-admin.page').then(m => m.SizeGroupsAdminComponent),
     canActivate: [adminGuard],
-    title: 'TheLuxMining | Size Groups Management'
+    title: 'TheLuxMining | page_titles.size_groups'
+  },
+  {
+    path: 'maintenance',
+    loadComponent: () => import('./pages/maintenance/maintenance.page').then(m => m.MaintenancePage),
+    title: 'Site Maintenance - TheLuxMining'
   },
   {
     path: '404',
     loadComponent: () => import('./pages/not-found/not-found.page').then(m => m.NotFoundPageComponent),
-    title: 'TheLuxMining | Page Not Found'
+    title: 'TheLuxMining | page_titles.not_found'
   },
   {
     path: '**',

@@ -1,0 +1,19 @@
+# robots.txt for TheLuxMining
+# Allow all crawlers by default
+
+User-agent: *
+Allow: /
+
+# Disallow admin and private areas
+Disallow: /admin/
+Disallow: /client/
+Disallow: /cart/
+
+# Allow crawling of product pages
+Allow: /productos/
+Allow: /galeria/
+Allow: /contacto/
+Allow: /datos-tecnicos/
+
+# Sitemap location
+Sitemap: https://theluxmining.com/sitemap.xml

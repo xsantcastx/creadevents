@@ -1,0 +1,172 @@
+<section class="section-gap relative overflow-hidden">
+  <div class="luxury-overlay"></div>
+  <div class="page-container relative z-10">
+    <div class="grid xl:grid-cols-2 gap-12 items-start">
+      <div>
+        <p class="text-sm uppercase tracking-wide text-bitcoin-gold mb-3">
+          Community Feedback
+        </p>
+        <h2 class="font-serif text-4xl lg:text-5xl bitcoin-gradient-text mb-6">
+          Hear From Miners Who Trust TheLuxMining
+        </h2>
+        <p class="text-lg text-bitcoin-gray max-w-2xl">
+          We partner with clients around the world to deploy dependable Bitcoin mining operations.
+          Real stories from real miners keep us accountable and help future partners feel confident.
+        </p>
+
+        <div class="mt-8 flex flex-wrap items-center gap-8">
+          <div class="flex items-center gap-3">
+            <div class="flex items-center gap-1 text-bitcoin-gold text-2xl">
+              @for (star of stars; track star) {
+                <svg class="w-6 h-6" [class.opacity-30]="star > math.round(averageRating())" fill="currentColor" viewBox="0 0 20 20">
+                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                </svg>
+              }
+            </div>
+            <div>
+              <div class="text-3xl font-bold text-white">{{ averageRating() | number:'1.1-1' }}</div>
+              <div class="text-sm text-bitcoin-gray">Average rating</div>
+            </div>
+          </div>
+          <div>
+            <div class="text-3xl font-bold text-white">{{ totalReviews() }}</div>
+            <div class="text-sm text-bitcoin-gray">Published reviews</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-bitcoin-dark/50 border border-white/10 rounded-2xl p-6 lg:p-8 shadow-bitcoin space-y-4">
+        @if (submissionMessage()) {
+          <div class="p-4 rounded-lg border border-emerald-500/40 bg-emerald-500/10 text-emerald-300 text-sm">
+            {{ submissionMessage() }}
+          </div>
+        }
+        @if (submissionError()) {
+          <div class="p-4 rounded-lg border border-red-500/40 bg-red-500/10 text-red-300 text-sm">
+            {{ submissionError() }}
+          </div>
+        }
+
+        @if (currentUser()) {
+          <div class="space-y-4">
+            <div>
+              <div class="text-sm text-white/80 mb-2">Rate your experience</div>
+              <div class="flex items-center gap-2">
+                @for (star of stars; track star) {
+                  <button
+                    type="button"
+                    class="w-10 h-10 flex items-center justify-center rounded-full border border-white/10 transition-colors"
+                    [class.bg-bitcoin-gold/20]="star <= ratingInput()"
+                    [class.text-bitcoin-gold]="star <= ratingInput()"
+                    (click)="selectRating(star)"
+                    [disabled]="isSubmitting()"
+                    aria-label="Rate {{ star }} stars">
+                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                    </svg>
+                  </button>
+                }
+              </div>
+            </div>
+
+            <div>
+              <label class="text-sm text-white/80 mb-2 block" for="review-comment">
+                Share a short testimonial
+              </label>
+              <textarea
+                id="review-comment"
+                name="review-comment"
+                rows="4"
+                placeholder="Tell other miners about your deployment, support experience, or ROI."
+                [ngModel]="commentInput()"
+                (ngModelChange)="commentInput.set($event)"
+                [disabled]="isSubmitting()"
+                class="w-full px-4 py-3 bg-gray-900/60 border border-white/10 rounded-xl text-white placeholder-white/40 focus:border-bitcoin-orange focus:ring-1 focus:ring-bitcoin-orange transition-all"></textarea>
+              <div class="text-xs text-white/40 mt-1">
+                Minimum 10 characters. Mention specifics like product, speed, or support.
+              </div>
+            </div>
+
+            <div class="flex flex-col sm:flex-row gap-3">
+              <button
+                type="button"
+                class="w-full px-6 py-3 bg-bitcoin-orange text-white rounded-full font-semibold hover:bg-bitcoin-orange/90 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                (click)="submitReview()"
+                [disabled]="isSubmitting()">
+                @if (isSubmitting()) {
+                  <svg class="animate-spin h-5 w-5" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                  Saving your review...
+                } @else if (userReview()) {
+                  Update my review
+                } @else {
+                  Publish my review
+                }
+              </button>
+
+              @if (userReview()) {
+                <button
+                  type="button"
+                  class="w-full sm:w-auto px-6 py-3 bg-red-500/20 text-red-300 rounded-full font-semibold hover:bg-red-500/30 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                  (click)="deleteReview()"
+                  [disabled]="isSubmitting()">
+                  Delete my review
+                </button>
+              }
+            </div>
+          </div>
+        } @else {
+          <div class="space-y-4">
+            <h3 class="text-xl font-semibold text-white">Ready to leave a review?</h3>
+            <p class="text-bitcoin-gray">
+              Sign in to rate your experience and help other miners choose their next hardware partner.
+            </p>
+            <a
+              routerLink="/client/login"
+              class="inline-flex items-center justify-center px-6 py-3 bg-bitcoin-gold/20 text-bitcoin-gold rounded-full font-semibold hover:bg-bitcoin-gold/30 transition-all">
+              Sign in to share feedback
+            </a>
+            <p class="text-xs text-white/40">Don’t have an account yet? <a routerLink="/client/register" class="text-bitcoin-gold hover:text-bitcoin-orange">Create one in minutes.</a></p>
+          </div>
+        }
+      </div>
+    </div>
+
+    <div class="mt-14">
+      @if (displayedReviews().length) {
+        <div class="grid md:grid-cols-2 xl:grid-cols-4 gap-6">
+          @for (review of displayedReviews(); track trackByReviewId($index, review)) {
+            <article class="bg-bitcoin-dark/50 border border-white/10 rounded-2xl p-6 shadow-bitcoin hover:border-bitcoin-orange/40 transition-all duration-300">
+              <div class="flex items-center gap-3 mb-4">
+                <div class="w-12 h-12 rounded-full bg-bitcoin-gold/20 text-bitcoin-gold flex items-center justify-center font-semibold text-lg">
+                  {{ review.displayName | slice:0:1 }}
+                </div>
+                <div>
+                  <div class="text-white font-semibold">{{ review.displayName }}</div>
+                  <div class="flex items-center gap-1 text-bitcoin-gold text-sm">
+                    @for (star of stars; track star) {
+                      <svg class="w-4 h-4" [class.opacity-30]="star > review.rating" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                      </svg>
+                    }
+                  </div>
+                </div>
+              </div>
+              <p class="text-bitcoin-gray leading-relaxed">{{ review.comment }}</p>
+              <div class="mt-4 text-xs text-white/40">
+                {{ (review.updatedAt || review.createdAt) | date:'mediumDate' }}
+              </div>
+            </article>
+          }
+        </div>
+      } @else {
+        <div class="border border-dashed border-white/10 rounded-2xl p-8 text-center text-bitcoin-gray">
+          <p class="text-lg">Reviews will appear here once clients start sharing their experience.</p>
+          <p class="text-sm mt-2">Be the first to leave a review after your deployment!</p>
+        </div>
+      }
+    </div>
+  </div>
+</section>

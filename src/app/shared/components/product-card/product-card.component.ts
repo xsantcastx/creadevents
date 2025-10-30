@@ -27,9 +27,6 @@ export class ProductCardComponent {
   }
 
   getProductRoute(): string[] {
-    if (this.categoryPath && this.product.grosor) {
-      return ['/products', this.product.grosor, this.product.slug || this.product.id || ''];
-    }
-    return ['/productos', this.product.slug || this.product.id || ''];
+    return ['/products', this.product.slug || this.product.id || ''];
   }
 }

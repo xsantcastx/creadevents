@@ -1,31 +1,46 @@
-import { Component, OnInit, OnDestroy, inject, PLATFORM_ID } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject, PLATFORM_ID, ChangeDetectorRef } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
+import { SettingsService, HeroImage } from '../../../services/settings.service';
 
 @Component({
   selector: 'app-home-hero',
   standalone: true,
   imports: [CommonModule, RouterLink, TranslateModule],
   template: `
-    <section class="relative h-[50vh] min-h-[400px] max-h-[600px] overflow-hidden">
+    <section class="relative h-[50vh] min-h-[400px] max-h-[600px] overflow-hidden -mt-[44px] pt-[44px]">
       <!-- Animated background images -->
       <div class="absolute inset-0">
-        @for (image of heroImages; track image.src; let i = $index) {
+        @for (image of heroImages; track image.id; let i = $index) {
           <div 
             class="absolute inset-0 transition-opacity duration-1000"
             [class.opacity-100]="currentImageIndex === i"
             [class.opacity-0]="currentImageIndex !== i"
           >
             <div class="w-full h-full animate-ken-burns">
-              <img 
-                [src]="image.src" 
-                [alt]="image.alt"
-                class="w-full h-full object-cover image-rendering-crisp"
-                loading="eager"
-                fetchpriority="high"
-                decoding="async"
-              />
+              @if (image.webpUrl) {
+                <picture>
+                  <source [srcset]="image.webpUrl" type="image/webp">
+                  <img 
+                    [src]="image.url" 
+                    [alt]="image.alt"
+                    class="w-full h-full object-cover image-rendering-crisp"
+                    loading="eager"
+                    fetchpriority="high"
+                    decoding="async"
+                  />
+                </picture>
+              } @else {
+                <img 
+                  [src]="image.url" 
+                  [alt]="image.alt"
+                  class="w-full h-full object-cover image-rendering-crisp"
+                  loading="eager"
+                  fetchpriority="high"
+                  decoding="async"
+                />
+              }
             </div>
             <div class="absolute inset-0 bg-gradient-to-b from-black/60 via-black/50 to-black/70"></div>
           </div>
@@ -59,18 +74,20 @@ import { TranslateModule } from '@ngx-translate/core';
         </div>
 
         <!-- Image indicators -->
-        <div class="mt-8 flex gap-2">
-          @for (image of heroImages; track image.src; let i = $index) {
-            <button
-              (click)="setCurrentImage(i)"
-              class="w-2 h-2 rounded-full transition-all"
-              [class.bg-bitcoin-orange]="currentImageIndex === i"
-              [class.w-8]="currentImageIndex === i"
-              [class.bg-white/40]="currentImageIndex !== i"
-              [attr.aria-label]="'Image ' + (i + 1)"
-            ></button>
-          }
-        </div>
+        @if (heroImages.length > 1) {
+          <div class="mt-8 flex gap-2">
+            @for (image of heroImages; track image.id; let i = $index) {
+              <button
+                (click)="setCurrentImage(i)"
+                class="w-2 h-2 rounded-full transition-all"
+                [class.bg-bitcoin-orange]="currentImageIndex === i"
+                [class.w-8]="currentImageIndex === i"
+                [class.bg-white/40]="currentImageIndex !== i"
+                [attr.aria-label]="'Image ' + (i + 1)"
+              ></button>
+            }
+          </div>
+        }
       </div>
     </section>
   `,
@@ -132,20 +149,31 @@ import { TranslateModule } from '@ngx-translate/core';
 })
 export class HomeHeroComponent implements OnInit, OnDestroy {
   private platformId = inject(PLATFORM_ID);
+  private settingsService = inject(SettingsService);
+  private cdr = inject(ChangeDetectorRef);
   
-  heroImages = [
-    { src: 'assets/productos/BitMiners/Imagen de WhatsApp 2025-10-14 a las 14.39.54_0e43661e.jpg', alt: 'TheLuxMining - Bitcoin Mining Hardware' },
-    { src: 'assets/productos/BitMiners/Imagen de WhatsApp 2025-10-14 a las 14.39.54_f27c4bda.jpg', alt: 'TheLuxMining - Professional Mining Solutions' },
-    { src: 'assets/productos/BitMiners/Imagen de WhatsApp 2025-10-14 a las 14.39.55_3906c73d.jpg', alt: 'TheLuxMining - Enterprise Mining Rigs' },
-    { src: 'assets/productos/BitMiners/Imagen de WhatsApp 2025-10-14 a las 14.39.55_c2d9c2de.jpg', alt: 'TheLuxMining - High-Performance ASICs' }
-  ];
-
+  heroImages: HeroImage[] = [];
   currentImageIndex = 0;
   private interval: any;
 
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
+    await this.loadHeroImages();
+    
     if (isPlatformBrowser(this.platformId)) {
-      this.startImageRotation();
+      // Use setTimeout to avoid ExpressionChangedAfterItHasBeenCheckedError
+      setTimeout(() => {
+        this.startImageRotation();
+      }, 0);
+    }
+  }
+
+  async loadHeroImages(): Promise<void> {
+    try {
+      await this.settingsService.getSettings(true);
+      this.heroImages = this.settingsService.getHeroImages();
+    } catch (error) {
+      console.error('Error loading hero images:', error);
+      this.heroImages = [];
     }
   }
 
@@ -158,10 +186,22 @@ export class HomeHeroComponent implements OnInit, OnDestroy {
   private startImageRotation(): void {
     this.interval = setInterval(() => {
       this.currentImageIndex = (this.currentImageIndex + 1) % this.heroImages.length;
+      this.cdr.detectChanges();
     }, 6000); // Change image every 6 seconds
+  }
+
+  goToImage(index: number): void {
+    this.currentImageIndex = index;
+    this.cdr.detectChanges();
+    // Reset the interval when user manually changes image
+    if (this.interval) {
+      clearInterval(this.interval);
+      this.startImageRotation();
+    }
   }
 
   setCurrentImage(index: number): void {
     this.currentImageIndex = index;
+    this.cdr.detectChanges();
   }
 }

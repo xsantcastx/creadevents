@@ -11,10 +11,21 @@
     </div>
     <div class="p-6">
       <h3 class="font-serif text-xl text-neutral-800 mb-2">{{ product.name }}</h3>
-      <p class="text-sm text-neutral-600 mb-4">
-        <span *ngIf="product.grosor">{{ product.grosor }}</span>
-        <span *ngIf="product.sku"> · {{ product.sku }}</span>
+      <p class="text-sm text-neutral-600 mb-2">
+        <span *ngIf="product.sku">{{ product.sku }}</span>
       </p>
+      <p class="text-sm text-neutral-400 mb-4" *ngIf="product.description">
+        {{ product.description }}
+      </p>
+      <div class="mb-4" *ngIf="product.stock !== undefined">
+        <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium"
+              [class]="product.stock > 10 ? 'bg-green-100 text-green-800' : product.stock > 0 ? 'bg-yellow-100 text-yellow-800' : 'bg-red-100 text-red-800'">
+          <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+            <circle cx="10" cy="10" r="8"/>
+          </svg>
+          {{ product.stock > 0 ? product.stock + ' en stock' : 'Sin stock' }}
+        </span>
+      </div>
       <div class="flex items-center justify-between">
         <a [routerLink]="getProductRoute()" 
            class="text-ts-accent hover:underline font-medium transition-colors">
@@ -41,13 +52,21 @@
       </div>
       <div class="flex-1 p-6">
         <h3 class="font-serif text-2xl text-neutral-800 mb-2">{{ product.name }}</h3>
-        <p class="text-neutral-600 mb-4">
-          <span *ngIf="product.grosor">{{ product.grosor }}</span>
-          <span *ngIf="product.sku"> · {{ product.sku }}</span>
+        <p class="text-neutral-600 mb-2">
+          <span *ngIf="product.sku">{{ product.sku }}</span>
         </p>
-        <p class="text-neutral-700 mb-6 leading-relaxed" *ngIf="product.description">
+        <p class="text-neutral-400 mb-4 leading-relaxed" *ngIf="product.description">
           {{ product.description }}
         </p>
+        <div class="mb-4" *ngIf="product.stock !== undefined">
+          <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium"
+                [class]="product.stock > 10 ? 'bg-green-100 text-green-800' : product.stock > 0 ? 'bg-yellow-100 text-yellow-800' : 'bg-red-100 text-red-800'">
+            <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+              <circle cx="10" cy="10" r="8"/>
+            </svg>
+            {{ product.stock > 0 ? product.stock + ' en stock' : 'Sin stock' }}
+          </span>
+        </div>
         <div class="flex items-center justify-between">
           <a [routerLink]="getProductRoute()" 
              class="inline-flex items-center px-6 py-3 ring-2 ring-ts-accent text-ts-accent rounded-full font-semibold hover:bg-ts-accent hover:text-black transition-colors">
