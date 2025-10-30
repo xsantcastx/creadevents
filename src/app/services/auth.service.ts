@@ -1,4 +1,5 @@
-import { Injectable, inject } from '@angular/core';
+import { Injectable, inject, PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import {
   Auth,
   createUserWithEmailAndPassword,
@@ -6,7 +7,10 @@ import {
   signOut,
   user,
   User,
-  updateProfile
+  updateProfile,
+  onAuthStateChanged,
+  setPersistence,
+  browserLocalPersistence
 } from '@angular/fire/auth';
 import { 
   Firestore, 
@@ -47,6 +51,7 @@ export class AuthService {
   private firestore = inject(Firestore);
   private settingsService = inject(SettingsService);
   private emailService = inject(EmailService);
+  private platformId = inject(PLATFORM_ID);
   
   // Observable of current user
   user$ = user(this.auth);
@@ -58,6 +63,15 @@ export class AuthService {
       return from(this.getUserProfile(user.uid));
     })
   );
+
+  constructor() {
+    // Ensure auth persistence is set to local storage (browser only)
+    if (isPlatformBrowser(this.platformId)) {
+      setPersistence(this.auth, browserLocalPersistence).catch((error) => {
+        console.error('Error setting auth persistence:', error);
+      });
+    }
+  }
 
   // Register new user
   async register(email: string, password: string, displayName: string, company?: string): Promise<User> {
