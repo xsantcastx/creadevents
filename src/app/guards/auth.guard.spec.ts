@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { Router, UrlTree } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
-import { firstValueFrom } from 'rxjs';
+import { firstValueFrom, isObservable, Observable } from 'rxjs';
 import { Auth } from '@angular/fire/auth';
 import { authGuard } from './auth.guard';
 import { AuthService, UserProfile } from '../services/auth.service';
@@ -15,6 +15,16 @@ describe('authGuard', () => {
 
   const createState = (url: string) => ({ url } as any);
   const loginUrl = '/client/login';
+
+  const resolveGuard = async (guardResult: any): Promise<boolean | UrlTree> => {
+    if (isObservable(guardResult)) {
+      return firstValueFrom(guardResult as Observable<boolean | UrlTree>);
+    }
+    if (guardResult instanceof Promise) {
+      return guardResult;
+    }
+    return guardResult;
+  };
 
   beforeEach(() => {
     mockAuth = {
@@ -62,7 +72,7 @@ describe('authGuard', () => {
     const guard$ = TestBed.runInInjectionContext(() =>
       authGuard({} as any, createState('/secure'))
     );
-    const result = await firstValueFrom(guard$);
+    const result = await resolveGuard(guard$);
 
     expect(result).toBeTrue();
     expect(mockAuthService.signOutUser).not.toHaveBeenCalled();
@@ -74,7 +84,7 @@ describe('authGuard', () => {
     const guard$ = TestBed.runInInjectionContext(() =>
       authGuard({} as any, createState('/secure'))
     );
-    const result = await firstValueFrom(guard$);
+    const result = await resolveGuard(guard$);
 
     expect(result instanceof UrlTree).toBeTrue();
     expect(router.serializeUrl(result as UrlTree)).toContain(loginUrl);
@@ -88,7 +98,7 @@ describe('authGuard', () => {
     const guard$ = TestBed.runInInjectionContext(() =>
       authGuard({} as any, createState('/secure'))
     );
-    const result = await firstValueFrom(guard$);
+    const result = await resolveGuard(guard$);
 
     expect(mockAuthService.signOutUser).toHaveBeenCalled();
     expect(result instanceof UrlTree).toBeTrue();
@@ -105,7 +115,7 @@ describe('authGuard', () => {
     const guard$ = TestBed.runInInjectionContext(() =>
       authGuard({} as any, createState('/secure'))
     );
-    const result = await firstValueFrom(guard$);
+    const result = await resolveGuard(guard$);
 
     expect(mockAuthService.signOutUser).toHaveBeenCalled();
     expect(result instanceof UrlTree).toBeTrue();
