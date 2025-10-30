@@ -69,6 +69,7 @@
       <!-- Left Column: Payment Form -->
       <div class="lg:col-span-2">
         <form [formGroup]="form" (ngSubmit)="processPayment()" 
+              autocomplete="on"
               class="rounded-xl border border-bitcoin-orange/20 p-6 bg-bitcoin-dark/40 backdrop-blur-md space-y-6">
           <h2 class="font-serif text-2xl bitcoin-gradient-text mb-6">Payment Information</h2>
           
@@ -90,6 +91,13 @@
                class="text-red-400 text-xs mt-1">
               Please enter the cardholder's name (minimum 3 characters)
             </p>
+          </div>
+
+          <!-- Hidden fields for Safari autofill support -->
+          <div style="position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden;">
+            <input type="text" name="cc-number" autocomplete="cc-number" tabindex="-1" aria-hidden="true">
+            <input type="text" name="cc-exp" autocomplete="cc-exp" tabindex="-1" aria-hidden="true">
+            <input type="text" name="cc-csc" autocomplete="cc-csc" tabindex="-1" aria-hidden="true">
           </div>
 
           <!-- Stripe Card Element -->

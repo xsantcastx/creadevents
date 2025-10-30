@@ -1,6 +1,6 @@
 import { inject } from '@angular/core';
 import { Router, CanActivateFn } from '@angular/router';
-import { Auth, user } from '@angular/fire/auth';
+import { Auth, authState } from '@angular/fire/auth';
 import { map, take, switchMap } from 'rxjs/operators';
 import { AuthService } from '../services/auth.service';
 import { SettingsService } from '../services/settings.service';
@@ -12,7 +12,8 @@ export const authGuard: CanActivateFn = (route, state) => {
   const authService = inject(AuthService);
   const settingsService = inject(SettingsService);
 
-  return user(auth).pipe(
+  // Wait for auth state to be determined (prevents flash of login page)
+  return authState(auth).pipe(
     take(1),
     switchMap(currentUser => {
       if (!currentUser) {
