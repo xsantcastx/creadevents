@@ -35,8 +35,11 @@ export class ConsentService {
 
   constructor() {
     if (isPlatformBrowser(this.platformId)) {
-      this.initializeConsentMode();
-      this.loadSavedConsent();
+      // Delay initialization to ensure localStorage is fully available after hydration
+      setTimeout(() => {
+        this.initializeConsentMode();
+        this.loadSavedConsent();
+      }, 0);
     }
   }
 

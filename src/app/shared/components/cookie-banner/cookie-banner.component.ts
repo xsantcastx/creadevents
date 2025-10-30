@@ -22,8 +22,12 @@ export class CookieBannerComponent implements OnInit {
   preferencesConsent = false;
 
   ngOnInit() {
-    // Show banner if user hasn't responded yet
-    this.showBanner = !this.consentService.hasUserResponded();
+    // Delay check to ensure localStorage is available after SSR hydration
+    if (typeof window !== 'undefined') {
+      setTimeout(() => {
+        this.showBanner = !this.consentService.hasUserResponded();
+      }, 100);
+    }
   }
 
   acceptAll() {

@@ -126,6 +126,8 @@ export class StripeService {
         },
       },
       hidePostalCode: true, // We collect this separately
+      disableLink: false, // Enable Link for autofill
+      iconStyle: 'solid', // Use solid icons
     });
 
     console.log('Mounting card element to #' + elementId);
