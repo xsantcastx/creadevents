@@ -71,9 +71,6 @@
         },
         "serve": {
           "builder": "@angular/build:dev-server",
-          "options": {
-            "ssl": true
-          },
           "configurations": {
             "production": {
               "buildTarget": "tstone-web:build:production"

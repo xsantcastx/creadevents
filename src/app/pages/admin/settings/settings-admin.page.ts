@@ -273,6 +273,7 @@ export class SettingsAdminComponent extends LoadingComponentBase implements OnIn
         settings: [
           { key: 'stripePublicKey', label: 'Stripe Publishable Key', type: 'text', value: this.currentSettings.stripePublicKey, placeholder: 'pk_live_...', sensitive: true, locked: true, showValue: false },
           { key: 'stripeSecretKey', label: 'Stripe Secret Key', type: 'text', value: this.currentSettings.stripeSecretKey, placeholder: 'sk_live_...', sensitive: true, locked: true, showValue: false },
+          { key: 'stripeWebhookSecret', label: 'Stripe Webhook Secret', type: 'text', value: this.currentSettings.stripeWebhookSecret, placeholder: 'whsec_...', sensitive: true, locked: true, showValue: false, description: 'Webhook signing secret from Stripe Dashboard' },
           { key: 'stripeCurrency', label: 'Currency', type: 'select', value: this.currentSettings.stripeCurrency, options: [
             { label: 'USD ($)', value: 'usd' },
             { label: 'EUR (€)', value: 'eur' },
@@ -449,6 +450,7 @@ export class SettingsAdminComponent extends LoadingComponentBase implements OnIn
         // Stripe
         stripePublicKey: '',
         stripeSecretKey: '',
+        stripeWebhookSecret: '',
         stripeCurrency: 'usd',
         stripeTestMode: true,
         // Email

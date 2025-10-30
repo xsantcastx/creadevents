@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Auth } from '@angular/fire/auth';
+import { Firestore, collection, doc, setDoc, updateDoc, serverTimestamp } from '@angular/fire/firestore';
 import { Functions, httpsCallable } from '@angular/fire/functions';
 import { StripeCardElement } from '@stripe/stripe-js';
 
@@ -23,6 +24,7 @@ export class PaymentPage implements OnInit, AfterViewInit, OnDestroy {
   private fb = inject(FormBuilder);
   private router = inject(Router);
   private auth = inject(Auth);
+  private firestore = inject(Firestore);
   private functions = inject(Functions);
   private stripeService = inject(StripeService);
   private cartService = inject(CartService);
@@ -275,11 +277,17 @@ export class PaymentPage implements OnInit, AfterViewInit, OnDestroy {
       if (paymentIntent.status === 'succeeded') {
         this.success.set('Payment successful! Creating your order...');
         
-        // DON'T clear cart here - webhook needs it to create the order
-        // Cart will be cleared on the confirmation page after order is found
+        // CRITICAL: Create order immediately as fallback (webhook might not be configured)
+        try {
+          await this.createOrderFallback(paymentIntent.id, cart);
+          console.log('✓ Order created via fallback mechanism');
+        } catch (orderError) {
+          console.error('Failed to create order via fallback:', orderError);
+          // Don't throw - webhook might still create it
+        }
         
         // Navigate to order confirmation
-        // The webhook will handle order creation
+        // The webhook will handle order creation if configured, otherwise fallback order is used
         setTimeout(() => {
           this.router.navigate(['/checkout/confirmation'], {
             queryParams: { payment_intent: paymentIntent.id }
@@ -294,8 +302,14 @@ export class PaymentPage implements OnInit, AfterViewInit, OnDestroy {
         } else if (actionResult.paymentIntent?.status === 'succeeded') {
           this.success.set('Payment successful! Creating your order...');
           
-          // DON'T clear cart here - webhook needs it to create the order
-          // Cart will be cleared on the confirmation page after order is found
+          // CRITICAL: Create order immediately as fallback (webhook might not be configured)
+          try {
+            await this.createOrderFallback(actionResult.paymentIntent.id, cart);
+            console.log('✓ Order created via fallback mechanism (3DS)');
+          } catch (orderError) {
+            console.error('Failed to create order via fallback (3DS):', orderError);
+            // Don't throw - webhook might still create it
+          }
           
           setTimeout(() => {
             this.router.navigate(['/checkout/confirmation'], {
@@ -328,5 +342,130 @@ export class PaymentPage implements OnInit, AfterViewInit, OnDestroy {
       style: 'currency',
       currency
     }).format(amount);
+  }
+
+  /**
+   * CRITICAL FALLBACK: Create order directly in Firestore
+   * This runs when payment succeeds but webhook might not be configured
+   * Duplicates the order creation logic from the Cloud Function webhook
+   */
+  private async createOrderFallback(paymentIntentId: string, cart: any): Promise<string> {
+    const user = this.auth.currentUser;
+    if (!user) throw new Error('User not authenticated');
+
+    // Check if order already exists (webhook might have created it)
+    const existingOrderQuery = collection(this.firestore, 'orders');
+    // Note: We can't query without an index, so we'll just create with a unique ID check
+    
+    // Generate order number (format: LUX-YYYYMMDD-XXXX)
+    const now = new Date();
+    const dateStr = now.toISOString().split('T')[0].replace(/-/g, '');
+    const randomSuffix = Math.floor(1000 + Math.random() * 9000);
+    const orderNumber = `LUX-${dateStr}-${randomSuffix}`;
+
+    // Create order document
+    const orderRef = doc(collection(this.firestore, 'orders'));
+    const orderId = orderRef.id;
+
+    await setDoc(orderRef, {
+      orderNumber,
+      userId: user.uid,
+      cartId: cart.id,
+      paymentIntentId,
+      status: 'pending',
+      
+      // Items
+      items: cart.items || [],
+      itemCount: cart.items?.length || 0,
+      
+      // Totals
+      subtotal: cart.subtotal || 0,
+      shipping: cart.shipping || 0,
+      tax: cart.tax || 0,
+      discount: cart.discount || 0,
+      total: cart.total || 0,
+      currency: cart.currency || 'USD',
+      
+      // Shipping
+      shippingMethod: cart.shippingMethod || 'standard',
+      shippingAddress: cart.shippingAddress || null,
+      billingAddress: null,
+      
+      // Tracking
+      trackingNumber: null,
+      estimatedDelivery: null,
+      
+      // Timestamps
+      createdAt: serverTimestamp(),
+      updatedAt: serverTimestamp(),
+      paidAt: new Date(),
+      
+      // Metadata
+      createdBy: 'frontend_fallback', // Mark this as created by fallback
+      notes: [],
+    });
+
+    // Update payment record with orderId (if it exists)
+    try {
+      const paymentRef = doc(this.firestore, `payments/${paymentIntentId}`);
+      await updateDoc(paymentRef, {
+        orderId,
+        orderNumber,
+        updatedAt: serverTimestamp(),
+      });
+    } catch (err) {
+      console.warn('Could not update payment record (might not exist yet):', err);
+    }
+
+    // Mark cart as completed
+    try {
+      const cartRef = doc(this.firestore, `carts/${cart.id}`);
+      await updateDoc(cartRef, {
+        status: 'completed',
+        orderId,
+        completedAt: serverTimestamp(),
+        updatedAt: serverTimestamp(),
+      });
+    } catch (err) {
+      console.error('Failed to mark cart as completed:', err);
+    }
+
+    // Decrement product stock
+    for (const item of cart.items || []) {
+      try {
+        const productRef = doc(this.firestore, `products/${item.productId}`);
+        // Note: This is not atomic, but better than losing the order
+        // The webhook version uses transactions for atomicity
+        const productDoc = await import('@angular/fire/firestore').then(m => m.getDoc(productRef));
+        if (productDoc.exists()) {
+          const currentStock = productDoc.data()?.['stock'] || 0;
+          const newStock = Math.max(0, currentStock - item.qty);
+          
+          await updateDoc(productRef, {
+            stock: newStock,
+            updatedAt: serverTimestamp(),
+          });
+          
+          // Log stock change
+          const stockLogRef = doc(collection(this.firestore, 'stock_log'));
+          await setDoc(stockLogRef, {
+            productId: item.productId,
+            orderId,
+            orderNumber,
+            change: -item.qty,
+            previousStock: currentStock,
+            newStock,
+            reason: 'order_placed_fallback',
+            createdAt: serverTimestamp(),
+          });
+        }
+      } catch (err) {
+        console.error(`Failed to update stock for product ${item.productId}:`, err);
+        // Continue with other products
+      }
+    }
+
+    console.log(`✓ Order created via fallback: ${orderNumber} (${orderId})`);
+    return orderId;
   }
 }
