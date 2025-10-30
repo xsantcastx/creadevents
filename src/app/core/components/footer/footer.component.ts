@@ -25,7 +25,7 @@ interface Category {
         <div class="grid md:grid-cols-4 gap-8 mb-12">
           <div class="md:col-span-2">
             <div class="flex items-center gap-3 mb-4">
-              <img src="/assets/Logo.jpg" [alt]="siteName" class="h-10 w-10 rounded-lg shadow-bitcoin" />
+              <img src="/Logo Clear.png" [alt]="siteName" class="h-10 w-10 rounded-lg shadow-bitcoin" />
               <span class="font-serif text-xl font-semibold text-bitcoin-orange">{{ siteName }}</span>
             </div>
             <p class="text-white/70 mb-6 max-w-md">

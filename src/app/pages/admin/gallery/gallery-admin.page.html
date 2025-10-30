@@ -71,7 +71,7 @@
             [class.text-bitcoin-gray]="selectedTag !== tag.slug"
             [class.border-bitcoin-gray/20]="selectedTag !== tag.slug"
             class="px-4 py-2 rounded-xl font-medium transition-all whitespace-nowrap border flex items-center gap-2"
-            [style.border-color]="selectedTag === tag.slug ? tag.color : ''">
+            [style.border-color]="selectedTag === tag.slug && tag.color ? tag.color : null">
             @if (tag.icon) {
               <span>{{ tag.icon }}</span>
             }
@@ -109,10 +109,7 @@
       <!-- Loading State -->
       <div class="bg-bitcoin-dark/40 backdrop-blur-sm rounded-2xl shadow-bitcoin p-12 border border-bitcoin-gray/20">
         <div class="flex flex-col items-center justify-center gap-4">
-          <svg class="animate-spin h-10 w-10 text-bitcoin-orange" fill="none" viewBox="0 0 24 24">
-            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-          </svg>
+          <div class="app-spinner" style="--spinner-size: 72px;"><img src="/Logo Clear.png" alt="Loading" width="96" height="96"></div>
           <p class="text-bitcoin-gray">{{ 'common.loading' | translate }}</p>
         </div>
       </div>
@@ -236,26 +233,60 @@
             </div>
           }
 
-          <!-- Preview -->
-          @if (previewUrl) {
-            <div class="rounded-2xl overflow-hidden border border-bitcoin-gray/20">
-              <img [src]="previewUrl" alt="Preview" class="w-full h-64 object-cover">
+          <!-- Preview Grid -->
+          @if (previewUrls.length > 0) {
+            <div>
+              <div class="flex items-center justify-between mb-3">
+                <label class="block text-base font-semibold text-bitcoin-gray">
+                  Selected Images ({{ previewUrls.length }})
+                </label>
+                @if (!isUploading) {
+                  <button
+                    type="button"
+                    (click)="selectedFiles = []; revokeAllPreviewUrls()"
+                    class="text-sm text-red-400 hover:text-red-300 transition-colors">
+                    Clear All
+                  </button>
+                }
+              </div>
+              <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+                @for (url of previewUrls; track $index) {
+                  <div class="relative group rounded-xl overflow-hidden border-2 border-bitcoin-gray/20 hover:border-bitcoin-orange/30 transition-all">
+                    <img [src]="url" alt="Preview {{ $index + 1 }}" class="w-full h-32 object-cover">
+                    @if (!isUploading) {
+                      <button
+                        type="button"
+                        (click)="removeImage($index)"
+                        class="absolute top-1 right-1 p-1 bg-red-500/90 hover:bg-red-600 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity">
+                        <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                      </button>
+                    }
+                    <div class="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/70 to-transparent p-2">
+                      <p class="text-xs text-white truncate">{{ selectedFiles[$index]?.name }}</p>
+                    </div>
+                  </div>
+                }
+              </div>
             </div>
           }
 
           <!-- File Upload -->
           <div>
             <label for="imageFile" class="block text-base font-semibold text-bitcoin-gray mb-3">
-              {{ 'admin.image_file' | translate }}
+              {{ 'admin.image_file' | translate }} *
             </label>
             <input
               type="file"
               id="imageFile"
               (change)="onCoverSelected($event)"
               accept="image/*"
-              class="w-full px-4 py-3 border-2 border-dashed border-bitcoin-orange/30 rounded-xl focus:ring-2 focus:ring-bitcoin-orange focus:border-bitcoin-orange bg-bitcoin-dark/40 text-bitcoin-gray text-base file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-bitcoin-orange/30 file:text-bitcoin-orange hover:file:bg-bitcoin-orange/40 file:cursor-pointer">
+              multiple
+              [disabled]="isUploading"
+              class="w-full px-4 py-3 border-2 border-dashed border-bitcoin-orange/30 rounded-xl focus:ring-2 focus:ring-bitcoin-orange focus:border-bitcoin-orange bg-bitcoin-dark/40 text-bitcoin-gray text-base file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-bitcoin-orange/30 file:text-bitcoin-orange hover:file:bg-bitcoin-orange/40 file:cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed">
             <p class="mt-2 text-sm text-bitcoin-gray">
-              Recommended: 1600x1200px or larger. Max 10MB. Smaller images are allowed but may appear pixelated.
+              Select multiple images for bulk upload. Max 10MB per file. Images smaller than 1600x1200px may appear pixelated.
             </p>
           </div>
 
@@ -269,8 +300,15 @@
               id="altText"
               formControlName="altText"
               placeholder="e.g., Bitcoin Mining Farm Setup"
-              class="w-full px-4 py-3 bg-bitcoin-dark/40 border-2 border-bitcoin-gray/20 rounded-xl focus:ring-2 focus:ring-bitcoin-orange focus:border-bitcoin-orange placeholder:text-bitcoin-gray/50 text-bitcoin-gray text-base">
-            <p class="mt-2 text-sm text-bitcoin-gray">Project name (will be displayed as the title)</p>
+              [disabled]="isUploading"
+              class="w-full px-4 py-3 bg-bitcoin-dark/40 border-2 border-bitcoin-gray/20 rounded-xl focus:ring-2 focus:ring-bitcoin-orange focus:border-bitcoin-orange placeholder:text-bitcoin-gray/50 text-bitcoin-gray text-base disabled:opacity-50 disabled:cursor-not-allowed">
+            <p class="mt-2 text-sm text-bitcoin-gray">
+              @if (selectedFiles.length > 1) {
+                <span>Shared project name for all images (numbering will be added automatically)</span>
+              } @else {
+                <span>Project name (will be displayed as the title)</span>
+              }
+            </p>
           </div>
 
           <!-- Caption/Description -->
@@ -283,8 +321,15 @@
               formControlName="caption"
               rows="3"
               placeholder="e.g., Texas, USA - High-efficiency cooling system"
-              class="w-full px-4 py-3 bg-bitcoin-dark/40 border-2 border-bitcoin-gray/20 rounded-xl focus:ring-2 focus:ring-bitcoin-orange focus:border-bitcoin-orange placeholder:text-bitcoin-gray/50 text-bitcoin-gray text-base resize-none"></textarea>
-            <p class="mt-2 text-sm text-bitcoin-gray">Location or project description (optional)</p>
+              [disabled]="isUploading"
+              class="w-full px-4 py-3 bg-bitcoin-dark/40 border-2 border-bitcoin-gray/20 rounded-xl focus:ring-2 focus:ring-bitcoin-orange focus:border-bitcoin-orange placeholder:text-bitcoin-gray/50 text-bitcoin-gray text-base resize-none disabled:opacity-50 disabled:cursor-not-allowed"></textarea>
+            <p class="mt-2 text-sm text-bitcoin-gray">
+              @if (selectedFiles.length > 1) {
+                <span>Shared description for all images (location or project details)</span>
+              } @else {
+                <span>Location or project description (optional)</span>
+              }
+            </p>
           </div>
 
           <!-- Tags -->
@@ -339,7 +384,9 @@
           @if (isUploading && uploadProgress > 0) {
             <div class="space-y-2">
               <div class="flex items-center justify-between text-sm">
-                <span class="text-bitcoin-gray font-medium">Uploading...</span>
+                <span class="text-bitcoin-gray font-medium">
+                  Uploading {{ uploadedCount }}/{{ totalToUpload }} images...
+                </span>
                 <span class="text-bitcoin-orange font-semibold">{{ uploadProgress }}%</span>
               </div>
               <div class="w-full bg-bitcoin-dark/60 rounded-full h-2.5 overflow-hidden border border-bitcoin-gray/20">
@@ -355,16 +402,19 @@
           <div class="flex gap-4 pt-4">
             <button
               type="submit"
-              [disabled]="isSaving"
+              [disabled]="isSaving || selectedFiles.length === 0"
               class="flex-1 py-4 px-6 bg-bitcoin-orange/30 hover:bg-bitcoin-orange/40 text-bitcoin-orange border-2 border-bitcoin-orange/30 rounded-xl font-bold text-base transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2">
               @if (isSaving) {
-                <svg class="animate-spin h-5 w-5 text-bitcoin-orange" fill="none" viewBox="0 0 24 24">
-                  <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                  <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                </svg>
-                <span>Uploading...</span>
+                <div class="app-spinner" style="--spinner-size: 72px;"><img src="/Logo Clear.png" alt="Loading" width="96" height="96"></div>
+                <span>Uploading {{ uploadedCount }}/{{ totalToUpload }}...</span>
               } @else {
-                <span>Upload Image</span>
+                @if (selectedFiles.length > 1) {
+                  <span>Upload {{ selectedFiles.length }} Images</span>
+                } @else if (selectedFiles.length === 1) {
+                  <span>Upload Image</span>
+                } @else {
+                  <span>Select Images First</span>
+                }
               }
             </button>
             <button
@@ -484,10 +534,7 @@
               [disabled]="isSaving"
               class="flex-1 py-4 px-6 bg-bitcoin-orange/30 hover:bg-bitcoin-orange/40 text-bitcoin-orange border-2 border-bitcoin-orange/30 rounded-xl font-bold text-base transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2">
               @if (isSaving) {
-                <svg class="animate-spin h-5 w-5" fill="none" viewBox="0 0 24 24">
-                  <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                  <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                </svg>
+                <div class="app-spinner" style="--spinner-size: 72px;"><img src="/Logo Clear.png" alt="Loading" width="96" height="96"></div>
                 <span>Saving...</span>
               } @else {
                 <span>Save Changes</span>
@@ -554,3 +601,4 @@
     </div>
   }
 </div>
+

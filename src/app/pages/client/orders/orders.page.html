@@ -1,36 +1,32 @@
-<div class="section-stack min-h-screen bg-gradient-to-b from-[#0a0b0d] to-[#13151a] py-16 px-4">
-  <div class="max-w-6xl mx-auto">
-    
-    <!-- Header -->
-    <div class="mb-8 flex items-center justify-between">
-      <div>
-        <h1 class="font-serif text-4xl lg:text-5xl bitcoin-gradient-text mb-2">
-          {{ 'client.orders' | translate }}
-        </h1>
-        <p class="text-bitcoin-gray">
-          {{ 'client.orders_subtitle' | translate }}
-        </p>
-      </div>
+<section class="section-stack bg-gradient-to-b from-[#0a0b0d] to-[#13151a] min-h-screen">
+  <!-- Page Header Component -->
+  <app-page-header
+    title="{{ 'client.orders' | translate }}"
+    subtitle="{{ 'client.orders_subtitle' | translate }}"
+    [breadcrumbs]="breadcrumbs"
+    icon="orders">
+  </app-page-header>
+
+  <div class="page-container pb-12">
+    <div class="max-w-6xl mx-auto">
       
       <!-- Logout Button -->
-      <button
-        (click)="logout()"
-        class="px-4 py-2 text-bitcoin-gray hover:text-red-400 border border-bitcoin-gray/20 hover:border-red-500/30 rounded-xl transition-all duration-300 flex items-center gap-2">
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
-        </svg>
-        {{ 'client.logout' | translate }}
-      </button>
-    </div>
+      <div class="mb-8 flex justify-end">
+        <button
+          (click)="logout()"
+          class="px-4 py-2 text-bitcoin-gray hover:text-red-400 border border-bitcoin-gray/20 hover:border-red-500/30 rounded-xl transition-all duration-300 flex items-center gap-2">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
+          </svg>
+          {{ 'client.logout' | translate }}
+        </button>
+      </div>
 
     @if (isLoading()) {
       <!-- Loading State -->
       <div class="bg-bitcoin-dark/40 backdrop-blur-md border border-bitcoin-orange/20 rounded-2xl shadow-bitcoin-lg p-12">
         <div class="flex flex-col items-center justify-center gap-4">
-          <svg class="animate-spin h-10 w-10 text-bitcoin-orange" fill="none" viewBox="0 0 24 24">
-            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-          </svg>
+          <div class="app-spinner" style="--spinner-size: 72px;"><img src="/Logo Clear.png" alt="Loading" width="96" height="96"></div>
           <p class="text-bitcoin-gray">{{ 'common.loading' | translate }}</p>
         </div>
       </div>
@@ -286,5 +282,7 @@
         {{ 'common.back' | translate }}
       </a>
     </div>
+    </div>
   </div>
-</div>
+</section>
+

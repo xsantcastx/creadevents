@@ -2,6 +2,7 @@ import { Component, DestroyRef, computed, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
+import { TranslateModule } from '@ngx-translate/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { switchMap, of } from 'rxjs';
 import { ReviewService } from '../../../services/review.service';
@@ -11,7 +12,7 @@ import { AuthService, UserProfile } from '../../../services/auth.service';
 @Component({
   selector: 'app-home-reviews',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule],
+  imports: [CommonModule, FormsModule, RouterModule, TranslateModule],
   templateUrl: './home-reviews.component.html',
   styleUrl: './home-reviews.component.scss'
 })

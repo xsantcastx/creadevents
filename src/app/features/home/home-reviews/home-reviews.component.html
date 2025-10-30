@@ -4,14 +4,13 @@
     <div class="grid xl:grid-cols-2 gap-12 items-start">
       <div>
         <p class="text-sm uppercase tracking-wide text-bitcoin-gold mb-3">
-          Community Feedback
+          {{ 'home.reviews.eyebrow' | translate }}
         </p>
         <h2 class="font-serif text-4xl lg:text-5xl bitcoin-gradient-text mb-6">
-          Hear From Miners Who Trust TheLuxMining
+          {{ 'home.reviews.title' | translate }}
         </h2>
         <p class="text-lg text-bitcoin-gray max-w-2xl">
-          We partner with clients around the world to deploy dependable Bitcoin mining operations.
-          Real stories from real miners keep us accountable and help future partners feel confident.
+          {{ 'home.reviews.subtitle' | translate }}
         </p>
 
         <div class="mt-8 flex flex-wrap items-center gap-8">
@@ -25,12 +24,12 @@
             </div>
             <div>
               <div class="text-3xl font-bold text-white">{{ averageRating() | number:'1.1-1' }}</div>
-              <div class="text-sm text-bitcoin-gray">Average rating</div>
+              <div class="text-sm text-bitcoin-gray">{{ 'home.reviews.average_rating' | translate }}</div>
             </div>
           </div>
           <div>
             <div class="text-3xl font-bold text-white">{{ totalReviews() }}</div>
-            <div class="text-sm text-bitcoin-gray">Published reviews</div>
+            <div class="text-sm text-bitcoin-gray">{{ 'home.reviews.published_reviews' | translate }}</div>
           </div>
         </div>
       </div>
@@ -50,7 +49,7 @@
         @if (currentUser()) {
           <div class="space-y-4">
             <div>
-              <div class="text-sm text-white/80 mb-2">Rate your experience</div>
+              <div class="text-sm text-white/80 mb-2">{{ 'home.reviews.rate_experience' | translate }}</div>
               <div class="flex items-center gap-2">
                 @for (star of stars; track star) {
                   <button
@@ -60,7 +59,7 @@
                     [class.text-bitcoin-gold]="star <= ratingInput()"
                     (click)="selectRating(star)"
                     [disabled]="isSubmitting()"
-                    aria-label="Rate {{ star }} stars">
+                    [attr.aria-label]="'home.reviews.rate_stars' | translate:{stars: star}">
                     <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
                       <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
                     </svg>
@@ -71,19 +70,19 @@
 
             <div>
               <label class="text-sm text-white/80 mb-2 block" for="review-comment">
-                Share a short testimonial
+                {{ 'home.reviews.share_testimonial' | translate }}
               </label>
               <textarea
                 id="review-comment"
                 name="review-comment"
                 rows="4"
-                placeholder="Tell other miners about your deployment, support experience, or ROI."
+                [placeholder]="'home.reviews.testimonial_placeholder' | translate"
                 [ngModel]="commentInput()"
                 (ngModelChange)="commentInput.set($event)"
                 [disabled]="isSubmitting()"
                 class="w-full px-4 py-3 bg-gray-900/60 border border-white/10 rounded-xl text-white placeholder-white/40 focus:border-bitcoin-orange focus:ring-1 focus:ring-bitcoin-orange transition-all"></textarea>
               <div class="text-xs text-white/40 mt-1">
-                Minimum 10 characters. Mention specifics like product, speed, or support.
+                {{ 'home.reviews.testimonial_help' | translate }}
               </div>
             </div>
 
@@ -94,15 +93,12 @@
                 (click)="submitReview()"
                 [disabled]="isSubmitting()">
                 @if (isSubmitting()) {
-                  <svg class="animate-spin h-5 w-5" fill="none" viewBox="0 0 24 24">
-                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                  </svg>
-                  Saving your review...
+                  <div class="app-spinner" style="--spinner-size: 72px;"><img src="/Logo Clear.png" alt="Loading" width="96" height="96"></div>
+                  {{ 'home.reviews.saving_review' | translate }}
                 } @else if (userReview()) {
-                  Update my review
+                  {{ 'home.reviews.update_review' | translate }}
                 } @else {
-                  Publish my review
+                  {{ 'home.reviews.publish_review' | translate }}
                 }
               </button>
 
@@ -112,23 +108,23 @@
                   class="w-full sm:w-auto px-6 py-3 bg-red-500/20 text-red-300 rounded-full font-semibold hover:bg-red-500/30 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
                   (click)="deleteReview()"
                   [disabled]="isSubmitting()">
-                  Delete my review
+                  {{ 'home.reviews.delete_review' | translate }}
                 </button>
               }
             </div>
           </div>
         } @else {
           <div class="space-y-4">
-            <h3 class="text-xl font-semibold text-white">Ready to leave a review?</h3>
+            <h3 class="text-xl font-semibold text-white">{{ 'home.reviews.sign_in_title' | translate }}</h3>
             <p class="text-bitcoin-gray">
-              Sign in to rate your experience and help other miners choose their next hardware partner.
+              {{ 'home.reviews.sign_in_desc' | translate }}
             </p>
             <a
               routerLink="/client/login"
               class="inline-flex items-center justify-center px-6 py-3 bg-bitcoin-gold/20 text-bitcoin-gold rounded-full font-semibold hover:bg-bitcoin-gold/30 transition-all">
-              Sign in to share feedback
+              {{ 'home.reviews.sign_in_button' | translate }}
             </a>
-            <p class="text-xs text-white/40">Don’t have an account yet? <a routerLink="/client/register" class="text-bitcoin-gold hover:text-bitcoin-orange">Create one in minutes.</a></p>
+            <p class="text-xs text-white/40">{{ 'home.reviews.no_account' | translate }} <a routerLink="/client/register" class="text-bitcoin-gold hover:text-bitcoin-orange">{{ 'home.reviews.create_account' | translate }}</a></p>
           </div>
         }
       </div>
@@ -163,10 +159,11 @@
         </div>
       } @else {
         <div class="border border-dashed border-white/10 rounded-2xl p-8 text-center text-bitcoin-gray">
-          <p class="text-lg">Reviews will appear here once clients start sharing their experience.</p>
-          <p class="text-sm mt-2">Be the first to leave a review after your deployment!</p>
+          <p class="text-lg">{{ 'home.reviews.no_reviews_title' | translate }}</p>
+          <p class="text-sm mt-2">{{ 'home.reviews.no_reviews_desc' | translate }}</p>
         </div>
       }
     </div>
   </div>
 </section>
+

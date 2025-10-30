@@ -50,7 +50,7 @@ import { SettingsService, HeroImage } from '../../../services/settings.service';
       <!-- Hero content - Centered and compact -->
       <div class="relative h-full flex flex-col items-center justify-center max-w-7xl mx-auto px-6 z-10 text-center">
         <div class="flex items-center gap-4 mb-6 animate-fade-in-up">
-          <img src="/assets/Logo.jpg" alt="TheLuxMining" class="h-16 w-16 md:h-20 md:w-20 rounded-xl shadow-bitcoin"/>
+          <img src="/Logo Clear.png" alt="TheLuxMining" class="h-16 w-16 md:h-20 md:w-20 rounded-xl shadow-bitcoin"/>
           <h1 class="font-serif text-4xl md:text-5xl lg:text-6xl tracking-tight bitcoin-gradient-text">
             TheLuxMining
           </h1>

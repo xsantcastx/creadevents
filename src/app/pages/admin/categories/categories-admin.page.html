@@ -1,4 +1,4 @@
-﻿<div class="section-stack min-h-screen bg-ts-bg">
+<div class="section-stack min-h-screen bg-ts-bg">
   <div class="bg-gradient-to-r from-ts-bg via-gray-900 to-ts-bg border-b border-white/10">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <div class="flex justify-between items-center">
@@ -27,9 +27,11 @@
     }
 
     @if (isLoading) {
-      <div class="text-center py-12">
-        <div class="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-bitcoin-orange"></div>
-        <p class="mt-4 text-gray-400">Loading...</p>
+      <div class="text-center py-12 space-y-4">
+        <div class="app-spinner" style="--spinner-size: 48px;" aria-hidden="true">
+          <img src="/Logo Clear.png" alt="" width="64" height="64">
+        </div>
+        <p class="text-gray-400">Loading...</p>
       </div>
     } @else if (categories.length === 0) {
       <div class="bg-gray-800/50 border border-white/10 rounded-xl p-12 text-center">
@@ -109,3 +111,4 @@
     </div>
   }
 </div>
+

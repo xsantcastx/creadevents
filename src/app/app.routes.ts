@@ -148,6 +148,12 @@ export const routes: Routes = [
     title: 'TheLuxMining | page_titles.size_groups'
   },
   {
+    path: 'admin/reviews',
+    loadComponent: () => import('./pages/admin/reviews/reviews.page').then(m => m.AdminReviewsPage),
+    canActivate: [adminGuard],
+    title: 'TheLuxMining | page_titles.reviews'
+  },
+  {
     path: 'maintenance',
     loadComponent: () => import('./pages/maintenance/maintenance.page').then(m => m.MaintenancePage),
     title: 'Site Maintenance - TheLuxMining'

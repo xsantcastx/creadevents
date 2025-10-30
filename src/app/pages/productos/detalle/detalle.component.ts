@@ -13,12 +13,13 @@ import { Media } from '../../../models/media';
 import { Category } from '../../../models/catalog';
 import { Model } from '../../../models/catalog';
 import { ImageLightboxComponent } from '../../../shared/components/image-lightbox/image-lightbox.component';
+import { ProductReviewsComponent } from '../../../shared/components/product-reviews/product-reviews.component';
 import { firstValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-detalle',
   standalone: true,
-  imports: [CommonModule, RouterLink, TranslateModule, ImageLightboxComponent],
+  imports: [CommonModule, RouterLink, TranslateModule, ImageLightboxComponent, ProductReviewsComponent],
   templateUrl: './detalle.component.html'
 })
 export class DetalleComponent implements OnInit, AfterViewInit {

@@ -37,8 +37,8 @@ export class ProductosPageComponent extends LoadingComponentBase implements OnIn
   
   // Breadcrumbs for navigation
   breadcrumbs: Breadcrumb[] = [
-    { label: 'NAV.HOME', url: '/', icon: 'home' },
-    { label: 'NAV.PRODUCTS', icon: 'products' }
+    { label: 'nav.home', url: '/', icon: 'home' },
+    { label: 'nav.products', icon: 'products' }
   ];
   
   // Firestore products

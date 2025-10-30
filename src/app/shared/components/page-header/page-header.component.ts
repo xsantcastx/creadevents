@@ -1,7 +1,7 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 export interface Breadcrumb {
   label: string;
@@ -17,6 +17,8 @@ export interface Breadcrumb {
   styleUrls: ['./page-header.component.scss']
 })
 export class PageHeaderComponent {
+  private translate = inject(TranslateService);
+  
   @Input() title: string = '';
   @Input() titleHighlight: string = '';
   @Input() subtitle: string = '';

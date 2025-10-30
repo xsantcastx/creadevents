@@ -1,189 +1,662 @@
-0) Fix the maintenance mode (today)
-
-Serve the right HTTP status
-
-Ensure the maintenance page returns 503 Service Unavailable + Retry-After so Google doesn’t deindex you or cache this page as your homepage.
-
-HTTP/1.1 503 Service Unavailable
-Retry-After: 3600
-
-
-Prevent accidental indexing while down
-
-Add <meta name="robots" content="noindex, nofollow"> on the maintenance page only.
-
-Remove it when you’re live.
-
-Make support info trustworthy
-
-Replace Gmail (luxmining1@gmail.com) with a domain email (e.g., support@theluxmining.com
-) and publish SPF, DKIM, DMARC so your emails don’t land in spam.
-
-If the physical address is real, keep it; if it’s a mailbox/suite, label it clearly (e.g., “Mailing address”).
-
-Cookie banner polish
-
-Your text is in Spanish while the headline is English; pick a default locale and offer a language toggle.
-
-Ensure buttons include Reject all / Accept all / Customize and that non-essential scripts are blocked until consent is given.
-
-1) Launch-readiness checklist (week 1)
-
-Goal: minimum viable, credible, indexable site.
-
-A) Core pages & content
-
-Home: clear value prop above the fold, primary CTA, 3 trust badges (warranty, secure checkout, support SLA), and featured products/services.
-
-About / Company info: who you are, legal entity, team or story (builds trust in “mining” niche).
-
-Contact: form + email + address + WhatsApp/Telegram (optional) + response time.
-
-Products/Services: pricing, specs, shipping/fulfillment times, returns/warranty.
-
-Legal: Privacy, Terms, Returns/Refunds, Warranty, Cookies. (Link all in footer.)
-
-B) Trust & safety (especially for crypto/mining)
-
-Add disclaimers: profitability isn’t guaranteed; electricity/hosting responsibilities; KYC/AML where relevant.
-
-Display payment methods (Stripe, PayPal, crypto) and refund policy prominently.
-
-Show testimonials (with proof) and certifications (e.g., manufacturer warranties).
-
-C) Navigation & UX
-
-Sticky header with clear IA: Home, Shop/Services, Hosting/Repairs (if any), About, Contact.
-
-One primary CTA (“Shop miners”, “Get a quote”, or “Book a call”).
-
-Search + filters (by hashrate, brand, condition, price) if you sell hardware.
-
-2) SEO foundations (week 1–2)
-
-Technical
-
-Create /sitemap.xml and /robots.txt (allow crawling after launch).
-
-Set canonical URLs on every page.
-
-Use clean slugs: /products/antminer-s21-200th etc.
-
-On-page
-
-Unique title (≤60 chars) and meta description (≤160) on each page.
-
-H1 once per page, logical H2/H3 structure, internal links.
-
-Structured data (JSON-LD)
-
-Organization (logo, sameAs socials), Product (price, availability), BreadcrumbList, and FAQ for a pre-sale FAQ.
-
-<script type="application/ld+json">
-{
- "@context":"https://schema.org",
- "@type":"Organization",
- "name":"The Lux Mining",
- "url":"https://theluxmining.com",
- "logo":"https://theluxmining.com/logo.png",
- "sameAs":["https://x.com/…","https://www.linkedin.com/company/…"]
-}
-</script>
-
-
-Content to actually rank
-
-Publish 3–5 guides people search for:
-
-“S21 vs M60: efficiency, hashrate, noise”
-
-“Real TCO of home mining in [country]”
-
-“How to verify a used miner before buying”
-Add comparison tables, real photos, and calculators.
-
-3) Performance & Core Web Vitals (week 2)
-
-Serve WebP/AVIF images with width/height set; lazy-load below-the-fold images.
-
-Bundle split, minify, remove unused CSS/JS; defer non-critical scripts.
-
-Use a CDN and set long-lived cache headers with fingerprinted assets.
-
-Target: LCP < 2.5s, INP < 200ms, CLS < 0.1.
-
-4) Accessibility (week 2)
-
-Color contrast ≥ 4.5:1; always visible focus states.
-
-Semantic HTML (nav/main/footer), landmarks, and ARIA where necessary.
-
-Alt text for every image (especially product photos).
-
-Forms: labels + error messages + keyboard navigation.
-
-5) Compliance & privacy (week 2)
-
-Consent mode: block analytics/ads until consent.
-
-Geo-aware banner (EN/ES at minimum).
-
-Update Privacy/Cookie pages to reflect your actual vendors (GA4, Stripe, Meta Pixel, etc.).
-
-6) Payments, checkout & fraud (week 2–3)
-
-Stripe: enable 3DS, radar rules, address verification; Apple Pay/Google Pay via Stripe; clear currency handling.
-
-For crypto payments: state confirmation requirements, refund policy, FX handling, and who pays network fees.
-
-If selling high-ticket miners, offer manual invoice / bank wire option with AML note.
-
-7) Security (week 2–3)
-
-HTTPS + HSTS (max-age=31536000; includeSubDomains; preload).
-
-CSP (block inline scripts; allowlist Stripe, analytics, CDN).
-
-ReCAPTCHA or hCaptcha on forms.
-
-Keep admin login off the main nav and rate-limit it; enable 2FA.
-
-Regular backups + monitored uptime.
-
-8) Analytics & measurement (week 1–2)
-
-GA4 with server-side or at least consent-aware client implementation.
-
-Key events: view_item, add_to_cart, begin_checkout, purchase, lead_submit, click_whatsapp.
-
-Set up Search Console + Bing Webmaster Tools.
-
-9) Internationalization
-
-Decide your default language (EN or ES) and keep it consistent.
-
-If bilingual, use hreflang and a clear language switcher.
-
-10) Visual & content polish
-
-Real photos (unboxings, warehouse, installs) > stock images.
-
-Short social proof: “1,200+ orders shipped since 2023”, partner logos, and a 3-point guarantee.
-
-Clear shipping times and taxes/duties per country.
-
-Quick “Do Next” list
-
-Switch maintenance page to 503 + Retry-After and add noindex.
-
-Set up domain email + SPF/DKIM/DMARC; update contact on the page.
-
-Prepare: Home, About, Contact, Shop/Services, Legal pages.
-
-Add sitemap/robots, canonical tags, JSON-LD Organization.
-
-Turn on Stripe (with Apple Pay/Google Pay) and finish refund/warranty policy.
-
-Ship images in WebP, lazy-load, and trim JS.
-
-Install GA4 + Search Console; define events.
+[RecaptchaService] Token generated for action: login
+login.page.ts:60 [LoginPage] reCAPTCHA token obtained for login
+auth.service.ts:160 [AuthService] Successful login, reset attempts for: xsancastrillonx@hotmail.com
+cart.page.ts:197 Shipping address saved to cart: {line1: 'avenida guillem de moncada', city: 'Moncofa', line2: '', lastName: 'castrillon', isDefault: false, …}
+cart.page.ts:469 Proceeding to payment with cart: {id: 'CqcakDvSRZRbHBj78c1hA5zYsYC2', total: 106.87, shipping: 0, shippingMethodId: 'flat-rate'}
+stripe.service.ts:38 Initializing Stripe with key from: Settings
+stripe.js:1  You may test your Stripe.js integration over HTTP. However, live Stripe.js integrations must use HTTPS.
+value @ stripe.js:1
+e @ stripe.js:1
+hv @ stripe.js:1
+initStripe2 @ index.mjs:153
+(anonymous) @ index.mjs:192
+Promise.then
+loadStripe2 @ index.mjs:191
+initializeStripeFromSettings @ stripe.service.ts:40
+await in initializeStripeFromSettings
+_StripeService @ stripe.service.ts:22
+StripeService_Factory @ stripe.service.ts:290
+(anonymous) @ root_effect_scheduler.mjs:2187
+runInInjectorProfilerContext @ root_effect_scheduler.mjs:746
+hydrate @ root_effect_scheduler.mjs:2185
+get @ root_effect_scheduler.mjs:2033
+get @ root_effect_scheduler.mjs:2045
+get @ debug_node.mjs:12530
+lookupTokenUsingModuleInjector @ debug_node.mjs:1718
+getOrCreateInjectable @ debug_node.mjs:1766
+ɵɵdirectiveInject @ debug_node.mjs:12581
+ɵɵinject @ root_effect_scheduler.mjs:1058
+inject2 @ root_effect_scheduler.mjs:1144
+<instance_members_initializer> @ payment.page.ts:30
+_PaymentPage @ payment.page.ts:24
+PaymentPage_Factory @ payment.page.ts:471
+getNodeInjectable @ debug_node.mjs:1989
+instantiateAllDirectives @ debug_node.mjs:8407
+createDirectivesInstances @ debug_node.mjs:8180
+create @ debug_node.mjs:13726
+createComponent @ debug_node.mjs:14109
+activateWith @ router2.mjs:2783
+activateRoutes @ router2.mjs:3263
+(anonymous) @ router2.mjs:3219
+activateChildRoutes @ router2.mjs:3218
+activate @ router2.mjs:3129
+(anonymous) @ router2.mjs:3108
+(anonymous) @ map.js:7
+OperatorSubscriber2._this._next @ OperatorSubscriber.js:15
+Subscriber2.next @ Subscriber.js:34
+(anonymous) @ tap.js:18
+OperatorSubscriber2._this._next @ OperatorSubscriber.js:15
+Subscriber2.next @ Subscriber.js:34
+(anonymous) @ map.js:7
+OperatorSubscriber2._this._next @ OperatorSubscriber.js:15
+Subscriber2.next @ Subscriber.js:34
+(anonymous) @ switchMap.js:14
+OperatorSubscriber2._this._next @ OperatorSubscriber.js:15
+Subscriber2.next @ Subscriber.js:34
+(anonymous) @ innerFrom.js:51
+Observable2._trySubscribe @ Observable.js:38
+(anonymous) @ Observable.js:32
+errorContext @ errorContext.js:19
+Observable2.subscribe @ Observable.js:23
+(anonymous) @ switchMap.js:14
+OperatorSubscriber2._this._next @ OperatorSubscriber.js:15
+Subscriber2.next @ Subscriber.js:34
+(anonymous) @ switchMap.js:14
+OperatorSubscriber2._this._next @ OperatorSubscriber.js:15
+Subscriber2.next @ Subscriber.js:34
+(anonymous) @ map.js:7
+OperatorSubscriber2._this._next @ OperatorSubscriber.js:15
+Subscriber2.next @ Subscriber.js:34
+(anonymous) @ innerFrom.js:51
+Observable2._trySubscribe @ Observable.js:38
+(anonymous) @ Observable.js:32
+errorContext @ errorContext.js:19
+Observable2.subscribe @ Observable.js:23
+(anonymous) @ map.js:6
+(anonymous) @ lift.js:10
+(anonymous) @ Observable.js:27
+errorContext @ errorContext.js:19
+Observable2.subscribe @ Observable.js:23
+(anonymous) @ switchMap.js:14
+OperatorSubscriber2._this._next @ OperatorSubscriber.js:15
+Subscriber2.next @ Subscriber.js:34
+(anonymous) @ switchMap.js:14
+OperatorSubscriber2._this._next @ OperatorSubscriber.js:15
+Subscriber2.next @ Subscriber.js:34
+(anonymous) @ map.js:7
+OperatorSubscriber2._this._next @ OperatorSubscriber.js:15
+Subscriber2.next @ Subscriber.js:34
+(anonymous) @ take.js:12
+OperatorSubscriber2._this._next @ OperatorSubscriber.js:15
+Subscriber2.next @ Subscriber.js:34
+(anonymous) @ defaultIfEmpty.js:8
+OperatorSubscriber2._this._next @ OperatorSubscriber.js:15
+Subscriber2.next @ Subscriber.js:34
+(anonymous) @ combineLatest.js:47
+OperatorSubscriber2._this._next @ OperatorSubscriber.js:15
+Subscriber2.next @ Subscriber.js:34
+(anonymous) @ map.js:7
+OperatorSubscriber2._this._next @ OperatorSubscriber.js:15
+Subscriber2.next @ Subscriber.js:34
+(anonymous) @ tap.js:18
+OperatorSubscriber2._this._next @ OperatorSubscriber.js:15
+Subscriber2.next @ Subscriber.js:34
+(anonymous) @ innerFrom.js:51
+Observable2._trySubscribe @ Observable.js:38
+(anonymous) @ Observable.js:32
+errorContext @ errorContext.js:19
+Observable2.subscribe @ Observable.js:23
+(anonymous) @ tap.js:15
+(anonymous) @ lift.js:10
+(anonymous) @ Observable.js:27
+errorContext @ errorContext.js:19
+Observable2.subscribe @ Observable.js:23
+(anonymous) @ map.js:6
+(anonymous) @ lift.js:10
+(anonymous) @ Observable.js:27
+errorContext @ errorContext.js:19
+Observable2.subscribe @ Observable.js:23
+(anonymous) @ combineLatest.js:40
+maybeSchedule @ combineLatest.js:67
+_loop_1 @ combineLatest.js:37
+(anonymous) @ combineLatest.js:57
+maybeSchedule @ combineLatest.js:67
+(anonymous) @ combineLatest.js:31
+Observable2._trySubscribe @ Observable.js:38
+(anonymous) @ Observable.js:32
+errorContext @ errorContext.js:19
+Observable2.subscribe @ Observable.js:23
+(anonymous) @ defaultIfEmpty.js:6
+(anonymous) @ lift.js:10
+(anonymous) @ Observable.js:27
+errorContext @ errorContext.js:19
+Observable2.subscribe @ Observable.js:23
+(anonymous) @ take.js:10
+(anonymous) @ lift.js:10
+(anonymous) @ Observable.js:27
+errorContext @ errorContext.js:19
+Observable2.subscribe @ Observable.js:23
+(anonymous) @ map.js:6
+(anonymous) @ lift.js:10
+(anonymous) @ Observable.js:27
+errorContext @ errorContext.js:19
+Observable2.subscribe @ Observable.js:23
+(anonymous) @ switchMap.js:14
+OperatorSubscriber2._this._next @ OperatorSubscriber.js:15
+Subscriber2.next @ Subscriber.js:34
+(anonymous) @ switchMap.js:14
+OperatorSubscriber2._this._next @ OperatorSubscriber.js:15
+Subscriber2.next @ Subscriber.js:34
+(anonymous) @ map.js:7
+OperatorSubscriber2._this._next @ OperatorSubscriber.js:15
+Subscriber2.next @ Subscriber.js:34
+(anonymous) @ tap.js:18
+OperatorSubscriber2._this._next @ OperatorSubscriber.js:15
+Subscriber2.next @ Subscriber.js:34
+(anonymous) @ switchMap.js:14
+OperatorSubscriber2._this._next @ OperatorSubscriber.js:15
+Subscriber2.next @ Subscriber.js:34
+(anonymous) @ tap.js:18
+OperatorSubscriber2._this._next @ OperatorSubscriber.js:15
+Subscriber2.next @ Subscriber.js:34
+(anonymous) @ mergeInternals.js:25
+OperatorSubscriber2._this._next @ OperatorSubscriber.js:15
+Subscriber2.next @ Subscriber.js:34
+(anonymous) @ mergeInternals.js:25
+OperatorSubscriber2._this._next @ OperatorSubscriber.js:15
+Subscriber2.next @ Subscriber.js:34
+(anonymous) @ innerFrom.js:51
+Observable2._trySubscribe @ Observable.js:38
+(anonymous) @ Observable.js:32
+errorContext @ errorContext.js:19
+Observable2.subscribe @ Observable.js:23
+doInnerSub @ mergeInternals.js:19
+outerNext @ mergeInternals.js:14
+OperatorSubscriber2._this._next @ OperatorSubscriber.js:15
+Subscriber2.next @ Subscriber.js:34
+(anonymous) @ takeLast.js:18
+OperatorSubscriber2._this._complete @ OperatorSubscriber.js:38
+Subscriber2.complete @ Subscriber.js:52
+(anonymous) @ tap.js:23
+OperatorSubscriber2._this._complete @ OperatorSubscriber.js:38
+Subscriber2.complete @ Subscriber.js:52
+checkComplete @ mergeInternals.js:11
+(anonymous) @ mergeInternals.js:55
+OperatorSubscriber2._this._complete @ OperatorSubscriber.js:38
+Subscriber2.complete @ Subscriber.js:52
+(anonymous) @ innerFrom.js:87
+Observable2._trySubscribe @ Observable.js:38
+(anonymous) @ Observable.js:32
+errorContext @ errorContext.js:19
+Observable2.subscribe @ Observable.js:23
+mergeInternals @ mergeInternals.js:53
+(anonymous) @ mergeMap.js:14
+(anonymous) @ lift.js:10
+(anonymous) @ Observable.js:27
+errorContext @ errorContext.js:19
+Observable2.subscribe @ Observable.js:23
+(anonymous) @ tap.js:15
+(anonymous) @ lift.js:10
+(anonymous) @ Observable.js:27
+errorContext @ errorContext.js:19
+Observable2.subscribe @ Observable.js:23
+(anonymous) @ takeLast.js:10
+(anonymous) @ lift.js:10
+(anonymous) @ Observable.js:27
+errorContext @ errorContext.js:19
+Observable2.subscribe @ Observable.js:23
+mergeInternals @ mergeInternals.js:53
+(anonymous) @ mergeMap.js:14
+(anonymous) @ lift.js:10
+(anonymous) @ Observable.js:27
+errorContext @ errorContext.js:19
+Observable2.subscribe @ Observable.js:23
+doInnerSub @ mergeInternals.js:19
+outerNext @ mergeInternals.js:14
+Promise.then
+(anonymous) @ innerFrom.js:59
+Observable2._trySubscribe @ Observable.js:38
+(anonymous) @ Observable.js:32
+errorContext @ errorContext.js:19
+Observable2.subscribe @ Observable.js:23
+(anonymous) @ switchMap.js:14
+OperatorSubscriber2._this._next @ OperatorSubscriber.js:15
+Subscriber2.next @ Subscriber.js:34
+(anonymous) @ innerFrom.js:61
+Promise.then
+(anonymous) @ innerFrom.js:59
+Observable2._trySubscribe @ Observable.js:38
+(anonymous) @ Observable.js:32
+errorContext @ errorContext.js:19
+Observable2.subscribe @ Observable.js:23
+(anonymous) @ switchMap.js:10
+(anonymous) @ lift.js:10
+(anonymous) @ Observable.js:27
+errorContext @ errorContext.js:19
+Observable2.subscribe @ Observable.js:23
+(anonymous) @ take.js:10
+(anonymous) @ lift.js:10
+(anonymous) @ Observable.js:27
+errorContext @ errorContext.js:19
+Observable2.subscribe @ Observable.js:23
+(anonymous) @ throwIfEmpty.js:8
+(anonymous) @ lift.js:10
+(anonymous) @ Observable.js:27
+errorContext @ errorContext.js:19
+Observable2.subscribe @ Observable.js:23
+(anonymous) @ defer.js:5
+Observable2._trySubscribe @ Observable.js:38
+(anonymous) @ Observable.js:32
+errorContext @ errorContext.js:19
+Observable2.subscribe @ Observable.js:23
+(anonymous) @ take.js:10
+(anonymous) @ lift.js:10
+(anonymous) @ Observable.js:27
+errorContext @ errorContext.js:19
+Observable2.subscribe @ Observable.js:23
+doInnerSub @ mergeInternals.js:19
+outerNext @ mergeInternals.js:14
+OperatorSubscriber2._this._next @ OperatorSubscriber.js:15
+Subscriber2.next @ Subscriber.js:34
+(anonymous) @ innerFrom.js:51
+Observable2._trySubscribe @ Observable.js:38
+(anonymous) @ Observable.js:32
+errorContext @ errorContext.js:19
+Observable2.subscribe @ Observable.js:23
+mergeInternals @ mergeInternals.js:53
+(anonymous) @ mergeMap.js:14
+(anonymous) @ lift.js:10
+(anonymous) @ Observable.js:27
+errorContext @ errorContext.js:19
+Observable2.subscribe @ Observable.js:23
+(anonymous) @ startWith.js:11
+(anonymous) @ lift.js:10
+(anonymous) @ Observable.js:27
+errorContext @ errorContext.js:19
+Observable2.subscribe @ Observable.js:23
+(anonymous) @ combineLatest.js:40
+maybeSchedule @ combineLatest.js:67
+_loop_1 @ combineLatest.js:37
+(anonymous) @ combineLatest.js:57
+maybeSchedule @ combineLatest.js:67
+(anonymous) @ combineLatest.js:31
+Observable2._trySubscribe @ Observable.js:38
+(anonymous) @ Observable.js:32
+errorContext @ errorContext.js:19
+Observable2.subscribe @ Observable.js:23
+(anonymous) @ map.js:6
+(anonymous) @ lift.js:10
+(anonymous) @ Observable.js:27
+errorContext @ errorContext.js:19
+Observable2.subscribe @ Observable.js:23
+(anonymous) @ filter.js:6
+(anonymous) @ lift.js:10
+(anonymous) @ Observable.js:27
+errorContext @ errorContext.js:19
+Observable2.subscribe @ Observable.js:23
+(anonymous) @ take.js:10
+(anonymous) @ lift.js:10
+(anonymous) @ Observable.js:27
+errorContext @ errorContext.js:19
+Observable2.subscribe @ Observable.js:23
+(anonymous) @ switchMap.js:14
+OperatorSubscriber2._this._next @ OperatorSubscriber.js:15
+Subscriber2.next @ Subscriber.js:34
+(anonymous) @ innerFrom.js:51
+Observable2._trySubscribe @ Observable.js:38
+(anonymous) @ Observable.js:32
+errorContext @ errorContext.js:19
+Observable2.subscribe @ Observable.js:23
+(anonymous) @ switchMap.js:10
+(anonymous) @ lift.js:10
+(anonymous) @ Observable.js:27
+errorContext @ errorContext.js:19
+Observable2.subscribe @ Observable.js:23
+doInnerSub @ mergeInternals.js:19
+outerNext @ mergeInternals.js:14
+OperatorSubscriber2._this._next @ OperatorSubscriber.js:15
+Subscriber2.next @ Subscriber.js:34
+(anonymous) @ innerFrom.js:51
+Observable2._trySubscribe @ Observable.js:38
+(anonymous) @ Observable.js:32
+errorContext @ errorContext.js:19
+Observable2.subscribe @ Observable.js:23
+mergeInternals @ mergeInternals.js:53
+(anonymous) @ mergeMap.js:14
+(anonymous) @ lift.js:10
+(anonymous) @ Observable.js:27
+errorContext @ errorContext.js:19
+Observable2.subscribe @ Observable.js:23
+doInnerSub @ mergeInternals.js:19
+outerNext @ mergeInternals.js:14
+OperatorSubscriber2._this._next @ OperatorSubscriber.js:15
+Subscriber2.next @ Subscriber.js:34
+(anonymous) @ innerFrom.js:51
+Observable2._trySubscribe @ Observable.js:38
+(anonymous) @ Observable.js:32
+errorContext @ errorContext.js:19
+Observable2.subscribe @ Observable.js:23
+mergeInternals @ mergeInternals.js:53
+(anonymous) @ mergeMap.js:14
+(anonymous) @ lift.js:10
+(anonymous) @ Observable.js:27
+errorContext @ errorContext.js:19
+Observable2.subscribe @ Observable.js:23
+(anonymous) @ filter.js:6
+(anonymous) @ lift.js:10
+(anonymous) @ Observable.js:27
+errorContext @ errorContext.js:19
+Observable2.subscribe @ Observable.js:23
+(anonymous) @ take.js:10
+(anonymous) @ lift.js:10
+(anonymous) @ Observable.js:27
+errorContext @ errorContext.js:19
+Observable2.subscribe @ Observable.js:23
+(anonymous) @ defaultIfEmpty.js:6
+(anonymous) @ lift.js:10
+(anonymous) @ Observable.js:27
+errorContext @ errorContext.js:19
+Observable2.subscribe @ Observable.js:23
+doInnerSub @ mergeInternals.js:19
+outerNext @ mergeInternals.js:14
+OperatorSubscriber2._this._next @ OperatorSubscriber.js:15
+Subscriber2.next @ Subscriber.js:34
+(anonymous) @ defaultIfEmpty.js:11
+OperatorSubscriber2._this._complete @ OperatorSubscriber.js:38
+Subscriber2.complete @ Subscriber.js:52
+Subscriber2._complete @ Subscriber.js:75
+Subscriber2.complete @ Subscriber.js:52
+Subscriber2._complete @ Subscriber.js:75
+Subscriber2.complete @ Subscriber.js:52
+checkComplete @ mergeInternals.js:11
+(anonymous) @ mergeInternals.js:55
+OperatorSubscriber2._this._complete @ OperatorSubscriber.js:38
+Subscriber2.complete @ Subscriber.js:52
+(anonymous) @ innerFrom.js:53
+Observable2._trySubscribe @ Observable.js:38
+(anonymous) @ Observable.js:32
+errorContext @ errorContext.js:19
+Observable2.subscribe @ Observable.js:23
+mergeInternals @ mergeInternals.js:53
+(anonymous) @ mergeMap.js:14
+(anonymous) @ lift.js:10
+(anonymous) @ Observable.js:27
+errorContext @ errorContext.js:19
+Observable2.subscribe @ Observable.js:23
+(anonymous) @ filter.js:6
+(anonymous) @ lift.js:10
+(anonymous) @ Observable.js:27
+errorContext @ errorContext.js:19
+Observable2.subscribe @ Observable.js:23
+(anonymous) @ take.js:10
+(anonymous) @ lift.js:10
+(anonymous) @ Observable.js:27
+errorContext @ errorContext.js:19
+Observable2.subscribe @ Observable.js:23
+(anonymous) @ defaultIfEmpty.js:6
+(anonymous) @ lift.js:10
+(anonymous) @ Observable.js:27
+errorContext @ errorContext.js:19
+Observable2.subscribe @ Observable.js:23
+mergeInternals @ mergeInternals.js:53
+(anonymous) @ mergeMap.js:14
+(anonymous) @ lift.js:10
+(anonymous) @ Observable.js:27
+errorContext @ errorContext.js:19
+Observable2.subscribe @ Observable.js:23
+(anonymous) @ map.js:6
+(anonymous) @ lift.js:10
+(anonymous) @ Observable.js:27
+errorContext @ errorContext.js:19
+Observable2.subscribe @ Observable.js:23
+doInnerSub @ mergeInternals.js:19
+outerNext @ mergeInternals.js:14
+OperatorSubscriber2._this._next @ OperatorSubscriber.js:15
+Subscriber2.next @ Subscriber.js:34
+(anonymous) @ map.js:7
+OperatorSubscriber2._this._next @ OperatorSubscriber.js:15
+Subscriber2.next @ Subscriber.js:34
+(anonymous) @ tap.js:18
+OperatorSubscriber2._this._next @ OperatorSubscriber.js:15
+Subscriber2.next @ Subscriber.js:34
+(anonymous) @ switchMap.js:14
+OperatorSubscriber2._this._next @ OperatorSubscriber.js:15
+Subscriber2.next @ Subscriber.js:34
+(anonymous) @ tap.js:18
+OperatorSubscriber2._this._next @ OperatorSubscriber.js:15
+Promise.then
+(anonymous) @ innerFrom.js:59
+Observable2._trySubscribe @ Observable.js:38
+(anonymous) @ Observable.js:32
+errorContext @ errorContext.js:19
+Observable2.subscribe @ Observable.js:23
+(anonymous) @ switchMap.js:14
+OperatorSubscriber2._this._next @ OperatorSubscriber.js:15
+Subscriber2.next @ Subscriber.js:34
+(anonymous) @ innerFrom.js:51
+Observable2._trySubscribe @ Observable.js:38
+(anonymous) @ Observable.js:32
+errorContext @ errorContext.js:19
+Observable2.subscribe @ Observable.js:23
+(anonymous) @ switchMap.js:10
+(anonymous) @ lift.js:10
+(anonymous) @ Observable.js:27
+errorContext @ errorContext.js:19
+Observable2.subscribe @ Observable.js:23
+mergeInternals @ mergeInternals.js:53
+(anonymous) @ mergeMap.js:14
+(anonymous) @ lift.js:10
+(anonymous) @ Observable.js:27
+errorContext @ errorContext.js:19
+Observable2.subscribe @ Observable.js:23
+(anonymous) @ tap.js:15
+(anonymous) @ lift.js:10
+(anonymous) @ Observable.js:27
+errorContext @ errorContext.js:19
+Observable2.subscribe @ Observable.js:23
+(anonymous) @ switchMap.js:14
+OperatorSubscriber2._this._next @ OperatorSubscriber.js:15
+Subscriber2.next @ Subscriber.js:34
+(anonymous) @ innerFrom.js:51
+Observable2._trySubscribe @ Observable.js:38
+(anonymous) @ Observable.js:32
+errorContext @ errorContext.js:19
+Observable2.subscribe @ Observable.js:23
+(anonymous) @ switchMap.js:10
+(anonymous) @ lift.js:10
+(anonymous) @ Observable.js:27
+errorContext @ errorContext.js:19
+Observable2.subscribe @ Observable.js:23
+(anonymous) @ tap.js:15
+(anonymous) @ lift.js:10
+(anonymous) @ Observable.js:27
+errorContext @ errorContext.js:19
+Observable2.subscribe @ Observable.js:23
+(anonymous) @ map.js:6
+(anonymous) @ lift.js:10
+(anonymous) @ Observable.js:27
+errorContext @ errorContext.js:19
+Observable2.subscribe @ Observable.js:23
+mergeInternals @ mergeInternals.js:53
+(anonymous) @ mergeMap.js:14
+(anonymous) @ lift.js:10
+(anonymous) @ Observable.js:27
+errorContext @ errorContext.js:19
+Observable2.subscribe @ Observable.js:23
+(anonymous) @ tap.js:15
+(anonymous) @ lift.js:10
+(anonymous) @ Observable.js:27
+errorContext @ errorContext.js:19
+Observable2.subscribe @ Observable.js:23
+(anonymous) @ filter.js:6
+(anonymous) @ lift.js:10
+(anonymous) @ Observable.js:27
+errorContext @ errorContext.js:19
+Observable2.subscribe @ Observable.js:23
+(anonymous) @ switchMap.js:10
+(anonymous) @ lift.js:10
+(anonymous) @ Observable.js:27
+errorContext @ errorContext.js:19
+Observable2.subscribe @ Observable.js:23
+(anonymous) @ switchMap.js:10
+(anonymous) @ lift.js:10
+(anonymous) @ Observable.js:27
+errorContext @ errorContext.js:19
+Observable2.subscribe @ Observable.js:23
+(anonymous) @ switchMap.js:10
+(anonymous) @ lift.js:10
+(anonymous) @ Observable.js:27
+errorContext @ errorContext.js:19
+Observable2.subscribe @ Observable.js:23
+(anonymous) @ switchMap.js:10
+(anonymous) @ lift.js:10
+(anonymous) @ Observable.js:27
+errorContext @ errorContext.js:19
+Observable2.subscribe @ Observable.js:23
+(anonymous) @ map.js:6
+(anonymous) @ lift.js:10
+(anonymous) @ Observable.js:27
+errorContext @ errorContext.js:19
+Observable2.subscribe @ Observable.js:23
+(anonymous) @ tap.js:15
+(anonymous) @ lift.js:10
+(anonymous) @ Observable.js:27
+errorContext @ errorContext.js:19
+Observable2.subscribe @ Observable.js:23
+(anonymous) @ map.js:6
+(anonymous) @ lift.js:10
+(anonymous) @ Observable.js:27
+errorContext @ errorContext.js:19
+Observable2.subscribe @ Observable.js:23
+(anonymous) @ take.js:10
+(anonymous) @ lift.js:10
+(anonymous) @ Observable.js:27
+errorContext @ errorContext.js:19
+Observable2.subscribe @ Observable.js:23
+(anonymous) @ takeUntil.js:8
+(anonymous) @ lift.js:10
+(anonymous) @ Observable.js:27
+errorContext @ errorContext.js:19
+Observable2.subscribe @ Observable.js:23
+(anonymous) @ tap.js:15
+(anonymous) @ lift.js:10
+(anonymous) @ Observable.js:27
+errorContext @ errorContext.js:19
+Observable2.subscribe @ Observable.js:23
+(anonymous) @ takeUntil.js:8
+(anonymous) @ lift.js:10
+(anonymous) @ Observable.js:27
+errorContext @ errorContext.js:19
+Observable2.subscribe @ Observable.js:23
+(anonymous) @ finalize.js:5
+(anonymous) @ lift.js:10
+(anonymous) @ Observable.js:27
+errorContext @ errorContext.js:19
+Observable2.subscribe @ Observable.js:23
+(anonymous) @ catchError.js:9
+(anonymous) @ lift.js:10
+(anonymous) @ Observable.js:27
+errorContext @ errorContext.js:19
+Observable2.subscribe @ Observable.js:23
+(anonymous) @ switchMap.js:14
+OperatorSubscriber2._this._next @ OperatorSubscriber.js:15
+Subscriber2.next @ Subscriber.js:34
+(anonymous) @ filter.js:6
+OperatorSubscriber2._this._next @ OperatorSubscriber.js:15
+Subscriber2.next @ Subscriber.js:34
+(anonymous) @ Subject.js:41
+errorContext @ errorContext.js:19
+Subject2.next @ Subject.js:31
+BehaviorSubject2.next @ BehaviorSubject.js:31
+(anonymous) @ router2.mjs:4779
+untracked @ effect.mjs:109
+untracked2 @ resource.mjs:90
+handleNavigationRequest @ router2.mjs:4778
+scheduleNavigation @ router2.mjs:6065
+navigateByUrl @ router2.mjs:5964
+navigate @ router2.mjs:6000
+checkout @ cart.page.ts:477
+CartPage_div_4_div_16_Template_button_click_34_listener @ cart.page.html:502
+executeListenerWithErrorHandling @ debug_node.mjs:13220
+wrapListenerIn_markDirtyAndPreventDefault @ debug_node.mjs:13203
+(anonymous) @ dom_renderer.mjs:708
+payment.page.ts:74 card-element div found after 0 attempts
+payment.page.ts:158 Setting up Stripe card element...
+payment.page.ts:168 card-element div found, creating Stripe element...
+stripe.service.ts:73 Creating Stripe Elements with dark theme...
+stripe.service.ts:107 Creating card element...
+stripe.service.ts:133 Mounting card element to #card-element
+stripe.service.ts:140 Card element mounted successfully
+payment.page.ts:173 Stripe card element created and mounted successfully
+payment.page.ts:130 Billing address loaded: Moncofa CT
+payment.page.ts:187 Card element is ready for input
+31Tracking Prevention blocked access to storage for <URL>.
+hcaptcha.html:14 [Violation] Added non-passive event listener to a scroll-blocking 'touchstart' event. Consider marking event handler as 'passive' to make the page more responsive. See https://www.chromestatus.com/feature/5745543795965952
+(anonymous) @ hcaptcha.html:14
+ye @ hcaptcha.html:14
+xe.addEventListener @ hcaptcha.html:14
+xe.addEventListener @ hcaptcha.html:14
+dn @ hcaptcha.html:14
+self @ hcaptcha.html:14
+gn @ hcaptcha.html:14
+self @ hcaptcha.html:14
+Ho @ hcaptcha.html:14
+_e.initComponent @ hcaptcha.html:14
+No @ hcaptcha.html:14
+_e.initComponent @ hcaptcha.html:14
+Yo @ hcaptcha.html:14
+Jo @ hcaptcha.html:14
+(anonymous) @ hcaptcha.html:14
+(anonymous) @ hcaptcha.html:14
+(anonymous) @ hcaptcha.html:14
+hcaptcha.html:14 [Violation] Added non-passive event listener to a scroll-blocking 'touchstart' event. Consider marking event handler as 'passive' to make the page more responsive. See https://www.chromestatus.com/feature/5745543795965952
+(anonymous) @ hcaptcha.html:14
+ye @ hcaptcha.html:14
+xe.addEventListener @ hcaptcha.html:14
+xe.addEventListener @ hcaptcha.html:14
+dn @ hcaptcha.html:14
+self @ hcaptcha.html:14
+yn @ hcaptcha.html:14
+self @ hcaptcha.html:14
+Bo @ hcaptcha.html:14
+_e.initComponent @ hcaptcha.html:14
+Yo @ hcaptcha.html:14
+Jo @ hcaptcha.html:14
+(anonymous) @ hcaptcha.html:14
+(anonymous) @ hcaptcha.html:14
+(anonymous) @ hcaptcha.html:14
+hcaptcha.html:14 [Violation] Added non-passive event listener to a scroll-blocking 'touchstart' event. Consider marking event handler as 'passive' to make the page more responsive. See https://www.chromestatus.com/feature/5745543795965952
+(anonymous) @ hcaptcha.html:14
+ye @ hcaptcha.html:14
+xe.addEventListener @ hcaptcha.html:14
+xe.addEventListener @ hcaptcha.html:14
+dn @ hcaptcha.html:14
+self @ hcaptcha.html:14
+yn @ hcaptcha.html:14
+self @ hcaptcha.html:14
+Mo @ hcaptcha.html:14
+_e.initComponent @ hcaptcha.html:14
+Yo @ hcaptcha.html:14
+Jo @ hcaptcha.html:14
+(anonymous) @ hcaptcha.html:14
+(anonymous) @ hcaptcha.html:14
+(anonymous) @ hcaptcha.html:14
+hcaptcha.html:14 [Violation] Added non-passive event listener to a scroll-blocking 'touchstart' event. Consider marking event handler as 'passive' to make the page more responsive. See https://www.chromestatus.com/feature/5745543795965952
+(anonymous) @ hcaptcha.html:14
+ye @ hcaptcha.html:14
+xe.addEventListener @ hcaptcha.html:14
+xe.addEventListener @ hcaptcha.html:14
+dn @ hcaptcha.html:14
+self @ hcaptcha.html:14
+yn @ hcaptcha.html:14
+self @ hcaptcha.html:14
+Jn @ hcaptcha.html:14
+_e.initComponent @ hcaptcha.html:14
+qn @ hcaptcha.html:14
+_e.initComponent @ hcaptcha.html:14
+To @ hcaptcha.html:14
+Jo @ hcaptcha.html:14
+(anonymous) @ hcaptcha.html:14
+(anonymous) @ hcaptcha.html:14
+(anonymous) @ hcaptcha.html:14
+inpage.js:1  MetaMask no longer injects web3. For details, see: https://docs.metamask.io/guide/provider-migration.html#replacing-window-web3

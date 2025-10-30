@@ -33,6 +33,41 @@ service cloud.firestore {
       allow delete: if isAdmin() || (isSignedIn() && userId == request.auth.uid);
     }
 
+    // Product Reviews - Only approved reviews are publicly readable
+    match /productReviews/{reviewId} {
+      // Public can read only approved reviews
+      allow read: if resource.data.status == 'approved';
+      // Admins can read all reviews
+      allow list: if isAdmin();
+      // Users can create reviews if authenticated and it's their own review
+      allow create: if isSignedIn()
+        && request.resource.data.userId == request.auth.uid
+        && request.resource.data.productId is string
+        && request.resource.data.orderId is string
+        && request.resource.data.rating is number
+        && request.resource.data.rating >= 1
+        && request.resource.data.rating <= 5
+        && request.resource.data.title is string
+        && request.resource.data.title.size() >= 5
+        && request.resource.data.title.size() <= 100
+        && request.resource.data.comment is string
+        && request.resource.data.comment.size() >= 20
+        && request.resource.data.comment.size() <= 1000
+        && request.resource.data.status == 'pending'
+        && request.resource.data.verified == true;
+      // Users can update helpful votes on their own reviews
+      allow update: if isSignedIn()
+        && (
+          // Admin can approve/reject/respond to any review
+          isAdmin()
+          // User can toggle helpful on any review (helpfulBy array)
+          || (resource.data.userId != request.auth.uid 
+              && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['helpful', 'helpfulBy']))
+        );
+      // Only admins can delete reviews
+      allow delete: if isAdmin();
+    }
+
     // Products - Public read, Admin write
     match /products/{productId} {
       allow read: if true;

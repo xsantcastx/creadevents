@@ -33,6 +33,7 @@ export interface AdminActivityItem {
   description: string;
   timestamp: Date;
   icon: string;
+  entityId?: string; // ID of the related entity (order ID, product ID, etc.)
 }
 
 export interface AdminDashboardSnapshot {
@@ -41,6 +42,7 @@ export interface AdminDashboardSnapshot {
   totalGalleryImages: number;
   totalUsers: number;
   pendingOrders: number;
+  pendingReviews: number;
   totalRevenue: number;
   currencyCode: string;
   recentActivity: AdminActivityItem[];
@@ -90,12 +92,14 @@ export class AdminDashboardService {
         ordersSummary,
         totalGalleryImages,
         totalUsers,
+        pendingReviews,
         recentActivity
       ] = await Promise.all([
         this.getCollectionCount('products'),
         this.getOrdersSummary(currencyCode),
         this.getGalleryImagesCount(),
         this.getCollectionCount('users'),
+        this.getPendingReviewsCount(),
         this.getRecentActivity(currencyCode, 8)
       ]);
 
@@ -105,6 +109,7 @@ export class AdminDashboardService {
         totalGalleryImages,
         totalUsers,
         pendingOrders: ordersSummary.pending,
+        pendingReviews,
         totalRevenue: ordersSummary.revenue,
         currencyCode,
         recentActivity
@@ -117,6 +122,7 @@ export class AdminDashboardService {
         totalGalleryImages: 0,
         totalUsers: 0,
         pendingOrders: 0,
+        pendingReviews: 0,
         totalRevenue: 0,
         currencyCode: 'USD',
         recentActivity: []
@@ -299,6 +305,28 @@ export class AdminDashboardService {
     }
   }
 
+  private async getPendingReviewsCount(): Promise<number> {
+    const reviewsRef = collection(this.firestore, 'productReviews');
+    try {
+      const snapshot = await getCountFromServer(
+        query(reviewsRef, where('status', '==', 'pending'))
+      );
+      const data = snapshot.data();
+      return this.normalizeNumber(data.count);
+    } catch (error) {
+      console.warn('[AdminDashboardService] Falling back to manual pending reviews count:', (error as Error).message);
+      const snapshot = await getDocs(reviewsRef);
+      let count = 0;
+      snapshot.forEach(docSnap => {
+        const data = docSnap.data();
+        if (data?.['status'] === 'pending') {
+          count += 1;
+        }
+      });
+      return count;
+    }
+  }
+
   private async getOrdersSummary(currencyCode: string): Promise<{
     total: number;
     pending: number;
@@ -389,7 +417,8 @@ export class AdminDashboardService {
           type: 'order' as AdminActivityType,
           description: `Order ${orderNumber} · ${statusLabel}${amountLabel}`,
           timestamp,
-          icon: 'order'
+          icon: 'order',
+          entityId: docSnap.id // Store order ID for navigation
         };
       })
     );
@@ -419,7 +448,8 @@ export class AdminDashboardService {
         type: 'product' as AdminActivityType,
         description: grosor ? `${name} (${grosor}) updated` : `${name} updated`,
         timestamp,
-        icon: 'product'
+        icon: 'product',
+        entityId: docSnap.id // Store product ID for navigation
       };
     });
   }
@@ -448,7 +478,8 @@ export class AdminDashboardService {
           type: 'gallery' as AdminActivityType,
           description,
           timestamp,
-          icon: 'gallery'
+          icon: 'gallery',
+          entityId: docSnap.id // Store media ID for navigation
         };
       });
     } catch (error) {
@@ -472,10 +503,11 @@ export class AdminDashboardService {
             type: 'gallery' as AdminActivityType,
             description,
             timestamp,
-            icon: 'gallery'
-          };
+            icon: 'gallery',
+            entityId: docSnap.id // Store media ID for navigation
+          } as AdminActivityItem;
         })
-        .filter((item): item is AdminActivityItem => !!item)
+        .filter((item): item is AdminActivityItem => item !== null)
         .slice(0, limitCount);
     }
   }
@@ -500,7 +532,8 @@ export class AdminDashboardService {
         type: 'user' as AdminActivityType,
         description,
         timestamp,
-        icon: 'user'
+        icon: 'user',
+        entityId: docSnap.id // Store user ID for navigation
       };
     });
   }
