@@ -19,7 +19,8 @@ interface CartViewModel {
       id: string;
       name: string;
       imageUrl?: string;
-      sku?: string;
+      sku: string | undefined;
+      grosor?: string;
       price: number;
     };
     qty: number;
