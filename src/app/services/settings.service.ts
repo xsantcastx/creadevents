@@ -16,6 +16,7 @@ export interface AppSettings {
   // Stripe
   stripePublicKey: string;
   stripeSecretKey: string;
+  stripeWebhookSecret: string;
   stripeCurrency: string;
   stripeTestMode: boolean;
   
@@ -110,6 +111,7 @@ export interface HeroImage {
 // Sensitive fields that should never be sent to frontend
 const SENSITIVE_FIELDS: (keyof AppSettings)[] = [
   'stripeSecretKey',
+  'stripeWebhookSecret',
   'emailApiKey',
 ];
 
@@ -343,6 +345,7 @@ export class SettingsService {
       // Stripe
       stripePublicKey: '',
       stripeSecretKey: '',
+      stripeWebhookSecret: '',
       stripeCurrency: 'usd',
       stripeTestMode: true,
       

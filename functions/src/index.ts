@@ -21,9 +21,19 @@ async function getStripeConfig(): Promise<{ secretKey: string; webhookSecret: st
 
     if (settings?.stripeSecretKey) {
       console.log("✓ Using Stripe secret key from Firestore settings");
+      
+      // Use webhook secret from Firestore if available, otherwise fall back to env
+      const webhookSecret = settings.stripeWebhookSecret || process.env.STRIPE_WEBHOOK_SECRET || null;
+      
+      if (settings.stripeWebhookSecret) {
+        console.log("✓ Using Stripe webhook secret from Firestore settings");
+      } else if (process.env.STRIPE_WEBHOOK_SECRET) {
+        console.log("✓ Using Stripe webhook secret from environment variables");
+      }
+      
       return {
         secretKey: settings.stripeSecretKey,
-        webhookSecret: process.env.STRIPE_WEBHOOK_SECRET || null,
+        webhookSecret,
       };
     }
   } catch (error) {
@@ -519,11 +529,12 @@ export const handleStripeWebhook = functions.https.onRequest(async (req, res) =>
     return;
   }
 
-  // Get webhook secret from .env file
-  const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET || functions.config().stripe?.webhook_secret;
+  // Get webhook secret from Firestore settings or .env file
+  const config = await getStripeConfig();
+  const webhookSecret = config.webhookSecret;
 
   if (!webhookSecret) {
-    console.error("⚠️  Stripe webhook secret not configured! Add STRIPE_WEBHOOK_SECRET to functions/.env");
+    console.error("⚠️  Stripe webhook secret not configured! Add it in Admin Settings or functions/.env");
     res.status(500).send("Webhook secret not configured");
     return;
   }
