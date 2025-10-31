@@ -49,10 +49,10 @@ export class GalleryAdminComponent extends LoadingComponentBase implements OnIni
   products: Product[] = [];
   availableTags: Tag[] = [];
   showUploadModal = false;
-  showEditModal = false;
   isSaving = false;
   uploadForm: FormGroup;
   editForm: FormGroup;
+  projectForm: FormGroup;
   successMessage = '';
   warningMessage = '';  // Add warning for non-critical issues
   selectedTag: MediaTag | 'all' = 'all';
@@ -63,11 +63,13 @@ export class GalleryAdminComponent extends LoadingComponentBase implements OnIni
   galleryProjects: GalleryProjectSummary[] = [];
   projectToManage: GalleryProjectSummary | null = null;
   showProjectManager = false;
+  editProjectSummary: GalleryProjectSummary | null = null;
   previewUrls: string[] = [];
   uploadProgress = 0;
   isUploading = false;
   uploadedCount = 0;
   totalToUpload = 0;
+  isProjectSaving = false;
 
   selectedFiles: File[] = [];
   private mediaSub: Subscription | null = null;
@@ -85,6 +87,12 @@ export class GalleryAdminComponent extends LoadingComponentBase implements OnIni
 
     this.editForm = this.fb.group({
       altText: ['', Validators.required],
+      caption: [''],
+      tags: [[]],
+      relatedProductIds: [[]]
+    });
+
+    this.projectForm = this.fb.group({
       caption: [''],
       tags: [[]],
       relatedProductIds: [[]]
@@ -216,16 +224,58 @@ export class GalleryAdminComponent extends LoadingComponentBase implements OnIni
     return this.products.filter(p => project.relatedProductIds.includes(p.id || ''));
   }
 
-  openProjectManager(project: GalleryProjectSummary): void {
+  private getProjectForMedia(media: Media): GalleryProjectSummary | undefined {
+    return this.galleryProjects.find(project =>
+      project.images.some(image => image.id === media.id)
+    );
+  }
+
+  getProductName(productId: string | undefined): string {
+    if (!productId) {
+      return '';
+    }
+    const product = this.products.find(p => p.id === productId);
+    return product?.name || productId;
+  }
+
+  openProjectManager(project: GalleryProjectSummary, initialMedia?: Media): void {
     const latest = this.galleryProjects.find(item => item.id === project.id) || project;
     this.projectToManage = latest;
     this.showProjectManager = true;
     this.errorMessage = '';
+    this.projectForm.patchValue({
+      caption: latest.caption || '',
+      tags: [...latest.tags],
+      relatedProductIds: [...latest.relatedProductIds]
+    });
+    this.projectForm.markAsPristine();
+
+    if (initialMedia) {
+      const match = latest.images.find(image => image.id === initialMedia.id);
+      if (match) {
+        this.selectMediaForEdit(match);
+        return;
+      }
+    }
+
+    const firstImage = latest.images[0];
+    if (firstImage) {
+      this.selectMediaForEdit(firstImage);
+    } else {
+      this.selectMediaForEdit(null);
+    }
   }
 
   closeProjectManager(): void {
     this.showProjectManager = false;
     this.projectToManage = null;
+    this.selectMediaForEdit(null);
+    this.projectForm.reset({
+      caption: '',
+      tags: [],
+      relatedProductIds: []
+    });
+    this.isProjectSaving = false;
   }
 
   addPhotosToProject(project: GalleryProjectSummary): void {
@@ -241,9 +291,108 @@ export class GalleryAdminComponent extends LoadingComponentBase implements OnIni
     this.closeProjectManager();
   }
 
+  /**
+   * Legacy template hook. Keep for backward compatibility with any cached templates.
+   */
   editMediaFromProject(media: Media): void {
-    this.closeProjectManager();
-    this.openEditModal(media);
+    this.selectMediaForEdit(media);
+  }
+
+  async saveProjectSettings(): Promise<void> {
+    if (!this.projectToManage || this.isProjectSaving) {
+      return;
+    }
+
+    const caption: string = this.projectForm.value.caption || '';
+    const tags: MediaTag[] = this.projectForm.value.tags || [];
+    this.errorMessage = '';
+    const relatedProductIds: string[] = this.projectForm.value.relatedProductIds || [];
+
+    if (tags.length === 0) {
+      this.errorMessage = 'Please select at least one tag for the project';
+      return;
+    }
+
+    const images = this.projectToManage.images.filter(image => !!image.id);
+    if (images.length === 0) {
+      return;
+    }
+
+    this.isProjectSaving = true;
+    this.errorMessage = '';
+
+    try {
+      const relatedEntityIds = relatedProductIds.map(id => `products/${id}`);
+
+      await Promise.all(
+        images.map(image => this.mediaService.updateMedia(image.id!, {
+          caption,
+          tags: tags as string[],
+          relatedEntityIds
+        }))
+      );
+
+      this.projectToManage = {
+        ...this.projectToManage,
+        caption,
+        tags: [...tags],
+        relatedProductIds: [...relatedProductIds]
+      };
+      this.projectForm.markAsPristine();
+      this.successMessage = 'Project settings updated successfully';
+      this.subscribeToMedia();
+
+      if (this.mediaToEdit) {
+        this.mediaToEdit = {
+          ...this.mediaToEdit,
+          caption,
+          tags: tags as string[],
+          relatedEntityIds
+        };
+        this.editForm.patchValue({
+          caption,
+          tags,
+          relatedProductIds
+        }, { emitEvent: false });
+        this.editForm.markAsPristine();
+      }
+    } catch (error) {
+      console.error('Error updating project settings:', error);
+      this.errorMessage = 'Error updating project settings';
+    } finally {
+      this.isProjectSaving = false;
+    }
+  }
+
+  selectMediaForEdit(media: Media | null): void {
+    if (!media) {
+      this.mediaToEdit = null;
+      this.editProjectSummary = null;
+      this.editForm.reset();
+      return;
+    }
+
+    this.mediaToEdit = media;
+    this.editProjectSummary = this.getProjectForMedia(media) || null;
+
+    this.editForm.patchValue({
+      altText: media.altText || '',
+      caption: media.caption || '',
+      tags: media.tags || [],
+      relatedProductIds: this.extractProductIds(media.relatedEntityIds || [])
+    }, { emitEvent: false });
+    this.editForm.markAsPristine();
+
+    this.successMessage = '';
+    this.errorMessage = '';
+  }
+
+  openProjectManagerForMedia(media: Media): void {
+    const project = this.getProjectForMedia(media);
+    if (!project) {
+      return;
+    }
+    this.openProjectManager(project, media);
   }
 
   private updateGalleryProjects(): void {
@@ -255,6 +404,29 @@ export class GalleryAdminComponent extends LoadingComponentBase implements OnIni
       const refreshed = projects.find(project => project.id === this.projectToManage?.id);
       if (refreshed) {
         this.projectToManage = refreshed;
+        this.projectForm.patchValue(
+          { caption: refreshed.caption || '' },
+          { emitEvent: false }
+        );
+        this.projectForm.markAsPristine();
+
+        const currentMediaId = this.mediaToEdit?.id;
+        if (currentMediaId) {
+          const refreshedMedia = refreshed.images.find(image => image.id === currentMediaId);
+          if (refreshedMedia) {
+            if (!this.editForm.dirty) {
+              this.selectMediaForEdit(refreshedMedia);
+            } else {
+              this.mediaToEdit = refreshedMedia;
+            }
+          } else if (!this.editForm.dirty) {
+            const fallback = refreshed.images[0] ?? null;
+            this.selectMediaForEdit(fallback);
+          }
+        } else if (!this.editForm.dirty) {
+          const fallback = refreshed.images[0] ?? null;
+          this.selectMediaForEdit(fallback);
+        }
       } else {
         this.closeProjectManager();
       }
@@ -414,28 +586,6 @@ export class GalleryAdminComponent extends LoadingComponentBase implements OnIni
     this.totalToUpload = 0;
   }
 
-  openEditModal(media: Media): void {
-    this.mediaToEdit = media;
-    this.showEditModal = true;
-    
-    this.editForm.patchValue({
-      altText: media.altText || '',
-      caption: media.caption || '',
-      tags: media.tags || [],
-      relatedProductIds: this.extractProductIds(media.relatedEntityIds || [])
-    });
-    
-    this.successMessage = '';
-    this.errorMessage = '';
-  }
-
-  closeEditModal(): void {
-    this.showEditModal = false;
-    this.mediaToEdit = null;
-    this.editForm.reset();
-    this.errorMessage = '';
-  }
-
   private extractProductIds(relatedEntityIds: string[]): string[] {
     return relatedEntityIds
       .filter(id => id.startsWith('products/'))
@@ -506,8 +656,19 @@ export class GalleryAdminComponent extends LoadingComponentBase implements OnIni
     }
   }
 
-  toggleTag(tag: MediaTag, checked: boolean, isEdit = false): void {
-    const form = isEdit ? this.editForm : this.uploadForm;
+  private getFormByScope(scope: 'upload' | 'edit' | 'project'): FormGroup {
+    switch (scope) {
+      case 'edit':
+        return this.editForm;
+      case 'project':
+        return this.projectForm;
+      default:
+        return this.uploadForm;
+    }
+  }
+
+  toggleTag(tag: MediaTag, checked: boolean, scope: 'upload' | 'edit' | 'project' = 'upload'): void {
+    const form = this.getFormByScope(scope);
     const current = new Set<MediaTag>(form.get('tags')?.value || []);
     
     if (checked) {
@@ -520,14 +681,14 @@ export class GalleryAdminComponent extends LoadingComponentBase implements OnIni
     form.patchValue({ tags: newTags });
   }
 
-  isTagSelected(tag: MediaTag, isEdit = false): boolean {
-    const form = isEdit ? this.editForm : this.uploadForm;
+  isTagSelected(tag: MediaTag, scope: 'upload' | 'edit' | 'project' = 'upload'): boolean {
+    const form = this.getFormByScope(scope);
     const selected: MediaTag[] = form.get('tags')?.value || [];
     return selected.includes(tag);
   }
 
-  toggleRelatedProduct(productId: string | undefined, checked: boolean, isEdit = false): void {
-    const form = isEdit ? this.editForm : this.uploadForm;
+  toggleRelatedProduct(productId: string | undefined, checked: boolean, scope: 'upload' | 'edit' | 'project' = 'upload'): void {
+    const form = this.getFormByScope(scope);
     const current = new Set<string>(form.get('relatedProductIds')?.value || []);
     
     if (!productId) return;
@@ -541,8 +702,8 @@ export class GalleryAdminComponent extends LoadingComponentBase implements OnIni
     form.patchValue({ relatedProductIds: Array.from(current) });
   }
 
-  isProductSelected(productId: string | undefined, isEdit = false): boolean {
-    const form = isEdit ? this.editForm : this.uploadForm;
+  isProductSelected(productId: string | undefined, scope: 'upload' | 'edit' | 'project' = 'upload'): boolean {
+    const form = this.getFormByScope(scope);
     const selected: string[] = form.get('relatedProductIds')?.value || [];
     if (!productId) return false;
     return selected.includes(productId);
@@ -684,8 +845,16 @@ export class GalleryAdminComponent extends LoadingComponentBase implements OnIni
         relatedEntityIds: relatedProductIds.map(id => `products/${id}`)
       });
 
+      this.subscribeToMedia();
       this.successMessage = 'Media updated successfully';
-      this.closeEditModal();
+      this.mediaToEdit = {
+        ...this.mediaToEdit,
+        altText: formValue.altText || '',
+        caption: formValue.caption || '',
+        tags: tags as string[],
+        relatedEntityIds: relatedProductIds.map(id => `products/${id}`)
+      };
+      this.editForm.markAsPristine();
 
       setTimeout(() => {
         this.successMessage = '';
@@ -781,3 +950,5 @@ export class GalleryAdminComponent extends LoadingComponentBase implements OnIni
   get editTags() { return this.editForm.get('tags'); }
   get editRelatedProductIds() { return this.editForm.get('relatedProductIds'); }
 }
+
+
