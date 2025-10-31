@@ -23,7 +23,7 @@ export const environment = {
     // Get your key from: https://www.google.com/recaptcha/admin (same as above)
     // OR register in Firebase Console > App Check with reCAPTCHA v3
     provider: 'recaptcha',
-    siteKey: '6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI' // Use same reCAPTCHA v3 key
+    siteKey: '6LenxPwrAAAAALzJ56cCqq1EbENfdZuwhNHBwzEW' // Use same reCAPTCHA v3 key
   },
   useEmulators: false
 };

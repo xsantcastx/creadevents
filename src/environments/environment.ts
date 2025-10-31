@@ -17,8 +17,9 @@ export const environment = {
   recaptcha: {
     // reCAPTCHA v3 site key for invisible verification
     // Registered at: https://www.google.com/recaptcha/admin
+    // TEMPORARILY DISABLED - Key validation failing, check domain configuration
     siteKey: '6LenxPwrAAAAALzJ56cCqq1EbENfdZuwhNHBwzEW',
-    enabled: true
+    enabled: false // Disabled until key is properly configured
   },
   appCheck: {
     // reCAPTCHA v3 site key for App Check
