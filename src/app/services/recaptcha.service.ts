@@ -19,6 +19,7 @@ export class RecaptchaService {
   private scriptLoaded = false;
   private currentSiteKey: string | null = null;
   private loadingPromise: Promise<void> | null = null;
+  private reportedLocalhostFallback = false;
 
   /**
    * Check if CAPTCHA is enabled in settings
@@ -42,30 +43,72 @@ export class RecaptchaService {
       const settingsEnabled = !!settings.enableCaptcha;
       const settingsSiteKey = (settings.recaptchaSiteKey || '').trim();
 
-      let siteKey = settingsSiteKey || defaultSiteKey;
-
-      if (!siteKey && !environment.production) {
-        siteKey = testSiteKey;
-      }
-
       return {
         enabled: environmentEnabled && settingsEnabled,
-        siteKey: siteKey || null
+        siteKey: this.resolveSiteKey(defaultSiteKey, settingsSiteKey, testSiteKey)
       };
     } catch (error) {
       console.warn('[RecaptchaService] Failed to load settings, falling back to environment config', error);
 
-      let siteKey = defaultSiteKey;
-
-      if (!siteKey && !environment.production) {
-        siteKey = testSiteKey;
-      }
-
       return {
         enabled: environmentEnabled,
-        siteKey: siteKey || null
+        siteKey: this.resolveSiteKey(defaultSiteKey, '', testSiteKey)
       };
     }
+  }
+
+  /**
+   * Determine the most appropriate site key based on environment and host context.
+   */
+  private resolveSiteKey(defaultSiteKey: string, settingsSiteKey: string, testSiteKey: string): string | null {
+    const trimmedDefault = (defaultSiteKey || '').trim();
+    const trimmedSettings = (settingsSiteKey || '').trim();
+    const isLocalhost = this.isLocalhostEnvironment();
+
+    if (isLocalhost) {
+      if (trimmedDefault && trimmedDefault === testSiteKey) {
+        return trimmedDefault;
+      }
+
+      if (trimmedSettings && trimmedSettings === testSiteKey) {
+        return trimmedSettings;
+      }
+
+      if (!this.reportedLocalhostFallback) {
+        console.info('[RecaptchaService] Localhost detected; using Google test site key for reCAPTCHA.');
+        this.reportedLocalhostFallback = true;
+      }
+      return testSiteKey;
+    }
+
+    if (environment.production) {
+      return trimmedSettings || trimmedDefault || null;
+    }
+
+    return trimmedDefault || trimmedSettings || testSiteKey || null;
+  }
+
+  /**
+   * Check whether the current host is a local development environment.
+   */
+  private isLocalhostEnvironment(): boolean {
+    if (!this.isBrowser || typeof window === 'undefined') {
+      return false;
+    }
+
+    const hostname = (window.location?.hostname || '').toLowerCase();
+    if (!hostname) {
+      return false;
+    }
+
+    const localhostPattern = /^(localhost|127\.\d+\.\d+\.\d+|0\.0\.0\.0|\[?::1]?)$/;
+    const privateNetworkPattern = /^(10\.\d+\.\d+\.\d+|192\.168\.\d+\.\d+|172\.(1[6-9]|2\d|3[0-1])\.\d+\.\d+)$/;
+
+    return (
+      localhostPattern.test(hostname) ||
+      privateNetworkPattern.test(hostname) ||
+      hostname.endsWith('.local')
+    );
   }
 
   /**
