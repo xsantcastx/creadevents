@@ -53,15 +53,12 @@ export const appConfig: ApplicationConfig = {
       const storage = getStorage();
       return storage;
     }),
-    // App Check for security (browser only)
-    ...(typeof window !== 'undefined' ? [
+    // App Check for security (browser only, production only or when not using emulators)
+    ...(!environment.useEmulators && typeof window !== 'undefined' ? [
       provideAppCheck(() => {
-        // Enable debug token for local development
-        if (!environment.production) {
-          (window as any).FIREBASE_APPCHECK_DEBUG_TOKEN = true;
-        }
+        console.log('[AppCheck] Initializing App Check with reCAPTCHA v3');
         
-        // Use standard reCAPTCHA v3 for both dev and production (free tier)
+        // Use reCAPTCHA v3 provider
         const provider = new ReCaptchaV3Provider(
           'siteKey' in environment.appCheck 
             ? environment.appCheck.siteKey as string 

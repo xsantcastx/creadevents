@@ -14,7 +14,8 @@ export const environment = {
   },
   recaptcha: {
     // reCAPTCHA v3 site key for production
-    // Registered at: https://www.google.com/recaptcha/admin
+    // IMPORTANT: Make sure to add your production domain to reCAPTCHA console
+    // https://www.google.com/recaptcha/admin - add: theluxmining-91ab1.firebaseapp.com
     siteKey: '6LenxPwrAAAAALzJ56cCqq1EbENfdZuwhNHBwzEW',
     enabled: true
   },
