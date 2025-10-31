@@ -150,67 +150,80 @@
         
         <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
           @for (producto of filteredProducts; track producto.slug) {
-            <article class="group rounded-2xl overflow-hidden bg-bitcoin-dark/40 backdrop-blur-sm border border-bitcoin-gray/20 shadow-bitcoin hover:shadow-bitcoin-lg hover:border-bitcoin-orange/30 transition-all duration-300">
-              <div class="aspect-[4/3] overflow-hidden bg-bitcoin-dark/60">
+            <article
+              class="group relative flex h-full cursor-pointer flex-col overflow-hidden rounded-2xl border border-bitcoin-gray/25 bg-bitcoin-dark/60 backdrop-blur-sm shadow-bitcoin transition-all duration-300 hover:-translate-y-1 hover:border-bitcoin-orange/50 hover:shadow-bitcoin-lg focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-bitcoin-orange"
+              tabindex="0"
+              role="link"
+              [attr.aria-label]="producto.name"
+              (click)="goToProduct(producto)"
+              (keydown.enter)="goToProduct(producto, $event)"
+              (keydown.space)="goToProduct(producto, $event)">
+              <div class="aspect-[4/3] overflow-hidden bg-bitcoin-dark/70">
                 @if (producto.imageUrl) {
-                  <img [src]="producto.imageUrl" 
-                       [alt]="producto.name"
-                       class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                       loading="lazy"/>
+                  <img
+                    [src]="producto.imageUrl"
+                    [alt]="producto.name"
+                    class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                    loading="lazy"/>
                 } @else {
-                  <div class="w-full h-full flex items-center justify-center text-bitcoin-gray/50">
-                    <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <div class="flex h-full w-full items-center justify-center text-white/40">
+                    <svg class="h-12 w-12" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
                     </svg>
                   </div>
                 }
               </div>
-              <div class="p-6">
-                <h3 class="font-serif text-xl text-bitcoin-gray mb-3">{{producto.name}}</h3>
-                
+              <div class="flex flex-1 flex-col p-6">
+                <h3 class="mb-3 font-serif text-2xl tracking-tight text-white/90">{{producto.name}}</h3>
+
                 <!-- Category and Model Badges -->
-                <div class="flex flex-wrap gap-2 mb-3">
+                <div class="mb-4 flex flex-wrap gap-2">
                   @if (getCategoryName(producto.categoryId)) {
-                    <span class="px-2 py-1 bg-bitcoin-gold/20 text-bitcoin-gold border border-bitcoin-gold/30 rounded text-xs font-medium">
+                    <span class="rounded border border-bitcoin-gold/30 bg-bitcoin-gold/15 px-2 py-1 text-xs font-medium uppercase tracking-wide text-bitcoin-gold">
                       {{getCategoryName(producto.categoryId)}}
                     </span>
                   }
                   @if (getModelName(producto.modelId)) {
-                    <span class="px-2 py-1 bg-bitcoin-orange/20 text-bitcoin-orange border border-bitcoin-orange/30 rounded text-xs font-medium">
+                    <span class="rounded border border-bitcoin-orange/30 bg-bitcoin-orange/15 px-2 py-1 text-xs font-medium uppercase tracking-wide text-bitcoin-orange">
                       {{getModelName(producto.modelId)}}
                     </span>
                   }
                 </div>
-                
+
                 @if (producto.description) {
-                  <p class="text-sm text-neutral-400 mb-4 line-clamp-2">
+                  <p class="mb-4 line-clamp-3 text-sm text-white/70">
                     {{producto.description}}
                   </p>
                 }
-                
+
                 <!-- Stock Badge -->
                 @if (producto.stock !== undefined) {
                   <div class="mb-4">
-                    <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium"
-                          [class]="producto.stock > 10 ? 'bg-green-100 text-green-800' : producto.stock > 0 ? 'bg-yellow-100 text-yellow-800' : 'bg-red-100 text-red-800'">
-                      <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                    <span
+                      class="inline-flex items-center rounded-full px-2 py-1 text-xs font-semibold"
+                      [class]="producto.stock > 10 ? 'bg-emerald-100 text-emerald-800' : producto.stock > 0 ? 'bg-amber-100 text-amber-800' : 'bg-rose-100 text-rose-800'">
+                      <svg class="mr-1 h-3 w-3" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
                         <circle cx="10" cy="10" r="8"/>
                       </svg>
                       {{ producto.stock > 0 ? producto.stock + ' en stock' : 'Sin stock' }}
                     </span>
                   </div>
                 }
-                
+
                 @if (producto.price) {
-                  <p class="text-lg font-semibold text-bitcoin-gold mb-4">{{producto.price | currency:'USD':'symbol':'1.2-2'}}</p>
+                  <p class="mb-6 text-lg font-semibold text-bitcoin-gold">{{producto.price | currency:'USD':'symbol':'1.2-2'}}</p>
                 }
-                <div class="flex items-center justify-between">
-                  <a [routerLink]="['/products', producto.slug]" 
-                     class="text-bitcoin-orange hover:text-bitcoin-gold font-medium transition-colors">
-                    View Details →
-                  </a>
-                  <button (click)="addToCart(producto, $event)"
-                          class="px-4 py-2 bg-bitcoin-orange/30 hover:bg-bitcoin-orange/40 border border-bitcoin-orange/30 text-bitcoin-orange rounded-lg font-medium transition-colors">
+
+                <div class="mt-auto flex items-center justify-between gap-3 pt-2">
+                  <div class="inline-flex items-center gap-2 text-sm font-semibold text-bitcoin-orange transition-colors group-hover:text-bitcoin-gold">
+                    <span>View product</span>
+                    <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                    </svg>
+                  </div>
+                  <button
+                    (click)="addToCart(producto, $event)"
+                    class="inline-flex items-center justify-center rounded-lg border border-bitcoin-orange/40 bg-bitcoin-orange/80 px-4 py-2 text-sm font-semibold text-[#0a0b0d] transition-colors hover:bg-bitcoin-orange focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-bitcoin-orange">
                     Add to Cart
                   </button>
                 </div>

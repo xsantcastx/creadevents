@@ -1,6 +1,6 @@
 import { Component, OnInit, PLATFORM_ID, inject } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { ProductsService } from '../../services/products.service';
@@ -34,6 +34,7 @@ export class ProductosPageComponent extends LoadingComponentBase implements OnIn
   private cartService = inject(CartService);
   private settingsService = inject(SettingsService);
   private metaService = inject(MetaService);
+  private router = inject(Router);
   
   // Breadcrumbs for navigation
   breadcrumbs: Breadcrumb[] = [
@@ -260,6 +261,17 @@ export class ProductosPageComponent extends LoadingComponentBase implements OnIn
 
   isTagSelected(tag: string): boolean {
     return this.selectedTags.includes(tag);
+  }
+
+  goToProduct(product: Product, event?: Event) {
+    if (event) {
+      event.preventDefault();
+      event.stopPropagation();
+    }
+
+    if (product?.slug) {
+      this.router.navigate(['/products', product.slug]);
+    }
   }
 
   addToCart(product: Product, event: Event) {

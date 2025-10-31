@@ -57,8 +57,7 @@ export class AdminDashboardComponent extends LoadingComponentBase implements OnI
 
   async logout() {
     try {
-      await this.authService.signOutUser();
-      this.router.navigate(['/']);
+      await this.authService.signOutUser('/client/login');
     } catch (error) {
       console.error('Logout error:', error);
     }

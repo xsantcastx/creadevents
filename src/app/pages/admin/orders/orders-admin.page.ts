@@ -290,9 +290,7 @@ export class OrdersAdminComponent implements OnInit {
     }
   }
 
-  logout(): void {
-    this.authService.signOutUser().then(() => {
-      this.router.navigate(['/']);
-    });
+  async logout(): Promise<void> {
+    await this.authService.signOutUser('/client/login');
   }
 }

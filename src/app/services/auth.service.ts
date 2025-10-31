@@ -1,4 +1,5 @@
 import { Injectable, inject } from '@angular/core';
+import { Router } from '@angular/router';
 import {
   Auth,
   createUserWithEmailAndPassword,
@@ -47,6 +48,7 @@ export class AuthService {
   private firestore = inject(Firestore);
   private settingsService = inject(SettingsService);
   private emailService = inject(EmailService);
+  private router = inject(Router);
   
   // Observable of current user
   user$ = user(this.auth);
@@ -203,8 +205,11 @@ export class AuthService {
   }
 
   // Sign out
-  async signOutUser(): Promise<void> {
+  async signOutUser(redirectTo: string | null = '/client/login'): Promise<void> {
     await signOut(this.auth);
+    if (redirectTo !== null) {
+      await this.router.navigateByUrl(redirectTo);
+    }
   }
 
   // Create user profile in Firestore

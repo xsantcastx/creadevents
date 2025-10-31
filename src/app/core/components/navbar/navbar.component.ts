@@ -113,7 +113,7 @@ export class NavbarComponent implements OnInit {
   // Auth methods
   async logout(): Promise<void> {
     console.log('Logging out user');
-    await this.authService.signOutUser();
+    await this.authService.signOutUser('/client/login');
     this.closeMobile();
     this.closeUserMenu();
   }

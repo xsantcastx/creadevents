@@ -1,239 +1,284 @@
-<div class="section-stack min-h-screen bg-gradient-to-b from-[#0a0b0d] to-[#13151a] py-16 px-4">
-  <div class="max-w-2xl mx-auto">
-    
-    <!-- Header -->
-    <div class="text-center mb-8">
-      <h1 class="font-serif text-4xl lg:text-5xl bitcoin-gradient-text mb-4">
-        {{ 'client.register' | translate }}
-      </h1>
-      <p class="text-bitcoin-gray">
-        {{ 'client.register_subtitle' | translate }}
-      </p>
-    </div>
+<section class="relative min-h-screen overflow-hidden bg-gradient-to-b from-[#07080b] via-[#0f1117] to-[#12141c] py-20 px-4 sm:px-6">
+  <div class="pointer-events-none absolute inset-0">
+    <div class="absolute -top-32 -right-16 h-[440px] w-[440px] rounded-full bg-bitcoin-orange/10 blur-[200px]"></div>
+    <div class="absolute bottom-0 left-0 h-[380px] w-[380px] rounded-full bg-bitcoin-gold/8 blur-[180px]"></div>
+  </div>
 
-    <!-- Registration Form Card -->
-    <div class="bg-bitcoin-dark/40 backdrop-blur-md border border-bitcoin-orange/20 rounded-2xl shadow-bitcoin-lg p-8">
-      
-      <!-- Error Message -->
-      @if (errorMessage) {
-        <div class="mb-6 p-4 bg-red-500/20 border border-red-500/30 rounded-xl flex items-start gap-3">
-          <svg class="w-5 h-5 text-red-400 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-          </svg>
-          <p class="text-sm text-red-300">{{ errorMessage | translate }}</p>
-        </div>
-      }
-
-      <!-- Form -->
-      <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="space-y-6">
-        
-        <!-- Name and Company Row -->
-        <div class="grid md:grid-cols-2 gap-6">
-          <!-- Name Field -->
-          <div>
-            <label for="displayName" class="block text-sm font-medium text-bitcoin-gray mb-2">
-              {{ 'client.name' | translate }} *
-            </label>
-            <input
-              type="text"
-              id="displayName"
-              formControlName="displayName"
-              class="w-full px-4 py-3 bg-bitcoin-dark/60 border border-bitcoin-gray/20 text-bitcoin-gray placeholder-bitcoin-gray/50 rounded-xl focus:ring-2 focus:ring-bitcoin-orange focus:border-bitcoin-orange transition-all"
-              [class.border-red-500]="displayName?.invalid && displayName?.touched"
-              placeholder="Juan Pérez">
-            @if (displayName?.invalid && displayName?.touched) {
-              <p class="mt-2 text-sm text-red-400">
-                @if (displayName?.errors?.['required']) {
-                  {{ 'client.errors.name_required' | translate }}
-                }
-                @if (displayName?.errors?.['minlength']) {
-                  {{ 'client.errors.name_min_length' | translate }}
-                }
-              </p>
-            }
-          </div>
-
-          <!-- Company Field -->
-          <div>
-            <label for="company" class="block text-sm font-medium text-bitcoin-gray mb-2">
-              {{ 'client.company' | translate }}
-            </label>
-            <input
-              type="text"
-              id="company"
-              formControlName="company"
-              class="w-full px-4 py-3 bg-bitcoin-dark/60 border border-bitcoin-gray/20 text-bitcoin-gray placeholder-bitcoin-gray/50 rounded-xl focus:ring-2 focus:ring-bitcoin-orange focus:border-bitcoin-orange transition-all"
-              placeholder="Mi Empresa S.L.">
-          </div>
-        </div>
-
-        <!-- Email and Phone Row -->
-        <div class="grid md:grid-cols-2 gap-6">
-          <!-- Email Field -->
-          <div>
-            <label for="email" class="block text-sm font-medium text-bitcoin-gray mb-2">
-              {{ 'client.email' | translate }} *
-            </label>
-            <input
-              type="email"
-              id="email"
-              formControlName="email"
-              class="w-full px-4 py-3 bg-bitcoin-dark/60 border border-bitcoin-gray/20 text-bitcoin-gray placeholder-bitcoin-gray/50 rounded-xl focus:ring-2 focus:ring-bitcoin-orange focus:border-bitcoin-orange transition-all"
-              [class.border-red-500]="email?.invalid && email?.touched"
-              placeholder="ejemplo@empresa.com">
-            @if (email?.invalid && email?.touched) {
-              <p class="mt-2 text-sm text-red-400">
-                @if (email?.errors?.['required']) {
-                  {{ 'client.errors.email_required' | translate }}
-                }
-                @if (email?.errors?.['email']) {
-                  {{ 'client.errors.email_invalid' | translate }}
-                }
-              </p>
-            }
-          </div>
-
-          <!-- Phone Field -->
-          <div>
-            <label for="phone" class="block text-sm font-medium text-bitcoin-gray mb-2">
-              {{ 'client.phone' | translate }}
-            </label>
-            <input
-              type="tel"
-              id="phone"
-              formControlName="phone"
-              class="w-full px-4 py-3 bg-bitcoin-dark/60 border border-bitcoin-gray/20 text-bitcoin-gray placeholder-bitcoin-gray/50 rounded-xl focus:ring-2 focus:ring-bitcoin-orange focus:border-bitcoin-orange transition-all"
-              placeholder="+34 600 000 000">
-          </div>
-        </div>
-
-        <!-- Password Fields Row -->
-        <div class="grid md:grid-cols-2 gap-6">
-          <!-- Password Field -->
-          <div>
-            <label for="password" class="block text-sm font-medium text-bitcoin-gray mb-2">
-              {{ 'client.password' | translate }} *
-            </label>
-            <div class="relative">
-              <input
-                [type]="showPassword ? 'text' : 'password'"
-                id="password"
-                formControlName="password"
-                autocomplete="new-password"
-                class="w-full px-4 py-3 bg-bitcoin-dark/60 border border-bitcoin-gray/20 text-bitcoin-gray placeholder-bitcoin-gray/50 rounded-xl focus:ring-2 focus:ring-bitcoin-orange focus:border-bitcoin-orange transition-all pr-12"
-                [class.border-red-500]="password?.invalid && password?.touched"
-                placeholder="••••••••">
-              <button
-                type="button"
-                (click)="togglePasswordVisibility()"
-                class="absolute right-3 top-1/2 -translate-y-1/2 text-bitcoin-gray/70 hover:text-bitcoin-orange transition-colors">
-                @if (showPassword) {
-                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"></path>
-                  </svg>
-                } @else {
-                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
-                  </svg>
-                }
-              </button>
-            </div>
-            @if (password?.invalid && password?.touched) {
-              <p class="mt-2 text-sm text-red-400">
-                @if (password?.errors?.['required']) {
-                  {{ 'client.errors.password_required' | translate }}
-                }
-                @if (password?.errors?.['minlength']) {
-                  {{ 'client.errors.password_min_length' | translate }}
-                }
-              </p>
-            }
-          </div>
-
-          <!-- Confirm Password Field -->
-          <div>
-            <label for="confirmPassword" class="block text-sm font-medium text-bitcoin-gray mb-2">
-              {{ 'client.confirm_password' | translate }} *
-            </label>
-            <div class="relative">
-              <input
-                [type]="showConfirmPassword ? 'text' : 'password'"
-                id="confirmPassword"
-                formControlName="confirmPassword"
-                class="w-full px-4 py-3 bg-bitcoin-dark/60 border border-bitcoin-gray/20 text-bitcoin-gray placeholder-bitcoin-gray/50 rounded-xl focus:ring-2 focus:ring-bitcoin-orange focus:border-bitcoin-orange transition-all pr-12"
-                [class.border-red-500]="(confirmPassword?.invalid && confirmPassword?.touched) || (registerForm.errors?.['passwordMismatch'] && confirmPassword?.touched)"
-                placeholder="••••••••">
-              <button
-                type="button"
-                (click)="toggleConfirmPasswordVisibility()"
-                class="absolute right-3 top-1/2 -translate-y-1/2 text-bitcoin-gray/70 hover:text-bitcoin-orange transition-colors">
-                @if (showConfirmPassword) {
-                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"></path>
-                  </svg>
-                } @else {
-                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
-                  </svg>
-                }
-              </button>
-            </div>
-            @if (confirmPassword?.invalid && confirmPassword?.touched) {
-              <p class="mt-2 text-sm text-red-400">
-                {{ 'client.errors.password_required' | translate }}
-              </p>
-            }
-            @if (registerForm.errors?.['passwordMismatch'] && confirmPassword?.touched) {
-              <p class="mt-2 text-sm text-red-400">
-                {{ 'client.errors.passwords_dont_match' | translate }}
-              </p>
-            }
-          </div>
-        </div>
-
-        <!-- Submit Button -->
-        <button
-          type="submit"
-          [disabled]="isLoading"
-          class="w-full py-3 px-6 bg-bitcoin-orange hover:bg-bitcoin-orange/90 text-white rounded-xl font-medium border border-bitcoin-orange shadow-bitcoin transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2">
-          @if (isLoading) {
-            <div class="app-spinner" style="--spinner-size: 72px;"><img src="/Logo Clear.png" alt="Loading" width="96" height="96"></div>
-            {{ 'common.loading' | translate }}
-          } @else {
-            {{ 'client.create_account' | translate }}
-          }
-        </button>
-      </form>
-
-      <!-- Divider -->
-      <div class="my-6 flex items-center gap-4">
-        <div class="flex-1 h-px bg-bitcoin-orange/20"></div>
-        <span class="text-sm text-bitcoin-gray">{{ 'client.or' | translate }}</span>
-        <div class="flex-1 h-px bg-bitcoin-orange/20"></div>
+  <div class="relative mx-auto flex max-w-6xl flex-col gap-16 lg:grid lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
+    <!-- Experience Column -->
+    <div class="space-y-10 text-center lg:text-left">
+      <div class="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-1 text-xs font-semibold uppercase tracking-[0.4em] text-white/70 shadow-bitcoin">
+        <span>{{ 'client.register' | translate }}</span>
       </div>
-
-      <!-- Login Link -->
-      <div class="text-center">
-        <p class="text-bitcoin-gray">
-          {{ 'client.already_have_account' | translate }}
-          <a routerLink="/client/login" class="text-bitcoin-orange hover:text-bitcoin-gold font-medium transition-colors">
-            {{ 'client.login' | translate }}
-          </a>
+      <div class="space-y-6">
+        <h1 class="font-serif text-4xl leading-tight text-white sm:text-5xl lg:text-6xl">
+          {{ 'client.register_subtitle' | translate }}
+        </h1>
+        <p class="text-lg leading-relaxed text-white/70 sm:text-xl">
+          Unlock premium access to Lux Mining inventory, concierge deployment, and advanced monitoring built for high-performance operations.
         </p>
       </div>
+
+      <div class="grid gap-6 sm:grid-cols-2">
+        <div class="rounded-2xl border border-white/10 bg-white/5 p-5 text-left shadow-bitcoin-lg backdrop-blur-md">
+          <div class="mb-3 inline-flex h-10 w-10 items-center justify-center rounded-full bg-bitcoin-orange/20 text-bitcoin-orange">
+            <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+            </svg>
+          </div>
+          <h3 class="text-lg font-semibold text-white">Priority Allocation</h3>
+          <p class="mt-2 text-sm text-white/70">Reserve the latest ASIC miners, immersion kits, and energy-optimized rigs before public releases.</p>
+        </div>
+        <div class="rounded-2xl border border-bitcoin-orange/30 bg-bitcoin-orange/10 p-5 text-left shadow-bitcoin-lg backdrop-blur-md">
+          <div class="mb-3 inline-flex h-10 w-10 items-center justify-center rounded-full bg-bitcoin-dark/70 text-bitcoin-gold">
+            <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+          </div>
+          <h3 class="text-lg font-semibold text-white">Deployment Concierge</h3>
+          <p class="mt-2 text-sm text-white/70">Guided facility planning, firmware tuning, and remote monitoring designed for scale.</p>
+        </div>
+      </div>
+
+      <div class="flex flex-wrap items-center justify-center gap-4 text-sm text-white/55 lg:justify-start">
+        <span class="flex items-center gap-2">
+          <svg class="h-4 w-4 text-bitcoin-orange" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+          </svg>
+          Dedicated account partner
+        </span>
+        <span class="flex items-center gap-2">
+          <svg class="h-4 w-4 text-bitcoin-orange" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+          </svg>
+          Hardware provisioning alerts
+        </span>
+        <span class="flex items-center gap-2">
+          <svg class="h-4 w-4 text-bitcoin-orange" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+          </svg>
+          Secure payments & escrow
+        </span>
+      </div>
     </div>
 
-    <!-- Back to Home -->
-    <div class="text-center mt-6">
-      <a routerLink="/" class="text-bitcoin-gray/70 hover:text-bitcoin-orange transition-colors inline-flex items-center gap-2">
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
-        </svg>
-        {{ 'common.back' | translate }}
-      </a>
+    <!-- Form Column -->
+    <div class="w-full">
+      <div class="rounded-3xl border border-bitcoin-orange/30 bg-[#0f1117]/85 p-8 shadow-[0_40px_120px_-35px_rgba(247,147,26,0.35)] backdrop-blur-2xl sm:p-10">
+        <div class="mb-8 flex flex-col gap-2 text-center">
+          <div class="mx-auto inline-flex items-center gap-2 rounded-full border border-bitcoin-orange/40 bg-bitcoin-orange/10 px-4 py-1 text-xs font-semibold uppercase tracking-[0.3em] text-bitcoin-orange">
+            Create Access
+          </div>
+          <h2 class="font-serif text-3xl text-white">{{ 'client.create_account' | translate }}</h2>
+          <p class="text-sm text-white/60">All fields marked * are required. Passwords must be at least {{ passwordMinLength }} characters.</p>
+        </div>
+
+        @if (errorMessage) {
+          <div class="mb-6 flex items-start gap-3 rounded-2xl border border-red-500/40 bg-red-500/10 px-4 py-3 text-left text-red-200">
+            <svg class="h-5 w-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+            <p class="text-sm">{{ errorMessage | translate }}</p>
+          </div>
+        }
+
+        <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="space-y-7">
+          <div class="grid gap-6 md:grid-cols-2">
+            <div class="space-y-2">
+              <label for="displayName" class="text-xs font-semibold uppercase tracking-[0.24em] text-white/60">
+                {{ 'client.name' | translate }} *
+              </label>
+              <input
+                type="text"
+                id="displayName"
+                formControlName="displayName"
+                class="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-white placeholder-white/30 shadow-[0_10px_30px_-20px_rgba(255,255,255,0.45)] transition-all focus:border-bitcoin-orange focus:outline-none focus:ring-2 focus:ring-bitcoin-orange/60"
+                [class.border-red-500/60]="displayName?.invalid && displayName?.touched"
+                placeholder="Juan Perez">
+              @if (displayName?.invalid && displayName?.touched) {
+                <p class="text-sm text-red-300">
+                  @if (displayName?.errors?.['required']) {
+                    {{ 'client.errors.name_required' | translate }}
+                  }
+                  @if (displayName?.errors?.['minlength']) {
+                    {{ 'client.errors.name_min_length' | translate }}
+                  }
+                </p>
+              }
+            </div>
+
+            <div class="space-y-2">
+              <label for="company" class="text-xs font-semibold uppercase tracking-[0.24em] text-white/60">
+                {{ 'client.company' | translate }}
+              </label>
+              <input
+                type="text"
+                id="company"
+                formControlName="company"
+                class="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-white placeholder-white/30 shadow-[0_10px_30px_-20px_rgba(255,255,255,0.45)] transition-all focus:border-bitcoin-orange focus:outline-none focus:ring-2 focus:ring-bitcoin-orange/60"
+                placeholder="Lux Mining Group">
+            </div>
+          </div>
+
+          <div class="grid gap-6 md:grid-cols-2">
+            <div class="space-y-2">
+              <label for="email" class="text-xs font-semibold uppercase tracking-[0.24em] text-white/60">
+                {{ 'client.email' | translate }} *
+              </label>
+              <input
+                type="email"
+                id="email"
+                formControlName="email"
+                class="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-white placeholder-white/30 shadow-[0_10px_30px_-20px_rgba(255,255,255,0.45)] transition-all focus:border-bitcoin-orange focus:outline-none focus:ring-2 focus:ring-bitcoin-orange/60"
+                [class.border-red-500/60]="email?.invalid && email?.touched"
+                placeholder="operations@theluxmining.com">
+              @if (email?.invalid && email?.touched) {
+                <p class="text-sm text-red-300">
+                  @if (email?.errors?.['required']) {
+                    {{ 'client.errors.email_required' | translate }}
+                  }
+                  @if (email?.errors?.['email']) {
+                    {{ 'client.errors.email_invalid' | translate }}
+                  }
+                </p>
+              }
+            </div>
+
+            <div class="space-y-2">
+              <label for="phone" class="text-xs font-semibold uppercase tracking-[0.24em] text-white/60">
+                {{ 'client.phone' | translate }}
+              </label>
+              <input
+                type="tel"
+                id="phone"
+                formControlName="phone"
+                class="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-white placeholder-white/30 shadow-[0_10px_30px_-20px_rgba(255,255,255,0.45)] transition-all focus:border-bitcoin-orange focus:outline-none focus:ring-2 focus:ring-bitcoin-orange/60"
+                placeholder="+1 203 555 0198">
+            </div>
+          </div>
+
+          <div class="grid gap-6 md:grid-cols-2">
+            <div class="space-y-2">
+              <label for="password" class="text-xs font-semibold uppercase tracking-[0.24em] text-white/60">
+                {{ 'client.password' | translate }} *
+              </label>
+              <div class="relative">
+                <input
+                  [type]="showPassword ? 'text' : 'password'"
+                  id="password"
+                  formControlName="password"
+                  class="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 pr-12 text-white placeholder-white/30 shadow-[0_10px_30px_-20px_rgba(255,255,255,0.45)] transition-all focus:border-bitcoin-orange focus:outline-none focus:ring-2 focus:ring-bitcoin-orange/60"
+                  [class.border-red-500/60]="password?.invalid && password?.touched"
+                  placeholder="••••••••">
+                <button
+                  type="button"
+                  (click)="togglePasswordVisibility()"
+                  class="absolute right-3 top-1/2 -translate-y-1/2 text-white/50 transition-colors hover:text-bitcoin-orange focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-bitcoin-orange">
+                  @if (showPassword) {
+                    <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"></path>
+                    </svg>
+                  } @else {
+                    <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                    </svg>
+                  }
+                </button>
+              </div>
+              @if (password?.invalid && password?.touched) {
+                <p class="text-sm text-red-300">
+                  @if (password?.errors?.['required']) {
+                    {{ 'client.errors.password_required' | translate }}
+                  }
+                  @if (password?.errors?.['minlength']) {
+                    {{ 'client.errors.password_min_length' | translate }}
+                  }
+                </p>
+              }
+            </div>
+
+            <div class="space-y-2">
+              <label for="confirmPassword" class="text-xs font-semibold uppercase tracking-[0.24em] text-white/60">
+                {{ 'client.confirm_password' | translate }} *
+              </label>
+              <div class="relative">
+                <input
+                  [type]="showConfirmPassword ? 'text' : 'password'"
+                  id="confirmPassword"
+                  formControlName="confirmPassword"
+                  class="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 pr-12 text-white placeholder-white/30 shadow-[0_10px_30px_-20px_rgba(255,255,255,0.45)] transition-all focus:border-bitcoin-orange focus:outline-none focus:ring-2 focus:ring-bitcoin-orange/60"
+                  [class.border-red-500/60]="(confirmPassword?.invalid && confirmPassword?.touched) || (registerForm.errors?.['passwordMismatch'] && confirmPassword?.touched)"
+                  placeholder="••••••••">
+                <button
+                  type="button"
+                  (click)="toggleConfirmPasswordVisibility()"
+                  class="absolute right-3 top-1/2 -translate-y-1/2 text-white/50 transition-colors hover:text-bitcoin-orange focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-bitcoin-orange">
+                  @if (showConfirmPassword) {
+                    <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"></path>
+                    </svg>
+                  } @else {
+                    <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                    </svg>
+                  }
+                </button>
+              </div>
+              @if (confirmPassword?.invalid && confirmPassword?.touched) {
+                <p class="text-sm text-red-300">
+                  {{ 'client.errors.password_required' | translate }}
+                </p>
+              }
+              @if (registerForm.errors?.['passwordMismatch'] && confirmPassword?.touched) {
+                <p class="text-sm text-red-300">
+                  {{ 'client.errors.passwords_dont_match' | translate }}
+                </p>
+              }
+            </div>
+          </div>
+
+          <button
+            type="submit"
+            [disabled]="isLoading"
+            class="group relative w-full overflow-hidden rounded-2xl focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-bitcoin-orange disabled:cursor-not-allowed">
+            <span class="absolute inset-0 rounded-2xl bg-gradient-to-r from-bitcoin-orange via-bitcoin-gold to-amber-200 opacity-80 transition-opacity duration-300 group-hover:opacity-100 group-active:opacity-100 group-disabled:opacity-40"></span>
+            <span class="relative flex items-center justify-center gap-3 rounded-[18px] bg-[rgba(10,12,18,0.92)] px-8 py-3 text-sm font-semibold uppercase tracking-[0.32em] text-white shadow-[0_24px_60px_-25px_rgba(247,147,26,0.7)] transition-all duration-300 ease-out group-hover:-translate-y-[2px] group-hover:shadow-[0_34px_90px_-28px_rgba(247,147,26,0.85)] group-active:translate-y-0 group-disabled:bg-white/8 group-disabled:text-white/40 group-disabled:shadow-none">
+              @if (isLoading) {
+                <div class="app-spinner h-6 w-6" style="--spinner-size: 48px;"><img src="/Logo Clear.png" alt="Loading" width="96" height="96"></div>
+                <span class="text-xs tracking-[0.38em] text-white/70">{{ 'common.loading' | translate }}</span>
+              } @else {
+                <span>{{ 'client.create_account' | translate }}</span>
+              }
+            </span>
+            <span class="pointer-events-none absolute inset-0 rounded-2xl opacity-0 transition-opacity duration-300 group-active:opacity-40" style="background: radial-gradient(circle at 50% 50%, rgba(255,255,255,0.25) 0%, transparent 55%);"></span>
+          </button>
+        </form>
+
+        <div class="mt-8 flex flex-col gap-6 text-center">
+          <div class="flex items-center gap-3 text-xs uppercase tracking-[0.28em] text-white/30">
+            <span class="h-px flex-1 bg-white/10"></span>
+            {{ 'client.or' | translate }}
+            <span class="h-px flex-1 bg-white/10"></span>
+          </div>
+          <p class="text-sm text-white/70">
+            {{ 'client.already_have_account' | translate }}
+            <a routerLink="/client/login" class="ml-1 font-semibold text-bitcoin-orange transition-colors hover:text-bitcoin-gold">
+              {{ 'client.login' | translate }}
+            </a>
+          </p>
+        </div>
+      </div>
+
+      <div class="mt-8 text-center text-sm text-white/60">
+        <a routerLink="/" class="inline-flex items-center gap-2 transition-colors hover:text-bitcoin-orange">
+          <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+          </svg>
+          {{ 'common.back' | translate }}
+        </a>
+      </div>
     </div>
   </div>
-</div>
-
+</section>

@@ -927,10 +927,10 @@ export class GalleryAdminComponent extends LoadingComponentBase implements OnIni
 
   async logout(): Promise<void> {
     try {
-      await this.authService.signOutUser();
-      this.router.navigate(['/']);
+      await this.authService.signOutUser('/client/login');
     } catch (error) {
       console.error('Logout error:', error);
+      this.errorMessage = 'Failed to log out. Please try again.';
     }
   }
 

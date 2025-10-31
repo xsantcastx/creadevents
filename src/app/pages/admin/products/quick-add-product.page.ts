@@ -655,8 +655,7 @@ export class QuickAddProductComponent extends LoadingComponentBase implements On
 
   async logout() {
     try {
-      await this.authService.signOutUser();
-      this.router.navigate(['/']);
+      await this.authService.signOutUser('/client/login');
     } catch (error) {
       console.error('Logout error:', error);
     }

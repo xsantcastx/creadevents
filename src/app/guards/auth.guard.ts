@@ -58,7 +58,7 @@ export const authGuard: CanActivateFn = (route, state) => {
 
         if (!profile) {
           console.warn('[AuthGuard] Missing user profile; forcing sign-out');
-          await authService.signOutUser();
+          await authService.signOutUser(null);
           return loginUrlTree();
         }
 
@@ -73,7 +73,7 @@ export const authGuard: CanActivateFn = (route, state) => {
 
             if (timeSinceLogin > sessionTimeoutMs) {
               console.info('[AuthGuard] Session timeout exceeded; redirecting to login');
-              await authService.signOutUser();
+              await authService.signOutUser(null);
               return loginUrlTree({ sessionExpired: 'true' });
             }
           }
@@ -82,7 +82,7 @@ export const authGuard: CanActivateFn = (route, state) => {
         return true;
       } catch (error) {
         console.error('[AuthGuard] Error resolving authenticated route:', error);
-        await authService.signOutUser().catch(() => undefined);
+        await authService.signOutUser(null).catch(() => undefined);
         return loginUrlTree();
       }
     })
