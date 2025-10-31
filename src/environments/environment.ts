@@ -17,7 +17,8 @@ export const environment = {
   recaptcha: {
     // reCAPTCHA v3 site key for invisible verification
     // Registered at: https://www.google.com/recaptcha/admin
-    siteKey: '6LdFI_0rAAAAAIPZmBwJzFGKoWhsssuH5Agnt1ET',
+    // Using Google's public test key for local development (works on localhost and dev domains)
+    siteKey: '6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI',
     enabled: true
   },
   appCheck: {

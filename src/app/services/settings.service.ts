@@ -59,6 +59,7 @@ export interface AppSettings {
   passwordMinLength: number;
   maxLoginAttempts: number;
   enableCaptcha: boolean;
+  recaptchaSiteKey: string;
   allowedDomains: string;
 
   // Notifications
@@ -398,6 +399,7 @@ export class SettingsService {
       passwordMinLength: 8,
       maxLoginAttempts: 5,
       enableCaptcha: false,
+      recaptchaSiteKey: '',
       allowedDomains: '',
 
       // Notifications

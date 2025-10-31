@@ -17,62 +17,126 @@ export class RecaptchaService {
   private settingsService = inject(SettingsService);
   private isBrowser = isPlatformBrowser(this.platformId);
   private scriptLoaded = false;
+  private currentSiteKey: string | null = null;
   private loadingPromise: Promise<void> | null = null;
 
   /**
    * Check if CAPTCHA is enabled in settings
    */
   async isCaptchaEnabled(): Promise<boolean> {
-    const settings = await this.settingsService.getSettings();
-    return settings.enableCaptcha;
+    const { enabled } = await this.getCaptchaConfig();
+    return enabled;
+  }
+
+  /**
+   * Resolve the effective reCAPTCHA configuration combining environment and remote settings.
+   */
+  private async getCaptchaConfig(): Promise<{ enabled: boolean; siteKey: string | null }> {
+    const environmentConfig = environment.recaptcha || {};
+    const environmentEnabled = environmentConfig.enabled !== false;
+    const defaultSiteKey = (environmentConfig.siteKey || '').trim();
+    const testSiteKey = '6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI';
+
+    try {
+      const settings = await this.settingsService.getSettings();
+      const settingsEnabled = !!settings.enableCaptcha;
+      const settingsSiteKey = (settings.recaptchaSiteKey || '').trim();
+
+      let siteKey = settingsSiteKey || defaultSiteKey;
+
+      if (!siteKey && !environment.production) {
+        siteKey = testSiteKey;
+      }
+
+      return {
+        enabled: environmentEnabled && settingsEnabled,
+        siteKey: siteKey || null
+      };
+    } catch (error) {
+      console.warn('[RecaptchaService] Failed to load settings, falling back to environment config', error);
+
+      let siteKey = defaultSiteKey;
+
+      if (!siteKey && !environment.production) {
+        siteKey = testSiteKey;
+      }
+
+      return {
+        enabled: environmentEnabled,
+        siteKey: siteKey || null
+      };
+    }
   }
 
   /**
    * Load reCAPTCHA v3 script
    */
-  private async loadRecaptchaScript(): Promise<void> {
+  private async loadRecaptchaScript(siteKey: string): Promise<void> {
     // Only load in browser
     if (!this.isBrowser) {
       return;
     }
 
+    if (!siteKey) {
+      console.warn('[RecaptchaService] Missing reCAPTCHA site key, skipping script load');
+      return;
+    }
+
     // Check if CAPTCHA is enabled before loading script
-    const enabled = environment.recaptcha.enabled !== false; // Default to true if not specified
+    const environmentConfig = environment.recaptcha || {};
+    const enabled = environmentConfig.enabled !== false; // Default to true if not specified
     if (!enabled) {
       console.log('[RecaptchaService] reCAPTCHA is disabled in environment config');
       return;
     }
 
-    // If already loaded or loading, return existing promise
-    if (this.scriptLoaded) {
-      return Promise.resolve();
+    // If the script is already loaded for the current site key, reuse it
+    if (this.scriptLoaded && this.currentSiteKey === siteKey) {
+      return;
     }
 
+    // If we're loading a different site key, remove any existing script and reset grecaptcha
+    if (this.currentSiteKey && this.currentSiteKey !== siteKey) {
+      this.removeExistingScript();
+      this.loadingPromise = null;
+      this.scriptLoaded = false;
+    }
+
+    this.currentSiteKey = siteKey;
+
+    // If already loaded or loading, return existing promise
     if (this.loadingPromise) {
       return this.loadingPromise;
     }
 
     this.loadingPromise = new Promise((resolve, reject) => {
-      // Check if script already exists
-      if (document.querySelector('script[src*="recaptcha"]')) {
+      // Check if script already exists for the current site key
+      const existingScript = document.querySelector(`script[data-recaptcha-site-key="${siteKey}"]`);
+      if (existingScript) {
         this.scriptLoaded = true;
         resolve();
         return;
       }
 
+      // Remove any stale script to avoid conflicting site keys
+      this.removeExistingScript();
+
       const script = document.createElement('script');
-      script.src = `https://www.google.com/recaptcha/api.js?render=${environment.recaptcha.siteKey}`;
+      script.src = `https://www.google.com/recaptcha/api.js?render=${siteKey}`;
       script.async = true;
       script.defer = true;
+      script.setAttribute('data-recaptcha-site-key', siteKey);
 
       script.onload = () => {
         this.scriptLoaded = true;
         console.log('[RecaptchaService] reCAPTCHA script loaded successfully');
+        this.loadingPromise = null;
         resolve();
       };
 
       script.onerror = (error) => {
         console.error('[RecaptchaService] Failed to load reCAPTCHA script:', error);
+        this.loadingPromise = null;
         reject(new Error('Failed to load reCAPTCHA script'));
       };
 
@@ -83,12 +147,37 @@ export class RecaptchaService {
   }
 
   /**
+   * Remove any existing reCAPTCHA script from the DOM
+   */
+  private removeExistingScript(): void {
+    if (!this.isBrowser) {
+      return;
+    }
+
+    const existingScript = document.querySelector('script[src*="recaptcha"]');
+    if (existingScript) {
+      existingScript.remove();
+    }
+
+    // Reset global grecaptcha instance when possible
+    if (typeof window !== 'undefined') {
+      try {
+        if (window.grecaptcha) {
+          delete window.grecaptcha;
+        }
+      } catch (error) {
+        console.warn('[RecaptchaService] Unable to reset existing grecaptcha instance', error);
+      }
+    }
+  }
+
+  /**
    * Execute reCAPTCHA v3 and get token
    * @param action - The action name (e.g., 'login', 'register', 'submit_form')
    */
   async execute(action: string): Promise<string | null> {
-    // Check if CAPTCHA is enabled
-    const enabled = await this.isCaptchaEnabled();
+    // Resolve configuration before attempting to execute
+    const { enabled, siteKey } = await this.getCaptchaConfig();
     if (!enabled) {
       console.log('[RecaptchaService] CAPTCHA is disabled in settings, skipping verification');
       return null;
@@ -100,9 +189,14 @@ export class RecaptchaService {
       return null;
     }
 
+    if (!siteKey) {
+      console.warn('[RecaptchaService] No reCAPTCHA site key configured, skipping execution');
+      return null;
+    }
+
     try {
       // Load script if not already loaded
-      await this.loadRecaptchaScript();
+      await this.loadRecaptchaScript(siteKey);
 
       // Wait for grecaptcha to be ready
       return new Promise((resolve, reject) => {
@@ -111,7 +205,7 @@ export class RecaptchaService {
             window.grecaptcha.ready(async () => {
               try {
                 const token = await window.grecaptcha.execute(
-                  environment.recaptcha.siteKey,
+                  siteKey,
                   { action }
                 );
                 console.log('[RecaptchaService] Token generated for action:', action);
