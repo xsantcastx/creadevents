@@ -14,9 +14,8 @@ export const environment = {
   },
   recaptcha: {
     // reCAPTCHA v3 site key for production
-    // IMPORTANT: Make sure to add your production domain to reCAPTCHA console
-    // https://www.google.com/recaptcha/admin - add: theluxmining-91ab1.firebaseapp.com
-    siteKey: '6LenxPwrAAAAALzJ56cCqq1EbENfdZuwhNHBwzEW',
+    // Registered at: https://www.google.com/recaptcha/admin
+    siteKey: '6LdFI_0rAAAAAIPZmBwJzFGKoWhsssuH5Agnt1ET',
     enabled: true
   },
   appCheck: {
@@ -24,7 +23,7 @@ export const environment = {
     // Get your key from: https://www.google.com/recaptcha/admin (same as above)
     // OR register in Firebase Console > App Check with reCAPTCHA v3
     provider: 'recaptcha',
-    siteKey: '6LenxPwrAAAAALzJ56cCqq1EbENfdZuwhNHBwzEW' // Use same reCAPTCHA v3 key
+    siteKey: '6LdFI_0rAAAAAIPZmBwJzFGKoWhsssuH5Agnt1ET' // Use same reCAPTCHA v3 key
   },
   useEmulators: false
 };
