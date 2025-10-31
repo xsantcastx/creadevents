@@ -36,6 +36,13 @@ export class RecaptchaService {
       return;
     }
 
+    // Check if CAPTCHA is enabled before loading script
+    const enabled = environment.recaptcha.enabled !== false; // Default to true if not specified
+    if (!enabled) {
+      console.log('[RecaptchaService] reCAPTCHA is disabled in environment config');
+      return;
+    }
+
     // If already loaded or loading, return existing promise
     if (this.scriptLoaded) {
       return Promise.resolve();
