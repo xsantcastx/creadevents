@@ -15,6 +15,20 @@ import { Tag } from '../../../models/catalog';
 import { AdminQuickActionsComponent } from '../../../shared/components/admin-quick-actions/admin-quick-actions.component';
 import { LoadingComponentBase } from '../../../core/classes/loading-component.base';
 
+interface GalleryProjectSummary {
+  id: string;
+  name: string;
+  baseAltText: string;
+  caption: string;
+  location: string;
+  tags: string[];
+  images: Media[];
+  featuredImage: Media;
+  photoCount: number;
+  uploadedAt: Date;
+  relatedProductIds: string[];
+}
+
 @Component({
   selector: 'app-gallery-admin',
   standalone: true,
@@ -46,6 +60,9 @@ export class GalleryAdminComponent extends LoadingComponentBase implements OnIni
   showDeleteConfirm = false;
   mediaToDelete: Media | null = null;
   mediaToEdit: Media | null = null;
+  galleryProjects: GalleryProjectSummary[] = [];
+  projectToManage: GalleryProjectSummary | null = null;
+  showProjectManager = false;
   previewUrls: string[] = [];
   uploadProgress = 0;
   isUploading = false;
@@ -118,6 +135,7 @@ export class GalleryAdminComponent extends LoadingComponentBase implements OnIni
     this.mediaSub = this.mediaService.getAllMedia().subscribe({
       next: (mediaList) => {
         this.mediaList = mediaList;
+        this.updateGalleryProjects();
         this.setLoading(false);
       },
       error: (error) => {
@@ -191,13 +209,188 @@ export class GalleryAdminComponent extends LoadingComponentBase implements OnIni
     );
   }
 
-  openUploadModal(): void {
+  getProjectRelatedProducts(project: GalleryProjectSummary): Product[] {
+    if (!project.relatedProductIds || project.relatedProductIds.length === 0) {
+      return [];
+    }
+    return this.products.filter(p => project.relatedProductIds.includes(p.id || ''));
+  }
+
+  openProjectManager(project: GalleryProjectSummary): void {
+    const latest = this.galleryProjects.find(item => item.id === project.id) || project;
+    this.projectToManage = latest;
+    this.showProjectManager = true;
+    this.errorMessage = '';
+  }
+
+  closeProjectManager(): void {
+    this.showProjectManager = false;
+    this.projectToManage = null;
+  }
+
+  addPhotosToProject(project: GalleryProjectSummary): void {
+    if (!project) return;
+
+    this.openUploadModal({
+      altText: project.baseAltText,
+      caption: project.caption,
+      tags: project.tags as MediaTag[],
+      relatedProductIds: project.relatedProductIds
+    });
+
+    this.closeProjectManager();
+  }
+
+  editMediaFromProject(media: Media): void {
+    this.closeProjectManager();
+    this.openEditModal(media);
+  }
+
+  private updateGalleryProjects(): void {
+    const galleryMedia = this.mediaList.filter(media => media.relatedEntityType === 'gallery');
+    const projects = this.groupMediaByProjects(galleryMedia);
+    this.galleryProjects = projects;
+
+    if (this.projectToManage) {
+      const refreshed = projects.find(project => project.id === this.projectToManage?.id);
+      if (refreshed) {
+        this.projectToManage = refreshed;
+      } else {
+        this.closeProjectManager();
+      }
+    }
+  }
+
+  private groupMediaByProjects(mediaItems: Media[]): GalleryProjectSummary[] {
+    const projectsMap = new Map<string, GalleryProjectSummary>();
+
+    mediaItems.forEach(media => {
+      const baseName = this.extractBaseProjectName(media.altText || 'Untitled Project');
+      const projectId = this.slugify(baseName || 'untitled-project');
+      const uploadDate = this.normalizeMediaDate(media);
+      const location = this.extractProjectLocation(media.caption || '');
+      const productIds = this.getProductIdsFromMedia(media);
+
+      if (!projectsMap.has(projectId)) {
+        projectsMap.set(projectId, {
+          id: projectId,
+          name: baseName || 'Untitled Project',
+          baseAltText: baseName || 'Untitled Project',
+          caption: media.caption || '',
+          location,
+          tags: [...media.tags],
+          images: [media],
+          featuredImage: media,
+          photoCount: 1,
+          uploadedAt: uploadDate,
+          relatedProductIds: productIds
+        });
+      } else {
+        const project = projectsMap.get(projectId)!;
+        project.images.push(media);
+        project.photoCount += 1;
+        project.tags = Array.from(new Set([...project.tags, ...media.tags]));
+
+        if (!project.caption && media.caption) {
+          project.caption = media.caption;
+        }
+        if (!project.location && location) {
+          project.location = location;
+        }
+
+        const updatedProducts = new Set([...project.relatedProductIds, ...productIds]);
+        project.relatedProductIds = Array.from(updatedProducts);
+
+        if (uploadDate > project.uploadedAt) {
+          project.uploadedAt = uploadDate;
+          project.featuredImage = media;
+        }
+      }
+    });
+
+    const projects = Array.from(projectsMap.values()).map(project => ({
+      ...project,
+      images: project.images
+        .slice()
+        .sort((a, b) => this.normalizeMediaDate(b).getTime() - this.normalizeMediaDate(a).getTime())
+    }));
+
+    return projects.sort((a, b) => b.uploadedAt.getTime() - a.uploadedAt.getTime());
+  }
+
+  private normalizeMediaDate(media: Media): Date {
+    const uploadedAt = media.uploadedAt;
+    if (uploadedAt instanceof Date) {
+      return uploadedAt;
+    }
+    return new Date(uploadedAt as any);
+  }
+
+  private getProductIdsFromMedia(media: Media): string[] {
+    if (!media.relatedEntityIds || media.relatedEntityIds.length === 0) {
+      return [];
+    }
+    return this.extractProductIds(media.relatedEntityIds);
+  }
+
+  private extractBaseProjectName(altText: string): string {
+    return altText
+      .replace(/\s*\(\d+\/\d+\)\s*$/i, '')
+      .replace(/\s*\(\d+\s+of\s+\d+\)\s*$/i, '')
+      .replace(/\s*-\s*\d+\s*$/i, '')
+      .replace(/\s*#\d+\s*$/i, '')
+      .trim();
+  }
+
+  private extractProjectLocation(caption: string): string {
+    const dashIndex = caption.indexOf('-');
+    if (dashIndex > 0) {
+      return caption.substring(0, dashIndex).trim();
+    }
+
+    const commaIndex = caption.indexOf(',');
+    if (commaIndex > 0) {
+      return caption.substring(0, commaIndex + 4).trim();
+    }
+
+    return caption.trim();
+  }
+
+  private slugify(text: string): string {
+    return text
+      .toLowerCase()
+      .replace(/[^\w\s-]/g, '')
+      .replace(/\s+/g, '-')
+      .replace(/-+/g, '-')
+      .trim();
+  }
+
+  get filteredProjects(): GalleryProjectSummary[] {
+    const term = this.searchTerm.trim().toLowerCase();
+
+    return this.galleryProjects.filter(project => {
+      const matchesTag = this.selectedTag === 'all' || project.tags.includes(this.selectedTag);
+      const matchesSearch = !term ||
+        project.name.toLowerCase().includes(term) ||
+        project.caption.toLowerCase().includes(term) ||
+        project.tags.some(tag => tag.toLowerCase().includes(term));
+
+      return matchesTag && matchesSearch;
+    });
+  }
+
+  openUploadModal(defaults?: {
+    altText?: string;
+    caption?: string;
+    tags?: MediaTag[];
+    relatedProductIds?: string[];
+  }): void {
     this.showUploadModal = true;
     this.uploadForm.reset({
-      altText: '',
-      caption: '',
-      tags: [],
-      relatedProductIds: []
+      altText: defaults?.altText ?? '',
+      caption: defaults?.caption ?? '',
+      tags: defaults?.tags ?? [],
+      relatedProductIds: defaults?.relatedProductIds ?? []
     });
     this.selectedFiles = [];
     this.revokeAllPreviewUrls();
@@ -449,6 +642,7 @@ export class GalleryAdminComponent extends LoadingComponentBase implements OnIni
       this.uploadProgress = 100;
       this.successMessage = `Successfully uploaded ${this.uploadedCount} image(s)`;
       this.closeUploadModal();
+      this.subscribeToMedia();
 
       setTimeout(() => {
         this.successMessage = '';
@@ -541,8 +735,12 @@ export class GalleryAdminComponent extends LoadingComponentBase implements OnIni
         }
       }
 
+      const deletedId = this.mediaToDelete.id;
+
       // Delete media file from Storage and Firestore document
-      await this.mediaService.deleteMediaWithFile(this.mediaToDelete.id);
+      await this.mediaService.deleteMediaWithFile(deletedId);
+      this.mediaList = this.mediaList.filter(media => media.id !== deletedId);
+      this.updateGalleryProjects();
       
       this.successMessage = 'Media deleted successfully';
       this.closeDeleteConfirm();

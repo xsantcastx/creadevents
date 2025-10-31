@@ -12,7 +12,7 @@ import { Product } from '../../../models/product';
 import { Media } from '../../../models/media';
 import { Category } from '../../../models/catalog';
 import { Model } from '../../../models/catalog';
-import { ImageLightboxComponent } from '../../../shared/components/image-lightbox/image-lightbox.component';
+import { ImageLightboxComponent, LightboxImage } from '../../../shared/components/image-lightbox/image-lightbox.component';
 import { ProductReviewsComponent } from '../../../shared/components/product-reviews/product-reviews.component';
 import { firstValueFrom } from 'rxjs';
 
@@ -41,6 +41,9 @@ export class DetalleComponent implements OnInit, AfterViewInit {
   productosRelacionados: Product[] = [];
   coverImage: Media | undefined;
   galleryImages: Media[] = [];
+  carouselImages: LightboxImage[] = [];
+  placeholderSlots: number[] = [];
+  currentImageIndex = 0;
   loading = true;
   lightboxOpen = false;
   currentLightboxImage = '';
@@ -100,14 +103,28 @@ export class DetalleComponent implements OnInit, AfterViewInit {
           const isMediaId = !this.producto.coverImage.includes('http');
           if (isMediaId) {
             const media = await this.mediaService.getMediaById(this.producto.coverImage);
-            this.coverImage = media || undefined;
+            if (media) {
+              this.coverImage = media;
+            } else if (this.producto.imageUrl) {
+              this.coverImage = this.createMediaFromUrl(this.producto.imageUrl, this.producto.name);
+            }
+          } else {
+            this.coverImage = this.createMediaFromUrl(this.producto.coverImage, this.producto.name);
           }
+        } else if (this.producto.imageUrl) {
+          this.coverImage = this.createMediaFromUrl(this.producto.imageUrl, this.producto.name);
         }
         
         // Load gallery images
         if (this.producto.galleryImageIds && this.producto.galleryImageIds.length > 0) {
-          this.galleryImages = await this.mediaService.getMediaByIds(this.producto.galleryImageIds);
+          const images = await this.mediaService.getMediaByIds(this.producto.galleryImageIds);
+          this.galleryImages = images.filter((image): image is Media => !!image);
+        } else {
+          this.galleryImages = [];
         }
+
+        this.updatePlaceholderSlots();
+        this.prepareCarouselImages();
         
         // Update page title and meta tags
         this.updateSEO();
@@ -191,12 +208,98 @@ export class DetalleComponent implements OnInit, AfterViewInit {
     }
   }
 
+  get currentCarouselImage(): LightboxImage | undefined {
+    if (!this.carouselImages.length) {
+      return undefined;
+    }
+    const index = this.normalizeCarouselIndex(this.currentImageIndex);
+    return this.carouselImages[index];
+  }
+
+  showNextImage(event?: Event) {
+    event?.stopPropagation();
+    if (this.carouselImages.length < 2) {
+      return;
+    }
+    this.currentImageIndex = this.normalizeCarouselIndex(this.currentImageIndex + 1);
+    this.syncCurrentLightboxData();
+  }
+
+  showPreviousImage(event?: Event) {
+    event?.stopPropagation();
+    if (this.carouselImages.length < 2) {
+      return;
+    }
+    this.currentImageIndex = this.normalizeCarouselIndex(this.currentImageIndex - 1);
+    this.syncCurrentLightboxData();
+  }
+
+  openLightboxAt(index: number) {
+    if (this.carouselImages.length === 0) {
+      const fallback = this.coverImage?.url || this.producto?.imageUrl || '';
+      if (!fallback) {
+        return;
+      }
+      this.currentLightboxImage = fallback;
+      this.currentLightboxAlt = this.producto?.name || '';
+      this.lightboxOpen = true;
+      return;
+    }
+
+    this.currentImageIndex = this.normalizeCarouselIndex(index);
+    this.syncCurrentLightboxData();
+    if (this.currentLightboxImage) {
+      this.lightboxOpen = true;
+    }
+  }
+
+  openLightboxForGalleryImage(image: Media) {
+    const index = this.findCarouselIndex({ id: image.id, url: image.url });
+    if (index !== -1) {
+      this.openLightboxAt(index);
+    }
+  }
+
+  onLightboxIndexChange(index: number) {
+    this.currentImageIndex = this.normalizeCarouselIndex(index);
+    this.syncCurrentLightboxData();
+  }
+
+  isCurrentCarouselImage(image: Media): boolean {
+    if (!this.carouselImages.length) {
+      return false;
+    }
+    const index = this.findCarouselIndex({ id: image.id, url: image.url });
+    if (index === -1) {
+      return false;
+    }
+    return index === this.normalizeCarouselIndex(this.currentImageIndex);
+  }
+
   goBack() {
     this.router.navigate(['/productos']);
   }
 
   openLightbox(imageUrl?: string, altText?: string) {
-    this.currentLightboxImage = imageUrl || this.coverImage?.url || '';
+    if (imageUrl) {
+      const index = this.findCarouselIndex({ url: imageUrl });
+      if (index !== -1) {
+        this.openLightboxAt(index);
+        return;
+      }
+    }
+
+    if (this.carouselImages.length > 0) {
+      this.openLightboxAt(this.currentImageIndex);
+      return;
+    }
+
+    const fallbackUrl = imageUrl || this.coverImage?.url || this.producto?.imageUrl || '';
+    if (!fallbackUrl) {
+      return;
+    }
+
+    this.currentLightboxImage = fallbackUrl;
     this.currentLightboxAlt = altText || this.producto?.name || '';
     this.lightboxOpen = true;
   }
@@ -245,5 +348,124 @@ export class DetalleComponent implements OnInit, AfterViewInit {
       'value': 'M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z',
     };
     return iconPaths[iconType] || iconPaths['performance'];
+  }
+
+  private prepareCarouselImages() {
+    const images: LightboxImage[] = [];
+    const productName = this.producto?.name || '';
+
+    if (this.coverImage?.url) {
+      images.push({
+        id: this.coverImage.id ?? 'cover-image',
+        url: this.coverImage.url,
+        altText: this.coverImage.altText || productName,
+        thumbnailUrl: this.coverImage.thumbnailUrl,
+        caption: this.coverImage.caption
+      });
+    } else if (this.producto?.coverImage && this.producto.coverImage.includes('http')) {
+      images.push({
+        id: 'cover-image',
+        url: this.producto.coverImage,
+        altText: productName
+      });
+    } else if (this.producto?.imageUrl) {
+      images.push({
+        id: 'legacy-cover-image',
+        url: this.producto.imageUrl,
+        altText: productName
+      });
+    }
+
+    for (const galleryImage of this.galleryImages) {
+      if (!galleryImage?.url) {
+        continue;
+      }
+      images.push({
+        id: galleryImage.id,
+        url: galleryImage.url,
+        altText: galleryImage.altText || productName,
+        thumbnailUrl: galleryImage.thumbnailUrl,
+        caption: galleryImage.caption
+      });
+    }
+
+    const uniqueImages: LightboxImage[] = [];
+    const seen = new Set<string>();
+    for (const image of images) {
+      if (!image.url || seen.has(image.url)) {
+        continue;
+      }
+      seen.add(image.url);
+      uniqueImages.push(image);
+    }
+
+    this.carouselImages = uniqueImages;
+    this.currentImageIndex = this.normalizeCarouselIndex(this.currentImageIndex);
+    this.syncCurrentLightboxData();
+  }
+
+  private updatePlaceholderSlots() {
+    const count = Math.max(0, 4 - this.galleryImages.length);
+    this.placeholderSlots = Array.from({ length: count }, (_, index) => index);
+  }
+
+  private normalizeCarouselIndex(index: number): number {
+    const length = this.carouselImages.length;
+    if (length === 0) {
+      return 0;
+    }
+
+    const normalized = index % length;
+    return normalized < 0 ? normalized + length : normalized;
+  }
+
+  private findCarouselIndex(image: { id?: string; url?: string }) {
+    if (!this.carouselImages.length) {
+      return -1;
+    }
+
+    return this.carouselImages.findIndex(item => {
+      if (image.id && item.id && image.id === item.id) {
+        return true;
+      }
+      if (image.url && item.url === image.url) {
+        return true;
+      }
+      return false;
+    });
+  }
+
+  private syncCurrentLightboxData() {
+    const current = this.currentCarouselImage;
+    if (current) {
+      this.currentLightboxImage = current.url;
+      this.currentLightboxAlt = current.altText || this.producto?.name || '';
+      return;
+    }
+
+    if (this.coverImage?.url) {
+      this.currentLightboxImage = this.coverImage.url;
+      this.currentLightboxAlt = this.coverImage.altText || this.producto?.name || '';
+      return;
+    }
+
+    this.currentLightboxImage = this.producto?.imageUrl || '';
+    this.currentLightboxAlt = this.producto?.name || '';
+  }
+
+  private createMediaFromUrl(url: string, altText?: string): Media {
+    return {
+      url,
+      filename: '',
+      storagePath: '',
+      width: 0,
+      height: 0,
+      size: 0,
+      mimeType: '',
+      uploadedAt: new Date(0),
+      uploadedBy: '',
+      tags: [],
+      altText
+    };
   }
 }
