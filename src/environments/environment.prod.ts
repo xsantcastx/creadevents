@@ -13,10 +13,10 @@ export const environment = {
     publishableKey: 'pk_live_51SIVcmFOqjxrWe4OwHsMcqTsTeX4CVSIdjfOmxjFxcRGWvdPSwCKJ7KrwENlT70tZiQpBqyydU6LkfcGO4IF3GrJ0053YImAH6' // Replace with live key for production
   },
   recaptcha: {
-    // IMPORTANT: Replace this with your PRODUCTION reCAPTCHA site key
-    // Get your production key from: https://www.google.com/recaptcha/admin
-    // Add your production domain to the allowed domains list
-    siteKey: '6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI'
+    // reCAPTCHA v3 site key for production
+    // Registered at: https://www.google.com/recaptcha/admin
+    siteKey: '6LenxPwrAAAAALzJ56cCqq1EbENfdZuwhNHBwzEW',
+    enabled: true
   },
   appCheck: {
     // Using standard reCAPTCHA v3 (free) for App Check
