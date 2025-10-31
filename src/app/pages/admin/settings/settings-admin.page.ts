@@ -363,6 +363,7 @@ export class SettingsAdminComponent extends LoadingComponentBase implements OnIn
           { key: 'passwordMinLength', label: 'Minimum Password Length', type: 'number', value: this.currentSettings.passwordMinLength, placeholder: '8' },
           { key: 'maxLoginAttempts', label: 'Max Login Attempts', type: 'number', value: this.currentSettings.maxLoginAttempts, placeholder: '5' },
           { key: 'enableCaptcha', label: 'Enable CAPTCHA', type: 'boolean', value: this.currentSettings.enableCaptcha, description: 'Require CAPTCHA on login/registration' },
+          { key: 'recaptchaSiteKey', label: 'reCAPTCHA Site Key', type: 'text', value: this.currentSettings.recaptchaSiteKey, placeholder: '6Lc...site-key', description: 'Use the v3 site key issued for your production domain.' },
           { key: 'allowedDomains', label: 'Allowed Email Domains', type: 'text', value: this.currentSettings.allowedDomains, placeholder: 'example.com, company.com' }
         ]
       },
@@ -487,6 +488,7 @@ export class SettingsAdminComponent extends LoadingComponentBase implements OnIn
         passwordMinLength: 8,
         maxLoginAttempts: 5,
         enableCaptcha: false,
+        recaptchaSiteKey: freshSettings.recaptchaSiteKey || '',
         allowedDomains: '',
         // Notifications
         orderEmailEnabled: true,
@@ -538,6 +540,9 @@ export class SettingsAdminComponent extends LoadingComponentBase implements OnIn
       }
       if (!updatedSettings.emailApiKey && this.currentSettings?.emailApiKey) {
         updatedSettings.emailApiKey = this.currentSettings.emailApiKey;
+      }
+      if (!updatedSettings.recaptchaSiteKey && this.currentSettings?.recaptchaSiteKey) {
+        updatedSettings.recaptchaSiteKey = this.currentSettings.recaptchaSiteKey;
       }
       
       await this.settingsService.saveSettings(updatedSettings);
