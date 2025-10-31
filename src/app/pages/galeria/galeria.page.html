@@ -231,85 +231,93 @@
       }
 
       <!-- Modal Content -->
-      <div class="relative flex flex-col items-center justify-center h-full">
+      <div class="relative flex flex-col items-center h-full w-full px-4 sm:px-0">
         <!-- Main Image -->
         @if (currentImage) {
-          <img 
-            [src]="currentImage.url" 
-            [alt]="currentImage.altText || selectedProject.name"
-            class="max-w-full max-h-[75vh] object-contain rounded-2xl shadow-bitcoin-lg border border-bitcoin-orange/20"
-            (error)="$event.target.src='/assets/productos/placeholder.jpg'">
+          <div class="w-full max-w-5xl mx-auto">
+            <img 
+              [src]="currentImage.url" 
+              [alt]="currentImage.altText || selectedProject.name"
+              class="w-full max-h-[65vh] sm:max-h-[70vh] object-contain rounded-2xl shadow-bitcoin-lg border border-bitcoin-orange/20 bg-black/40"
+              (error)="$event.target.src='/assets/productos/placeholder.jpg'">
+          </div>
         }
         
         <!-- Project Information -->
-        <div class="absolute bottom-6 left-6 right-6 bg-gradient-to-br from-[#14161c]/98 via-bitcoin-dark/95 to-[#0b0c10]/98 backdrop-blur-lg text-white p-6 rounded-2xl border border-bitcoin-orange/40 shadow-bitcoin-lg">
-          <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-            <div class="flex-1">
-              <h3 class="text-2xl font-bold mb-3 text-bitcoin-gold">{{selectedProject.name}}</h3>
-              <p class="text-lg text-bitcoin-gray mb-3 font-medium">{{selectedProject.description}}</p>
-              <div class="flex items-center gap-4 text-sm flex-wrap">
-                <span class="flex items-center text-bitcoin-gray font-medium">
-                  <svg class="w-5 h-5 mr-2 text-bitcoin-orange" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.899a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                  </svg>
-                  {{selectedProject.location || 'Global'}}
-                </span>
-                <!-- Project Tags -->
-                @for (tagSlug of selectedProject.tags; track tagSlug) {
-                  @let tag = getTag(tagSlug);
-                  @if (tag) {
-                    <span class="flex items-center text-bitcoin-gray font-medium gap-1">
-                      @if (tag.icon) {
-                        <span>{{tag.icon}}</span>
-                      } @else {
-                        <svg class="w-5 h-5 text-bitcoin-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"></path>
-                        </svg>
-                      }
-                      {{tag.name}}
-                    </span>
+        <div class="w-full max-w-4xl mt-6 sm:mt-0 sm:absolute sm:bottom-8 sm:left-1/2 sm:-translate-x-1/2 sm:px-0">
+          <div class="bg-gradient-to-br from-[#14161c]/98 via-bitcoin-dark/95 to-[#0b0c10]/98 backdrop-blur-lg text-white p-6 sm:p-8 rounded-2xl border border-bitcoin-orange/40 shadow-bitcoin-lg">
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+              <div class="flex-1 space-y-3">
+                <h3 class="text-2xl sm:text-3xl font-bold text-bitcoin-gold leading-tight text-balance">{{selectedProject.name}}</h3>
+                <p class="text-base sm:text-lg text-bitcoin-gray font-medium leading-relaxed">
+                  {{selectedProject.description}}
+                </p>
+                <div class="flex flex-wrap items-center gap-3 sm:gap-4 text-xs sm:text-sm">
+                  <span class="flex items-center text-bitcoin-gray font-medium">
+                    <svg class="w-5 h-5 mr-1.5 text-bitcoin-orange" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.899a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                    </svg>
+                    {{selectedProject.location || 'Global'}}
+                  </span>
+                  <!-- Project Tags -->
+                  @for (tagSlug of selectedProject.tags; track tagSlug) {
+                    @let tag = getTag(tagSlug);
+                    @if (tag) {
+                      <span class="flex items-center gap-1 px-2 py-1 bg-white/5 rounded-full text-bitcoin-gray font-medium">
+                        @if (tag.icon) {
+                          <span>{{tag.icon}}</span>
+                        } @else {
+                          <svg class="w-4 h-4 text-bitcoin-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"></path>
+                          </svg>
+                        }
+                        {{tag.name}}
+                      </span>
+                    }
                   }
-                }
+                </div>
               </div>
-            </div>
-            <div class="text-right">
-              <p class="text-sm text-bitcoin-gray mb-2 font-medium">
-                Photo {{currentImageIndex + 1}} {{ 'gallery.of' | translate }} {{selectedProject.photoCount}}
-              </p>
-              <div class="flex items-center gap-2 justify-end">
-                <div class="w-32 bg-black/60 border border-bitcoin-orange/30 rounded-full h-1.5">
-                  <div 
-                    class="bg-gradient-to-r from-bitcoin-orange to-bitcoin-gold h-1.5 rounded-full transition-all duration-300"
-                    [style.width.%]="((currentImageIndex + 1) / selectedProject.photoCount) * 100">
+              <div class="w-full md:w-auto md:text-right space-y-3">
+                <div>
+                  <p class="text-xs sm:text-sm text-bitcoin-gray font-medium mb-2">
+                    Photo {{currentImageIndex + 1}} {{ 'gallery.of' | translate }} {{selectedProject.photoCount}}
+                  </p>
+                  <div class="flex items-center gap-2 justify-start md:justify-end">
+                    <div class="w-28 sm:w-32 bg-black/60 border border-bitcoin-orange/30 rounded-full h-1.5">
+                      <div 
+                        class="bg-gradient-to-r from-bitcoin-orange to-bitcoin-gold h-1.5 rounded-full transition-all duration-300"
+                        [style.width.%]="((currentImageIndex + 1) / selectedProject.photoCount) * 100">
+                      </div>
+                    </div>
                   </div>
                 </div>
+
+                <!-- Image Thumbnails -->
+                @if (selectedProject.images.length > 1) {
+                  <div class="pt-2 border-t border-bitcoin-gray/20">
+                    <div class="flex gap-2 overflow-x-auto pb-2">
+                      @for (image of selectedProject.images; track image.id; let i = $index) {
+                        <button
+                          (click)="currentImageIndex = i; $event.stopPropagation()"
+                          class="flex-shrink-0 w-14 h-14 sm:w-16 sm:h-16 rounded-lg overflow-hidden border-2 transition-all duration-200"
+                          [class.border-bitcoin-orange]="i === currentImageIndex"
+                          [class.border-bitcoin-gray/30]="i !== currentImageIndex"
+                          [class.opacity-100]="i === currentImageIndex"
+                          [class.opacity-60]="i !== currentImageIndex"
+                          [class.hover:opacity-100]="i !== currentImageIndex">
+                          <img 
+                            [src]="image.url" 
+                            [alt]="'Thumbnail ' + (i + 1)"
+                            class="w-full h-full object-cover">
+                        </button>
+                      }
+                    </div>
+                  </div>
+                }
               </div>
             </div>
           </div>
-
-          <!-- Image Thumbnails -->
-          @if (selectedProject.images.length > 1) {
-            <div class="mt-4 pt-4 border-t border-bitcoin-gray/20">
-              <div class="flex gap-2 overflow-x-auto pb-2">
-                @for (image of selectedProject.images; track image.id; let i = $index) {
-                  <button
-                    (click)="currentImageIndex = i; $event.stopPropagation()"
-                    class="flex-shrink-0 w-16 h-16 rounded-lg overflow-hidden border-2 transition-all duration-200"
-                    [class.border-bitcoin-orange]="i === currentImageIndex"
-                    [class.border-bitcoin-gray/30]="i !== currentImageIndex"
-                    [class.opacity-100]="i === currentImageIndex"
-                    [class.opacity-50]="i !== currentImageIndex"
-                    [class.hover:opacity-100]="i !== currentImageIndex">
-                    <img 
-                      [src]="image.url" 
-                      [alt]="'Thumbnail ' + (i + 1)"
-                      class="w-full h-full object-cover">
-                  </button>
-                }
-              </div>
-            </div>
-          }
         </div>
       </div>
     </div>
