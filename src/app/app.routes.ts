@@ -154,6 +154,12 @@ export const routes: Routes = [
     title: 'TheLuxMining | page_titles.reviews'
   },
   {
+    path: 'admin/sitemap',
+    loadComponent: () => import('./pages/admin/sitemap/sitemap.page').then(m => m.AdminSitemapPage),
+    canActivate: [adminGuard],
+    title: 'TheLuxMining | Sitemap Generator'
+  },
+  {
     path: 'maintenance',
     loadComponent: () => import('./pages/maintenance/maintenance.page').then(m => m.MaintenancePage),
     title: 'Site Maintenance - TheLuxMining'

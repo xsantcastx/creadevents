@@ -13,6 +13,7 @@
     "register": "Register",
     "profile": "My Profile",
     "orders": "My Orders",
+    "solo_miners": "Solo Miners",
     "admin_dashboard": "Admin Dashboard",
     "product_management": "Product Management",
     "quick_add_product": "Quick Add Product",
@@ -153,6 +154,7 @@
     "home": "Home",
     "products": "Products",
     "all_products": "All Products",
+    "soloMiners": "Solo Miners",
     "gallery": "Gallery",
     "technical": "Technical Specs",
     "contact": "Contact",
@@ -220,6 +222,143 @@
     "request_quote": "Request Quote",
     "filterBy": "Filter by",
     "thickness": "Thickness"
+  },
+  "soloMiners": {
+    "hero": {
+      "title": "Bitcoin Solo Miners & Lottery Mining Hardware",
+      "subtitle": "Capture full block rewards with specialized Bitcoin solo mining rigs engineered for low power, quiet operation, and maximum independence.",
+      "ctaPrimary": "Talk to a Solo Mining Specialist",
+      "ctaSecondary": "Compare Solo Miners",
+      "stats": {
+        "reward": "Full Block Reward",
+        "power": "Home-Friendly Power Draw",
+        "support": "24/7 Engineering Support"
+      }
+    },
+    "highlights": {
+      "lottery": {
+        "title": "Win Entire Block Rewards",
+        "copy": "Solo miners take the full 3.125 BTC block reward plus fees when they strike gold."
+      },
+      "home": {
+        "title": "Home & Studio Ready",
+        "copy": "Ultra-quiet, low-power miners designed for apartments, studios, or office desktops."
+      },
+      "decentralization": {
+        "title": "Strengthen Bitcoin",
+        "copy": "Solo mining supports network decentralization and censorship resistance."
+      }
+    },
+    "catalog": {
+      "eyebrow": "Solo Mining Catalog",
+      "title": "Curated Bitcoin Solo Mining Hardware",
+      "copy": "Choose from compact USB lottery miners, desktop solo rigs, or custom-built solo mining bundles with node integration.",
+      "learnMore": "Solo Mining FAQ",
+      "metrics": {
+        "hashrate": "Hashrate",
+        "power": "Power Draw",
+        "efficiency": "Efficiency",
+        "price": "Price"
+      },
+      "notice": "Publish your first solo miner products from the admin dashboard to replace these curated examples.",
+      "noticeCta": "Open Product Management"
+    },
+    "cta": {
+      "viewProduct": "View Solo Miner",
+      "requestQuote": "Request Solo Miner Quote",
+      "defaultDescription": "Solo miner hardware optimized for low-power lottery mining."
+    },
+    "badges": {
+      "lottery": "Lottery Class",
+      "pro": "Pro Solo Rig",
+      "hobby": "Hobby Build",
+      "entry": "Entry Solo Miner"
+    },
+    "fallback": {
+      "bitaxe": {
+        "description": "Compact open-source USB solo miner ideal for hobby lottery mining and running alongside a Bitcoin node.",
+        "features": {
+          "usb": "USB powered for plug-and-play solo mining",
+          "silent": "Virtually silent operation for living spaces",
+          "openSource": "Open-source firmware with active community",
+          "easySetup": "Configures in minutes with web dashboard"
+        }
+      },
+      "apollo": {
+        "description": "Premium desktop solo miner with built-in Bitcoin node and miner management suite.",
+        "features": {
+          "node": "Integrated Bitcoin node & Lightning ready",
+          "lowNoise": "Ultra quiet desktop acoustic profile",
+          "desktop": "Fits neatly on desks or studio shelves",
+          "premium": "All-in-one chassis with enterprise support"
+        }
+      },
+      "compac": {
+        "description": "USB stick solo miner for entry-level lottery mining or educational setups.",
+        "features": {
+          "usb": "True USB stick miner with simple setup",
+          "lowPower": "Runs on 10 watts from any USB PD adapter",
+          "affordable": "Budget-friendly solo mining experiment",
+          "plugPlay": "Ships tuned for popular solo pools"
+        }
+      }
+    },
+    "comparison": {
+      "eyebrow": "Solo vs Pool Mining",
+      "title": "Solo Mining vs Pool Mining",
+      "copy": "Solo mining delivers the ultimate decentralization and jackpot potential, while pool mining yields steady payouts. Choose the blend that fits your strategy.",
+      "solo": {
+        "title": "Solo Mining",
+        "items": {
+          "reward": "Keep 100% of block rewards + fees",
+          "decentralize": "Strengthens Bitcoin decentralization",
+          "lowFees": "Zero pool fees or payout delays",
+          "lottery": "Lottery-style payouts with high upside"
+        }
+      },
+      "pool": {
+        "title": "Pool Mining",
+        "items": {
+          "steady": "Earn predictable, steady payouts",
+          "poolFees": "Pay 0.5% - 2% in pool fees",
+          "dependence": "Rely on third-party pool infrastructure",
+          "kYC": "Many pools require KYC/AML verification"
+        }
+      },
+      "cta": "Discuss Hybrid Mining Strategies"
+    },
+    "faq": {
+      "eyebrow": "FAQ",
+      "title": "Solo Mining FAQ",
+      "copy": "Everything you need to know about Bitcoin solo mining, lottery mining odds, and how to set up your rig.",
+      "items": {
+        "whatIs": {
+          "question": "What is a Bitcoin solo miner?",
+          "answer": "A solo miner is specialized hardware configured to mine Bitcoin independently rather than contributing hash power to a mining pool."
+        },
+        "profitable": {
+          "question": "Is solo mining profitable in 2025?",
+          "answer": "Solo mining is a high-variance strategy. While blocks are rare, a single win returns the full 3.125 BTC reward plus fees. Many miners run solo rigs alongside pool miners for asymmetric upside."
+        },
+        "bestHome": {
+          "question": "What are the best solo miners for home use?",
+          "answer": "Popular home solo miners include Bitaxe Ultra, Apollo BTC, and Compac F. These miners are quiet, energy-efficient, and simple to operate."
+        },
+        "needsNode": {
+          "question": "Do I need to run a Bitcoin node for solo mining?",
+          "answer": "You can point your hardware at a solo mining pool like Solo CK, but running your own node gives full autonomy and contributes to the network."
+        },
+        "lottery": {
+          "question": "What is lottery mining?",
+          "answer": "Lottery mining is another term for solo mining. Each hash is a lottery ticket; if it wins, you claim the entire block reward."
+        }
+      }
+    },
+    "banner": {
+      "title": "Design Your Solo Mining Strategy",
+      "copy": "From USB lottery miners to desktop rigs with integrated nodes, our engineers tailor solo mining bundles for any power budget.",
+      "cta": "Book a Solo Mining Consultation"
+    }
   },
   "grosor": {
     "breadcrumb": {

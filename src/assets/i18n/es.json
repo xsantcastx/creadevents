@@ -13,6 +13,7 @@
     "register": "Registrarse",
     "profile": "Mi Perfil",
     "orders": "Mis Pedidos",
+    "solo_miners": "Mineros Solo Bitcoin",
     "admin_dashboard": "Panel de Administración",
     "product_management": "Gestión de Productos",
     "quick_add_product": "Agregar Producto Rápido",
@@ -148,10 +149,148 @@
       "verified_purchase": "Compra Verificada"
     }
   },
+  "soloMiners": {
+    "hero": {
+      "title": "Mineros Solo Bitcoin y Equipos de Lotería",
+      "subtitle": "Captura la recompensa completa del bloque con hardware diseñado para minería solo: silencioso, eficiente y totalmente independiente.",
+      "ctaPrimary": "Hablar con un especialista",
+      "ctaSecondary": "Comparar mineros solo",
+      "stats": {
+        "reward": "Recompensa completa del bloque",
+        "power": "Consumo amigable con el hogar",
+        "support": "Soporte 24/7"
+      }
+    },
+    "highlights": {
+      "lottery": {
+        "title": "Gana recompensas completas",
+        "copy": "Los mineros solo conservan las 3.125 BTC completas más comisiones cuando encuentran un bloque."
+      },
+      "home": {
+        "title": "Listos para el hogar",
+        "copy": "Mineros silenciosos y de bajo consumo ideales para apartamentos, oficinas y estudios."
+      },
+      "decentralization": {
+        "title": "Fortalece Bitcoin",
+        "copy": "La minería solo impulsa la descentralización y evita la censura."
+      }
+    },
+    "catalog": {
+      "eyebrow": "Catálogo Solo Mining",
+      "title": "Hardware curado para minería solo",
+      "copy": "Elige entre mineros USB tipo lotería, rigs de escritorio o paquetes personalizados con nodo integrado.",
+      "learnMore": "Ver preguntas frecuentes",
+      "metrics": {
+        "hashrate": "Hashrate",
+        "power": "Consumo",
+        "efficiency": "Eficiencia",
+        "price": "Precio"
+      },
+      "notice": "Publica tus primeros productos de mineros solo en el panel de administración para reemplazar estos ejemplos.",
+      "noticeCta": "Abrir gestión de productos"
+    },
+    "cta": {
+      "viewProduct": "Ver minero solo",
+      "requestQuote": "Solicitar cotización",
+      "defaultDescription": "Hardware optimizado para minería solo y estrategias de lotería."
+    },
+    "badges": {
+      "lottery": "Clase Lotería",
+      "pro": "Solo Pro",
+      "hobby": "Hobby",
+      "entry": "Nivel Inicial"
+    },
+    "fallback": {
+      "bitaxe": {
+        "description": "Miner USB open-source ideal para lotería desde casa y nodos de Bitcoin.",
+        "features": {
+          "usb": "Alimentación USB plug-and-play",
+          "silent": "Funcionamiento silencioso para espacios habitados",
+          "openSource": "Firmware de código abierto con comunidad activa",
+          "easySetup": "Configuración en minutos con panel web"
+        }
+      },
+      "apollo": {
+        "description": "Miner de escritorio premium con nodo Bitcoin integrado y consola profesional.",
+        "features": {
+          "node": "Nodo Bitcoin y Lightning integrados",
+          "lowNoise": "Perfil acústico extremadamente silencioso",
+          "desktop": "Formato escritorio compacto",
+          "premium": "Chasis todo en uno con soporte empresarial"
+        }
+      },
+      "compac": {
+        "description": "Miner USB tipo stick para iniciar en minería lotería o fines educativos.",
+        "features": {
+          "usb": "Formato USB listo para usar",
+          "lowPower": "Funciona con 10 W desde cualquier adaptador USB",
+          "affordable": "Entrada económica a la minería solo",
+          "plugPlay": "Preconfigurado para pools solo populares"
+        }
+      }
+    },
+    "comparison": {
+      "eyebrow": "Solo vs Pool",
+      "title": "Comparativa: Minería solo vs pool",
+      "copy": "La minería solo ofrece máxima independencia y potencial de jackpot, mientras los pools entregan pagos constantes.",
+      "solo": {
+        "title": "Minería Solo",
+        "items": {
+          "reward": "Conserva 100% de la recompensa + comisiones",
+          "decentralize": "Impulsa la descentralización de Bitcoin",
+          "lowFees": "Sin comisiones de pool",
+          "lottery": "Pagos estilo lotería con gran potencial"
+        }
+      },
+      "pool": {
+        "title": "Minería en Pool",
+        "items": {
+          "steady": "Pagos regulares y previsibles",
+          "poolFees": "Comisiones entre 0.5% y 2%",
+          "dependence": "Dependencia de terceros",
+          "kYC": "Muchos pools solicitan KYC/AML"
+        }
+      },
+      "cta": "Diseñar estrategia híbrida"
+    },
+    "faq": {
+      "eyebrow": "FAQ",
+      "title": "Preguntas frecuentes",
+      "copy": "Resolvemos tus dudas sobre minería solo, probabilidades de lotería y cómo configurar tu equipo.",
+      "items": {
+        "whatIs": {
+          "question": "¿Qué es un minero solo de Bitcoin?",
+          "answer": "Es hardware configurado para minar de forma independiente. Si encuentra un bloque, el minero recibe la recompensa completa."
+        },
+        "profitable": {
+          "question": "¿Es rentable la minería solo en 2025?",
+          "answer": "Es una estrategia de alta varianza. Aunque los bloques son escasos, una victoria entrega 3.125 BTC + comisiones."
+        },
+        "bestHome": {
+          "question": "¿Cuáles son los mejores mineros solo para casa?",
+          "answer": "Bitaxe Ultra, Apollo BTC y Compac F destacan por su bajo ruido, eficiencia y facilidad de uso."
+        },
+        "needsNode": {
+          "question": "¿Necesito un nodo Bitcoin?",
+          "answer": "Puedes apuntar a un pool solo, pero ejecutar tu propio nodo te da autonomía total y fortalece la red."
+        },
+        "lottery": {
+          "question": "¿Qué es la minería lotería?",
+          "answer": "Es otra forma de nombrar la minería solo: cada hash es un boleto y el premio es la recompensa completa del bloque."
+        }
+      }
+    },
+    "banner": {
+      "title": "Diseña tu estrategia de solo mining",
+      "copy": "Desde mineros USB hasta rigs con nodo integrado, ensamblamos paquetes personalizados para cualquier presupuesto eléctrico.",
+      "cta": "Agendar consultoría"
+    }
+  },
   "nav": {
     "home": "Inicio",
     "products": "Productos",
     "all_products": "Todos los Productos",
+    "soloMiners": "Mineros Solo",
     "gallery": "Galería",
     "technical": "Especificaciones Técnicas",
     "contact": "Contacto",

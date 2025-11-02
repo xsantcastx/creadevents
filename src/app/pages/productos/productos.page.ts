@@ -16,6 +16,7 @@ import { Category, Model, Tag } from '../../models/catalog';
 import { Media } from '../../models/media';
 import { PageHeaderComponent, Breadcrumb } from '../../shared/components/page-header/page-header.component';
 import { LoadingComponentBase } from '../../core/classes/loading-component.base';
+import { firstValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-productos-page',
@@ -74,71 +75,91 @@ export class ProductosPageComponent extends LoadingComponentBase implements OnIn
     }
   }
 
-  private async loadFilterOptions() {
+  private async loadFilterOptions(): Promise<void> {
     try {
-      this.categoryService.getActiveCategories().subscribe({
-        next: (categories) => {
-          this.categories = categories;
-        },
-        error: (err) => console.error('Error loading categories:', err)
-      });
+      const [categoriesResult, modelsResult, tagsResult] = await Promise.allSettled([
+        firstValueFrom(this.categoryService.getActiveCategories()),
+        firstValueFrom(this.modelService.getActiveModels()),
+        firstValueFrom(this.tagService.getActiveTags())
+      ]);
 
-      this.modelService.getActiveModels().subscribe({
-        next: (models) => {
-          this.models = models;
-        },
-        error: (err) => console.error('Error loading models:', err)
-      });
+      if (categoriesResult.status === 'fulfilled') {
+        this.categories = categoriesResult.value ?? [];
+      } else if (categoriesResult.reason) {
+        console.error('Error loading categories:', categoriesResult.reason);
+      }
 
-      this.tagService.getActiveTags().subscribe({
-        next: (tags) => {
-          this.tags = tags;
-        },
-        error: (err) => console.error('Error loading tags:', err)
-      });
+      if (modelsResult.status === 'fulfilled') {
+        this.models = modelsResult.value ?? [];
+      } else if (modelsResult.reason) {
+        console.error('Error loading models:', modelsResult.reason);
+      }
+
+      if (tagsResult.status === 'fulfilled') {
+        this.tags = tagsResult.value ?? [];
+      } else if (tagsResult.reason) {
+        console.error('Error loading tags:', tagsResult.reason);
+      }
     } catch (error) {
       console.error('Error loading filter options:', error);
+    } finally {
+      this.forceUpdate();
     }
   }
 
-  private async loadProducts() {
+  private async loadProducts(): Promise<void> {
     await this.withLoading(async () => {
-      // Set page meta tags from settings
+      // Set page meta tags from settings (fire and forget)
       this.metaService.setPageMeta({
         title: 'NAV.PRODUCTS',
         description: 'PRODUCTS.DESCRIPTION'
       });
 
-      // Get settings for inventory configuration
-      const settings = await this.settingsService.getSettings();
-      
-      // Get all published products from Firestore - use promise instead of subscribe
-      const products = await new Promise<Product[]>((resolve, reject) => {
-        this.productsService.getAllProducts().subscribe({
-          next: (products) => resolve(products),
-          error: (error) => reject(error)
+      const productsPromise = firstValueFrom(this.productsService.getAllProducts());
+      const publicSettingsPromise = this.settingsService.getPublicSettings()
+        .catch(error => {
+          console.error('Error loading public settings:', error);
+          return null;
         });
-      });
-      
+
+      const [products, publicSettings] = await Promise.all([productsPromise, publicSettingsPromise]);
+
       // Filter only published products
-      let publishedProducts = products.filter(p => p.status === 'published');
-      
-      // Filter out-of-stock products if hideOutOfStock is enabled
-      if (settings.hideOutOfStock) {
+      let publishedProducts = (products || []).filter(p => p.status === 'published');
+
+      // Filter out-of-stock products if hideOutOfStock is enabled in public settings
+      if (publicSettings?.hideOutOfStock) {
         publishedProducts = publishedProducts.filter(p => {
-          const stock = p.stock || 0;
+          const stock = typeof p.stock === 'number' ? p.stock : 0;
           return stock > 0;
         });
       }
-      
-      // Load cover images from media
-      this.allProducts = await this.loadProductCovers(publishedProducts);
-      
-      // Extract all unique tags
+
+      // Show products immediately while cover images resolve asynchronously
+      this.allProducts = publishedProducts.map(product => {
+        const hasExternalCover = product.coverImage && product.coverImage.includes('http');
+        const imageUrl = product.imageUrl || (hasExternalCover ? product.coverImage! : '');
+        return { ...product, imageUrl };
+      });
+
       this.extractAllTags();
-      
-      // Apply filters
       this.applyFilters();
+      this.forceUpdate();
+
+      if (publishedProducts.length === 0) {
+        return;
+      }
+
+      // Resolve media covers in the background so the page is responsive sooner
+      this.loadProductCovers(publishedProducts)
+        .then(productsWithCovers => {
+          this.allProducts = productsWithCovers;
+          this.applyFilters();
+          this.forceUpdate();
+        })
+        .catch(error => {
+          console.error('Error loading product covers:', error);
+        });
     });
   }
 
@@ -302,5 +323,12 @@ export class ProductosPageComponent extends LoadingComponentBase implements OnIn
     if (!modelId) return '';
     const model = this.models.find(m => m.id === modelId);
     return model?.name || '';
+  }
+
+  // Filter panel visibility
+  showFilters = false;
+
+  toggleFilters() {
+    this.showFilters = !this.showFilters;
   }
 }

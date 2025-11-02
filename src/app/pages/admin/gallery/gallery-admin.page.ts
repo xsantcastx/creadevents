@@ -70,6 +70,12 @@ export class GalleryAdminComponent extends LoadingComponentBase implements OnIni
   uploadedCount = 0;
   totalToUpload = 0;
   isProjectSaving = false;
+  quickTagInputs: Record<'upload' | 'edit' | 'project', string> = {
+    upload: '',
+    edit: '',
+    project: ''
+  };
+  isAddingQuickTags = false;
 
   selectedFiles: File[] = [];
   private mediaSub: Subscription | null = null;
@@ -313,6 +319,55 @@ export class GalleryAdminComponent extends LoadingComponentBase implements OnIni
       return;
     }
 
+    // If editing a specific photo, update only that photo
+    if (this.mediaToEdit) {
+      const altText = this.editForm.value.altText || '';
+      
+      if (!altText.trim()) {
+        this.errorMessage = 'Project name is required';
+        return;
+      }
+
+      this.isProjectSaving = true;
+
+      try {
+        const relatedEntityIds = relatedProductIds.map(id => `products/${id}`);
+
+        await this.mediaService.updateMedia(this.mediaToEdit.id!, {
+          altText,
+          caption,
+          tags: tags as string[],
+          relatedEntityIds
+        });
+
+        this.mediaToEdit = {
+          ...this.mediaToEdit,
+          altText,
+          caption,
+          tags: tags as string[],
+          relatedEntityIds
+        };
+
+        this.editForm.patchValue({
+          altText,
+          caption,
+          tags,
+          relatedProductIds
+        }, { emitEvent: false });
+        this.editForm.markAsPristine();
+        this.projectForm.markAsPristine();
+        this.successMessage = 'Photo updated successfully';
+        this.subscribeToMedia();
+      } catch (error) {
+        console.error('Error updating photo:', error);
+        this.errorMessage = 'Error updating photo';
+      } finally {
+        this.isProjectSaving = false;
+      }
+      return;
+    }
+
+    // Otherwise, update all photos in the project
     const images = this.projectToManage.images.filter(image => !!image.id);
     if (images.length === 0) {
       return;
@@ -341,21 +396,6 @@ export class GalleryAdminComponent extends LoadingComponentBase implements OnIni
       this.projectForm.markAsPristine();
       this.successMessage = 'Project settings updated successfully';
       this.subscribeToMedia();
-
-      if (this.mediaToEdit) {
-        this.mediaToEdit = {
-          ...this.mediaToEdit,
-          caption,
-          tags: tags as string[],
-          relatedEntityIds
-        };
-        this.editForm.patchValue({
-          caption,
-          tags,
-          relatedProductIds
-        }, { emitEvent: false });
-        this.editForm.markAsPristine();
-      }
     } catch (error) {
       console.error('Error updating project settings:', error);
       this.errorMessage = 'Error updating project settings';
@@ -385,6 +425,14 @@ export class GalleryAdminComponent extends LoadingComponentBase implements OnIni
 
     this.successMessage = '';
     this.errorMessage = '';
+  }
+
+  onAltTextChange(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (this.mediaToEdit) {
+      this.editForm.patchValue({ altText: input.value });
+      this.editForm.markAsDirty();
+    }
   }
 
   openProjectManagerForMedia(media: Media): void {
@@ -537,6 +585,15 @@ export class GalleryAdminComponent extends LoadingComponentBase implements OnIni
       .trim();
   }
 
+  private toTitleCase(text: string): string {
+    return text
+      .toLowerCase()
+      .split(/\s+/)
+      .map(word => word ? word.charAt(0).toUpperCase() + word.slice(1) : '')
+      .join(' ')
+      .trim();
+  }
+
   get filteredProjects(): GalleryProjectSummary[] {
     const term = this.searchTerm.trim().toLowerCase();
 
@@ -679,6 +736,76 @@ export class GalleryAdminComponent extends LoadingComponentBase implements OnIni
     
     const newTags = Array.from(current);
     form.patchValue({ tags: newTags });
+  }
+
+  async addQuickTags(scope: 'upload' | 'edit' | 'project' = 'upload'): Promise<void> {
+    const input = this.quickTagInputs[scope]?.trim() || '';
+    if (!input) {
+      this.warningMessage = 'Enter at least one tag name separated by commas';
+      setTimeout(() => (this.warningMessage = ''), 3000);
+      return;
+    }
+
+    const tagNames = input
+      .split(',')
+      .map(tag => tag.trim())
+      .filter(tag => tag.length > 0);
+
+    if (tagNames.length === 0) {
+      this.warningMessage = 'Enter at least one tag name separated by commas';
+      setTimeout(() => (this.warningMessage = ''), 3000);
+      return;
+    }
+
+    const form = this.getFormByScope(scope);
+    const currentTags = new Set<MediaTag>(form.get('tags')?.value || []);
+    this.isAddingQuickTags = true;
+    this.errorMessage = '';
+
+    try {
+      for (const rawName of tagNames) {
+        const slug = this.slugify(rawName);
+        if (!slug) continue;
+
+        let existingTag = this.availableTags.find(tag => tag.slug === slug);
+
+        if (!existingTag) {
+          const newTagData: Omit<Tag, 'id'> = {
+            name: this.toTitleCase(rawName),
+            slug,
+            color: '#F7931A',
+            order: (this.availableTags.length + 1),
+            active: true
+          };
+
+          try {
+            const id = await this.tagService.addTag(newTagData);
+            existingTag = { ...newTagData, id };
+            this.availableTags = [...this.availableTags, existingTag];
+          } catch (error) {
+            console.error('Error creating tag:', error);
+            this.errorMessage = 'Failed to create one or more tags. Please try again.';
+            continue;
+          }
+        }
+
+        if (existingTag) {
+          currentTags.add(existingTag.slug);
+        }
+      }
+
+      form.patchValue({ tags: Array.from(currentTags) });
+      form.markAsDirty();
+      this.quickTagInputs[scope] = '';
+      this.forceUpdate();
+
+      if (!this.errorMessage) {
+        this.successMessage = 'Tags added to this project';
+        setTimeout(() => (this.successMessage = ''), 3000);
+      }
+    } finally {
+      this.isAddingQuickTags = false;
+    }
   }
 
   isTagSelected(tag: MediaTag, scope: 'upload' | 'edit' | 'project' = 'upload'): boolean {

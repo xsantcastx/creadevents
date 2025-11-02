@@ -1,4 +1,4 @@
-<div class="section-stack min-h-screen bg-gradient-to-b from-[#0a0b0d] to-[#13151a]">
+<div class="section-stack admin-gallery-page min-h-screen bg-gradient-to-b from-[#0a0b0d] to-[#13151a]">
   
   <!-- Admin Header -->
   <div class="bg-gradient-to-r from-bitcoin-dark via-[#13151a] to-bitcoin-dark border-b border-bitcoin-orange/20 shadow-bitcoin">
@@ -197,199 +197,174 @@
           </div>
         }
       </div>
-      
-      @if (filteredMedia.length === 0) {
-        <!-- Empty State -->
-        <div class="bg-bitcoin-dark/40 backdrop-blur-sm rounded-2xl shadow-bitcoin p-12 border border-bitcoin-gray/20">
-          <div class="flex flex-col items-center justify-center gap-4">
-            <svg class="w-16 h-16 text-bitcoin-gray/30" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-            </svg>
-            <p class="text-bitcoin-gray/70">{{ searchTerm ? 'No media found matching your search' : 'admin.no_images' | translate }}</p>
-            <button
-              (click)="openUploadModal()"
-              class="px-6 py-3 bg-bitcoin-orange/30 hover:bg-bitcoin-orange/40 text-bitcoin-orange border border-bitcoin-orange/30 rounded-xl transition-all">
-              {{ 'admin.upload_first_image' | translate }}
-            </button>
-          </div>
-        </div>
-      } @else {
-        <!-- Media Grid -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          @for (media of filteredMedia; track media.id) {
-            <div class="bg-bitcoin-dark/40 backdrop-blur-sm rounded-2xl shadow-bitcoin border border-bitcoin-gray/20 overflow-hidden group hover:border-bitcoin-orange/30 hover:shadow-bitcoin-lg transition-all">
-              <!-- Image -->
-              <div class="relative aspect-video bg-bitcoin-dark/60">
-                <img
-                  [src]="media.thumbnailUrl || media.url"
-                  [alt]="media.altText || 'Gallery media'"
-                  class="w-full h-full object-cover">
-                
-                <!-- Overlay with actions -->
-                <div class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-3">
-                  <button
-                    (click)="openProjectManagerForMedia(media)"
-                    class="p-3 bg-bitcoin-orange/30 hover:bg-bitcoin-orange/40 text-bitcoin-orange border border-bitcoin-orange/30 rounded-lg transition-colors"
-                    [title]="'Edit'">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
-                    </svg>
-                  </button>
-                  <button
-                    (click)="openDeleteConfirm(media)"
-                    class="p-3 bg-red-500/30 hover:bg-red-500/40 text-red-400 border border-red-500/30 rounded-lg transition-colors"
-                    [title]="'admin.delete' | translate">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
-                    </svg>
-                  </button>
-                </div>
-              </div>
-
-              <!-- Info -->
-              <div class="p-4 space-y-3">
-                <!-- Tags -->
-                @if (media.tags.length > 0) {
-                  <div class="flex flex-wrap gap-1">
-                    @for (tag of media.tags; track tag) {
-                      <span class="px-2 py-1 text-xs font-medium bg-bitcoin-gold/20 text-bitcoin-gold border border-bitcoin-gold/30 rounded-full capitalize">
-                        {{ tag }}
-                      </span>
-                    }
-                  </div>
-                }
-                
-                <!-- Alt Text -->
-                @if (media.altText) {
-                  <p class="text-sm text-bitcoin-gray font-medium line-clamp-2">{{ media.altText }}</p>
-                }
-
-                <!-- Related Products -->
-                @if (getRelatedProducts(media).length > 0) {
-                  <div class="space-y-1">
-                    <p class="text-xs font-medium text-bitcoin-gray/70">Used by products:</p>
-                    <div class="flex flex-wrap gap-1">
-                      @for (product of getRelatedProducts(media); track product.id) {
-                        <span class="text-xs px-2 py-1 bg-bitcoin-orange/20 text-bitcoin-orange border border-bitcoin-orange/30 rounded-full">
-                          {{ product.name }}
-                        </span>
-                      }
-                    </div>
-                  </div>
-                }
-
-                <!-- Metadata -->
-                <div class="flex items-center justify-between text-xs text-bitcoin-gray/70 pt-2 border-t border-bitcoin-gray/20">
-                  <span>{{ media.width }}x{{ media.height }}px</span>
-                  <span>{{ media.uploadedAt | date:'dd/MM/yyyy' }}</span>
-                </div>
-              </div>
-            </div>
-          }
-        </div>
-      }
     }
   </div>
 
   <!-- Project Manager Modal -->
   @if (showProjectManager && projectToManage) {
-    <div class="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4 z-50" (click)="closeProjectManager()">
-      <div class="bg-bitcoin-dark/95 backdrop-blur-md border border-bitcoin-orange/20 rounded-2xl shadow-bitcoin-lg max-w-5xl w-full max-h-[90vh] overflow-y-auto" (click)="$event.stopPropagation()">
-        <div class="p-6 border-b border-bitcoin-orange/20 flex items-center justify-between sticky top-0 bg-bitcoin-dark/95 backdrop-blur-md">
-          <div>
+    <div class="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center p-2 sm:p-4 z-50" (click)="closeProjectManager()">
+      <div class="bg-bitcoin-dark/95 backdrop-blur-md border border-bitcoin-orange/20 rounded-2xl shadow-bitcoin-lg max-w-5xl w-full max-h-[95vh] sm:max-h-[90vh] overflow-y-auto" (click)="$event.stopPropagation()">
+        <div class="p-4 sm:p-6 border-b border-bitcoin-orange/20 flex items-center justify-between sticky top-0 bg-bitcoin-dark/95 backdrop-blur-md z-10">
+          <div class="flex-1 min-w-0 pr-2">
             <p class="text-xs uppercase tracking-widest text-bitcoin-gray/60 mb-1">Project</p>
-            <h2 class="text-2xl font-serif font-bold bitcoin-gradient-text">{{ projectToManage.name }}</h2>
-            <p class="text-sm text-bitcoin-gray/70 mt-1">
+            <h2 class="text-xl sm:text-2xl font-serif font-bold bitcoin-gradient-text truncate">{{ projectToManage.name }}</h2>
+            <p class="text-xs sm:text-sm text-bitcoin-gray/70 mt-1">
               {{ projectToManage.photoCount }} photo{{ projectToManage.photoCount === 1 ? '' : 's' }}
               @if (projectToManage.location) {
-                <span class="mx-2 text-bitcoin-gray/40">&bull;</span>{{ projectToManage.location }}
+                <span class="mx-2 text-bitcoin-gray/40">&bull;</span>
+                <span class="hidden sm:inline">{{ projectToManage.location }}</span>
               }
             </p>
           </div>
-          <button (click)="closeProjectManager()" class="p-2 hover:bg-bitcoin-dark/60 text-bitcoin-gray hover:text-bitcoin-orange rounded-lg transition-colors">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <button (click)="closeProjectManager()" class="p-2 hover:bg-bitcoin-dark/60 text-bitcoin-gray hover:text-bitcoin-orange rounded-lg transition-colors flex-shrink-0">
+            <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
             </svg>
           </button>
         </div>
 
-        <div class="p-6 space-y-6">
+        <div class="p-4 sm:p-6 space-y-4 sm:space-y-6">
+          <!-- Project Settings Form -->
           <form [formGroup]="projectForm" (ngSubmit)="saveProjectSettings()" class="p-5 bg-bitcoin-dark/60 border border-bitcoin-gray/20 rounded-2xl space-y-6">
-            <div>
-              <label for="projectDescription" class="block text-sm font-semibold text-bitcoin-gray mb-2">
-                Project Description
-              </label>
-              <textarea
-                id="projectDescription"
-                formControlName="caption"
-                rows="3"
-                placeholder="Describe this project or location..."
-                class="w-full px-4 py-3 bg-bitcoin-dark/40 border border-bitcoin-gray/20 rounded-xl focus:ring-2 focus:ring-bitcoin-orange focus:border-bitcoin-orange placeholder:text-bitcoin-gray/50 text-bitcoin-gray text-sm resize-none"></textarea>
-            </div>
-
-            <div>
-              <label class="block text-sm font-semibold text-bitcoin-gray mb-2">
-                Project Tags *
-              </label>
-              <div class="grid grid-cols-2 sm:grid-cols-3 gap-2">
-                @for (tag of availableTags; track tag.id) {
-                  <label class="flex items-center gap-2 p-3 bg-bitcoin-dark/40 border-2 border-bitcoin-gray/20 rounded-xl hover:bg-bitcoin-dark/60 hover:border-bitcoin-orange/30 cursor-pointer transition-all"
-                         [class.border-bitcoin-orange]="isTagSelected(tag.slug, 'project')"
-                         [style.border-color]="isTagSelected(tag.slug, 'project') ? tag.color : ''">
-                    <input
-                      type="checkbox"
-                      [checked]="isTagSelected(tag.slug, 'project')"
-                      (change)="toggleTag(tag.slug, $any($event.target).checked, 'project')"
-                      class="w-5 h-5 rounded border-bitcoin-gray/30 text-bitcoin-orange focus:ring-bitcoin-orange bg-bitcoin-dark/60">
-                    @if (tag.icon) {
-                      <span class="text-lg">{{ tag.icon }}</span>
-                    }
-                    <span class="text-sm text-bitcoin-gray font-medium">{{ tag.name }}</span>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <!-- Project Name (from individual photo form) -->
+              @if (mediaToEdit) {
+                <div class="lg:col-span-2">
+                  <label for="editAltText" class="block text-sm font-semibold text-bitcoin-gray mb-2">
+                    Project Name *
                   </label>
-                }
-              </div>
-              <p class="text-xs text-bitcoin-gray mt-2">Selected: {{ projectForm.value.tags?.length || 0 }} tag(s)</p>
-            </div>
+                  <input
+                    type="text"
+                    id="editAltText"
+                    [value]="mediaToEdit.altText"
+                    (input)="onAltTextChange($event)"
+                    placeholder="e.g., Bitcoin Mining Farm Setup"
+                    class="w-full px-4 py-3 bg-bitcoin-dark/40 border border-bitcoin-gray/20 rounded-xl focus:ring-2 focus:ring-bitcoin-orange focus:border-bitcoin-orange text-bitcoin-gray placeholder-bitcoin-gray/50">
+                  <p class="mt-2 text-xs text-bitcoin-gray">Project name (will be displayed as the title)</p>
+                </div>
+              }
 
-            <div>
-              <label class="block text-sm font-semibold text-bitcoin-gray mb-2">
-                Project Related Products
-              </label>
-              <div class="max-h-60 overflow-y-auto border-2 border-bitcoin-gray/20 rounded-xl bg-bitcoin-dark/40 p-3 space-y-2">
-                @if (products.length === 0) {
-                  <p class="text-sm text-bitcoin-gray">No products available</p>
-                } @else {
-                  @for (product of products; track product.id) {
-                    <label class="flex items-center gap-2 p-2 hover:bg-bitcoin-dark/60 rounded-lg cursor-pointer transition-colors">
+              <!-- Project Description -->
+              <div class="lg:col-span-2">
+                <label for="projectDescription" class="block text-sm font-semibold text-bitcoin-gray mb-2">
+                  Project Description
+                </label>
+                <textarea
+                  id="projectDescription"
+                  formControlName="caption"
+                  rows="3"
+                  placeholder="Describe this project or location..."
+                  class="w-full px-4 py-3 bg-bitcoin-dark/40 border border-bitcoin-gray/20 rounded-xl focus:ring-2 focus:ring-bitcoin-orange focus:border-bitcoin-orange placeholder:text-bitcoin-gray/50 text-bitcoin-gray text-sm resize-none"></textarea>
+                <p class="mt-2 text-xs text-bitcoin-gray">Location or project description (optional)</p>
+              </div>
+
+              <!-- Project Tags -->
+              <div class="lg:col-span-2">
+                <label class="block text-sm font-semibold text-bitcoin-gray mb-2">
+                  Project Tags *
+                </label>
+                <div class="flex flex-col sm:flex-row gap-2 sm:items-center mb-3">
+                  <input
+                    type="text"
+                    [(ngModel)]="quickTagInputs.project"
+                    [ngModelOptions]="{ standalone: true }"
+                    placeholder="Add new tags separated by commas e.g. test, bitcoin, orange"
+                    class="flex-1 px-4 py-3 bg-bitcoin-dark/40 border border-bitcoin-gray/20 rounded-xl focus:ring-2 focus:ring-bitcoin-orange focus:border-bitcoin-orange placeholder:text-bitcoin-gray/50 text-bitcoin-gray text-sm">
+                  <button
+                    type="button"
+                    (click)="addQuickTags('project')"
+                    [disabled]="isAddingQuickTags || !(quickTagInputs.project?.trim())"
+                    class="px-4 py-3 bg-bitcoin-orange/30 hover:bg-bitcoin-orange/40 text-bitcoin-orange border border-bitcoin-orange/30 font-semibold rounded-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2">
+                    @if (isAddingQuickTags) {
+                      <div class="app-spinner" style="--spinner-size: 24px;"><img src="/Logo Clear.png" alt="Adding tags" width="32" height="32"></div>
+                      <span>Adding…</span>
+                    } @else {
+                      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                      </svg>
+                      <span>Add Tags</span>
+                    }
+                  </button>
+                </div>
+                <div class="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                  @for (tag of availableTags; track tag.id) {
+                    <label class="flex items-center gap-2 p-3 bg-bitcoin-dark/40 border-2 border-bitcoin-gray/20 rounded-xl hover:bg-bitcoin-dark/60 hover:border-bitcoin-orange/30 cursor-pointer transition-all"
+                           [class.border-bitcoin-orange]="isTagSelected(tag.slug, 'project')"
+                           [style.border-color]="isTagSelected(tag.slug, 'project') ? tag.color : ''">
                       <input
                         type="checkbox"
-                        [checked]="isProductSelected(product.id || '', 'project')"
-                        (change)="toggleRelatedProduct(product.id || '', $any($event.target).checked, 'project')"
-                        class="w-5 h-5 rounded border-bitcoin-gray/30 text-bitcoin-orange focus:ring-bitcoin-orange">
-                      <span class="text-sm truncate text-bitcoin-gray">{{ product.name }}</span>
+                        [checked]="isTagSelected(tag.slug, 'project')"
+                        (change)="toggleTag(tag.slug, $any($event.target).checked, 'project')"
+                        class="w-5 h-5 rounded border-bitcoin-gray/30 text-bitcoin-orange focus:ring-bitcoin-orange bg-bitcoin-dark/60">
+                      @if (tag.icon) {
+                        <span class="text-lg">{{ tag.icon }}</span>
+                      }
+                      <span class="text-sm text-bitcoin-gray font-medium">{{ tag.name }}</span>
                     </label>
                   }
-                }
+                </div>
+                <p class="text-xs text-bitcoin-gray mt-2">Selected: {{ projectForm.value.tags?.length || 0 }} tag(s)</p>
               </div>
-              <p class="text-xs text-bitcoin-gray mt-2">Applied to every photo in this project</p>
+
+              <!-- Related Products -->
+              <div class="lg:col-span-2">
+                <label class="block text-sm font-semibold text-bitcoin-gray mb-2">
+                  Project Related Products
+                </label>
+                <div class="max-h-60 overflow-y-auto border-2 border-bitcoin-gray/20 rounded-xl bg-bitcoin-dark/40 p-3 space-y-2">
+                  @if (products.length === 0) {
+                    <p class="text-sm text-bitcoin-gray">No products available</p>
+                  } @else {
+                    @for (product of products; track product.id) {
+                      <label class="flex items-center gap-2 p-2 hover:bg-bitcoin-dark/60 rounded-lg cursor-pointer transition-colors">
+                        <input
+                          type="checkbox"
+                          [checked]="isProductSelected(product.id || '', 'project')"
+                          (change)="toggleRelatedProduct(product.id || '', $any($event.target).checked, 'project')"
+                          class="w-5 h-5 rounded border-bitcoin-gray/30 text-bitcoin-orange focus:ring-bitcoin-orange">
+                        <span class="text-sm truncate text-bitcoin-gray">{{ product.name }}</span>
+                      </label>
+                    }
+                  }
+                </div>
+                <p class="text-xs text-bitcoin-gray mt-2">
+                  @if (mediaToEdit) {
+                    <span>Link this photo to specific products</span>
+                  } @else {
+                    <span>Applied to every photo in this project</span>
+                  }
+                </p>
+              </div>
             </div>
 
-            <div class="flex items-center justify-between gap-3 text-xs text-bitcoin-gray/60">
-              <span>Saving updates the description, tags, and related products on every photo in this project.</span>
+            <!-- Save Actions -->
+            <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 pt-3 border-t border-bitcoin-gray/20">
+              <p class="text-xs text-bitcoin-gray/70 hidden sm:block">
+                @if (mediaToEdit) {
+                  <span>Saving updates this photo's project name, description, tags, and related products.</span>
+                } @else {
+                  <span>Saving updates the description, tags, and related products on every photo in this project.</span>
+                }
+              </p>
               <button
                 type="submit"
-                [disabled]="isProjectSaving || projectForm.pristine"
-                class="px-4 py-2 bg-bitcoin-orange/30 hover:bg-bitcoin-orange/40 border border-bitcoin-orange/30 text-bitcoin-orange font-semibold rounded-xl transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2">
+                [disabled]="isProjectSaving || (projectForm.pristine && !mediaToEdit)"
+                class="w-full sm:w-auto px-5 py-2.5 bg-bitcoin-orange/30 hover:bg-bitcoin-orange/40 border border-bitcoin-orange/30 text-bitcoin-orange font-semibold rounded-xl transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 whitespace-nowrap">
                 @if (isProjectSaving) {
                   <div class="app-spinner" style="--spinner-size: 32px;"><img src="/Logo Clear.png" alt="Saving" width="48" height="48"></div>
                   <span>Saving...</span>
                 } @else {
-                  <span>Save Project Settings</span>
+                  @if (mediaToEdit) {
+                    <span>Save Photo Changes</span>
+                  } @else {
+                    <span>Save Project Settings</span>
+                  }
                 }
               </button>
             </div>
           </form>
 
+          <!-- Current Tags & Products Display -->
           <div class="flex flex-wrap items-center gap-3">
             @if ((projectForm.value.tags || []).length > 0) {
               <div class="flex flex-wrap gap-2">
@@ -412,11 +387,12 @@
             }
           </div>
 
-          <div class="flex flex-wrap gap-3">
+          <!-- Action Buttons -->
+          <div class="flex flex-col sm:flex-row gap-3">
             <button
               type="button"
               (click)="addPhotosToProject(projectToManage)"
-              class="px-4 py-3 bg-bitcoin-orange/30 hover:bg-bitcoin-orange/40 text-bitcoin-orange border border-bitcoin-orange/30 font-semibold rounded-xl transition-all flex items-center gap-2">
+              class="w-full sm:w-auto px-4 py-3 bg-bitcoin-orange/30 hover:bg-bitcoin-orange/40 text-bitcoin-orange border border-bitcoin-orange/30 font-semibold rounded-xl transition-all flex items-center justify-center gap-2">
               <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
               </svg>
@@ -425,11 +401,12 @@
             <button
               type="button"
               (click)="closeProjectManager()"
-              class="px-4 py-3 bg-bitcoin-dark/40 hover:bg-bitcoin-dark/60 border border-bitcoin-gray/20 text-bitcoin-gray/80 rounded-xl transition-all">
+              class="w-full sm:w-auto px-4 py-3 bg-bitcoin-dark/40 hover:bg-bitcoin-dark/60 border border-bitcoin-gray/20 text-bitcoin-gray/80 rounded-xl transition-all">
               Close
             </button>
           </div>
 
+          <!-- Photo Grid -->
           <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             @for (image of projectToManage.images; track image.id) {
               @let isSelected = mediaToEdit?.id === image.id;
@@ -488,114 +465,33 @@
             }
           </div>
 
-          @if (mediaToEdit) {
-            <form [formGroup]="editForm" (ngSubmit)="onEditSubmit()" class="grid gap-6 bg-bitcoin-dark/60 border border-bitcoin-gray/20 rounded-2xl p-6">
-              <div class="grid lg:grid-cols-[minmax(0,2fr)_minmax(0,3fr)] gap-6">
-                <div class="space-y-4">
-                  <div class="rounded-2xl overflow-hidden border border-bitcoin-gray/20">
-                    <img [src]="mediaToEdit.thumbnailUrl || mediaToEdit.url" [alt]="mediaToEdit.altText" class="w-full h-64 object-cover">
-                  </div>
-                  <div class="text-xs text-bitcoin-gray/60 flex items-center justify-between px-1">
-                    <span>{{ mediaToEdit.width }}x{{ mediaToEdit.height }}px</span>
-                    <span>{{ mediaToEdit.uploadedAt | date:'dd/MM/yyyy' }}</span>
-                  </div>
-                </div>
-
-                <div class="space-y-6">
-                  <div>
-                    <label for="editAltText" class="block text-base font-semibold text-bitcoin-gray mb-3">
-                      Project Name *
-                    </label>
-                    <input
-                      type="text"
-                      id="editAltText"
-                      formControlName="altText"
-                      placeholder="e.g., Bitcoin Mining Farm Setup"
-                      class="w-full px-4 py-3 bg-bitcoin-dark/40 border-2 border-bitcoin-gray/20 rounded-xl focus:ring-2 focus:ring-bitcoin-orange focus:border-bitcoin-orange text-bitcoin-gray placeholder-bitcoin-gray/50 text-base">
-                    <p class="mt-2 text-sm text-bitcoin-gray">Project name (will be displayed as the title)</p>
-                  </div>
-
-                  <div>
-                    <label for="editCaption" class="block text-base font-semibold text-bitcoin-gray mb-3">
-                      Description
-                    </label>
-                    <textarea
-                      id="editCaption"
-                      formControlName="caption"
-                      rows="3"
-                      placeholder="e.g., Texas, USA - High-efficiency cooling system"
-                      class="w-full px-4 py-3 bg-bitcoin-dark/40 border-2 border-bitcoin-gray/20 rounded-xl focus:ring-2 focus:ring-bitcoin-orange focus:border-bitcoin-orange placeholder:text-bitcoin-gray/50 text-bitcoin-gray text-base resize-none"></textarea>
-                    <p class="mt-2 text-sm text-bitcoin-gray">Location or project description (optional)</p>
-                  </div>
-
-                  <div>
-                    <label class="block text-base font-semibold text-bitcoin-gray mb-3">
-                      Tags *
-                    </label>
-                    <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
-                      @for (tag of availableTags; track tag.id) {
-                        <label class="flex items-center gap-2 p-3 bg-bitcoin-dark/40 border-2 border-bitcoin-gray/20 rounded-xl hover:bg-bitcoin-dark/60 hover:border-bitcoin-orange/30 cursor-pointer transition-all"
-                               [class.border-bitcoin-orange]="isTagSelected(tag.slug, 'edit')"
-                               [style.border-color]="isTagSelected(tag.slug, 'edit') ? tag.color : ''">
-                          <input
-                            type="checkbox"
-                            [checked]="isTagSelected(tag.slug, 'edit')"
-                            (change)="toggleTag(tag.slug, $any($event.target).checked, 'edit')"
-                            class="w-5 h-5 rounded border-bitcoin-gray/30 text-bitcoin-orange focus:ring-bitcoin-orange bg-bitcoin-dark/60">
-                          @if (tag.icon) {
-                            <span class="text-lg">{{ tag.icon }}</span>
-                          }
-                          <span class="text-base text-bitcoin-gray font-medium">{{ tag.name }}</span>
-                        </label>
-                      }
-                    </div>
-                    <p class="text-sm text-bitcoin-gray mt-2">Selected: {{ editTags?.value?.length || 0 }} tag(s)</p>
-                  </div>
-
-                  <div>
-                    <label class="block text-base font-semibold text-bitcoin-gray mb-3">
-                      Related Products
-                    </label>
-                    <div class="max-h-64 overflow-y-auto border-2 border-bitcoin-gray/20 rounded-xl bg-bitcoin-dark/40 p-3 space-y-2">
-                      @if (products.length === 0) {
-                        <p class="text-sm text-bitcoin-gray">No products available</p>
-                      } @else {
-                        @for (product of products; track product.id) {
-                          <label class="flex items-center gap-2 p-2 hover:bg-bitcoin-dark/60 rounded-lg cursor-pointer transition-colors">
-                            <input
-                              type="checkbox"
-                              [checked]="isProductSelected(product.id || '', 'edit')"
-                              (change)="toggleRelatedProduct(product.id || '', $any($event.target).checked, 'edit')"
-                              class="w-5 h-5 rounded border-bitcoin-gray/30 text-bitcoin-orange focus:ring-bitcoin-orange">
-                            <span class="text-base truncate text-bitcoin-gray">{{ product.name }}</span>
-                          </label>
-                        }
-                      }
-                    </div>
-                    <p class="mt-2 text-sm text-bitcoin-gray">Link this media to specific products (optional)</p>
-                  </div>
-                </div>
-              </div>
-
-              <div class="flex flex-wrap gap-4 pt-2">
-                <button
-                  type="submit"
-                  [disabled]="isSaving"
-                  class="flex-1 py-4 px-6 bg-bitcoin-orange/30 hover:bg-bitcoin-orange/40 text-bitcoin-orange border-2 border-bitcoin-orange/30 rounded-xl font-bold text-base transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2">
-                  @if (isSaving) {
-                    <div class="app-spinner" style="--spinner-size: 72px;"><img src="/Logo Clear.png" alt="Loading" width="96" height="96"></div>
-                    <span>Saving...</span>
-                  } @else {
-                    <span>Save Photo Changes</span>
-                  }
-                </button>
-              </div>
-            </form>
-          } @else {
-            <div class="p-6 bg-bitcoin-dark/60 border border-bitcoin-gray/20 rounded-2xl text-sm text-bitcoin-gray">
-              Select a photo above to edit its details.
+          <!-- Bottom Save Button -->
+          <div class="sticky bottom-0 bg-bitcoin-dark/95 backdrop-blur-md border-t border-bitcoin-orange/20 p-4 sm:p-6 -mx-4 sm:-mx-6 -mb-4 sm:-mb-6 mt-4 sm:mt-6">
+            <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4">
+              <p class="text-xs sm:text-sm text-bitcoin-gray/70 flex-1">
+                @if (mediaToEdit) {
+                  <span>Changes will update this photo's project name, description, tags, and related products.</span>
+                } @else {
+                  <span>Changes will update the description, tags, and related products on every photo in this project.</span>
+                }
+              </p>
+              <button
+                type="button"
+                (click)="saveProjectSettings()"
+                [disabled]="isProjectSaving || (projectForm.pristine && !mediaToEdit)"
+                class="w-full sm:w-auto px-6 py-3 bg-bitcoin-orange hover:bg-bitcoin-orange/90 text-white font-bold rounded-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-lg hover:shadow-bitcoin-orange/20 whitespace-nowrap">
+                @if (isProjectSaving) {
+                  <div class="app-spinner" style="--spinner-size: 32px;"><img src="/Logo Clear.png" alt="Saving" width="48" height="48"></div>
+                  <span>Saving...</span>
+                } @else {
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                  </svg>
+                  <span>Save Changes</span>
+                }
+              </button>
             </div>
-          }
+          </div>
         </div>
       </div>
     </div>

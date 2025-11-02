@@ -4,6 +4,7 @@ import { RouterModule } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { ProductFirestoreService, FirestoreProduct } from '../../services/product-firestore.service';
 import { GalleryService, GalleryImage } from '../../services/gallery.service';
+import { CategoryService } from '../../services/category.service';
 import { HomeHeroComponent } from '../../features/home/home-hero/home-hero.component';
 import { HomeStatsComponent } from '../../features/home/home-stats/home-stats.component';
 import { HomeReviewsComponent } from '../../features/home/home-reviews/home-reviews.component';
@@ -22,12 +23,15 @@ export class HomePageComponent extends LoadingComponentBase implements OnInit {
   private platformId = inject(PLATFORM_ID);
   private productService = inject(ProductFirestoreService);
   private galleryService = inject(GalleryService);
+  private categoryService = inject(CategoryService);
   private metaService = inject(MetaService);
   
   // Dynamic product data from Firestore
   featuredProducts: FirestoreProduct[] = [];
+  soloMinerProducts: FirestoreProduct[] = [];
   galleryImages: GalleryImage[] = [];
   hasProducts = false;
+  hasSoloMiners = false;
 
   ngOnInit() {
     // Set page meta tags from settings
@@ -39,6 +43,7 @@ export class HomePageComponent extends LoadingComponentBase implements OnInit {
     // Only load from service if in browser (not during SSR)
     if (isPlatformBrowser(this.platformId)) {
       this.loadLatestProducts();
+      this.loadSoloMiners();
       this.loadGalleryPreview();
     } else {
       // During SSR, set loading to false to show empty state
@@ -70,6 +75,47 @@ export class HomePageComponent extends LoadingComponentBase implements OnInit {
       this.featuredProducts = availableProducts.slice(0, 8);
       this.hasProducts = this.featuredProducts.length > 0;
     });
+  }
+
+  private async loadSoloMiners() {
+    try {
+      // Get solo-miners category
+      const categories = await new Promise<any[]>((resolve, reject) => {
+        this.categoryService.getActiveCategories()
+          .pipe(take(1))
+          .subscribe({
+            next: (categories) => resolve(categories),
+            error: (error) => reject(error)
+          });
+      });
+
+      const soloCategory = categories.find(cat => cat.slug === 'solo-miners');
+      
+      if (!soloCategory) {
+        this.hasSoloMiners = false;
+        return;
+      }
+
+      // Get all products
+      const products = await new Promise<FirestoreProduct[]>((resolve, reject) => {
+        this.productService.getProducts()
+          .pipe(take(1))
+          .subscribe({
+            next: (products) => resolve(products),
+            error: (error) => reject(error)
+          });
+      });
+
+      // Filter solo miner products
+      this.soloMinerProducts = products
+        .filter(p => p.category === 'solo-miners' && p.available !== false)
+        .slice(0, 3); // Take up to 3 for featured section
+
+      this.hasSoloMiners = this.soloMinerProducts.length > 0;
+    } catch (error) {
+      console.error('Error loading solo miners:', error);
+      this.hasSoloMiners = false;
+    }
   }
 
   private async loadGalleryPreview() {

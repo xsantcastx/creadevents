@@ -12,7 +12,8 @@
     "deploy": "npm run build && npx firebase deploy --only hosting",
     "lint:styles": "stylelint \"src/**/*.{css,scss}\"",
     "seed:templates": "tsx scripts/seed-templates.ts",
-    "seed:tags": "tsx scripts/seed-tags.ts"
+    "seed:tags": "tsx scripts/seed-tags.ts",
+    "seed:solo-miners": "tsx scripts/seed-solo-miners.ts"
   },
   "prettier": {
     "printWidth": 100,

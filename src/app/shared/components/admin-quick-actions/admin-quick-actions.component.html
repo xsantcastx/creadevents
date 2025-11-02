@@ -1,25 +1,133 @@
-<div class="bg-bitcoin-dark/40 backdrop-blur-sm rounded-2xl shadow-bitcoin p-6 border border-bitcoin-gray/20 mb-6">
-  <div class="flex items-center gap-3 mb-4">
-    <div class="w-8 h-8 bg-gradient-to-br from-bitcoin-orange to-bitcoin-gold rounded-lg flex items-center justify-center">
-      <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
-      </svg>
-    </div>
-    <h3 class="text-lg font-semibold bitcoin-gradient-text">{{ 'admin.quick_actions' | translate }}</h3>
-  </div>
-
-  <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
-    @for (action of quickActions; track action.route) {
-      <a
-        [routerLink]="action.route"
-        [class]="'flex flex-col items-center gap-2 p-4 rounded-xl border transition-all duration-300 ' + getColorClasses(action.color, isCurrentPage(action.route))"
-        [class.cursor-not-allowed]="isCurrentPage(action.route)"
-        [class.opacity-50]="isCurrentPage(action.route)">
-        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" [attr.d]="action.icon"></path>
+<section
+  class="quick-actions mb-8"
+  [class.quick-actions--collapsed]="isCollapsed"
+  role="navigation"
+  aria-label="Admin quick actions">
+  <header class="quick-actions__header">
+    <div class="quick-actions__identity">
+      <div class="quick-actions__glyph">
+        <span class="quick-actions__glyph-light"></span>
+        <svg class="quick-actions__glyph-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
         </svg>
-        <span class="text-xs font-medium text-center">{{ action.labelKey | translate }}</span>
-      </a>
-    }
-  </div>
-</div>
+      </div>
+      <div>
+        <h2 class="quick-actions__title">{{ 'admin.quick_actions' | translate }}</h2>
+        <p class="quick-actions__subtitle">Signature shortcuts designed for fast, confident stewardship.</p>
+      </div>
+    </div>
+    <div class="quick-actions__actions">
+      <div class="quick-actions__status" *ngIf="activeAction; else quickActionsDefaultStatus">
+        <span class="quick-actions__status-label">Currently viewing</span>
+        <span class="quick-actions__status-value">{{ activeAction?.labelKey | translate }}</span>
+      </div>
+      <ng-template #quickActionsDefaultStatus>
+        <div class="quick-actions__status">
+          <span class="quick-actions__status-label">Navigate anywhere</span>
+          <span class="quick-actions__status-value">Choose a control surface below</span>
+        </div>
+      </ng-template>
+      <button
+        type="button"
+        class="quick-actions__toggle"
+        (click)="toggleCollapse()"
+        [attr.aria-expanded]="!isCollapsed">
+        <span>{{ isCollapsed ? 'Open actions' : 'Collapse actions' }}</span>
+        <svg class="quick-actions__toggle-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+             [class.quick-actions__toggle-icon--open]="!isCollapsed">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 9l6 6 6-6"></path>
+        </svg>
+      </button>
+    </div>
+  </header>
+
+  @if (isCollapsed) {
+    <div class="quick-actions__summary">
+      <span class="quick-actions__summary-label">Focus a workspace</span>
+      <div class="quick-actions__summary-chips">
+        @for (group of groupedActions; track group.category) {
+          <button
+            type="button"
+            class="quick-actions__summary-chip"
+            [class.quick-actions__summary-chip--active]="activeAction?.category === group.category"
+            (click)="openCategory(group.category)">
+            <span>{{ group.meta.label }}</span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+            </svg>
+          </button>
+        }
+      </div>
+    </div>
+  } @else {
+    <div class="quick-actions__groups">
+      @for (group of groupedActions; track group.category) {
+        @let panelId = 'quick-actions-panel-' + group.category;
+        <section
+          class="quick-actions__group"
+          [class.quick-actions__group--collapsed]="!isCategoryExpanded(group.category)">
+          <button
+            type="button"
+            class="quick-actions__group-header"
+            (click)="toggleCategory(group.category)"
+            [attr.aria-expanded]="isCategoryExpanded(group.category)"
+            [attr.aria-controls]="panelId">
+            <div class="quick-actions__group-header-content">
+              <div class="quick-actions__group-icon">
+                <svg class="quick-actions__group-icon-image" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" [attr.d]="group.meta.icon"></path>
+                </svg>
+              </div>
+              <div class="quick-actions__group-text">
+                <h3 class="quick-actions__group-title">{{ group.meta.label }}</h3>
+                <p class="quick-actions__group-copy">{{ group.meta.description }}</p>
+              </div>
+            </div>
+            <svg
+              class="quick-actions__group-chevron"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              [class.quick-actions__group-chevron--open]="isCategoryExpanded(group.category)">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 9l6 6 6-6"></path>
+            </svg>
+          </button>
+          @if (isCategoryExpanded(group.category)) {
+            <div class="quick-actions__panel" [attr.id]="panelId">
+              <div class="quick-actions__list">
+                @for (action of group.actions; track action.route) {
+                  <a
+                    class="quick-actions__card"
+                    [routerLink]="action.route"
+                    [attr.data-color]="action.color"
+                    [class.quick-actions__card--current]="isCurrentPage(action.route)"
+                    [class.quick-actions__card--disabled]="isCurrentPage(action.route)"
+                    [attr.aria-current]="isCurrentPage(action.route) ? 'page' : null">
+                    <div class="quick-actions__card-highlight"></div>
+                    <div class="quick-actions__card-ring"></div>
+                    <div class="quick-actions__card-content">
+                      <div class="quick-actions__card-icon">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" [attr.d]="action.icon"></path>
+                        </svg>
+                      </div>
+                      <div class="quick-actions__card-text">
+                        <span class="quick-actions__card-label">{{ action.labelKey | translate }}</span>
+                        <span class="quick-actions__card-description">{{ action.description }}</span>
+                      </div>
+                      <div class="quick-actions__card-cta" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                        </svg>
+                      </div>
+                    </div>
+                  </a>
+                }
+              </div>
+            </div>
+          }
+        </section>
+      }
+    </div>
+  }
+</section>

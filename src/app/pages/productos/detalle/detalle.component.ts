@@ -8,10 +8,13 @@ import { MediaService } from '../../../services/media.service';
 import { CartService } from '../../../services/cart.service';
 import { CategoryService } from '../../../services/category.service';
 import { ModelService } from '../../../services/model.service';
+import { SeoSchemaService } from '../../../services/seo-schema.service';
+import { ProductReviewService } from '../../../services/product-review.service';
 import { Product } from '../../../models/product';
 import { Media } from '../../../models/media';
 import { Category } from '../../../models/catalog';
 import { Model } from '../../../models/catalog';
+import { ReviewSummary } from '../../../models/review';
 import { ImageLightboxComponent, LightboxImage } from '../../../shared/components/image-lightbox/image-lightbox.component';
 import { ProductReviewsComponent } from '../../../shared/components/product-reviews/product-reviews.component';
 import { firstValueFrom } from 'rxjs';
@@ -29,15 +32,18 @@ export class DetalleComponent implements OnInit, AfterViewInit {
   private cartService = inject(CartService);
   private categoryService = inject(CategoryService);
   private modelService = inject(ModelService);
+  private reviewService = inject(ProductReviewService);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private titleService = inject(Title);
   private metaService = inject(Meta);
+  private seoSchemaService = inject(SeoSchemaService);
   private cdr = inject(ChangeDetectorRef);
   
   producto: Product | undefined;
   category: Category | undefined;
   model: Model | undefined;
+  reviewSummary: ReviewSummary | null = null;
   productosRelacionados: Product[] = [];
   coverImage: Media | undefined;
   galleryImages: Media[] = [];
@@ -72,120 +78,141 @@ export class DetalleComponent implements OnInit, AfterViewInit {
   }
 
   private async loadProducto(slug: string) {
-    try {
-      // Mark as loaded to prevent duplicate loads
-      this.dataLoaded = true;
-      
-      // Query product by slug
-      const products = await firstValueFrom(this.productsService.getAllProducts());
-      
-      // Find product matching slug, filter by published status
-      this.producto = products.find(p => 
-        p.slug === slug &&
-        p.status === 'published'
-      );
-      
-      if (this.producto) {
-        // Load category information
-        if (this.producto.categoryId) {
-          const cat = await firstValueFrom(this.categoryService.getCategory(this.producto.categoryId));
-          this.category = cat || undefined;
-        }
-        
-        // Load model information
-        if (this.producto.modelId) {
-          const mod = await firstValueFrom(this.modelService.getModel(this.producto.modelId));
-          this.model = mod || undefined;
-        }
-        
-        // Load cover image
-        if (this.producto.coverImage) {
-          const isMediaId = !this.producto.coverImage.includes('http');
-          if (isMediaId) {
-            const media = await this.mediaService.getMediaById(this.producto.coverImage);
-            if (media) {
-              this.coverImage = media;
-            } else if (this.producto.imageUrl) {
-              this.coverImage = this.createMediaFromUrl(this.producto.imageUrl, this.producto.name);
-            }
-          } else {
-            this.coverImage = this.createMediaFromUrl(this.producto.coverImage, this.producto.name);
-          }
-        } else if (this.producto.imageUrl) {
-          this.coverImage = this.createMediaFromUrl(this.producto.imageUrl, this.producto.name);
-        }
-        
-        // Load gallery images
-        if (this.producto.galleryImageIds && this.producto.galleryImageIds.length > 0) {
-          const images = await this.mediaService.getMediaByIds(this.producto.galleryImageIds);
-          this.galleryImages = images.filter((image): image is Media => !!image);
-        } else {
-          this.galleryImages = [];
-        }
+    this.dataLoaded = true;
+    this.loading = true;
 
-        this.updatePlaceholderSlots();
-        this.prepareCarouselImages();
-        
-        // Update page title and meta tags
-        this.updateSEO();
-        
-        // Load related products
-        await this.loadProductosRelacionados(products);
-      } else {
-        // Product not found or not published - redirect to 404
+    try {
+      const producto = await firstValueFrom(this.productsService.getProductBySlug(slug));
+
+      if (!producto || producto.status !== 'published') {
         this.router.navigate(['/404']);
+        return;
       }
-      
-      this.loading = false;
+
+      this.producto = producto;
+      this.cdr.detectChanges();
+
+      const [category, model, reviewSummary] = await Promise.all([
+        producto.categoryId ? firstValueFrom(this.categoryService.getCategory(producto.categoryId)) : Promise.resolve(null),
+        producto.modelId ? firstValueFrom(this.modelService.getModel(producto.modelId)) : Promise.resolve(null),
+        this.reviewService.getReviewSummary(producto.id!).catch(() => null) // Load review summary
+      ]);
+
+      this.category = category || undefined;
+      this.model = model || undefined;
+      this.reviewSummary = reviewSummary;
+
+      await this.loadProductMediaAssets();
+
+      this.updatePlaceholderSlots();
+      this.prepareCarouselImages();
+      this.updateSEO();
+
+      void this.loadProductosRelacionados();
     } catch (error) {
       console.error('Error loading product:', error);
-      this.loading = false;
       this.router.navigate(['/404']);
+    } finally {
+      this.loading = false;
+      if (isPlatformBrowser(this.platformId)) {
+        this.cdr.detectChanges();
+      }
     }
   }
 
-  private async loadProductosRelacionados(todosLosProductos: Product[]) {
-    if (!this.producto) return;
-    
-    // Get other published products from the same category
-    let related = todosLosProductos
-      .filter(p => 
-        p.status === 'published' &&
-        p.id !== this.producto!.id &&
-        p.categoryId === this.producto!.categoryId
-      )
-      .slice(0, 3);
-    
-    // If not enough from same category, fill with any published products
-    if (related.length < 3) {
-      const additional = todosLosProductos
-        .filter(p => 
+  private async loadProductMediaAssets(): Promise<void> {
+    if (!this.producto) {
+      this.coverImage = undefined;
+      this.galleryImages = [];
+      return;
+    }
+
+    try {
+      if (this.producto.coverImage) {
+        const isMediaId = !this.producto.coverImage.includes('http');
+        if (isMediaId) {
+          const media = await this.mediaService.getMediaById(this.producto.coverImage);
+          if (media) {
+            this.coverImage = media;
+          } else if (this.producto.imageUrl) {
+            this.coverImage = this.createMediaFromUrl(this.producto.imageUrl, this.producto.name);
+          }
+        } else {
+          this.coverImage = this.createMediaFromUrl(this.producto.coverImage, this.producto.name);
+        }
+      } else if (this.producto.imageUrl) {
+        this.coverImage = this.createMediaFromUrl(this.producto.imageUrl, this.producto.name);
+      } else {
+        this.coverImage = undefined;
+      }
+
+      if (this.producto.galleryImageIds && this.producto.galleryImageIds.length > 0) {
+        const images = await this.mediaService.getMediaByIds(this.producto.galleryImageIds);
+        this.galleryImages = images.filter((image): image is Media => !!image);
+      } else {
+        this.galleryImages = [];
+      }
+    } catch (error) {
+      console.error('Error loading product media:', error);
+      if (!this.coverImage && this.producto.imageUrl) {
+        this.coverImage = this.createMediaFromUrl(this.producto.imageUrl, this.producto.name);
+      }
+    }
+  }
+
+  private async loadProductosRelacionados() {
+    if (!this.producto) {
+      this.productosRelacionados = [];
+      return;
+    }
+
+    try {
+      const todosLosProductos = await firstValueFrom(this.productsService.getAllProducts());
+
+      let related = todosLosProductos
+        .filter(p =>
           p.status === 'published' &&
           p.id !== this.producto!.id &&
-          !related.find(r => r.id === p.id)
+          p.categoryId === this.producto!.categoryId
         )
-        .slice(0, 3 - related.length);
-      
-      related = [...related, ...additional];
-    }
-    
-    // Load cover images for related products
-    this.productosRelacionados = await Promise.all(
-      related.map(async (product) => {
-        if (product.coverImage) {
-          const isMediaId = !product.coverImage.includes('http');
-          if (isMediaId) {
-            const media = await this.mediaService.getMediaById(product.coverImage);
-            if (media) {
-              return { ...product, imageUrl: media.url };
+        .slice(0, 3);
+
+      if (related.length < 3) {
+        const additional = todosLosProductos
+          .filter(p =>
+            p.status === 'published' &&
+            p.id !== this.producto!.id &&
+            !related.find(r => r.id === p.id)
+          )
+          .slice(0, 3 - related.length);
+
+        related = [...related, ...additional];
+      }
+
+      this.productosRelacionados = await Promise.all(
+        related.map(async (product) => {
+          if (product.coverImage) {
+            const isMediaId = !product.coverImage.includes('http');
+            if (isMediaId) {
+              const media = await this.mediaService.getMediaById(product.coverImage);
+              if (media) {
+                return { ...product, imageUrl: media.url };
+              }
+            } else {
+              return { ...product, imageUrl: product.coverImage };
             }
-          } else {
-            return { ...product, imageUrl: product.coverImage };
           }
-        }
-        return product;
-      })
-    );
+          return product;
+        })
+      );
+
+      if (isPlatformBrowser(this.platformId)) {
+        this.cdr.detectChanges();
+      }
+    } catch (error) {
+      console.error('Error loading related products:', error);
+      this.productosRelacionados = [];
+    }
   }
 
   private updateSEO() {
@@ -206,6 +233,50 @@ export class DetalleComponent implements OnInit, AfterViewInit {
     if (this.coverImage?.url) {
       this.metaService.updateTag({ property: 'og:image', content: this.coverImage.url });
     }
+
+    // 🎯 Generate Product Schema with Review Data
+    const productSchemaData: any = {
+      name: this.producto.name,
+      description: description,
+      imageUrl: this.coverImage?.url || this.producto.imageUrl || '',
+      price: this.producto.price || 0,
+      currency: 'EUR',
+      sku: this.producto.sku || `TLM-${this.producto.id}`,
+      brand: 'TheLuxMining',
+      availability: (this.producto.stock && this.producto.stock > 0) ? 'InStock' : 'OutOfStock',
+      condition: 'NewCondition',
+      slug: this.producto.slug
+    };
+
+    // Add review rating if available
+    if (this.reviewSummary && this.reviewSummary.totalReviews > 0) {
+      productSchemaData.rating = {
+        value: this.reviewSummary.averageRating,
+        count: this.reviewSummary.totalReviews
+      };
+    }
+
+    this.seoSchemaService.generateProductSchema(productSchemaData);
+
+    // 🎯 Generate Breadcrumb Schema
+    const breadcrumbs = [
+      { name: 'Home', url: 'https://theluxmining.com/' },
+      { name: 'Products', url: 'https://theluxmining.com/productos' }
+    ];
+    
+    if (this.category) {
+      breadcrumbs.push({
+        name: this.category.name,
+        url: `https://theluxmining.com/productos?category=${this.category.slug}`
+      });
+    }
+    
+    breadcrumbs.push({
+      name: this.producto.name,
+      url: `https://theluxmining.com/products/${this.producto.slug}`
+    });
+
+    this.seoSchemaService.generateBreadcrumbSchema(breadcrumbs);
   }
 
   get currentCarouselImage(): LightboxImage | undefined {

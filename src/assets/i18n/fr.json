@@ -13,6 +13,7 @@
     "register": "S'inscrire",
     "profile": "Mon Profil",
     "orders": "Mes Commandes",
+    "solo_miners": "Mineurs Solo Bitcoin",
     "admin_dashboard": "Tableau de Bord Admin",
     "product_management": "Gestion des Produits",
     "quick_add_product": "Ajout Rapide de Produit",
@@ -81,10 +82,148 @@
       "years_experience": "Ann\u00c3\u00a9es d'Excellence"
     }
   },
+  "soloMiners": {
+    "hero": {
+      "title": "Mineurs Bitcoin Solo & Matériel de Loterie",
+      "subtitle": "Gagnez 100 % des récompenses de bloc avec des mineurs solo silencieux et efficaces conçus pour une indépendance totale.",
+      "ctaPrimary": "Parler à un spécialiste",
+      "ctaSecondary": "Comparer les mineurs solo",
+      "stats": {
+        "reward": "Récompense complète du bloc",
+        "power": "Consommation adaptée au domicile",
+        "support": "Support 24/7"
+      }
+    },
+    "highlights": {
+      "lottery": {
+        "title": "Récompenses intégrales",
+        "copy": "Les mineurs solo gardent les 3,125 BTC plus les frais lorsqu'ils trouvent un bloc."
+      },
+      "home": {
+        "title": "Prêt pour la maison",
+        "copy": "Matériel silencieux basse consommation pour appartements, studios ou bureaux."
+      },
+      "decentralization": {
+        "title": "Renforcez Bitcoin",
+        "copy": "La minage solo favorise la décentralisation du réseau."
+      }
+    },
+    "catalog": {
+      "eyebrow": "Catalogue Solo Mining",
+      "title": "Matériel sélectionné pour la minage solo",
+      "copy": "Choisissez des mineurs USB, des rigs de bureau ou des packs personnalisés avec nœud intégré.",
+      "learnMore": "FAQ sur la minage solo",
+      "metrics": {
+        "hashrate": "Hashrate",
+        "power": "Puissance",
+        "efficiency": "Efficacité",
+        "price": "Prix"
+      },
+      "notice": "Publiez vos premiers produits de mineurs solo depuis le panneau admin pour remplacer ces exemples.",
+      "noticeCta": "Ouvrir la gestion des produits"
+    },
+    "cta": {
+      "viewProduct": "Voir le mineur solo",
+      "requestQuote": "Demander un devis",
+      "defaultDescription": "Matériel optimisé pour la minage solo et les stratégies de loterie."
+    },
+    "badges": {
+      "lottery": "Classe Loterie",
+      "pro": "Solo Pro",
+      "hobby": "Hobby",
+      "entry": "Entrée"
+    },
+    "fallback": {
+      "bitaxe": {
+        "description": "Mineur USB open-source idéal pour la loterie à domicile et les nœuds Bitcoin.",
+        "features": {
+          "usb": "Alimentation USB plug-and-play",
+          "silent": "Fonctionnement quasi silencieux",
+          "openSource": "Firmware open-source avec communauté active",
+          "easySetup": "Configuration en quelques minutes"
+        }
+      },
+      "apollo": {
+        "description": "Mineur de bureau premium avec nœud Bitcoin intégré et interface professionnelle.",
+        "features": {
+          "node": "Nœud Bitcoin & Lightning intégré",
+          "lowNoise": "Profil acoustique très faible",
+          "desktop": "Format bureau élégant",
+          "premium": "Châssis tout-en-un avec support pro"
+        }
+      },
+      "compac": {
+        "description": "Mineur USB stick accessible pour découvrir la minage solo.",
+        "features": {
+          "usb": "Format clé USB simple",
+          "lowPower": "10 W seulement",
+          "affordable": "Solution économique",
+          "plugPlay": "Préconfiguré pour les pools solo"
+        }
+      }
+    },
+    "comparison": {
+      "eyebrow": "Solo vs Pool",
+      "title": "Minage solo vs minage en pool",
+      "copy": "Le solo offre indépendance et gains exceptionnels, le pool des paiements réguliers. Combinez selon votre stratégie.",
+      "solo": {
+        "title": "Minage solo",
+        "items": {
+          "reward": "Conservez 100 % de la récompense + frais",
+          "decentralize": "Renforce la décentralisation",
+          "lowFees": "Aucuns frais de pool",
+          "lottery": "Payouts de type loterie"
+        }
+      },
+      "pool": {
+        "title": "Minage en pool",
+        "items": {
+          "steady": "Paiements stables et prévisibles",
+          "poolFees": "Frais de 0,5 % à 2 %",
+          "dependence": "Dépendance à un tiers",
+          "kYC": "Pools souvent soumis au KYC"
+        }
+      },
+      "cta": "Construire une stratégie hybride"
+    },
+    "faq": {
+      "eyebrow": "FAQ",
+      "title": "Questions fréquentes",
+      "copy": "Tout savoir sur la minage solo, les probabilités et la configuration idéale.",
+      "items": {
+        "whatIs": {
+          "question": "Qu'est-ce qu'un mineur solo Bitcoin ?",
+          "answer": "Un matériel configuré pour miner sans pool. Si un bloc est trouvé, la récompense revient entièrement au mineur."
+        },
+        "profitable": {
+          "question": "La minage solo est-elle rentable en 2025 ?",
+          "answer": "Stratégie à forte variance : les blocs sont rares mais la récompense (3,125 BTC + frais) est intégrale."
+        },
+        "bestHome": {
+          "question": "Quels sont les meilleurs mineurs solo pour la maison ?",
+          "answer": "Bitaxe Ultra, Apollo BTC et Compac F sont populaires pour leur silence et leur efficacité."
+        },
+        "needsNode": {
+          "question": "Dois-je exécuter un nœud Bitcoin ?",
+          "answer": "Vous pouvez utiliser un pool solo, mais un nœud personnel offre pleine autonomie et soutient le réseau."
+        },
+        "lottery": {
+          "question": "Qu'est-ce que la minage loterie ?",
+          "answer": "C'est la minage solo : chaque hash est un ticket donnant droit à la récompense complète du bloc."
+        }
+      }
+    },
+    "banner": {
+      "title": "Construisez votre stratégie solo",
+      "copy": "Des mineurs USB aux rigs avec nœud intégré, nos ingénieurs créent des bundles adaptés à votre budget énergétique.",
+      "cta": "Planifier une consultation"
+    }
+  },
   "nav": {
     "home": "Accueil",
     "products": "Produits",
     "all_products": "Tous les Produits",
+    "soloMiners": "Mineurs Solo",
     "gallery": "Galerie",
     "technical": "Sp\u00c3\u00a9cifications Techniques",
     "contact": "Contact",

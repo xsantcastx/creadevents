@@ -30,6 +30,15 @@
   overflow: hidden;
 }
 
+.break-inside-avoid {
+  break-inside: avoid;
+  page-break-inside: avoid;
+  -webkit-column-break-inside: avoid;
+  -moz-column-break-inside: avoid;
+  display: inline-block;
+  width: 100%;
+}
+
 // Gallery masonry improvements
 .columns-1 {
   column-count: 1;
@@ -61,6 +70,7 @@ img {
 // Modal backdrop blur
 .backdrop-blur-sm {
   backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
 }
 
 // Category filter animations

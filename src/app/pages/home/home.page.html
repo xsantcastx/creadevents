@@ -4,6 +4,90 @@
 <!-- Stats Section -->
 <app-home-stats />
 
+<!-- Solo Miners Featured Section - NEW FOR SEO -->
+@if (hasSoloMiners) {
+  <section class="section-gap relative overflow-hidden bg-gradient-to-b from-bitcoin-dark via-gray-900 to-bitcoin-dark">
+    <div class="absolute inset-0 opacity-5">
+      <div class="absolute top-20 left-10 w-96 h-96 bg-bitcoin-orange rounded-full blur-3xl"></div>
+      <div class="absolute bottom-20 right-10 w-96 h-96 bg-bitcoin-gold rounded-full blur-3xl"></div>
+    </div>
+    
+    <div class="page-container relative z-10">
+      <div class="text-center mb-16">
+        <span class="inline-block px-4 py-2 bg-bitcoin-orange/20 text-bitcoin-orange rounded-full text-sm font-semibold mb-4">
+          🎰 Lottery Mining
+        </span>
+        <h2 class="heading-display text-4xl lg:text-5xl mb-4 bg-gradient-to-r from-bitcoin-orange to-bitcoin-gold text-transparent bg-clip-text">
+          Bitcoin Solo Miners
+        </h2>
+        <p class="text-xl text-bitcoin-gray max-w-3xl mx-auto mb-6">
+          Win full block rewards (3.125 BTC + fees) by mining independently. Support network decentralization with specialized solo mining equipment.
+        </p>
+      </div>
+
+      <div class="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
+        @for (miner of soloMinerProducts; track miner.id) {
+          <article class="group bg-bitcoin-dark/60 border border-bitcoin-gray/20 rounded-2xl overflow-hidden shadow-bitcoin hover:shadow-bitcoin-lg hover:border-bitcoin-orange/50 transition-all duration-300 transform hover:-translate-y-2">
+            <div class="relative h-64 bg-bitcoin-dark/80 overflow-hidden">
+              @if (miner.imageUrl || miner.coverImage) {
+                <img [src]="miner.imageUrl || miner.coverImage" 
+                     [alt]="miner.name + ' - Bitcoin solo miner'"
+                     class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                     loading="lazy"/>
+              } @else {
+                <div class="w-full h-full flex items-center justify-center">
+                  <svg class="w-20 h-20 text-bitcoin-gray/30" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z"></path>
+                  </svg>
+                </div>
+              }
+              <div class="absolute top-4 right-4 bg-green-500 text-white px-3 py-1 rounded-full text-sm font-semibold shadow-lg">
+                Solo Miner
+              </div>
+            </div>
+            
+            <div class="p-6">
+              <h3 class="heading-display heading-display--accent text-2xl mb-2">{{miner.name}}</h3>
+              @if (miner.description) {
+                <p class="text-bitcoin-gray text-sm mb-4 line-clamp-2">{{miner.description}}</p>
+              }
+              
+              <div class="flex items-center justify-between mt-6">
+                <a [routerLink]="['/products', miner.slug]" 
+                   class="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-bitcoin-orange to-bitcoin-gold text-bitcoin-dark rounded-full font-semibold hover:shadow-bitcoin transition-all duration-300 transform hover:scale-105">
+                  View Details
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                  </svg>
+                </a>
+              </div>
+            </div>
+          </article>
+        }
+      </div>
+
+      <!-- CTA to Products Page -->
+      <div class="text-center">
+        <div class="inline-block bg-bitcoin-dark/50 border border-bitcoin-gray/20 rounded-2xl p-8 max-w-3xl">
+          <h3 class="heading-display text-2xl mb-4">
+            Want to Learn More About Solo Mining?
+          </h3>
+          <p class="text-bitcoin-gray mb-6">
+            Discover all our solo mining equipment and find the perfect miner for your lottery mining setup.
+          </p>
+          <a routerLink="/productos" 
+             class="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-bitcoin-orange to-bitcoin-gold text-bitcoin-dark rounded-full font-semibold hover:shadow-bitcoin transition-all duration-300">
+            Explore All Products
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+            </svg>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+}
+
 <!-- Mining Hardware Collections -->
 <section class="section-gap relative overflow-hidden">
   <div class="luxury-overlay"></div>

@@ -3,6 +3,7 @@ import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
 import { CategoriaGaleria, GaleriaItem } from '../../core/services/data.service';
 import { Firestore, collection, query, where, orderBy, getDocs, QueryDocumentSnapshot } from '@angular/fire/firestore';
+import { firstValueFrom } from 'rxjs';
 import { Media } from '../../models/media';
 import { Tag } from '../../models/catalog';
 import { TagService } from '../../services/tag.service';
@@ -77,25 +78,16 @@ export class GaleriaPageComponent extends LoadingComponentBase implements OnInit
     }
   }
 
-  private async loadTagsAndGallery() {
+  private async loadTagsAndGallery(): Promise<void> {
     try {
-      // Load tags first
-      this.tagService.getActiveTags().subscribe({
-        next: (tags) => {
-          this.availableTags = tags;
-          console.log('🏷️ Tags loaded:', tags.length);
-          // Then load gallery
-          this.loadGaleriaFromFirebase();
-        },
-        error: (error) => {
-          console.error('Error loading tags:', error);
-          // Continue loading gallery even if tags fail
-          this.loadGaleriaFromFirebase();
-        }
-      });
+      const tags = await firstValueFrom(this.tagService.getActiveTags());
+      this.availableTags = tags;
+      console.log('[Gallery] Tags loaded:', tags.length);
     } catch (error) {
-      console.error('Error in loadTagsAndGallery:', error);
-      this.loadGaleriaFromFirebase();
+      console.error('[Gallery] Error loading tags:', error);
+      this.availableTags = [];
+    } finally {
+      await this.loadGaleriaFromFirebase();
     }
   }
 
@@ -121,14 +113,14 @@ export class GaleriaPageComponent extends LoadingComponentBase implements OnInit
           return dateB.getTime() - dateA.getTime();
         });
       
-      console.log('📸 Gallery loaded from Firestore:', mediaItems.length, 'images');
+      console.log('[Gallery] Loaded from Firestore:', mediaItems.length, 'images');
       
       if (mediaItems.length > 0) {
         // Group media by project name (altText)
         this.allProjects = this.groupMediaByProjects(mediaItems);
         this.filtrarPorCategoria(this.categoriaActiva);
       } else {
-        console.log('ℹ️ No gallery images found in Firestore');
+        console.log('[Gallery] No gallery images found in Firestore');
         this.allProjects = [];
         this.filteredProjects = [];
       }
@@ -193,7 +185,7 @@ export class GaleriaPageComponent extends LoadingComponentBase implements OnInit
       b.uploadedAt.getTime() - a.uploadedAt.getTime()
     );
 
-    console.log('📁 Created', projects.length, 'projects from', mediaItems.length, 'images');
+    console.log('[Gallery] Created', projects.length, 'projects from', mediaItems.length, 'images');
     return projects;
   }
 
@@ -362,5 +354,12 @@ export class GaleriaPageComponent extends LoadingComponentBase implements OnInit
   getCategoryTitle(slug: string): string {
     const tag = this.getTag(slug);
     return tag ? tag.name : slug;
+  }
+
+  // Filter panel visibility
+  showFilters = false;
+
+  toggleFilters() {
+    this.showFilters = !this.showFilters;
   }
 }
