@@ -273,7 +273,7 @@
                   <button
                     type="button"
                     (click)="addQuickTags('project')"
-                    [disabled]="isAddingQuickTags || !(quickTagInputs.project?.trim())"
+                    [disabled]="isAddingQuickTags || !(quickTagInputs.project.trim())"
                     class="px-4 py-3 bg-bitcoin-orange/30 hover:bg-bitcoin-orange/40 text-bitcoin-orange border border-bitcoin-orange/30 font-semibold rounded-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2">
                     @if (isAddingQuickTags) {
                       <div class="app-spinner" style="--spinner-size: 24px;"><img src="/Logo Clear.png" alt="Adding tags" width="32" height="32"></div>
