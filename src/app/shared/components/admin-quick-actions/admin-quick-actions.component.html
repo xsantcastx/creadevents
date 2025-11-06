@@ -19,7 +19,7 @@
     <div class="quick-actions__actions">
       <div class="quick-actions__status" *ngIf="activeAction; else quickActionsDefaultStatus">
         <span class="quick-actions__status-label">Currently viewing</span>
-        <span class="quick-actions__status-value">{{ activeAction?.labelKey | translate }}</span>
+        <span class="quick-actions__status-value">{{ activeAction.labelKey | translate }}</span>
       </div>
       <ng-template #quickActionsDefaultStatus>
         <div class="quick-actions__status">
