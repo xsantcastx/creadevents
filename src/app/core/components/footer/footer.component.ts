@@ -5,6 +5,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CategoryService } from '../../../services/category.service';
 import { SettingsService, AppSettings } from '../../../services/settings.service';
+import { BrandConfigService } from '../../services/brand-config.service';
 
 interface Category {
   id?: string;
@@ -25,7 +26,7 @@ interface Category {
         <div class="grid md:grid-cols-4 gap-8 mb-12">
           <div class="md:col-span-2">
             <div class="flex items-center gap-3 mb-4">
-              <img src="/Logo Clear.png" [alt]="siteName" class="h-10 w-10 rounded-lg shadow-bitcoin" />
+              <img [src]="brandLogo" [alt]="siteName" class="h-10 w-10 rounded-lg shadow-bitcoin" />
               <span class="font-serif text-xl font-semibold text-bitcoin-orange">{{ siteName }}</span>
             </div>
             <p class="text-white/70 mb-6 max-w-md">
@@ -156,19 +157,21 @@ interface Category {
 export class FooterComponent implements OnInit {
   private settingsService = inject(SettingsService);
   private categoryService = inject(CategoryService);
+  private brandConfig = inject(BrandConfigService);
 
   categories: Category[] = [];
-  siteName = 'TheLuxMining';
-  contactEmail = 'contact@theluxmining.com';
-  contactPhone = '+1 (800) 555 0199';
-  contactAddress = '100 Greyrock Pl F119\nStamford, CT 06901';
+  siteName = this.brandConfig.siteName;
+  contactEmail = this.brandConfig.site.contact.email;
+  contactPhone = this.brandConfig.site.contact.phone || '';
+  contactAddress = this.brandConfig.site.contact.address || '';
+  brandLogo = this.brandConfig.site.brand.logo;
   
   // Social Media Links
-  facebookUrl = '';
-  twitterUrl = '';
-  instagramUrl = '';
-  linkedinUrl = '';
-  youtubeUrl = '';
+  facebookUrl = this.getSocialUrl('facebook');
+  twitterUrl = this.getSocialUrl('twitter') || this.getSocialUrl('x');
+  instagramUrl = this.getSocialUrl('instagram');
+  linkedinUrl = this.getSocialUrl('linkedin');
+  youtubeUrl = this.getSocialUrl('youtube');
   whatsappNumber = '';
 
   // Business Info
@@ -198,15 +201,15 @@ export class FooterComponent implements OnInit {
     // General Settings
     this.siteName = settings.siteName || this.siteName;
     this.contactEmail = settings.contactEmail || this.contactEmail;
-    this.contactPhone = settings.contactPhone || '';
+    this.contactPhone = settings.contactPhone || this.contactPhone;
     this.contactAddress = settings.contactAddress || this.contactAddress;
 
     // Social Media
-    this.facebookUrl = settings.facebookUrl || '';
-    this.twitterUrl = settings.twitterUrl || '';
-    this.instagramUrl = settings.instagramUrl || '';
-    this.linkedinUrl = settings.linkedinUrl || '';
-    this.youtubeUrl = settings.youtubeUrl || '';
+    this.facebookUrl = settings.facebookUrl || this.facebookUrl;
+    this.twitterUrl = settings.twitterUrl || this.twitterUrl;
+    this.instagramUrl = settings.instagramUrl || this.instagramUrl;
+    this.linkedinUrl = settings.linkedinUrl || this.linkedinUrl;
+    this.youtubeUrl = settings.youtubeUrl || this.youtubeUrl;
     this.whatsappNumber = settings.whatsappNumber || '';
 
     // Business Info
@@ -229,6 +232,11 @@ export class FooterComponent implements OnInit {
         console.error('Error loading categories for footer:', error);
       }
     });
+  }
+
+  private getSocialUrl(platform: string): string {
+    const match = this.brandConfig.nav.social.find((link: { platform: string; href: string }) => link.platform === platform);
+    return match?.href || '';
   }
 
   getWhatsAppUrl(): string {

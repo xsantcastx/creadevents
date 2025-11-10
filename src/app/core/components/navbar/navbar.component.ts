@@ -9,6 +9,7 @@ import { SettingsService, AppSettings } from '../../../services/settings.service
 import { LanguageSelectorComponent } from '../../../shared/components/language-selector/language-selector.component';
 import { CartButtonComponent } from '../../../shared/components/cart-button/cart-button.component';
 import { TranslateModule } from '@ngx-translate/core';
+import { BrandConfigService } from '../../services/brand-config.service';
 
 @Component({
   selector: 'app-navbar',
@@ -24,6 +25,7 @@ export class NavbarComponent implements OnInit {
   private readonly cartService = inject(CartService);
   private readonly authService = inject(AuthService);
   private readonly settingsService = inject(SettingsService);
+  private readonly brandConfig = inject(BrandConfigService);
   
   scrolled = signal(false);
   mobileOpen = false;
@@ -36,6 +38,14 @@ export class NavbarComponent implements OnInit {
   // Auth state
   user$ = this.authService.user$;
   userProfile$ = this.authService.userProfile$;
+
+  readonly brandName = this.brandConfig.siteName;
+  readonly logoSrc = this.brandConfig.site.brand.logo;
+  readonly logoAlt = this.brandConfig.site.brand.logoAlt || this.brandName;
+  readonly headerLinks = this.brandConfig.nav.header;
+  readonly exactMatchOption = { exact: true };
+  readonly partialMatchOption = { exact: false };
+  private readonly socialLinks = this.brandConfig.nav.social as Array<{ platform: string; href: string }>;
 
   readonly totalItems = toSignal(
     this.cartService.count$,
@@ -60,8 +70,8 @@ export class NavbarComponent implements OnInit {
   }
 
   private applySettings(settings: AppSettings): void {
-    this.linkedinUrl = settings.linkedinUrl || '';
-    this.instagramUrl = settings.instagramUrl || '';
+    this.linkedinUrl = settings.linkedinUrl || this.getSocialUrl('linkedin');
+    this.instagramUrl = settings.instagramUrl || this.getSocialUrl('instagram');
   }
 
   @HostListener('window:scroll')
@@ -108,6 +118,10 @@ export class NavbarComponent implements OnInit {
   closeUserMenu(): void {
     console.log('Closing user menu');
     this.showUserMenu = false;
+  }
+
+  private getSocialUrl(platform: string): string {
+    return this.socialLinks.find(link => link.platform === platform)?.href || '';
   }
 
   // Auth methods

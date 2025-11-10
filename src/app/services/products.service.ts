@@ -205,7 +205,7 @@ export class ProductsService {
               </div>
               <p>Please consider restocking this product to avoid running out of inventory.</p>
               <p style="color: #6b7280; font-size: 12px; margin-top: 30px;">
-                This is an automated notification from TheLuxMining inventory system.
+                This is an automated notification from the inventory system.
               </p>
             </div>
           `

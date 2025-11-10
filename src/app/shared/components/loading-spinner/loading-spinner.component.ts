@@ -1,5 +1,6 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { BrandConfigService } from '../../../core/services/brand-config.service';
 
 type SpinnerPreset = 'sm' | 'md' | 'lg';
 
@@ -50,12 +51,14 @@ type SpinnerPreset = 'sm' | 'md' | 'lg';
   `]
 })
 export class LoadingSpinnerComponent {
+  private readonly brandConfig = inject(BrandConfigService);
+
   @Input() size: SpinnerPreset | number = 'md';
   @Input() message: string = '';
   @Input() containerClass: string | string[] = 'p-8';
   @Input() spinnerClass: string | string[] = '';
-  @Input() logoSrc = '/Logo Clear.png';
-  @Input() logoAlt = 'TheLuxMining loader';
+  @Input() logoSrc = this.brandConfig.site.brand.logo;
+  @Input() logoAlt = `${this.brandConfig.siteName} loader`;
   @Input() ariaLabel = 'Cargando contenido, espere un momento';
 
   get resolvedSpinnerClass(): string[] {

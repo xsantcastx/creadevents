@@ -2,6 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { Firestore, doc, getDoc, setDoc } from '@angular/fire/firestore';
 import { Auth, onAuthStateChanged } from '@angular/fire/auth';
 import { ReplaySubject } from 'rxjs';
+import { BrandConfigService } from '../core/services/brand-config.service';
 
 export interface AppSettings {
   // General
@@ -122,6 +123,7 @@ const SENSITIVE_FIELDS: (keyof AppSettings)[] = [
 export class SettingsService {
   private firestore = inject(Firestore);
   private auth = inject(Auth);
+  private brandConfig = inject(BrandConfigService);
   private readonly SETTINGS_DOC_ID = 'app';
   private readonly PUBLIC_SETTINGS_DOC_ID = 'public';
   private settingsCache: AppSettings | null = null;
@@ -343,15 +345,21 @@ export class SettingsService {
    * Get default settings
    */
   private getDefaultSettings(): AppSettings {
+    const site = this.brandConfig.site;
+    const brandName = site.seo?.siteName || site.brand.shortName || site.brand.name;
+    const maintenanceMessage =
+      site.maintenance?.description ||
+      'We are performing scheduled maintenance. Please check back soon.';
+
     return {
       // General
-      siteName: 'TheLuxMining',
-      siteDescription: 'Premium Bitcoin mining equipment',
-      contactEmail: 'support@theluxmining.com',
-      contactPhone: '+1 (800) 555 0199',
-      contactAddress: '100 Greyrock Pl F119\nStamford, CT 06901',
-      maintenanceMode: false,
-      maintenanceMessage: 'We are performing scheduled maintenance. Please check back soon or reach out to our support team if you need help in the meantime.',
+      siteName: brandName,
+      siteDescription: site.brand.description || site.hero?.subtitle || 'Premium storefront template',
+      contactEmail: site.contact.email,
+      contactPhone: site.contact.phone || '',
+      contactAddress: site.contact.address || '',
+      maintenanceMode: this.brandConfig.features['maintenanceMode'] ?? false,
+      maintenanceMessage,
       
       // Stripe
       stripePublicKey: '',
@@ -363,8 +371,8 @@ export class SettingsService {
       // Email
       emailProvider: 'brevo',
       emailApiKey: '',
-      emailFrom: 'noreply@theluxmining.com',
-      emailFromName: 'TheLuxMining',
+      emailFrom: site.notifications?.emailFrom || site.contact.email,
+      emailFromName: site.notifications?.emailFromName || brandName,
       
       // Shipping
       shippingEnabled: true,
@@ -379,10 +387,10 @@ export class SettingsService {
       cookieConsentRequired: true,
 
       // SEO & Meta
-      metaTitle: 'TheLuxMining - Premium Bitcoin Mining Equipment',
-      metaDescription: 'High-performance Bitcoin mining hardware and solutions',
-      metaKeywords: 'bitcoin, mining, cryptocurrency, ASIC',
-      ogImage: '',
+      metaTitle: site.seo?.defaultTitle || `${brandName} storefront`,
+      metaDescription: site.seo?.defaultDescription || site.brand.description || '',
+      metaKeywords: (site.seo?.defaultKeywords || []).join(', '),
+      ogImage: site.seo?.socialImage || '',
       twitterCard: 'summary_large_image',
 
       // Social Media
@@ -411,13 +419,13 @@ export class SettingsService {
       notificationEmail: '',
 
       // Business Info
-      businessName: 'TheLuxMining LLC',
+      businessName: site.legal?.businessName || brandName,
       taxId: '',
       businessRegistration: '',
-      supportHours: 'Mon-Fri 9AM-5PM EST',
-      returnPolicy: '/return-policy',
-      privacyPolicy: '/privacy-policy',
-      termsOfService: '/terms',
+      supportHours: site.contact.supportHours || '',
+      returnPolicy: site.legal?.returnPolicyUrl || '/return-policy',
+      privacyPolicy: site.legal?.privacyPolicyUrl || '/privacy-policy',
+      termsOfService: site.legal?.termsUrl || '/terms',
 
       // Advanced
       enableCaching: true,

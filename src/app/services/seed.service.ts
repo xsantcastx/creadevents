@@ -259,7 +259,7 @@ export class SeedService {
       type: 'seoTitle',
       scope: 'global',
       language: 'es',
-      content: '{name} {grosor} | TheLuxMining',
+      content: '{name} {grosor} | Premium Collection',
       fields: ['name', 'grosor'],
       active: true
     };

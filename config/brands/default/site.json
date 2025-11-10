@@ -1,0 +1,102 @@
+{
+  "brand": {
+    "key": "default",
+    "name": "The Lux Mining",
+    "shortName": "TheLuxMining",
+    "tagline": "Premium Bitcoin Mining Equipment",
+    "description": "Specialized e-commerce storefront for high-performance Bitcoin miners, accessories, and white-glove fulfillment.",
+    "domain": "theluxmining.com",
+    "logo": "/Logo Clear.png",
+    "logoAlt": "The Lux Mining mark",
+    "favicon": "/assets/brand/favicon.png"
+  },
+  "contact": {
+    "email": "support@theluxmining.com",
+    "phone": "+1 (800) 555 0199",
+    "address": "100 Greyrock Pl F119\nStamford, CT 06901",
+    "supportHours": "Mon-Fri 9AM-5PM EST"
+  },
+  "theme": {
+    "tokens": {
+      "ts-bg": "#0b0d10",
+      "ts-bg-soft": "#111316",
+      "ts-paper": "#13151a",
+      "ts-ink": "#f5f6f8",
+      "ts-ink-soft": "#caced4",
+      "ts-accent": "#f7931a",
+      "ts-accent-soft": "#ffb81c",
+      "ts-line": "#272a31",
+      "surface-glass": "rgba(255,255,255,0.04)",
+      "surface-border": "rgba(255,255,255,0.12)"
+    },
+    "fonts": {
+      "sans": "Inter, 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif",
+      "display": "'Space Grotesk', 'Clash Display', Inter, 'Segoe UI', system-ui, sans-serif",
+      "mono": "'JetBrains Mono', Menlo, Monaco, Consolas, 'Liberation Mono', monospace"
+    }
+  },
+  "hero": {
+    "eyebrow": "Flagship Bitcoin hardware studio",
+    "title": "Hand-built Bitcoin miners & premium crypto gear",
+    "subtitle": "Numbered, signed, and battle-tested. Built by humans with obsessive QA.",
+    "primaryCta": {
+      "label": "Shop miners",
+      "href": "/productos"
+    },
+    "secondaryCta": {
+      "label": "Talk to a specialist",
+      "href": "/contacto"
+    },
+    "badge": "2,400+ ASICs deployed"
+  },
+  "navigation": {
+    "header": [
+      { "label": "nav.home", "href": "/", "exact": true },
+      { "label": "nav.products", "href": "/productos" },
+      { "label": "nav.gallery", "href": "/galeria" },
+      { "label": "nav.contact", "href": "/contacto" }
+    ],
+    "footer": [
+      { "label": "Products", "href": "/productos" },
+      { "label": "About", "href": "/about" },
+      { "label": "FAQ", "href": "/faq" },
+      { "label": "Terms", "href": "/legal/terms" },
+      { "label": "Privacy", "href": "/legal/privacy" },
+      { "label": "Refunds", "href": "/legal/refund" }
+    ],
+    "social": [
+      { "platform": "instagram", "href": "https://instagram.com/theluxmining" },
+      { "platform": "linkedin", "href": "https://linkedin.com/company/theluxmining" }
+    ]
+  },
+  "seo": {
+    "siteName": "The Lux Mining",
+    "titleTemplate": "%s • The Lux Mining",
+    "defaultTitle": "Bitcoin Solo Miners & Mining Equipment",
+    "defaultDescription": "Buy premium ASIC miners, immersion-ready rigs, and curated solo mining bundles with concierge support.",
+    "defaultKeywords": [
+      "bitcoin mining hardware",
+      "solo miners",
+      "asic miners",
+      "immersion mining",
+      "luxury mining gear"
+    ],
+    "socialImage": "/assets/brand/og-default.jpg"
+  },
+  "legal": {
+    "businessName": "TheLuxMining LLC",
+    "taxId": "",
+    "supportEmail": "support@theluxmining.com",
+    "returnPolicyUrl": "/return-policy",
+    "privacyPolicyUrl": "/privacy-policy",
+    "termsUrl": "/terms"
+  },
+  "maintenance": {
+    "title": "Scheduled maintenance",
+    "description": "We are upgrading the storefront and will return shortly. Reach us at support@theluxmining.com for urgent orders."
+  },
+  "notifications": {
+    "emailFromName": "The Lux Mining",
+    "emailFrom": "noreply@theluxmining.com"
+  }
+}

@@ -1,5 +1,6 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import jsPDF from 'jspdf';
+import { BrandConfigService } from '../core/services/brand-config.service';
 
 // Generic invoice order interface that works with both order formats
 export interface InvoiceOrder {
@@ -35,6 +36,9 @@ export interface InvoiceOrderItem {
   providedIn: 'root'
 })
 export class InvoiceService {
+  private brandConfig = inject(BrandConfigService);
+  private brandName = this.brandConfig.siteName;
+  private brandTagline = this.brandConfig.site.brand.tagline || 'Premium commerce storefront';
 
   generateInvoice(order: InvoiceOrder): void {
     const doc = new jsPDF();
@@ -42,11 +46,11 @@ export class InvoiceService {
     // Company/Logo Header
     doc.setFontSize(24);
     doc.setTextColor(147, 51, 234); // Purple color
-    doc.text('TheLuxMining', 20, 20);
+    doc.text(this.brandName, 20, 20);
     
     doc.setFontSize(10);
     doc.setTextColor(100, 100, 100);
-    doc.text('Premium Mining Hardware', 20, 27);
+    doc.text(this.brandTagline, 20, 27);
     
     // Invoice Title
     doc.setFontSize(20);

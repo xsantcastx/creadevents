@@ -12,6 +12,18 @@
     "isolatedModules": true,
     "experimentalDecorators": true,
     "importHelpers": true,
+    "resolveJsonModule": true,
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "baseUrl": "./",
+    "paths": {
+      "@config": [
+        "src/config-loader/index.ts"
+      ],
+      "@config/*": [
+        "src/config-loader/*"
+      ]
+    },
     "target": "ES2022",
     "module": "preserve"
   },

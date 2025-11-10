@@ -9,6 +9,7 @@ import { CartService } from '../../../services/cart.service';
 import { CategoryService } from '../../../services/category.service';
 import { ModelService } from '../../../services/model.service';
 import { SeoSchemaService } from '../../../services/seo-schema.service';
+import { BrandConfigService } from '../../../core/services/brand-config.service';
 import { ProductReviewService } from '../../../services/product-review.service';
 import { Product } from '../../../models/product';
 import { Media } from '../../../models/media';
@@ -38,6 +39,7 @@ export class DetalleComponent implements OnInit, AfterViewInit {
   private titleService = inject(Title);
   private metaService = inject(Meta);
   private seoSchemaService = inject(SeoSchemaService);
+  private brandConfig = inject(BrandConfigService);
   private cdr = inject(ChangeDetectorRef);
   
   producto: Product | undefined;
@@ -219,7 +221,7 @@ export class DetalleComponent implements OnInit, AfterViewInit {
     if (!this.producto) return;
     
     // Update page title
-    const title = this.producto.seo?.title || `${this.producto.name} - TheLuxMining`;
+    const title = this.producto.seo?.title || `${this.producto.name} - ${this.brandConfig.siteName}`;
     this.titleService.setTitle(title);
     
     // Update meta description
@@ -242,7 +244,7 @@ export class DetalleComponent implements OnInit, AfterViewInit {
       price: this.producto.price || 0,
       currency: 'EUR',
       sku: this.producto.sku || `TLM-${this.producto.id}`,
-      brand: 'TheLuxMining',
+      brand: this.brandConfig.siteName,
       availability: (this.producto.stock && this.producto.stock > 0) ? 'InStock' : 'OutOfStock',
       condition: 'NewCondition',
       slug: this.producto.slug

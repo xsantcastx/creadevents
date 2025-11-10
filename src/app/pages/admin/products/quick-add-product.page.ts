@@ -17,6 +17,7 @@ import { Category, Model, Tag } from '../../../models/catalog';
 import { BenefitTemplate } from '../../../models/benefit-template';
 import { MediaCreateInput, MEDIA_VALIDATION } from '../../../models/media';
 import { LoadingComponentBase } from '../../../core/classes/loading-component.base';
+import { BrandConfigService } from '../../../core/services/brand-config.service';
 
 @Component({
   selector: 'app-quick-add-product',
@@ -37,6 +38,7 @@ export class QuickAddProductComponent extends LoadingComponentBase implements On
   private storageService = inject(StorageService);
   private mediaService = inject(MediaService);
   private benefitTemplateService = inject(BenefitTemplateService);
+  private brandConfig = inject(BrandConfigService);
 
   categories: Category[] = [];
   models: Model[] = [];
@@ -80,6 +82,7 @@ export class QuickAddProductComponent extends LoadingComponentBase implements On
   seoPreviewUrl = '';
 
   successMessage = '';
+  readonly brandName = this.brandConfig.siteName;
 
   constructor() {
     super();
@@ -95,7 +98,7 @@ export class QuickAddProductComponent extends LoadingComponentBase implements On
       weight: [0, Validators.min(0)],
       collections: [''],
       tags: [''],
-      vendor: ['TheLuxMining'],
+      vendor: [this.brandConfig.siteName],
       // SEO fields
       metaTitle: [''],
       metaDescription: [''],

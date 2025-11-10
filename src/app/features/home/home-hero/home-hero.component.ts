@@ -3,6 +3,7 @@ import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { SettingsService, HeroImage } from '../../../services/settings.service';
+import { BrandConfigService } from '../../../core/services/brand-config.service';
 
 @Component({
   selector: 'app-home-hero',
@@ -50,26 +51,26 @@ import { SettingsService, HeroImage } from '../../../services/settings.service';
       <!-- Hero content - Centered and compact -->
       <div class="relative h-full flex flex-col items-center justify-center max-w-7xl mx-auto px-6 z-10 text-center">
         <div class="flex items-center gap-4 mb-6 animate-fade-in-up">
-          <img src="/Logo Clear.png" alt="TheLuxMining" class="h-16 w-16 md:h-20 md:w-20 rounded-xl shadow-bitcoin"/>
+          <img [src]="brandLogo" [alt]="brandName" class="h-16 w-16 md:h-20 md:w-20 rounded-xl shadow-bitcoin"/>
           <h1 class="font-serif text-4xl md:text-5xl lg:text-6xl tracking-tight bitcoin-gradient-text">
-            TheLuxMining
+            {{ heroContent?.title || brandName }}
           </h1>
         </div>
         <p class="max-w-2xl text-lg md:text-xl text-white/90 leading-relaxed mb-8 animate-fade-in-up animation-delay-200">
-          {{ 'home.hero.subtitle' | translate }}
+          {{ heroContent?.subtitle || ('home.hero.subtitle' | translate) }}
         </p>
         <div class="flex flex-col sm:flex-row gap-4 animate-fade-in-up animation-delay-400">
           <a 
-            routerLink="/productos" 
+            [routerLink]="heroContent?.primaryCta?.href || '/productos'"
             class="px-8 py-3.5 rounded-full bg-bitcoin-orange text-bitcoin-dark font-semibold hover:bg-bitcoin-gold transition-all hover:scale-105 text-center shadow-bitcoin"
           >
-            {{ 'home.hero.cta_primary' | translate }}
+            {{ heroContent?.primaryCta?.label || ('home.hero.cta_primary' | translate) }}
           </a>
           <a 
-            routerLink="/contacto" 
+            [routerLink]="heroContent?.secondaryCta?.href || '/contacto'"
             class="px-8 py-3.5 rounded-full ring-2 ring-bitcoin-gold/60 text-bitcoin-gold hover:bg-bitcoin-orange/10 transition-all hover:scale-105 text-center backdrop-blur-sm"
           >
-            {{ 'home.hero.cta_secondary' | translate }}
+            {{ heroContent?.secondaryCta?.label || ('home.hero.cta_secondary' | translate) }}
           </a>
         </div>
 
@@ -151,10 +152,14 @@ export class HomeHeroComponent implements OnInit, OnDestroy {
   private platformId = inject(PLATFORM_ID);
   private settingsService = inject(SettingsService);
   private cdr = inject(ChangeDetectorRef);
+  private brandConfig = inject(BrandConfigService);
   
   heroImages: HeroImage[] = [];
   currentImageIndex = 0;
   private interval: any;
+  readonly heroContent = this.brandConfig.site.hero;
+  readonly brandName = this.brandConfig.siteName;
+  readonly brandLogo = this.brandConfig.site.brand.logo;
 
   async ngOnInit(): Promise<void> {
     await this.loadHeroImages();

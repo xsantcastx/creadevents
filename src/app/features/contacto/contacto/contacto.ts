@@ -1,20 +1,26 @@
 import { Component, inject } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { SectionTitleComponent } from '../../../shared/components/section-title/section-title';
 import { EmailService } from '../../../services/email.service';
+import { BrandConfigService } from '../../../core/services/brand-config.service';
 
 @Component({
   selector: 'app-contacto',
   standalone: true,
-  imports: [SectionTitleComponent, ReactiveFormsModule],
+  imports: [CommonModule, SectionTitleComponent, ReactiveFormsModule],
   templateUrl: './contacto.html',
   styleUrl: './contacto.scss'
 })
 export class ContactoComponent {
   private readonly fb = inject(FormBuilder);
   private readonly emailService = inject(EmailService);
+  private readonly brandConfig = inject(BrandConfigService);
 
   enviado = false;
+  readonly contactEmail = this.brandConfig.site.contact.email;
+  readonly contactAddress = this.brandConfig.site.contact.address;
+  readonly brandName = this.brandConfig.siteName;
 
   readonly formulario = this.fb.group({
     nombre: ['', Validators.required],

@@ -48,6 +48,9 @@ Thumbs.db
 .env.development
 .env.production
 .env.test
+# Template-generated config
+src/config-loader/generated/
+src/environments/environment.generated.ts
 # Angular environment files are safe to commit (Firebase keys are public anyway)
 # Uncomment these if you want to use environment variables in CI/CD instead:
 # src/environments/environment.ts

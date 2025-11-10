@@ -1,6 +1,9 @@
 import { bootstrapApplication } from '@angular/platform-browser';
 import { appConfig } from './app/app.config';
 import { AppComponent } from './app/app';
+import { applySiteTheme } from './theme/apply-theme';
+
+applySiteTheme();
 
 const LOADER_MIN_VISIBLE_MS = 900;
 const LOADER_MAX_VISIBLE_MS = 6500;

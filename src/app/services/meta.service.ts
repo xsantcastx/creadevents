@@ -3,6 +3,7 @@ import { Meta, Title } from '@angular/platform-browser';
 import { SettingsService } from './settings.service';
 import { TranslateService } from '@ngx-translate/core';
 import { firstValueFrom } from 'rxjs';
+import { BrandConfigService } from '../core/services/brand-config.service';
 
 @Injectable({
   providedIn: 'root'
@@ -12,6 +13,7 @@ export class MetaService {
   private title = inject(Title);
   private settingsService = inject(SettingsService);
   private translate = inject(TranslateService);
+  private brandConfig = inject(BrandConfigService);
 
   private readonly translationKeyPattern = /^[A-Za-z0-9_-]+\.[A-Za-z0-9_.-]+$/;
 
@@ -50,7 +52,7 @@ export class MetaService {
     url?: string;
   }): Promise<void> {
     const settings = await this.settingsService.getSettings();
-    const siteName = settings.siteName || 'TheLuxMining';
+    const siteName = settings.siteName || this.brandConfig.siteName;
 
     const resolvedTitle = await this.resolveValue(config?.title);
     const resolvedDescription = await this.resolveValue(config?.description);

@@ -12,16 +12,16 @@
       <ul>
         <li>
           <strong>Email:</strong>
-          <a href="mailto:support@theluxmining.com">support@theluxmining.com</a>
+          <a [href]="'mailto:' + contactEmail">{{ contactEmail }}</a>
         </li>
-        <li>
+        <li *ngIf="contactAddress">
           <strong>Address:</strong>
-          100 Greyrock Pl F119, Stamford, CT 06901
+          {{ contactAddress }}
         </li>
       </ul>
       <div class="contacto__mapa" aria-hidden="true">
         <iframe
-          title="TheLuxMining Location"
+          [attr.title]="brandName + ' Location'"
           src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2996.3!2d-73.5387!3d41.0534!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c2a1e1f1f1f1f1%3A0x1f1f1f1f1f1f1f1f!2s100%20Greyrock%20Pl%2C%20Stamford%2C%20CT%2006901!5e0!3m2!1sen!2sus!4v1700000000000"
           loading="lazy"
           referrerpolicy="no-referrer-when-downgrade"

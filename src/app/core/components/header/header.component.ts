@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { Subject } from 'rxjs';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { BrandConfigService } from '../../services/brand-config.service';
 
 @Component({
   selector: 'app-header',
@@ -13,9 +14,14 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
 })
 export class HeaderComponent implements OnInit, OnDestroy {
   private translate = inject(TranslateService);
+  private brandConfig = inject(BrandConfigService);
   scrolled = false;
   mobileMenuOpen = false;
   private destroy$ = new Subject<void>();
+  readonly brandName = this.brandConfig.siteName;
+  readonly headerLinks = this.brandConfig.nav.header;
+  readonly exactMatchOption = { exact: true };
+  readonly partialMatchOption = { exact: false };
 
   constructor() {}
 

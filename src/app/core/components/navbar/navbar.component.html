@@ -16,24 +16,21 @@
     <!-- Center: Logo and Desktop Navigation -->
     <div class="app-navbar__center">
       <a routerLink="/" class="app-navbar__brand">
-        <img src="/Logo Clear.png" alt="TheLuxMining Logo" class="h-9 w-9 md:h-10 md:w-10 rounded-lg shadow-sm" />
-        <span class="app-navbar__brand-text hidden sm:block">TheLuxMining</span>
+        <img [src]="logoSrc" [alt]="logoAlt" class="h-9 w-9 md:h-10 md:w-10 rounded-lg shadow-sm" />
+        <span class="app-navbar__brand-text hidden sm:block">{{ brandName }}</span>
       </a>
       
       <!-- Desktop Navigation (hidden on mobile) -->
       <nav class="app-navbar__links">
-        <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" class="app-navbar__link">
-          {{ 'nav.home' | translate }}
-        </a>
-        <a routerLink="/productos" routerLinkActive="active" class="app-navbar__link">
-          {{ 'nav.products' | translate }}
-        </a>
-        <a routerLink="/galeria" routerLinkActive="active" class="app-navbar__link">
-          {{ 'nav.gallery' | translate }}
-        </a>
-        <a routerLink="/contacto" routerLinkActive="active" class="app-navbar__link">
-          {{ 'nav.contact' | translate }}
-        </a>
+        @for (link of headerLinks; track link.href) {
+          <a
+            [routerLink]="link.href"
+            routerLinkActive="active"
+            [routerLinkActiveOptions]="link.exact ? exactMatchOption : partialMatchOption"
+            class="app-navbar__link">
+            {{ link.label | translate }}
+          </a>
+        }
       </nav>
     </div>
 
@@ -148,8 +145,8 @@
   <!-- Mobile drawer header -->
   <div class="mobile-drawer__header">
     <div class="mobile-drawer__brand">
-      <img src="/Logo Clear.png" alt="TheLuxMining Logo" class="mobile-drawer__logo" />
-      <span class="mobile-drawer__title">TheLuxMining</span>
+      <img [src]="logoSrc" [alt]="logoAlt" class="mobile-drawer__logo" />
+      <span class="mobile-drawer__title">{{ brandName }}</span>
     </div>
     <button (click)="closeMobile()" class="mobile-drawer__close" aria-label="Close menu">
       <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
@@ -161,21 +158,11 @@
   <!-- Mobile navigation -->
   <nav class="mobile-drawer__nav">
     <div class="mobile-drawer__links">
-      <a routerLink="/" (click)="closeMobile()" class="mobile-drawer__link">
-        {{ 'nav.home' | translate }}
-      </a>
-
-      <a routerLink="/productos" (click)="closeMobile()" class="mobile-drawer__link">
-        {{ 'nav.products' | translate }}
-      </a>
-
-      <a routerLink="/galeria" (click)="closeMobile()" class="mobile-drawer__link">
-        {{ 'nav.gallery' | translate }}
-      </a>
-
-      <a routerLink="/contacto" (click)="closeMobile()" class="mobile-drawer__link">
-        {{ 'nav.contact' | translate }}
-      </a>
+      @for (link of headerLinks; track link.href) {
+        <a [routerLink]="link.href" (click)="closeMobile()" class="mobile-drawer__link">
+          {{ link.label | translate }}
+        </a>
+      }
     </div>
 
     <!-- Social Media Links (Mobile) -->

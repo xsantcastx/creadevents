@@ -1,6 +1,7 @@
 import { Injectable, Inject, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { Meta, Title } from '@angular/platform-browser';
+import { BrandConfigService } from '../core/services/brand-config.service';
 
 export interface ProductSchemaData {
   name: string;
@@ -33,7 +34,8 @@ export class SeoSchemaService {
   constructor(
     @Inject(PLATFORM_ID) platformId: Object,
     private meta: Meta,
-    private titleService: Title
+    private titleService: Title,
+    private brandConfig: BrandConfigService
   ) {
     this.isBrowser = isPlatformBrowser(platformId);
   }
@@ -53,7 +55,7 @@ export class SeoSchemaService {
       sku: product.sku || `TLM-${product.name.replace(/\s+/g, '-').toUpperCase()}`,
       brand: {
         '@type': 'Brand',
-        name: product.brand || 'TheLuxMining'
+        name: product.brand || this.brandConfig.siteName
       },
       offers: {
         '@type': 'Offer',
@@ -71,7 +73,7 @@ export class SeoSchemaService {
           : 'https://schema.org/NewCondition',
         seller: {
           '@type': 'Organization',
-          name: 'TheLuxMining'
+          name: this.brandConfig.siteName
         }
       }
     };
@@ -191,7 +193,7 @@ export class SeoSchemaService {
       },
       publisher: {
         '@type': 'Organization',
-        name: 'TheLuxMining',
+        name: this.brandConfig.siteName,
         logo: {
           '@type': 'ImageObject',
           url: 'https://theluxmining.com/Logo Clear.png'
@@ -311,7 +313,7 @@ export class SeoSchemaService {
    */
   setupProductPageSEO(product: ProductSchemaData, breadcrumbs?: { name: string; url: string }[]): void {
     // Set title
-    this.setTitle(`${product.name} | Bitcoin Mining Equipment | TheLuxMining`);
+    this.setTitle(`${product.name} | Bitcoin Mining Equipment | ${this.brandConfig.siteName}`);
     
     // Set meta description
     this.setMetaDescription(
@@ -321,7 +323,7 @@ export class SeoSchemaService {
     );
     
     // Set OG tags
-    this.setOgTitle(`${product.name} | TheLuxMining`);
+    this.setOgTitle(`${product.name} | ${this.brandConfig.siteName}`);
     this.setOgImage(product.imageUrl);
     
     // Set canonical URL

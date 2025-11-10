@@ -1,0 +1,17 @@
+{
+  "notifications": {
+    "newUser": {
+      "subject": "🎉 New User Registration - The Lux Mining",
+      "preheader": "A new profile was created on the storefront."
+    },
+    "cartShare": {
+      "subject": "The Lux Mining · Cart Selection"
+    },
+    "contact": {
+      "subject": "The Lux Mining · Contact Message"
+    },
+    "inventoryAlert": {
+      "subject": "Inventory Alert - The Lux Mining"
+    }
+  }
+}

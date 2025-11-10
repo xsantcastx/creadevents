@@ -2,6 +2,7 @@ import * as functions from "firebase-functions";
 import * as admin from "firebase-admin";
 import Stripe from "stripe";
 import * as dotenv from "dotenv";
+import { withFlag } from "./lib/guard";
 
 // Load environment variables from .env file
 dotenv.config();
@@ -211,7 +212,8 @@ interface ShippingMethod {
  * POST /cart/reprice
  * Body: { cartId: string, address: ShippingAddress, shippingMethodId?: string }
  */
-export const cartReprice = functions.https.onCall(async (data: any, context: any) => {
+export const cartReprice = functions.https.onCall(
+  withFlag("payments", async (data: any, context: any) => {
   try {
     const { cartId, address, shippingMethodId } = data;
 
@@ -340,14 +342,16 @@ export const cartReprice = functions.https.onCall(async (data: any, context: any
       error.message || "Failed to calculate shipping"
     );
   }
-});
+  })
+);
 
 /**
  * Create a Stripe PaymentIntent for checkout
  * POST /checkout/create-payment-intent
  * Body: { cartId: string, orderId?: string }
  */
-export const createPaymentIntent = functions.https.onCall(async (data: any, context: any) => {
+export const createPaymentIntent = functions.https.onCall(
+  withFlag("payments", async (data: any, context: any) => {
   try {
     // Verify user authentication
     if (!context.auth) {
@@ -506,14 +510,16 @@ export const createPaymentIntent = functions.https.onCall(async (data: any, cont
       error.message || "Failed to create payment intent"
     );
   }
-});
+  })
+);
 
 /**
  * Handle Stripe webhooks for payment events
  * POST /webhooks/stripe
  * Processes payment_intent.succeeded and payment_intent.payment_failed events
  */
-export const handleStripeWebhook = functions.https.onRequest(async (req, res) => {
+export const handleStripeWebhook = functions.https.onRequest(
+  withFlag("payments", async (req, res) => {
   // Only accept POST requests
   if (req.method !== "POST") {
     res.status(405).send("Method Not Allowed");
@@ -606,7 +612,8 @@ export const handleStripeWebhook = functions.https.onRequest(async (req, res) =>
 
     res.status(500).send("Webhook processing failed");
   }
-});
+  })
+);
 
 /**
  * Handle successful payment

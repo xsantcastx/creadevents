@@ -1,0 +1,146 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "SiteConfig",
+  "type": "object",
+  "required": ["brand", "contact", "theme", "navigation", "seo"],
+  "properties": {
+    "brand": {
+      "type": "object",
+      "required": ["key", "name", "logo"],
+      "properties": {
+        "key": { "type": "string", "minLength": 1 },
+        "name": { "type": "string", "minLength": 1 },
+        "shortName": { "type": "string" },
+        "tagline": { "type": "string" },
+        "description": { "type": "string" },
+        "domain": { "type": "string" },
+        "logo": { "type": "string" },
+        "logoAlt": { "type": "string" },
+        "favicon": { "type": "string" }
+      },
+      "additionalProperties": true
+    },
+    "contact": {
+      "type": "object",
+      "required": ["email"],
+      "properties": {
+        "email": { "type": "string", "format": "email" },
+        "phone": { "type": "string" },
+        "address": { "type": "string" },
+        "supportHours": { "type": "string" }
+      },
+      "additionalProperties": true
+    },
+    "theme": {
+      "type": "object",
+      "properties": {
+        "tokens": {
+          "type": "object",
+          "patternProperties": {
+            "^.*$": { "type": "string" }
+          }
+        },
+        "fonts": {
+          "type": "object",
+          "patternProperties": {
+            "^.*$": { "type": "string" }
+          }
+        }
+      },
+      "additionalProperties": true
+    },
+    "hero": {
+      "type": "object",
+      "properties": {
+        "eyebrow": { "type": "string" },
+        "title": { "type": "string" },
+        "subtitle": { "type": "string" },
+        "primaryCta": {
+          "type": "object",
+          "required": ["label", "href"],
+          "properties": {
+            "label": { "type": "string" },
+            "href": { "type": "string" }
+          }
+        },
+        "secondaryCta": {
+          "type": "object",
+          "properties": {
+            "label": { "type": "string" },
+            "href": { "type": "string" }
+          }
+        },
+        "badge": { "type": "string" }
+      },
+      "additionalProperties": true
+    },
+    "navigation": {
+      "type": "object",
+      "properties": {
+        "header": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["label", "href"],
+            "properties": {
+              "label": { "type": "string" },
+              "href": { "type": "string" },
+              "exact": { "type": "boolean" }
+            }
+          }
+        },
+        "footer": {
+          "type": "array",
+          "items": { "$ref": "#/properties/navigation/properties/header/items" }
+        },
+        "social": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["platform", "href"],
+            "properties": {
+              "platform": { "type": "string" },
+              "href": { "type": "string" }
+            }
+          }
+        }
+      },
+      "additionalProperties": true
+    },
+    "seo": {
+      "type": "object",
+      "properties": {
+        "siteName": { "type": "string" },
+        "titleTemplate": { "type": "string" },
+        "defaultTitle": { "type": "string" },
+        "defaultDescription": { "type": "string" },
+        "defaultKeywords": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "socialImage": { "type": "string" }
+      },
+      "additionalProperties": true
+    },
+    "legal": {
+      "type": "object",
+      "properties": {
+        "businessName": { "type": "string" },
+        "taxId": { "type": "string" },
+        "supportEmail": { "type": "string" },
+        "returnPolicyUrl": { "type": "string" },
+        "privacyPolicyUrl": { "type": "string" },
+        "termsUrl": { "type": "string" }
+      },
+      "additionalProperties": true
+    },
+    "maintenance": {
+      "type": "object",
+      "properties": {
+        "title": { "type": "string" },
+        "description": { "type": "string" }
+      }
+    }
+  },
+  "additionalProperties": true
+}

@@ -1,0 +1,12 @@
+{
+  "blog": false,
+  "newsletter": true,
+  "donations": false,
+  "reviews": true,
+  "affiliates": false,
+  "educationalHub": true,
+  "cookieBanner": true,
+  "maintenanceMode": false,
+  "gallery": true,
+  "adminPanel": true
+}

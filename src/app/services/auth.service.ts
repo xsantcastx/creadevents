@@ -23,6 +23,7 @@ import {
 import { Observable, from, of, switchMap } from 'rxjs';
 import { SettingsService } from './settings.service';
 import { EmailService } from './email.service';
+import { BrandConfigService } from '../core/services/brand-config.service';
 
 export interface UserProfile {
   uid: string;
@@ -48,6 +49,7 @@ export class AuthService {
   private firestore = inject(Firestore);
   private settingsService = inject(SettingsService);
   private emailService = inject(EmailService);
+  private brandConfig = inject(BrandConfigService);
   private router = inject(Router);
   
   // Observable of current user
@@ -344,11 +346,11 @@ export class AuthService {
       
       const emailData = {
         to: recipientEmail,
-        subject: '🎉 New User Registration - TheLuxMining',
+        subject: this.brandConfig.emails.notifications?.['newUser']?.subject || `🎉 New User Registration - ${this.brandConfig.siteName}`,
         html: `
           <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
             <h2 style="color: #059669;">🎉 New User Registration</h2>
-            <p>A new user has registered on TheLuxMining:</p>
+            <p>A new user has registered on ${this.brandConfig.siteName}:</p>
             <div style="background-color: #d1fae5; border-left: 4px solid #10b981; padding: 15px; margin: 20px 0;">
               <p style="margin: 5px 0;"><strong>Name:</strong> ${displayName}</p>
               <p style="margin: 5px 0;"><strong>Email:</strong> ${email}</p>
@@ -357,7 +359,7 @@ export class AuthService {
             </div>
             <p>You can manage this user from the admin panel.</p>
             <p style="color: #6b7280; font-size: 12px; margin-top: 30px;">
-              This is an automated notification from TheLuxMining user management system.
+              This is an automated notification from the ${this.brandConfig.siteName} user management system.
             </p>
           </div>
         `

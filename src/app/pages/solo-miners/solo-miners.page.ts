@@ -10,6 +10,7 @@ import { Product } from '../../models/product';
 import { SeoSchemaService, FAQItem, ProductSchemaData } from '../../services/seo-schema.service';
 import { PageHeaderComponent } from '../../shared/components/page-header/page-header.component';
 import { LoadingComponentBase } from '../../core/classes/loading-component.base';
+import { BrandConfigService } from '../../core/services/brand-config.service';
 
 interface SoloMinerCard {
   id: string;
@@ -40,6 +41,7 @@ export class SoloMinersPageComponent extends LoadingComponentBase implements OnI
   private categoryService = inject(CategoryService);
   private seoService = inject(SeoSchemaService);
   private translate = inject(TranslateService);
+  private brandConfig = inject(BrandConfigService);
 
   private readonly soloMinerSlug = 'solo-miners';
 
@@ -275,14 +277,17 @@ export class SoloMinersPageComponent extends LoadingComponentBase implements OnI
   }
 
   private registerSchemas(): void {
-    this.seoService.setTitle('Best Bitcoin Solo Miners 2025 | Solo Mining Equipment | TheLuxMining');
+    const brandName = this.brandConfig.siteName;
+    const siteUrl = this.brandConfig.siteUrl;
+    const subtitle = 'Best Bitcoin Solo Miners 2025 | Solo Mining Equipment';
+    this.seoService.setTitle(`${subtitle} | ${brandName}`);
     this.seoService.setMetaDescription(
-      'Buy Bitcoin solo miners and lottery mining equipment. Shop Bitaxe Ultra, Apollo BTC, and compact ASIC miners optimized for solo mining. Win full block rewards with specialized solo mining rigs.'
+      `Buy Bitcoin solo miners and lottery-ready equipment with ${brandName}'s concierge team. Shop Bitaxe, Apollo BTC, and compact ASIC rigs optimized for home and studio deployments.`
     );
     this.seoService.setMetaKeywords(
       'bitcoin solo miner, solo mining equipment, lottery mining, solo mining rig, bitcoin solo mining, home bitcoin miner, Bitaxe, Apollo BTC, solo ASIC miner, solo mining hardware 2025'
     );
-    this.seoService.setCanonicalUrl('https://theluxmining.com/solo-miners');
+    this.seoService.setCanonicalUrl(`${siteUrl}/solo-miners`);
 
     const schemaItems: ProductSchemaData[] = this.soloMinerProducts.map(item => ({
       name: item.name,
@@ -302,8 +307,8 @@ export class SoloMinersPageComponent extends LoadingComponentBase implements OnI
 
     this.seoService.generateFAQSchema(this.faqItems);
     this.seoService.generateBreadcrumbSchema([
-      { name: 'Home', url: 'https://theluxmining.com' },
-      { name: 'Solo Miners', url: 'https://theluxmining.com/solo-miners' }
+      { name: 'Home', url: siteUrl },
+      { name: 'Solo Miners', url: `${siteUrl}/solo-miners` }
     ]);
   }
 }
