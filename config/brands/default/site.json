@@ -101,5 +101,18 @@
   "notifications": {
     "emailFromName": "Creation Design & Events",
     "emailFrom": "noreply@creadevents.com"
+  },
+  "firebase": {
+    "apiKey": "AIzaSyBEqQhkbBnUVb2xHHCLRJEYCH-I8yPnDmo",
+    "authDomain": "creadevents-b29b9.firebaseapp.com",
+    "projectId": "creadevents-b29b9",
+    "storageBucket": "creadevents-b29b9.firebasestorage.app",
+    "messagingSenderId": "502006799979",
+    "appId": "1:502006799979:web:1cf98e9a3179c724fb9b2e",
+    "measurementId": "G-E9LXFPZYNZ"
+  },
+  "appCheck": {
+    "provider": "recaptcha",
+    "siteKey": "6LcYpA8sAAAAAC81J5b5a5WFyLsK6vhPWFBwibQK"
   }
 }
