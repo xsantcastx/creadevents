@@ -1,34 +1,43 @@
-<section class="section-stack bg-gradient-to-b from-[#0a0b0d] to-[#13151a] min-h-screen">
-  <!-- Page Header Component -->
-  <app-page-header
-    title="{{ 'client.profile' | translate }}"
-    subtitle="{{ 'client.profile_subtitle' | translate }}"
-    [breadcrumbs]="breadcrumbs"
-    icon="user">
-  </app-page-header>
-
-  <div class="page-container pb-12">
-    <div class="max-w-6xl mx-auto space-y-6 md:space-y-8">
-      <div class="flex justify-end">
-        <button
-          type="button"
-          (click)="logout()"
-          class="inline-flex items-center justify-center gap-2 rounded-xl border border-red-500/40 px-4 py-2 text-sm font-medium text-red-200 transition-colors hover:bg-red-500/10">
-          <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-          </svg>
-          <span>{{ 'client.logout' | translate }}</span>
-        </button>
-      </div>
-
-    @if (isLoading) {
-      <div class="rounded-2xl border border-bitcoin-orange/20 bg-bitcoin-dark/40 p-12 text-center shadow-bitcoin-lg">
-        <div class="flex flex-col items-center gap-4">
-          <div class="app-spinner" style="--spinner-size: 96px;"><img src="/Logo Clear.png" alt="Loading" width="96" height="96"></div>
-          <p class="text-bitcoin-gray">{{ 'common.loading' | translate }}</p>
+<section class="section-gap bg-ts-bg">
+  <div class="page-container">
+    <div class="luxury-hero">
+      <div class="luxury-hero__content">
+        <span class="badge">Account Settings</span>
+        <h1 class="luxury-hero__title">{{ 'client.profile' | translate }}</h1>
+        <p class="luxury-hero__subtitle">
+          {{ 'client.profile_subtitle' | translate }}
+        </p>
+        <div class="luxury-hero__actions">
+          <a routerLink="/contacto" class="btn-primary">{{ 'client.profile_actions.contact_support' | translate }}</a>
+          <button
+            type="button"
+            (click)="logout()"
+            class="btn-secondary">
+            {{ 'client.logout' | translate }}
+          </button>
         </div>
       </div>
-    } @else {
+      <div class="luxury-hero__media">
+        <div class="badge absolute top-3.5 right-3.5 shadow-soft">User Profile</div>
+        <svg class="text-ts-accent/20" fill="currentColor" viewBox="0 0 24 24">
+          <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+        </svg>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="py-12 bg-ts-bg-soft">
+  <div class="page-container">
+    <div class="max-w-6xl mx-auto space-y-6 md:space-y-8">
+      @if (isLoading) {
+        <div class="rounded-2xl border border-ts-line bg-ts-paper p-12 text-center shadow-soft">
+          <div class="flex flex-col items-center gap-4">
+            <div class="app-spinner" style="--spinner-size: 96px;"><img src="/Logo Clear.png" alt="Loading" width="96" height="96"></div>
+            <p class="text-ts-ink">{{ 'common.loading' | translate }}</p>
+          </div>
+        </div>
+      } @else {
       @if (successMessage) {
         <div class="flex items-start gap-3 rounded-xl border border-emerald-500/30 bg-emerald-500/10 px-4 py-3 text-sm text-emerald-100">
           <svg class="mt-0.5 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -49,15 +58,15 @@
 
       <div class="grid gap-6 lg:grid-cols-[320px,1fr]">
         <aside class="space-y-6">
-          <div class="rounded-2xl border border-bitcoin-orange/20 bg-bitcoin-dark/40 p-6 shadow-bitcoin-lg">
+          <div class="rounded-2xl border border-ts-line bg-ts-paper p-6 shadow-lg">
             <div class="flex flex-col items-center gap-4 text-center">
-              <div class="flex h-24 w-24 items-center justify-center rounded-full border border-bitcoin-orange/30 bg-bitcoin-orange/10 text-3xl font-semibold text-bitcoin-orange">
+              <div class="flex h-24 w-24 items-center justify-center rounded-full border border-ts-accent/30 bg-ts-accent/10 text-3xl font-semibold text-ts-accent">
                 {{ (userProfile?.displayName || 'U').charAt(0).toUpperCase() }}
               </div>
               <div class="space-y-1">
-                <p class="text-xl font-semibold text-white">{{ userProfile?.displayName || userProfile?.email }}</p>
+                <p class="text-xl font-semibold text-ts-ink">{{ userProfile?.displayName || userProfile?.email }}</p>
                 @if (userProfile?.company) {
-                  <p class="text-sm text-bitcoin-gray">{{ userProfile?.company }}</p>
+                  <p class="text-sm text-ts-ink-soft">{{ userProfile?.company }}</p>
                 }
                 <span class="inline-flex items-center gap-2 rounded-full border border-green-500/30 bg-green-500/10 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-green-300">
                   <svg class="h-3.5 w-3.5" fill="currentColor" viewBox="0 0 20 20">
@@ -68,16 +77,16 @@
               </div>
             </div>
 
-            <dl class="mt-6 space-y-4 text-sm text-bitcoin-gray">
+            <dl class="mt-6 space-y-4 text-sm text-ts-ink-soft">
               <div class="flex items-start gap-3">
-                <svg class="mt-0.5 h-5 w-5 text-bitcoin-orange" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg class="mt-0.5 h-5 w-5 text-ts-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 12H8m8 0l-3 3m3-3l-3-3M5 19l2.586-2.586M5 5l2.586 2.586M19 5l-2.586 2.586M19 19l-2.586-2.586" />
                 </svg>
                 <div class="space-y-1">
-                  <dt class="text-xs font-medium uppercase tracking-wide text-white/70">{{ 'client.email' | translate }}</dt>
-                  <dd class="text-white">
+                  <dt class="text-xs font-medium uppercase tracking-wide text-ts-ink opacity-60">{{ 'client.email' | translate }}</dt>
+                  <dd class="text-ts-ink">
                     @if (userProfile?.email) {
-                      <a [href]="'mailto:' + userProfile?.email" class="hover:text-bitcoin-orange transition-colors">{{ userProfile?.email }}</a>
+                      <a [href]="'mailto:' + userProfile?.email" class="hover:text-ts-accent transition-colors">{{ userProfile?.email }}</a>
                     } @else {
                       {{ 'client.profile_metrics.not_available' | translate }}
                     }
@@ -85,14 +94,14 @@
                 </div>
               </div>
               <div class="flex items-start gap-3">
-                <svg class="mt-0.5 h-5 w-5 text-bitcoin-orange" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg class="mt-0.5 h-5 w-5 text-ts-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5h2l3.6 7.59-1.35 2.44A1 1 0 008 16h10v-2H9.42a.25.25 0 01-.22-.37l.9-1.63h6.45a1 1 0 00.9-.55L21 6H7.21" />
                 </svg>
                 <div class="space-y-1">
-                  <dt class="text-xs font-medium uppercase tracking-wide text-white/70">{{ 'client.phone' | translate }}</dt>
-                  <dd class="text-white">
+                  <dt class="text-xs font-medium uppercase tracking-wide text-ts-ink opacity-60">{{ 'client.phone' | translate }}</dt>
+                  <dd class="text-ts-ink">
                     @if (userProfile?.phone) {
-                      <a [href]="'tel:' + userProfile?.phone" class="hover:text-bitcoin-orange transition-colors">{{ userProfile?.phone }}</a>
+                      <a [href]="'tel:' + userProfile?.phone" class="hover:text-ts-accent transition-colors">{{ userProfile?.phone }}</a>
                     } @else {
                       {{ 'client.not_provided' | translate }}
                     }
@@ -102,13 +111,15 @@
             </dl>
 
             <div class="mt-6 space-y-3">
-              <a routerLink="/client/orders" class="flex items-center justify-center gap-2 rounded-xl border border-bitcoin-orange/40 bg-bitcoin-orange/10 px-4 py-2 text-sm font-medium text-bitcoin-orange transition-colors hover:bg-bitcoin-orange/20">
+              <!-- Orders feature disabled
+              <a routerLink="/client/orders" class="flex items-center justify-center gap-2 rounded-xl border border-ts-accent/40 bg-ts-accent/10 px-4 py-2 text-sm font-medium text-ts-accent transition-colors hover:bg-ts-accent/20">
                 <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13l-1.5 6h13M16 17a2 2 0 11-4 0" />
                 </svg>
                 <span>{{ 'client.profile_actions.view_orders' | translate }}</span>
               </a>
-              <a routerLink="/contacto" class="flex items-center justify-center gap-2 rounded-xl border border-bitcoin-gray/30 px-4 py-2 text-sm font-medium text-bitcoin-gray transition-colors hover:text-bitcoin-orange">
+              -->
+              <a routerLink="/contacto" class="flex items-center justify-center gap-2 rounded-xl border border-ts-line px-4 py-2 text-sm font-medium text-ts-ink transition-colors hover:bg-ts-accent/10 hover:border-ts-accent hover:text-ts-accent">
                 <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
@@ -119,18 +130,18 @@
         </aside>
 
         <div class="space-y-6 md:space-y-8">
-          <section class="rounded-2xl border border-bitcoin-orange/20 bg-bitcoin-dark/40 p-6 shadow-bitcoin-lg">
+          <section class="rounded-2xl border border-ts-line bg-ts-paper p-6 shadow-lg">
             <div class="mb-6 flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
               <div>
-                <h2 class="text-lg font-semibold text-white">{{ 'client.profile_sections.account_overview' | translate }}</h2>
-                <p class="text-sm text-bitcoin-gray">{{ 'client.profile_sections.account_overview_hint' | translate }}</p>
+                <h2 class="text-lg font-semibold text-ts-ink">{{ 'client.profile_sections.account_overview' | translate }}</h2>
+                <p class="text-sm text-ts-ink opacity-70">{{ 'client.profile_sections.account_overview_hint' | translate }}</p>
               </div>
             </div>
             <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
               @for (highlight of profileHighlights; track highlight.labelKey) {
-                <article class="rounded-xl border border-white/5 bg-black/20 p-4">
+                <article class="rounded-xl border border-ts-line bg-ts-paper p-4">
                   <div class="flex items-start gap-3">
-                    <div class="flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-black/30 text-bitcoin-orange">
+                    <div class="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full border border-ts-accent/30 bg-ts-accent/10 text-ts-accent">
                       @switch (highlight.icon) {
                         @case ('calendar') {
                           <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -154,9 +165,9 @@
                         }
                       }
                     </div>
-                    <div class="space-y-1">
-                      <p class="text-xs font-medium uppercase tracking-wide text-white/60">{{ highlight.labelKey | translate }}</p>
-                      <p class="text-base font-semibold text-white" [class.text-emerald-300]="highlight.tone === 'success'" [class.text-amber-300]="highlight.tone === 'warning'">
+                    <div class="min-w-0 flex-1 space-y-1">
+                      <p class="text-xs font-medium uppercase tracking-wide text-ts-ink opacity-60 truncate">{{ highlight.labelKey | translate }}</p>
+                      <p class="text-sm font-semibold text-ts-ink break-words" [class.text-green-600]="highlight.tone === 'success'" [class.text-amber-600]="highlight.tone === 'warning'">
                         {{ highlight.value }}
                       </p>
                     </div>
@@ -166,15 +177,15 @@
             </div>
           </section>
 
-          <section class="rounded-2xl border border-bitcoin-orange/20 bg-bitcoin-dark/40 p-6 shadow-bitcoin-lg">
+          <section class="rounded-2xl border border-ts-accent/20 bg-ts-ink-soft/40 p-6 shadow-bitcoin-lg">
             <div class="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
               <div class="space-y-1">
                 <h2 class="text-lg font-semibold text-white">{{ 'client.profile_sections.contact_information' | translate }}</h2>
-                <p class="text-sm text-bitcoin-gray">{{ 'client.profile_sections.contact_information_hint' | translate }}</p>
+                <p class="text-sm text-ts-ink-soft">{{ 'client.profile_sections.contact_information_hint' | translate }}</p>
               </div>
               <div class="flex flex-wrap gap-2">
                 @if (!isEditMode) {
-                  <button type="button" (click)="toggleEditMode()" class="inline-flex items-center gap-2 rounded-xl border border-bitcoin-gray/30 px-4 py-2 text-sm font-medium text-bitcoin-gray transition-colors hover:text-bitcoin-orange">
+                  <button type="button" (click)="toggleEditMode()" class="inline-flex items-center gap-2 rounded-xl border border-ts-ink-soft/30 px-4 py-2 text-sm font-medium text-ts-ink-soft transition-colors hover:text-ts-accent">
                     <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5" />
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.5 2.5a2.121 2.121 0 113 3L12 15l-4 1 1-4 9.5-9.5z" />
@@ -213,44 +224,44 @@
               <form [formGroup]="profileForm" (ngSubmit)="onSubmit()" class="space-y-5">
                 <div class="grid gap-4 sm:grid-cols-2">
                   <div class="space-y-2">
-                    <label for="displayName" class="text-xs font-medium uppercase tracking-wide text-white/60">{{ 'client.name' | translate }} *</label>
+                    <label for="displayName" class="text-xs font-medium uppercase tracking-wide text-ts-ink/70">{{ 'client.name' | translate }} *</label>
                     <input
                       type="text"
                       id="displayName"
                       formControlName="displayName"
-                      class="w-full rounded-xl border border-bitcoin-gray/30 bg-bitcoin-dark/60 px-4 py-2.5 text-sm text-white placeholder:text-bitcoin-gray/50 focus:border-bitcoin-orange focus:outline-none focus:ring-2 focus:ring-bitcoin-orange/40"
+                      class="w-full rounded-xl border border-ts-line bg-ts-bg px-4 py-2.5 text-sm text-ts-ink placeholder:text-ts-ink/50 focus:border-ts-accent focus:outline-none focus:ring-2 focus:ring-ts-accent/40"
                       [class.border-red-500]="displayName?.invalid && displayName?.touched" />
                     @if (displayName?.invalid && displayName?.touched) {
                       <p class="text-xs text-red-300">{{ 'client.errors.name_required' | translate }}</p>
                     }
                   </div>
                   <div class="space-y-2">
-                    <label class="text-xs font-medium uppercase tracking-wide text-white/60">{{ 'client.email' | translate }}</label>
-                    <div class="w-full cursor-not-allowed rounded-xl border border-white/10 bg-black/20 px-4 py-2.5 text-sm text-bitcoin-gray/70">
+                    <label class="text-xs font-medium uppercase tracking-wide text-ts-ink/70">{{ 'client.email' | translate }}</label>
+                    <div class="w-full cursor-not-allowed rounded-xl border border-ts-line bg-ts-bg/50 px-4 py-2.5 text-sm text-ts-ink/70">
                       {{ userProfile?.email }}
                     </div>
                   </div>
                 </div>
                 <div class="grid gap-4 sm:grid-cols-2">
                   <div class="space-y-2">
-                    <label for="company" class="text-xs font-medium uppercase tracking-wide text-white/60">{{ 'client.company' | translate }}</label>
+                    <label for="company" class="text-xs font-medium uppercase tracking-wide text-ts-ink/70">{{ 'client.company' | translate }}</label>
                     <input
                       type="text"
                       id="company"
                       formControlName="company"
-                      class="w-full rounded-xl border border-bitcoin-gray/30 bg-bitcoin-dark/60 px-4 py-2.5 text-sm text-white placeholder:text-bitcoin-gray/50 focus:border-bitcoin-orange focus:outline-none focus:ring-2 focus:ring-bitcoin-orange/40" />
+                      class="w-full rounded-xl border border-ts-line bg-ts-bg px-4 py-2.5 text-sm text-ts-ink placeholder:text-ts-ink/50 focus:border-ts-accent focus:outline-none focus:ring-2 focus:ring-ts-accent/40" />
                   </div>
                   <div class="space-y-2">
-                    <label for="phone" class="text-xs font-medium uppercase tracking-wide text-white/60">{{ 'client.phone' | translate }}</label>
+                    <label for="phone" class="text-xs font-medium uppercase tracking-wide text-ts-ink/70">{{ 'client.phone' | translate }}</label>
                     <input
                       type="tel"
                       id="phone"
                       formControlName="phone"
-                      class="w-full rounded-xl border border-bitcoin-gray/30 bg-bitcoin-dark/60 px-4 py-2.5 text-sm text-white placeholder:text-bitcoin-gray/50 focus:border-bitcoin-orange focus:outline-none focus:ring-2 focus:ring-bitcoin-orange/40" />
+                      class="w-full rounded-xl border border-ts-line bg-ts-bg px-4 py-2.5 text-sm text-ts-ink placeholder:text-ts-ink/50 focus:border-ts-accent focus:outline-none focus:ring-2 focus:ring-ts-accent/40" />
                   </div>
                 </div>
                 <div class="flex flex-col gap-3 sm:flex-row">
-                  <button type="submit" [disabled]="isSaving" class="flex-1 inline-flex items-center justify-center gap-2 rounded-xl border border-bitcoin-orange/30 bg-bitcoin-orange/20 px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-bitcoin-orange/30 disabled:cursor-not-allowed disabled:opacity-60">
+                  <button type="submit" [disabled]="isSaving" class="btn-primary flex-1 disabled:cursor-not-allowed disabled:opacity-60">
                     @if (isSaving) {
                       <div class="app-spinner" style="--spinner-size: 96px;"><img src="/Logo Clear.png" alt="Loading" width="96" height="96"></div>
                       {{ 'common.loading' | translate }}
@@ -258,7 +269,7 @@
                       {{ 'client.profile_actions.save_changes' | translate }}
                     }
                   </button>
-                  <button type="button" (click)="toggleEditMode()" [disabled]="isSaving" class="flex-1 rounded-xl border border-bitcoin-gray/30 px-4 py-2.5 text-sm font-medium text-bitcoin-gray transition-colors hover:text-white disabled:cursor-not-allowed disabled:opacity-60">
+                  <button type="button" (click)="toggleEditMode()" [disabled]="isSaving" class="btn-outline flex-1 disabled:cursor-not-allowed disabled:opacity-60">
                     {{ 'client.profile_actions.cancel' | translate }}
                   </button>
                 </div>
@@ -266,30 +277,30 @@
             }
           </section>
 
-          <section class="rounded-2xl border border-bitcoin-orange/20 bg-bitcoin-dark/40 p-6 shadow-bitcoin-lg">
+          <section class="rounded-2xl border border-ts-accent/20 bg-ts-accent/5 p-6 shadow-soft">
             <div class="mb-4 space-y-1">
-              <h2 class="text-lg font-semibold text-white">{{ 'client.profile_sections.security' | translate }}</h2>
-              <p class="text-sm text-bitcoin-gray">{{ 'client.profile_sections.security_hint' | translate }}</p>
+              <h2 class="text-lg font-semibold text-ts-ink">{{ 'client.profile_sections.security' | translate }}</h2>
+              <p class="text-sm text-ts-ink/70">{{ 'client.profile_sections.security_hint' | translate }}</p>
             </div>
-            <div class="grid gap-4 sm:grid-cols-2 text-sm text-white">
-              <div class="rounded-xl border border-white/5 bg-black/20 p-4">
-                <p class="text-xs font-medium uppercase tracking-wide text-white/60">{{ 'client.security.email_verified' | translate }}</p>
-                <p class="mt-1 font-semibold" [class.text-emerald-300]="emailVerified" [class.text-amber-300]="!emailVerified">
+            <div class="grid gap-4 sm:grid-cols-2 text-sm text-ts-ink">
+              <div class="rounded-xl border border-ts-line bg-ts-paper p-4">
+                <p class="text-xs font-medium uppercase tracking-wide text-ts-ink/70">{{ 'client.security.email_verified' | translate }}</p>
+                <p class="mt-1 font-semibold" [class.text-emerald-600]="emailVerified" [class.text-amber-600]="!emailVerified">
                   {{ emailVerified ? ('client.security.verified' | translate) : ('client.security.not_verified' | translate) }}
                 </p>
               </div>
-              <div class="rounded-xl border border-white/5 bg-black/20 p-4">
-                <p class="text-xs font-medium uppercase tracking-wide text-white/60">{{ 'client.security.login_attempts' | translate }}</p>
+              <div class="rounded-xl border border-ts-line bg-ts-paper p-4">
+                <p class="text-xs font-medium uppercase tracking-wide text-ts-ink/70">{{ 'client.security.login_attempts' | translate }}</p>
                 <p class="mt-1 font-semibold">{{ userProfile?.loginAttempts ?? 0 }}</p>
               </div>
-              <div class="rounded-xl border border-white/5 bg-black/20 p-4">
-                <p class="text-xs font-medium uppercase tracking-wide text-white/60">{{ 'client.security.last_failed_login' | translate }}</p>
+              <div class="rounded-xl border border-ts-line bg-ts-paper p-4">
+                <p class="text-xs font-medium uppercase tracking-wide text-ts-ink/70">{{ 'client.security.last_failed_login' | translate }}</p>
                 <p class="mt-1 font-semibold">
                   {{ userProfile?.lastFailedLogin ? (userProfile?.lastFailedLogin | date:'medium') : ('client.profile_metrics.not_available' | translate) }}
                 </p>
               </div>
-              <div class="rounded-xl border border-white/5 bg-black/20 p-4">
-                <p class="text-xs font-medium uppercase tracking-wide text-white/60">{{ 'client.security.session_status' | translate }}</p>
+              <div class="rounded-xl border border-ts-line bg-ts-paper p-4">
+                <p class="text-xs font-medium uppercase tracking-wide text-ts-ink/70">{{ 'client.security.session_status' | translate }}</p>
                 <p class="mt-1 font-semibold">
                   {{ accountStatusText || ('client.profile_metrics.not_available' | translate) }}
                 </p>
@@ -297,13 +308,13 @@
             </div>
           </section>
 
-          <section class="rounded-2xl border border-white/10 bg-black/30 p-6 shadow-lg">
+          <section class="rounded-2xl border border-ts-line bg-ts-paper p-6 shadow-soft">
             <div class="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
               <div class="space-y-1">
-                <h2 class="text-lg font-semibold text-white">{{ 'client.profile_sections.support' | translate }}</h2>
-                <p class="text-sm text-bitcoin-gray">{{ 'client.profile_support_description' | translate }}</p>
+                <h2 class="text-lg font-semibold text-ts-ink">{{ 'client.profile_sections.support' | translate }}</h2>
+                <p class="text-sm text-ts-ink/70">{{ 'client.profile_support_description' | translate }}</p>
               </div>
-              <a routerLink="/contacto" class="inline-flex items-center gap-2 rounded-xl border border-bitcoin-orange/30 bg-bitcoin-orange/10 px-4 py-2 text-sm font-medium text-bitcoin-orange transition-colors hover:bg-bitcoin-orange/20">
+              <a routerLink="/contacto" class="inline-flex items-center gap-2 rounded-xl border border-ts-accent/30 bg-ts-accent/10 px-4 py-2 text-sm font-medium text-ts-accent transition-colors hover:bg-ts-accent/20">
                 <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
                 </svg>
@@ -315,16 +326,14 @@
       </div>
     }
 
-    <div class="text-center">
-      <a routerLink="/" class="inline-flex items-center gap-2 text-sm font-medium text-bitcoin-gray transition-colors hover:text-bitcoin-orange">
-        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-        </svg>
-        {{ 'common.back' | translate }}
-      </a>
-    </div>
+      <div class="text-center mt-8">
+        <a routerLink="/" class="inline-flex items-center gap-2 text-sm font-medium text-ts-ink/70 transition-colors hover:text-ts-accent">
+          <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+          </svg>
+          {{ 'common.back' | translate }}
+        </a>
+      </div>
     </div>
   </div>
 </section>
-
-

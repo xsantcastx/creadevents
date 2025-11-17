@@ -89,8 +89,8 @@ export class RegisterPageComponent {
         console.log('[RegisterPage] reCAPTCHA token obtained for registration');
       }
 
-      const { email, password, displayName, company } = this.registerForm.value;
-      await this.authService.register(email, password, displayName, company);
+      const { email, password, displayName, company, phone } = this.registerForm.value;
+      await this.authService.register(email, password, displayName, company, phone);
       
       // Redirect to profile page
       this.router.navigate(['/client/profile']);

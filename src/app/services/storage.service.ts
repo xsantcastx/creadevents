@@ -4,10 +4,18 @@ import { Observable, from, map } from 'rxjs';
 import { ImageOptimizationService } from './image-optimization.service';
 
 export interface UploadProgress {
+  state?: 'progress' | 'complete' | 'error';
   progress: number;
   downloadURL?: string;
   webpURL?: string;
   thumbnailURL?: string;
+  urls?: {
+    original: string;
+    webp?: string;
+    thumbnail?: string;
+  };
+  storagePath?: string;
+  optimizedSize?: number;
   error?: string;
   optimizing?: boolean;
 }
@@ -32,12 +40,13 @@ export class StorageService {
         try {
           // Notify that optimization is starting
           if (optimize) {
-            observer.next({ progress: 0, optimizing: true });
+            observer.next({ state: 'progress', progress: 0, optimizing: true });
           }
 
           let mainBlob: Blob = file;
           let webpBlob: Blob | undefined;
           let thumbnailBlob: Blob | undefined;
+          let optimizedSize = file.size;
           
           // Optimize image if requested
           if (optimize) {
@@ -52,6 +61,7 @@ export class StorageService {
             mainBlob = optimized.original;
             webpBlob = optimized.webp;
             thumbnailBlob = optimized.thumbnail;
+            optimizedSize = webpBlob?.size || mainBlob.size;
 
             console.log('Image optimized:', {
               originalSize: `${this.imageOptimizer.getFileSizeMB(file).toFixed(2)}MB`,
@@ -61,37 +71,38 @@ export class StorageService {
             });
           }
 
-          observer.next({ progress: 10, optimizing: false });
+          observer.next({ state: 'progress', progress: 10, optimizing: false });
 
-          // Upload main image (JPEG)
-          const mainPath = `${path}.jpg`;
-          const mainURL = await this.uploadBlob(mainBlob, mainPath, observer, 10, 40);
-
-          // Upload WebP version if available
-          let webpURL: string | undefined;
+          // Upload only WebP version to save storage space
+          let webpURL: string;
           if (webpBlob) {
             const webpPath = `${path}.webp`;
-            webpURL = await this.uploadBlob(webpBlob, webpPath, observer, 40, 70);
-          }
-
-          // Upload thumbnail if available
-          let thumbnailURL: string | undefined;
-          if (thumbnailBlob) {
-            const thumbPath = `${path}-thumb.jpg`;
-            thumbnailURL = await this.uploadBlob(thumbnailBlob, thumbPath, observer, 70, 100);
+            webpURL = await this.uploadBlob(webpBlob, webpPath, observer, 10, 100);
+          } else {
+            // Fallback: if no WebP was created, upload the main blob
+            const mainPath = `${path}.jpg`;
+            webpURL = await this.uploadBlob(mainBlob, mainPath, observer, 10, 100);
           }
 
           // Complete
           observer.next({
+            state: 'complete',
             progress: 100,
-            downloadURL: mainURL,
-            webpURL,
-            thumbnailURL
+            downloadURL: webpURL,
+            webpURL: webpURL,
+            thumbnailURL: undefined,
+            urls: {
+              original: webpURL,
+              webp: webpURL,
+              thumbnail: undefined
+            },
+            storagePath: path,
+            optimizedSize
           });
           observer.complete();
         } catch (error: any) {
           console.error('Upload error:', error);
-          observer.next({ progress: 0, error: error.message });
+          observer.next({ state: 'error', progress: 0, error: error.message });
           observer.error(error);
         }
       })();
@@ -123,7 +134,7 @@ export class StorageService {
         (snapshot: UploadTaskSnapshot) => {
           const fileProgress = (snapshot.bytesTransferred / snapshot.totalBytes);
           const totalProgress = startProgress + (fileProgress * (endProgress - startProgress));
-          observer.next({ progress: totalProgress });
+          observer.next({ state: 'progress', progress: totalProgress });
         },
         (error) => {
           reject(error);

@@ -128,10 +128,51 @@ service cloud.firestore {
       allow create, update, delete: if isAdmin();
     }
 
+    // Services - Public read, Admin write
+    match /services/{serviceId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
     // Media - Public read, Admin write (for product covers and gallery images)
     match /media/{mediaId} {
       allow read: if true;
       allow create, update, delete: if isAdmin();
+    }
+
+    // Media Likes - Public read, authenticated users can like/unlike
+    match /mediaLikes/{likeId} {
+      allow read: if true;
+      allow create: if isSignedIn()
+        && request.resource.data.userId == request.auth.uid
+        && request.resource.data.mediaId is string
+        && request.resource.data.userName is string
+        && request.resource.data.userEmail is string
+        && request.resource.data.keys().hasAll(['userId', 'mediaId', 'userName', 'userEmail', 'likedAt']);
+      allow delete: if isSignedIn()
+        && resource.data.userId == request.auth.uid;
+      allow update: if false; // Likes cannot be updated, only created/deleted
+    }
+
+    // Media Comments - Public read, authenticated users can comment
+    match /mediaComments/{commentId} {
+      allow read: if true;
+      allow create: if isSignedIn()
+        && request.resource.data.userId == request.auth.uid
+        && request.resource.data.mediaId is string
+        && request.resource.data.userName is string
+        && request.resource.data.userEmail is string
+        && request.resource.data.comment is string
+        && request.resource.data.comment.size() >= 1
+        && request.resource.data.comment.size() <= 500
+        && request.resource.data.keys().hasAll(['userId', 'mediaId', 'userName', 'userEmail', 'comment', 'commentedAt', 'isEdited']);
+      allow update: if isSignedIn()
+        && resource.data.userId == request.auth.uid
+        && request.resource.data.userId == request.auth.uid
+        && request.resource.data.comment.size() >= 1
+        && request.resource.data.comment.size() <= 500;
+      allow delete: if isSignedIn()
+        && (resource.data.userId == request.auth.uid || isAdmin());
     }
 
     // Technical Data - Public read, Admin write

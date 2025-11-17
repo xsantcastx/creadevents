@@ -5,10 +5,10 @@
     {"nombre":"Satinado","descripcion":"Equilibrio perfecto entre mate y pulido, ideal para cualquier ambiente.","imagen":"/assets/Modern/image5.jpeg"}
   ],
   "fichasTecnicas": [
-    {"nombre":"General Technical Specifications","url":"/assets/docs/theluxmining-general-specs.pdf","tamano":"1.8MB","descripcion":"Complete specifications for all our mining hardware"},
-    {"nombre":"ASIC Miners Datasheet","url":"/assets/docs/theluxmining-asic-specs.pdf","tamano":"950KB","descripcion":"Detailed specifications for ASIC mining hardware"},
-    {"nombre":"Cooling Solutions Guide","url":"/assets/docs/theluxmining-cooling-guide.pdf","tamano":"1.1MB","descripcion":"Specifications for cooling and ventilation systems"},
-    {"nombre":"Power Supply Specifications","url":"/assets/docs/theluxmining-psu-specs.pdf","tamano":"1.3MB","descripcion":"Power requirements and PSU specifications"}
+    {"nombre":"General Technical Specifications","url":"/assets/docs/CreaDevents-general-specs.pdf","tamano":"1.8MB","descripcion":"Complete specifications for all our mining hardware"},
+    {"nombre":"ASIC Miners Datasheet","url":"/assets/docs/CreaDevents-asic-specs.pdf","tamano":"950KB","descripcion":"Detailed specifications for ASIC mining hardware"},
+    {"nombre":"Cooling Solutions Guide","url":"/assets/docs/CreaDevents-cooling-guide.pdf","tamano":"1.1MB","descripcion":"Specifications for cooling and ventilation systems"},
+    {"nombre":"Power Supply Specifications","url":"/assets/docs/CreaDevents-psu-specs.pdf","tamano":"1.3MB","descripcion":"Power requirements and PSU specifications"}
   ],
   "especificacionesTecnicas": {
     "absorcionAgua": "≤ 0,5%",

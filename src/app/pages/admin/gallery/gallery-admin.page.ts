@@ -7,12 +7,13 @@ import { Subscription } from 'rxjs';
 
 import { AuthService } from '../../../services/auth.service';
 import { MediaService } from '../../../services/media.service';
-import { ProductsService } from '../../../services/products.service';
+import { StorageService } from '../../../services/storage.service';
+import { ServiceService, ServiceItem } from '../../../services/service.service';
 import { TagService } from '../../../services/tag.service';
 import { Product } from '../../../models/product';
 import { Media, MediaTag, MediaCreateInput } from '../../../models/media';
 import { Tag } from '../../../models/catalog';
-import { AdminQuickActionsComponent } from '../../../shared/components/admin-quick-actions/admin-quick-actions.component';
+import { AdminSidebarComponent } from '../../../shared/components/admin-sidebar/admin-sidebar.component';
 import { LoadingComponentBase } from '../../../core/classes/loading-component.base';
 
 interface GalleryProjectSummary {
@@ -32,7 +33,7 @@ interface GalleryProjectSummary {
 @Component({
   selector: 'app-gallery-admin',
   standalone: true,
-  imports: [CommonModule, RouterLink, ReactiveFormsModule, FormsModule, TranslateModule, AdminQuickActionsComponent],
+  imports: [CommonModule, ReactiveFormsModule, FormsModule, TranslateModule, AdminSidebarComponent],
   templateUrl: './gallery-admin.page.html',
   styleUrl: './gallery-admin.page.scss'
 })
@@ -42,11 +43,12 @@ export class GalleryAdminComponent extends LoadingComponentBase implements OnIni
   private route = inject(ActivatedRoute);
   private fb = inject(FormBuilder);
   private mediaService = inject(MediaService);
-  private productsService = inject(ProductsService);
+  private storageService = inject(StorageService);
+  private serviceService = inject(ServiceService);
   private tagService = inject(TagService);
 
   mediaList: Media[] = [];
-  products: Product[] = [];
+  services: ServiceItem[] = [];
   availableTags: Tag[] = [];
   showUploadModal = false;
   isSaving = false;
@@ -78,6 +80,7 @@ export class GalleryAdminComponent extends LoadingComponentBase implements OnIni
   isAddingQuickTags = false;
 
   selectedFiles: File[] = [];
+  showCloseConfirmation = false;
   private mediaSub: Subscription | null = null;
   private productsSub: Subscription | null = null;
   private tagsSub: Subscription | null = null;
@@ -108,7 +111,7 @@ export class GalleryAdminComponent extends LoadingComponentBase implements OnIni
   async ngOnInit(): Promise<void> {
     await this.checkAdminAccess();
     this.subscribeToMedia();
-    this.subscribeToProducts();
+    this.subscribeToServices();
     this.subscribeToTags();
     
     // Check if we should auto-open upload modal
@@ -159,14 +162,17 @@ export class GalleryAdminComponent extends LoadingComponentBase implements OnIni
     });
   }
 
-  private subscribeToProducts(): void {
+  private subscribeToServices(): void {
     this.productsSub?.unsubscribe();
-    this.productsSub = this.productsService.getAllProducts().subscribe({
-      next: (products) => {
-        this.products = products.filter(product => (product.status || 'draft') !== 'archived');
+    console.log('[Gallery Admin] Subscribing to services...');
+    this.productsSub = this.serviceService.getServices().subscribe({
+      next: (services) => {
+        console.log('[Gallery Admin] Received services from Firestore:', services.length);
+        this.services = services;
+        console.log('[Gallery Admin] Loaded services:', this.services);
       },
       error: (error) => {
-        console.error('Error loading products:', error);
+        console.error('[Gallery Admin] Error loading services:', error);
       }
     });
   }
@@ -214,20 +220,20 @@ export class GalleryAdminComponent extends LoadingComponentBase implements OnIni
     return galleryMedia.filter(media => media.tags.includes(tag)).length;
   }
 
-  getRelatedProducts(media: Media): Product[] {
+  getRelatedProducts(media: Media): ServiceItem[] {
     if (!media.relatedEntityIds || media.relatedEntityIds.length === 0) {
       return [];
     }
-    return this.products.filter(p => 
-      media.relatedEntityIds!.some(id => id.endsWith(p.id || ''))
+    return this.services.filter((s: ServiceItem) => 
+      media.relatedEntityIds!.some(id => id.endsWith(s.id || ''))
     );
   }
 
-  getProjectRelatedProducts(project: GalleryProjectSummary): Product[] {
+  getProjectRelatedServices(project: GalleryProjectSummary): ServiceItem[] {
     if (!project.relatedProductIds || project.relatedProductIds.length === 0) {
       return [];
     }
-    return this.products.filter(p => project.relatedProductIds.includes(p.id || ''));
+    return this.services.filter((s: ServiceItem) => project.relatedProductIds.includes(s.id || ''));
   }
 
   private getProjectForMedia(media: Media): GalleryProjectSummary | undefined {
@@ -236,12 +242,12 @@ export class GalleryAdminComponent extends LoadingComponentBase implements OnIni
     );
   }
 
-  getProductName(productId: string | undefined): string {
-    if (!productId) {
+  getServiceName(serviceId: string | undefined): string {
+    if (!serviceId) {
       return '';
     }
-    const product = this.products.find(p => p.id === productId);
-    return product?.name || productId;
+    const service = this.services.find((s: ServiceItem) => s.id === serviceId);
+    return service?.title || serviceId;
   }
 
   openProjectManager(project: GalleryProjectSummary, initialMedia?: Media): void {
@@ -272,6 +278,16 @@ export class GalleryAdminComponent extends LoadingComponentBase implements OnIni
     }
   }
 
+  closeProjectManagerWithConfirm(): void {
+    if (this.projectForm.dirty || this.projectForm.touched) {
+      if (confirm('You have unsaved changes. Are you sure you want to close?')) {
+        this.closeProjectManager();
+      }
+    } else {
+      this.closeProjectManager();
+    }
+  }
+
   closeProjectManager(): void {
     this.showProjectManager = false;
     this.projectToManage = null;
@@ -295,6 +311,59 @@ export class GalleryAdminComponent extends LoadingComponentBase implements OnIni
     });
 
     this.closeProjectManager();
+  }
+
+  async deleteProject(project: GalleryProjectSummary | null): Promise<void> {
+    if (!project) return;
+
+    const confirmMessage = `Are you sure you want to delete the project "${project.name}"?\n\nThis will delete ALL ${project.photoCount} photo${project.photoCount === 1 ? '' : 's'} in this project. This action cannot be undone.`;
+    
+    if (!confirm(confirmMessage)) {
+      return;
+    }
+
+    try {
+      this.isProjectSaving = true;
+      this.errorMessage = '';
+
+      // Delete all media items in the project
+      const deletePromises = project.images.map(async (media) => {
+        try {
+          // Delete from storage (ignore if file doesn't exist)
+          if (media.url) {
+            try {
+              await this.storageService.deleteFile(media.url);
+            } catch (storageError: any) {
+              // Ignore storage errors (file may already be deleted or not exist)
+              if (storageError.code !== 'storage/object-not-found') {
+                console.warn(`Storage deletion warning for ${media.id}:`, storageError);
+              }
+            }
+          }
+          
+          // Delete from Firestore
+          await this.mediaService.deleteMedia(media.id!);
+        } catch (error) {
+          console.error(`Error deleting media ${media.id}:`, error);
+          throw error;
+        }
+      });
+
+      await Promise.all(deletePromises);
+
+      // Refresh the gallery by reloading media
+      this.subscribeToMedia();
+      
+      // Close the modal
+      this.closeProjectManager();
+
+      // Show success message (you could use a toast notification here)
+      alert(`Successfully deleted project "${project.name}" and all its photos.`);
+    } catch (error: any) {
+      console.error('Error deleting project:', error);
+      this.errorMessage = `Failed to delete project: ${error.message || 'Unknown error'}`;
+      this.isProjectSaving = false;
+    }
   }
 
   /**
@@ -632,7 +701,15 @@ export class GalleryAdminComponent extends LoadingComponentBase implements OnIni
   }
 
   closeUploadModal(): void {
+    // Check if there are unsaved changes
+    if (this.hasUnsavedChanges() && !this.showCloseConfirmation) {
+      this.showCloseConfirmation = true;
+      return;
+    }
+
+    // Proceed with closing
     this.showUploadModal = false;
+    this.showCloseConfirmation = false;
     this.uploadForm.reset();
     this.selectedFiles = [];
     this.revokeAllPreviewUrls();
@@ -641,6 +718,37 @@ export class GalleryAdminComponent extends LoadingComponentBase implements OnIni
     this.uploadProgress = 0;
     this.uploadedCount = 0;
     this.totalToUpload = 0;
+  }
+
+  cancelCloseModal(): void {
+    this.showCloseConfirmation = false;
+  }
+
+  confirmCloseModal(): void {
+    this.showCloseConfirmation = true;
+    this.closeUploadModal();
+  }
+
+  hasUnsavedChanges(): boolean {
+    // Check if user is currently uploading
+    if (this.isUploading || this.isSaving) {
+      return true;
+    }
+
+    // Check if files are selected
+    if (this.selectedFiles.length > 0) {
+      return true;
+    }
+
+    // Check if form has been touched and has values
+    const formValue = this.uploadForm.value;
+    if (formValue.altText || formValue.caption || 
+        (formValue.tags && formValue.tags.length > 0) ||
+        (formValue.relatedProductIds && formValue.relatedProductIds.length > 0)) {
+      return true;
+    }
+
+    return false;
   }
 
   private extractProductIds(relatedEntityIds: string[]): string[] {
@@ -814,6 +922,12 @@ export class GalleryAdminComponent extends LoadingComponentBase implements OnIni
     return selected.includes(tag);
   }
 
+  getSelectedTagsCount(scope: 'upload' | 'edit' | 'project' = 'upload'): number {
+    const form = this.getFormByScope(scope);
+    const tags: MediaTag[] = form.get('tags')?.value || [];
+    return tags.length;
+  }
+
   toggleRelatedProduct(productId: string | undefined, checked: boolean, scope: 'upload' | 'edit' | 'project' = 'upload'): void {
     const form = this.getFormByScope(scope);
     const current = new Set<string>(form.get('relatedProductIds')?.value || []);
@@ -880,7 +994,7 @@ export class GalleryAdminComponent extends LoadingComponentBase implements OnIni
         throw new Error('User not authenticated');
       }
 
-      // Upload each file
+      // Upload each file with optimization
       for (let i = 0; i < this.selectedFiles.length; i++) {
         const file = this.selectedFiles[i];
         
@@ -891,40 +1005,62 @@ export class GalleryAdminComponent extends LoadingComponentBase implements OnIni
           console.warn(`⚠️ Image "${file.name}" (${validation.width}x${validation.height}px) is smaller than recommended`);
         }
 
-        // Create media input with shared metadata
+        // Create altText with numbering for multiple files
         const altText = this.selectedFiles.length === 1 
           ? sharedAltText 
           : `${sharedAltText} (${i + 1}/${this.selectedFiles.length})`;
 
-        const mediaInput: Omit<MediaCreateInput, 'url'> = {
-          filename: file.name,
-          storagePath: `gallery/${Date.now()}_${file.name}`,
-          width: validation.width || 0,
-          height: validation.height || 0,
-          size: file.size,
-          mimeType: file.type,
-          uploadedBy: currentUser.uid,
-          tags: tags as string[],
-          altText: altText,
-          caption: sharedCaption,
-          relatedEntityIds: relatedProductIds.map(id => `products/${id}`),
-          relatedEntityType: 'gallery'
-        };
+        const originalSize = file.size;
+        console.log(`📤 Uploading "${file.name}" (${this.formatFileSize(originalSize)})...`);
 
-        // Upload file
-        await this.mediaService.uploadMediaFile(
-          file,
-          mediaInput,
-          (progress) => {
-            // Calculate overall progress
-            const fileProgress = progress / this.totalToUpload;
-            const completedProgress = (this.uploadedCount / this.totalToUpload) * 100;
-            this.uploadProgress = Math.round(completedProgress + fileProgress);
-          }
-        );
+        // Upload with automatic optimization to WebP
+        await new Promise<void>((resolve, reject) => {
+          this.storageService.uploadGalleryImage(file, 'general').subscribe({
+            next: async (progress) => {
+              if (progress.state === 'progress') {
+                // Calculate overall progress
+                const fileProgress = progress.progress / this.totalToUpload;
+                const completedProgress = (this.uploadedCount / this.totalToUpload) * 100;
+                this.uploadProgress = Math.round(completedProgress + fileProgress);
+              } else if (progress.state === 'complete' && progress.urls) {
+                try {
+                  // Log optimization results
+                  const optimizedSize = progress.optimizedSize || file.size;
+                  const reduction = Math.round(((originalSize - optimizedSize) / originalSize) * 100);
+                  console.log(`✅ Image optimized: ${this.formatFileSize(originalSize)} → ${this.formatFileSize(optimizedSize)} (${reduction}% reduction)`);
 
-        this.uploadedCount++;
-        console.log(`✅ Uploaded ${this.uploadedCount}/${this.totalToUpload}: ${file.name}`);
+                  // Create media document with optimized URLs
+                  const mediaInput: MediaCreateInput = {
+                    url: progress.urls.webp || progress.urls.original,
+                    filename: file.name,
+                    storagePath: progress.storagePath || `gallery/${Date.now()}_${file.name}`,
+                    width: validation.width || 0,
+                    height: validation.height || 0,
+                    size: optimizedSize,
+                    mimeType: 'image/webp',
+                    uploadedBy: currentUser.uid,
+                    tags: tags as string[],
+                    altText: altText,
+                    caption: sharedCaption,
+                    relatedEntityIds: relatedProductIds.map(id => `products/${id}`),
+                    relatedEntityType: 'gallery'
+                  };
+
+                  await this.mediaService.createMedia(mediaInput);
+                  this.uploadedCount++;
+                  console.log(`✅ Uploaded ${this.uploadedCount}/${this.totalToUpload}: ${file.name}`);
+                  resolve();
+                } catch (error) {
+                  reject(error);
+                }
+              }
+            },
+            error: (error) => {
+              console.error(`❌ Error uploading ${file.name}:`, error);
+              reject(error);
+            }
+          });
+        });
       }
 
       this.uploadProgress = 100;
@@ -1021,10 +1157,10 @@ export class GalleryAdminComponent extends LoadingComponentBase implements OnIni
           .filter(id => id); // Remove empty strings
         
         if (productIds.length > 0) {
-          const relatedProducts = this.products.filter(p => productIds.includes(p.id || ''));
+          const relatedProducts = this.services.filter((s: ServiceItem) => productIds.includes(s.id || ''));
           if (relatedProducts.length > 0) {
-            const productNames = relatedProducts.map(p => p.name).join(', ');
-            this.errorMessage = `Cannot delete: Used by products: ${productNames}. Please remove this image from the product's gallery first.`;
+            const productNames = relatedProducts.map((s: ServiceItem) => s.title).join(', ');
+            this.errorMessage = `Cannot delete: Used by services: ${productNames}. Please remove this image from the service's gallery first.`;
             this.isSaving = false;
             return;
           }
@@ -1066,6 +1202,14 @@ export class GalleryAdminComponent extends LoadingComponentBase implements OnIni
       const control = formGroup.get(key);
       control?.markAsTouched();
     });
+  }
+
+  private formatFileSize(bytes: number): string {
+    if (bytes === 0) return '0 B';
+    const k = 1024;
+    const sizes = ['B', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return Math.round((bytes / Math.pow(k, i)) * 10) / 10 + ' ' + sizes[i];
   }
 
   // Form getters

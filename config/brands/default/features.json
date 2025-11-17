@@ -4,9 +4,13 @@
   "donations": false,
   "reviews": true,
   "affiliates": false,
-  "educationalHub": true,
+  "educationalHub": false,
   "cookieBanner": true,
   "maintenanceMode": false,
   "gallery": true,
-  "adminPanel": true
+  "adminPanel": true,
+  "ecommerce": false,
+  "serviceBooking": true,
+  "portfolio": true,
+  "whatsapp": true
 }

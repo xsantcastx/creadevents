@@ -2,9 +2,9 @@ import { Component, OnInit, PLATFORM_ID, inject } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
-import { ProductFirestoreService, FirestoreProduct } from '../../services/product-firestore.service';
+import { Firestore, collection, query, where, limit, getDocs } from '@angular/fire/firestore';
 import { GalleryService, GalleryImage } from '../../services/gallery.service';
-import { CategoryService } from '../../services/category.service';
+import { ServiceService, ServiceItem } from '../../services/service.service';
 import { HomeHeroComponent } from '../../features/home/home-hero/home-hero.component';
 import { HomeStatsComponent } from '../../features/home/home-stats/home-stats.component';
 import { HomeReviewsComponent } from '../../features/home/home-reviews/home-reviews.component';
@@ -15,23 +15,22 @@ import { take } from 'rxjs/operators';
 @Component({
   selector: 'app-home-page',
   standalone: true,
-  imports: [CommonModule, RouterModule, TranslateModule, HomeHeroComponent, HomeStatsComponent, HomeReviewsComponent],
+  imports: [CommonModule, RouterModule, HomeHeroComponent, HomeReviewsComponent],
   templateUrl: './home.page.html',
   styleUrl: './home.page.scss'
 })
 export class HomePageComponent extends LoadingComponentBase implements OnInit {
   private platformId = inject(PLATFORM_ID);
-  private productService = inject(ProductFirestoreService);
+  private firestore = inject(Firestore);
   private galleryService = inject(GalleryService);
-  private categoryService = inject(CategoryService);
+  private serviceService = inject(ServiceService);
   private metaService = inject(MetaService);
   
-  // Dynamic product data from Firestore
-  featuredProducts: FirestoreProduct[] = [];
-  soloMinerProducts: FirestoreProduct[] = [];
+  services: ServiceItem[] = [];
+  
   galleryImages: GalleryImage[] = [];
-  hasProducts = false;
-  hasSoloMiners = false;
+  currentImageIndex = 0;
+  private imageRotationInterval?: any;
 
   ngOnInit() {
     // Set page meta tags from settings
@@ -42,93 +41,111 @@ export class HomePageComponent extends LoadingComponentBase implements OnInit {
 
     // Only load from service if in browser (not during SSR)
     if (isPlatformBrowser(this.platformId)) {
-      this.loadLatestProducts();
-      this.loadSoloMiners();
       this.loadGalleryPreview();
+      this.loadServices();
     } else {
       // During SSR, set loading to false to show empty state
       this.setLoading(false);
     }
   }
 
-  private async loadLatestProducts() {
-    await this.withLoading(async () => {
-      const products = await new Promise<FirestoreProduct[]>((resolve, reject) => {
-        this.productService.getProducts()
-          .pipe(take(1))
-          .subscribe({
-            next: (products) => resolve(products),
-            error: (error) => reject(error)
-          });
+  private loadServices() {
+    this.serviceService.getServices()
+      .pipe(take(1))
+      .subscribe({
+        next: (services: ServiceItem[]) => {
+          // Show first 6 services on home page
+          this.services = services.slice(0, 6);
+        },
+        error: (error: any) => {
+          console.error('Error loading services:', error);
+        }
       });
-      
-      // Filter available products and sort by creation date (newest first)
-      const availableProducts = products
-        .filter(p => p.available !== false)
-        .sort((a, b) => {
-          const dateA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
-          const dateB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
-          return dateB - dateA;
-        });
-      
-      // Take up to 8 latest products for featured section
-      this.featuredProducts = availableProducts.slice(0, 8);
-      this.hasProducts = this.featuredProducts.length > 0;
-    });
-  }
-
-  private async loadSoloMiners() {
-    try {
-      // Get solo-miners category
-      const categories = await new Promise<any[]>((resolve, reject) => {
-        this.categoryService.getActiveCategories()
-          .pipe(take(1))
-          .subscribe({
-            next: (categories) => resolve(categories),
-            error: (error) => reject(error)
-          });
-      });
-
-      const soloCategory = categories.find(cat => cat.slug === 'solo-miners');
-      
-      if (!soloCategory) {
-        this.hasSoloMiners = false;
-        return;
-      }
-
-      // Get all products
-      const products = await new Promise<FirestoreProduct[]>((resolve, reject) => {
-        this.productService.getProducts()
-          .pipe(take(1))
-          .subscribe({
-            next: (products) => resolve(products),
-            error: (error) => reject(error)
-          });
-      });
-
-      // Filter solo miner products
-      this.soloMinerProducts = products
-        .filter(p => p.category === 'solo-miners' && p.available !== false)
-        .slice(0, 3); // Take up to 3 for featured section
-
-      this.hasSoloMiners = this.soloMinerProducts.length > 0;
-    } catch (error) {
-      console.error('Error loading solo miners:', error);
-      this.hasSoloMiners = false;
-    }
   }
 
   private async loadGalleryPreview() {
-    // Get latest 6 gallery images (don't show loading for this secondary content)
+    console.log('Starting to load gallery images...');
+    // Load from media collection (same as gallery page)
+    const mediaQuery = query(
+      collection(this.firestore, 'media'),
+      where('relatedEntityType', '==', 'gallery'),
+      limit(5)
+    );
+    
+    try {
+      const snapshot = await getDocs(mediaQuery);
+      const mediaItems = snapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      })) as any[];
+      
+      console.log('Gallery images loaded:', mediaItems.length);
+      console.log('First image:', mediaItems[0]);
+      
+      // Convert media items to GalleryImage format for display
+      this.galleryImages = mediaItems.map(media => ({
+        id: media.id,
+        imageUrl: media.url,
+        title: media.altText || media.caption,
+        uploadedAt: media.uploadedAt
+      })) as GalleryImage[];
+      
+      console.log('galleryImages set to:', this.galleryImages);
+      
+      // Start auto-rotation if we have multiple images
+      if (this.galleryImages.length > 1) {
+        this.startImageRotation();
+      }
+      
+      this.setLoading(false);
+    } catch (error: any) {
+      console.error('Error loading gallery:', error);
+      console.error('Error details:', {
+        code: error.code,
+        message: error.message,
+        stack: error.stack
+      });
+      this.setLoading(false);
+    }
+  }
+
+  private loadLatestImages() {
     this.galleryService.getAllImages()
       .pipe(take(1))
       .subscribe({
         next: (images: GalleryImage[]) => {
-          this.galleryImages = images.slice(0, 6);
+          this.galleryImages = images.slice(0, 5);
+          this.setLoading(false);
         },
         error: (error: any) => {
           console.error('Error loading gallery:', error);
+          this.setLoading(false);
         }
       });
   }
+
+  private startImageRotation() {
+    // Clear any existing interval
+    if (this.imageRotationInterval) {
+      clearInterval(this.imageRotationInterval);
+    }
+    
+    // Rotate image every 5 seconds
+    this.imageRotationInterval = setInterval(() => {
+      if (this.galleryImages.length > 0) {
+        this.currentImageIndex = (this.currentImageIndex + 1) % this.galleryImages.length;
+      }
+    }, 5000);
+  }
+
+  ngOnDestroy() {
+    // Clean up interval when component is destroyed
+    if (this.imageRotationInterval) {
+      clearInterval(this.imageRotationInterval);
+    }
+  }
+
 }
+
+
+

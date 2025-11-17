@@ -11,6 +11,7 @@ import {
   query,
   where,
   orderBy,
+  limit,
   getDocs
 } from '@angular/fire/firestore';
 import {
@@ -57,6 +58,7 @@ export interface GalleryImage {
   relatedProductIds?: string[];
   uploadedAt: Date;
   uploadedBy?: string;
+  likes?: number;
 }
 
 export interface GalleryCategory {
@@ -80,10 +82,22 @@ export class GalleryService {
     return collectionData(categoriesCollection, { idField: 'id' }) as Observable<GalleryCategory[]>;
   }
 
-  // Get all images
+  // Get all images (limited to 10 for performance)
   getAllImages(): Observable<GalleryImage[]> {
     const imagesCollection = collection(this.firestore, 'galleryImages');
-    const q = query(imagesCollection, orderBy('uploadedAt', 'desc'));
+    // Simple query without orderBy to see if images exist
+    const q = query(imagesCollection, limit(10));
+    return collectionData(q, { idField: 'id' }) as Observable<GalleryImage[]>;
+  }
+
+  // Get most liked images
+  getMostLikedImages(limit: number = 5): Observable<GalleryImage[]> {
+    const imagesCollection = collection(this.firestore, 'galleryImages');
+    // Only order by likes (descending), Firestore will handle missing values
+    const q = query(
+      imagesCollection, 
+      orderBy('likes', 'desc')
+    );
     return collectionData(q, { idField: 'id' }) as Observable<GalleryImage[]>;
   }
 

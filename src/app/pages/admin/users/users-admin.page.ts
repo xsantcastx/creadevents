@@ -4,13 +4,13 @@ import { Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { AuthService, UserProfile } from '../../../services/auth.service';
-import { AdminQuickActionsComponent } from '../../../shared/components/admin-quick-actions/admin-quick-actions.component';
+import { AdminSidebarComponent } from '../../../shared/components/admin-sidebar/admin-sidebar.component';
 import { LoadingComponentBase } from '../../../core/classes/loading-component.base';
 
 @Component({
   selector: 'app-users-admin',
   standalone: true,
-  imports: [CommonModule, RouterLink, FormsModule, TranslateModule, AdminQuickActionsComponent],
+  imports: [CommonModule, FormsModule, TranslateModule, AdminSidebarComponent],
   templateUrl: './users-admin.page.html',
   styleUrl: './users-admin.page.scss'
 })
@@ -145,14 +145,14 @@ export class UsersAdminComponent extends LoadingComponentBase implements OnInit 
 
   getBadgeClass(role: string): string {
     return role === 'admin' 
-      ? 'inline-flex items-center px-3 py-1 text-xs font-semibold rounded-full bg-bitcoin-gold/30 text-bitcoin-gold border border-bitcoin-gold/30' 
-      : 'inline-flex items-center px-3 py-1 text-xs font-semibold rounded-full bg-bitcoin-orange/30 text-bitcoin-orange border border-bitcoin-orange/30';
+      ? 'inline-flex items-center px-3 py-1 text-xs font-semibold rounded-full bg-ts-accent/20 text-ts-accent border border-ts-accent/30' 
+      : 'inline-flex items-center px-3 py-1 text-xs font-semibold rounded-full bg-ts-ink/20 text-ts-ink border border-ts-ink/30';
   }
 
   getStatusBadgeClass(user: UserProfile): string {
     return user.disabled 
       ? 'inline-flex items-center px-3 py-1 text-xs font-semibold rounded-full bg-red-500/30 text-red-400 border border-red-500/30' 
-      : 'inline-flex items-center px-3 py-1 text-xs font-semibold rounded-full bg-bitcoin-gold/30 text-bitcoin-gold border border-bitcoin-gold/30';
+      : 'inline-flex items-center px-3 py-1 text-xs font-semibold rounded-full bg-green-500/20 text-green-600 border border-green-500/30';
   }
 
   getUserInitials(user: UserProfile): string {

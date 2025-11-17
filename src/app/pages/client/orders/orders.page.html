@@ -1,4 +1,4 @@
-<section class="section-stack bg-gradient-to-b from-[#0a0b0d] to-[#13151a] min-h-screen">
+<section class="section-stack bg-ts-bg min-h-screen">
   <!-- Page Header Component -->
   <app-page-header
     title="{{ 'client.orders' | translate }}"
@@ -14,7 +14,7 @@
       <div class="mb-8 flex justify-end">
         <button
           (click)="logout()"
-          class="px-4 py-2 text-bitcoin-gray hover:text-red-400 border border-bitcoin-gray/20 hover:border-red-500/30 rounded-xl transition-all duration-300 flex items-center gap-2">
+          class="px-4 py-2 text-red-600 hover:text-red-700 border border-red-500/40 hover:border-red-500/60 rounded-xl transition-all duration-300 flex items-center gap-2">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
           </svg>
@@ -24,10 +24,10 @@
 
     @if (isLoading()) {
       <!-- Loading State -->
-      <div class="bg-bitcoin-dark/40 backdrop-blur-md border border-bitcoin-orange/20 rounded-2xl shadow-bitcoin-lg p-12">
+      <div class="bg-ts-paper border border-ts-line rounded-2xl shadow-soft p-12">
         <div class="flex flex-col items-center justify-center gap-4">
           <div class="app-spinner" style="--spinner-size: 72px;"><img src="/Logo Clear.png" alt="Loading" width="96" height="96"></div>
-          <p class="text-bitcoin-gray">{{ 'common.loading' | translate }}</p>
+          <p class="text-ts-ink">{{ 'common.loading' | translate }}</p>
         </div>
       </div>
     } @else {
@@ -37,12 +37,12 @@
         <div class="flex gap-2 min-w-max">
           <button
             (click)="setFilter('all')"
-            [class.bg-bitcoin-orange/30]="selectedFilter === 'all'"
-            [class.border-bitcoin-orange/50]="selectedFilter === 'all'"
-            [class.text-white]="selectedFilter === 'all'"
-            [class.bg-bitcoin-dark/60]="selectedFilter !== 'all'"
-            [class.border-bitcoin-gray/20]="selectedFilter !== 'all'"
-            [class.text-bitcoin-gray]="selectedFilter !== 'all'"
+            [class.bg-ts-accent/30]="selectedFilter === 'all'"
+            [class.border-ts-accent/50]="selectedFilter === 'all'"
+            [class.text-ts-ink]="selectedFilter === 'all'"
+            [class.bg-ts-paper]="selectedFilter !== 'all'"
+            [class.border-ts-line]="selectedFilter !== 'all'"
+            [class.text-ts-ink/60]="selectedFilter !== 'all'"
             class="px-4 py-2 rounded-xl font-medium border transition-all duration-300 whitespace-nowrap">
             {{ 'client.all_orders' | translate }}
           </button>
@@ -50,10 +50,10 @@
             (click)="setFilter('pending')"
             [class.bg-yellow-500/30]="selectedFilter === 'pending'"
             [class.border-yellow-500/50]="selectedFilter === 'pending'"
-            [class.text-yellow-300]="selectedFilter === 'pending'"
-            [class.bg-bitcoin-dark/60]="selectedFilter !== 'pending'"
-            [class.border-bitcoin-gray/20]="selectedFilter !== 'pending'"
-            [class.text-bitcoin-gray]="selectedFilter !== 'pending'"
+            [class.text-yellow-700]="selectedFilter === 'pending'"
+            [class.bg-ts-paper]="selectedFilter !== 'pending'"
+            [class.border-ts-line]="selectedFilter !== 'pending'"
+            [class.text-ts-ink/60]="selectedFilter !== 'pending'"
             class="px-4 py-2 rounded-xl font-medium border transition-all duration-300 whitespace-nowrap">
             {{ 'client.pending' | translate }}
           </button>
@@ -61,10 +61,10 @@
             (click)="setFilter('processing')"
             [class.bg-blue-500/30]="selectedFilter === 'processing'"
             [class.border-blue-500/50]="selectedFilter === 'processing'"
-            [class.text-blue-300]="selectedFilter === 'processing'"
-            [class.bg-bitcoin-dark/60]="selectedFilter !== 'processing'"
-            [class.border-bitcoin-gray/20]="selectedFilter !== 'processing'"
-            [class.text-bitcoin-gray]="selectedFilter !== 'processing'"
+            [class.text-blue-700]="selectedFilter === 'processing'"
+            [class.bg-ts-paper]="selectedFilter !== 'processing'"
+            [class.border-ts-line]="selectedFilter !== 'processing'"
+            [class.text-ts-ink/60]="selectedFilter !== 'processing'"
             class="px-4 py-2 rounded-xl font-medium border transition-all duration-300 whitespace-nowrap">
             {{ 'client.processing' | translate }}
           </button>
@@ -72,10 +72,10 @@
             (click)="setFilter('shipped')"
             [class.bg-purple-500/30]="selectedFilter === 'shipped'"
             [class.border-purple-500/50]="selectedFilter === 'shipped'"
-            [class.text-purple-300]="selectedFilter === 'shipped'"
-            [class.bg-bitcoin-dark/60]="selectedFilter !== 'shipped'"
-            [class.border-bitcoin-gray/20]="selectedFilter !== 'shipped'"
-            [class.text-bitcoin-gray]="selectedFilter !== 'shipped'"
+            [class.text-purple-700]="selectedFilter === 'shipped'"
+            [class.bg-ts-paper]="selectedFilter !== 'shipped'"
+            [class.border-ts-line]="selectedFilter !== 'shipped'"
+            [class.text-ts-ink/60]="selectedFilter !== 'shipped'"
             class="px-4 py-2 rounded-xl font-medium border transition-all duration-300 whitespace-nowrap">
             {{ 'client.shipped' | translate }}
           </button>
@@ -83,10 +83,10 @@
             (click)="setFilter('delivered')"
             [class.bg-green-500/30]="selectedFilter === 'delivered'"
             [class.border-green-500/50]="selectedFilter === 'delivered'"
-            [class.text-green-300]="selectedFilter === 'delivered'"
-            [class.bg-bitcoin-dark/60]="selectedFilter !== 'delivered'"
-            [class.border-bitcoin-gray/20]="selectedFilter !== 'delivered'"
-            [class.text-bitcoin-gray]="selectedFilter !== 'delivered'"
+            [class.text-green-700]="selectedFilter === 'delivered'"
+            [class.bg-ts-paper]="selectedFilter !== 'delivered'"
+            [class.border-ts-line]="selectedFilter !== 'delivered'"
+            [class.text-ts-ink/60]="selectedFilter !== 'delivered'"
             class="px-4 py-2 rounded-xl font-medium border transition-all duration-300 whitespace-nowrap">
             {{ 'client.delivered' | translate }}
           </button>
@@ -94,10 +94,10 @@
             (click)="setFilter('cancelled')"
             [class.bg-red-500/30]="selectedFilter === 'cancelled'"
             [class.border-red-500/50]="selectedFilter === 'cancelled'"
-            [class.text-red-300]="selectedFilter === 'cancelled'"
-            [class.bg-bitcoin-dark/60]="selectedFilter !== 'cancelled'"
-            [class.border-bitcoin-gray/20]="selectedFilter !== 'cancelled'"
-            [class.text-bitcoin-gray]="selectedFilter !== 'cancelled'"
+            [class.text-red-700]="selectedFilter === 'cancelled'"
+            [class.bg-ts-paper]="selectedFilter !== 'cancelled'"
+            [class.border-ts-line]="selectedFilter !== 'cancelled'"
+            [class.text-ts-ink/60]="selectedFilter !== 'cancelled'"
             class="px-4 py-2 rounded-xl font-medium border transition-all duration-300 whitespace-nowrap">
             {{ 'client.cancelled' | translate }}
           </button>
@@ -116,37 +116,37 @@
 
       <!-- Orders List -->
       @if (filteredOrders.length === 0) {
-        <div class="bg-bitcoin-dark/40 backdrop-blur-md border border-bitcoin-orange/20 rounded-2xl shadow-bitcoin-lg p-12 text-center">
-          <svg class="w-16 h-16 mx-auto text-bitcoin-gray/50 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <div class="bg-ts-ink-soft/40 backdrop-blur-md border border-ts-accent/20 rounded-2xl shadow-bitcoin-lg p-12 text-center">
+          <svg class="w-16 h-16 mx-auto text-ts-ink-soft/50 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
           </svg>
           <h3 class="text-xl font-semibold bitcoin-gradient-text mb-2">
             {{ 'client.no_orders' | translate }}
           </h3>
-          <p class="text-bitcoin-gray mb-6">
+          <p class="text-ts-ink-soft mb-6">
             {{ 'client.no_orders_description' | translate }}
           </p>
-          <a routerLink="/productos" class="inline-block px-6 py-3 bg-bitcoin-orange/30 hover:bg-bitcoin-orange/40 border border-bitcoin-orange/30 hover:border-bitcoin-orange/50 text-white rounded-xl shadow-bitcoin transition-all duration-300">
+          <a routerLink="/productos" class="inline-block px-6 py-3 bg-ts-accent/30 hover:bg-ts-accent/40 border border-ts-accent/30 hover:border-ts-accent/50 text-white rounded-xl shadow-bitcoin transition-all duration-300">
             {{ 'client.start_shopping' | translate }}
           </a>
         </div>
       } @else {
         <div class="space-y-4">
           @for (order of filteredOrders; track order.id) {
-            <div class="bg-bitcoin-dark/40 backdrop-blur-md border border-bitcoin-orange/20 rounded-2xl shadow-bitcoin-lg overflow-hidden hover:shadow-bitcoin transition-shadow duration-300">
+            <div class="bg-ts-ink-soft/40 backdrop-blur-md border border-ts-accent/20 rounded-2xl shadow-bitcoin-lg overflow-hidden hover:shadow-bitcoin transition-shadow duration-300">
               
               <!-- Order Header -->
-              <div class="p-6 border-b border-bitcoin-gray/20 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+              <div class="p-6 border-b border-ts-ink-soft/20 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                 <div>
                   <div class="flex items-center gap-3 mb-2">
-                    <h3 class="text-lg font-semibold text-bitcoin-gold">
+                    <h3 class="text-lg font-semibold text-ts-accent-soft">
                       {{ 'client.order' | translate }} #{{ order.orderNumber }}
                     </h3>
                     <span [class]="getStatusClass(order.status)" class="px-3 py-1 text-xs font-medium rounded-full">
                       {{ 'client.' + order.status | translate }}
                     </span>
                   </div>
-                  <p class="text-sm text-bitcoin-gray flex items-center gap-2">
+                  <p class="text-sm text-ts-ink-soft flex items-center gap-2">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
                     </svg>
@@ -169,24 +169,24 @@
               <div class="p-6">
                 <div class="space-y-3">
                   @for (item of order.items; track item.productId) {
-                    <div class="flex items-center gap-4 p-3 bg-bitcoin-dark/60 border border-bitcoin-gray/20 rounded-xl">
+                    <div class="flex items-center gap-4 p-3 bg-ts-ink-soft/60 border border-ts-ink-soft/20 rounded-xl">
                       @if (item.image || item.imageUrl) {
                         <img [src]="item.image || item.imageUrl" [alt]="item.productName || item.name" class="w-16 h-16 object-cover rounded-lg">
                       } @else {
-                        <div class="w-16 h-16 bg-bitcoin-dark/80 border border-bitcoin-gray/20 rounded-lg flex items-center justify-center">
-                          <svg class="w-8 h-8 text-bitcoin-gray/50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <div class="w-16 h-16 bg-ts-ink-soft/80 border border-ts-ink-soft/20 rounded-lg flex items-center justify-center">
+                          <svg class="w-8 h-8 text-ts-ink-soft/50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
                           </svg>
                         </div>
                       }
                       <div class="flex-1">
-                        <h4 class="font-medium text-bitcoin-gray">{{ item.productName || item.name }}</h4>
-                        <p class="text-sm text-bitcoin-gray/70">
+                        <h4 class="font-medium text-ts-ink-soft">{{ item.productName || item.name }}</h4>
+                        <p class="text-sm text-ts-ink-soft/70">
                           {{ 'client.quantity' | translate }}: {{ item.quantity || item.qty }} × ${{ (item.price || item.unitPrice || 0).toFixed(2) }}
                         </p>
                       </div>
                       <div class="text-right">
-                        <p class="font-semibold text-bitcoin-gold">
+                        <p class="font-semibold text-ts-accent-soft">
                           ${{ ((item.quantity || item.qty || 0) * (item.price || item.unitPrice || 0)).toFixed(2) }}
                         </p>
                       </div>
@@ -224,19 +224,19 @@
                 @if (order.status === 'delivered') {
                   <button 
                     (click)="reorder(order)"
-                    class="flex-1 py-2 px-4 bg-bitcoin-orange/30 hover:bg-bitcoin-orange/40 text-white rounded-xl border border-bitcoin-orange/30 hover:border-bitcoin-orange/50 transition-all duration-300 text-sm font-medium">
+                    class="btn-primary flex-1">
                     {{ 'client.reorder' | translate }}
                   </button>
                   <button 
                     (click)="leaveReview(order.id)"
-                    class="flex-1 py-2 px-4 border border-bitcoin-gray/20 text-bitcoin-gray hover:bg-bitcoin-dark/60 rounded-xl transition-all duration-300 text-sm font-medium">
+                    class="btn-outline flex-1">
                     {{ 'client.leave_review' | translate }}
                   </button>
                 }
                 @if (order.status === 'shipped') {
                   <button 
                     (click)="trackShipment(order.trackingNumber)"
-                    class="flex-1 py-2 px-4 bg-purple-500/30 hover:bg-purple-500/40 text-purple-300 rounded-xl border border-purple-500/30 hover:border-purple-500/50 transition-all duration-300 text-sm font-medium">
+                    class="flex-1 py-2 px-4 bg-purple-500/30 hover:bg-purple-500/40 text-purple-700 rounded-xl border border-purple-500/30 hover:border-purple-500/50 transition-all duration-300 text-sm font-medium">
                     {{ 'client.track_shipment' | translate }}
                   </button>
                 }

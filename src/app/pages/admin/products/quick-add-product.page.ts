@@ -322,7 +322,7 @@ export class QuickAddProductComponent extends LoadingComponentBase implements On
     
     this.seoPreviewTitle = title || 'Product Title';
     this.seoPreviewDescription = description || 'Product description will appear here...';
-    this.seoPreviewUrl = `https://theluxmining.com/productos/${slug || 'product-url'}`;
+    this.seoPreviewUrl = `https://creadevents.com/productos/${slug || 'product-url'}`;
   }
 
   onCoverImageSelected(event: any) {
@@ -492,19 +492,29 @@ export class QuickAddProductComponent extends LoadingComponentBase implements On
 
   private async uploadImage(file: File, type: 'cover' | 'gallery'): Promise<{ url: string; id: string }> {
     try {
-      const uploadPath = `products/${Date.now()}_${file.name}`;
+      const uploadPath = `products/${Date.now()}_${file.name.replace(/\.[^/.]+$/, '')}`;
       
-      // Wait for upload to complete and get download URL
+      console.log(`📤 Uploading ${type} image "${file.name}" (${this.formatFileSize(file.size)})...`);
+      const originalSize = file.size;
+      
+      // Wait for upload to complete and get download URLs
       const uploadResult: UploadProgress = await lastValueFrom(
-        this.storageService.uploadFile(file, uploadPath).pipe(
-          filter((progress: UploadProgress) => progress.downloadURL !== undefined)
+        this.storageService.uploadOptimizedImage(file, uploadPath).pipe(
+          filter((progress: UploadProgress) => progress.state === 'complete' && progress.urls !== undefined)
         )
       );
       
-      const downloadURL = uploadResult.downloadURL;
-      if (!downloadURL) {
-        throw new Error('Failed to get download URL');
+      if (!uploadResult.urls) {
+        throw new Error('Failed to get download URLs');
       }
+
+      // Log optimization results
+      const optimizedSize = uploadResult.optimizedSize || file.size;
+      const reduction = Math.round(((originalSize - optimizedSize) / originalSize) * 100);
+      console.log(`✅ Image optimized: ${this.formatFileSize(originalSize)} → ${this.formatFileSize(optimizedSize)} (${reduction}% reduction)`);
+      
+      // Use WebP URL if available, otherwise fallback to original
+      const downloadURL = uploadResult.urls.webp || uploadResult.urls.original;
       
       // Get image dimensions
       const dimensions = await this.getImageDimensions(file);
@@ -515,8 +525,8 @@ export class QuickAddProductComponent extends LoadingComponentBase implements On
         storagePath: uploadPath,
         width: dimensions.width,
         height: dimensions.height,
-        size: file.size,
-        mimeType: file.type,
+        size: optimizedSize,
+        mimeType: 'image/webp',
         uploadedBy: this.authService.getCurrentUser()?.uid || 'system',
         tags: [type]
       };
@@ -540,6 +550,14 @@ export class QuickAddProductComponent extends LoadingComponentBase implements On
       img.onerror = reject;
       img.src = URL.createObjectURL(file);
     });
+  }
+
+  private formatFileSize(bytes: number): string {
+    if (bytes === 0) return '0 B';
+    const k = 1024;
+    const sizes = ['B', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return Math.round((bytes / Math.pow(k, i)) * 10) / 10 + ' ' + sizes[i];
   }
 
   private markFormGroupTouched(formGroup: FormGroup) {

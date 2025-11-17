@@ -78,6 +78,69 @@ button {
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+.luxury-hero {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+  align-items: center;
+  padding: clamp(1.5rem, 5vw, 2.5rem);
+  border: 1px solid var(--ts-line, rgba(0, 0, 0, 0.06));
+  border-radius: 26px;
+  background: linear-gradient(135deg, color-mix(in srgb, var(--ts-paper, #fff) 94%, transparent), color-mix(in srgb, var(--ts-bg-soft, #f9f7f2) 90%, transparent));
+  box-shadow: 0 22px 48px -34px rgba(29, 42, 57, 0.35);
+
+  @media (min-width: 960px) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    padding: clamp(2rem, 5vw, 3rem);
+  }
+}
+
+.luxury-hero__content {
+  display: grid;
+  gap: 0.75rem;
+}
+
+// Removed .luxury-hero__eyebrow - now using global .badge utility
+
+.luxury-hero__title {
+  font-size: clamp(2rem, 4vw, 2.6rem);
+  margin: 0;
+  color: var(--ts-ink);
+}
+
+.luxury-hero__subtitle {
+  margin: 0;
+  color: var(--ts-ink-soft);
+  font-size: 1.05rem;
+  line-height: 1.6;
+}
+
+.luxury-hero__actions {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  margin-top: 0.5rem;
+}
+
+// Removed .luxury-hero__cta - now using global .btn-primary and .btn-secondary utilities
+
+.luxury-hero__media {
+  position: relative;
+  border-radius: 22px;
+  overflow: hidden;
+  background: var(--ts-bg-soft);
+  min-height: 260px;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+}
+
+// Removed .luxury-hero__badge - now using global .badge utility
+
 button:hover {
   transform: translateY(-1px);
 }
@@ -131,4 +194,24 @@ button:focus-visible {
     opacity: 1;
     transform: scale(1);
   }
+}
+
+// Heart animation for double-click like
+@keyframes heart-bounce {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.2);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 0;
+  }
+}
+
+.animate-heart-bounce {
+  animation: heart-bounce 1s ease-out;
 }

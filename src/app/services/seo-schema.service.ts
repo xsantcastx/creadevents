@@ -60,8 +60,8 @@ export class SeoSchemaService {
       offers: {
         '@type': 'Offer',
         url: product.slug 
-          ? `https://theluxmining.com/productos/${product.slug}` 
-          : 'https://theluxmining.com/productos',
+          ? `https://creadevents.com/productos/${product.slug}` 
+          : 'https://creadevents.com/productos',
         priceCurrency: product.currency || 'USD',
         price: product.price.toFixed(2),
         availability: product.availability 
@@ -150,8 +150,8 @@ export class SeoSchemaService {
           '@type': 'Product',
           name: product.name,
           url: product.slug 
-            ? `https://theluxmining.com/productos/${product.slug}` 
-            : 'https://theluxmining.com/productos',
+            ? `https://creadevents.com/productos/${product.slug}` 
+            : 'https://creadevents.com/productos',
           image: product.imageUrl,
           offers: {
             '@type': 'Offer',
@@ -196,12 +196,12 @@ export class SeoSchemaService {
         name: this.brandConfig.siteName,
         logo: {
           '@type': 'ImageObject',
-          url: 'https://theluxmining.com/Logo Clear.png'
+          url: 'https://creadevents.com/Logo Clear.png'
         }
       },
       mainEntityOfPage: {
         '@type': 'WebPage',
-        '@id': `https://theluxmining.com/blog/${article.slug}`
+        '@id': `https://creadevents.com/blog/${article.slug}`
       }
     };
 
@@ -328,7 +328,7 @@ export class SeoSchemaService {
     
     // Set canonical URL
     if (product.slug) {
-      this.setCanonicalUrl(`https://theluxmining.com/productos/${product.slug}`);
+      this.setCanonicalUrl(`https://creadevents.com/productos/${product.slug}`);
     }
     
     // Generate product schema

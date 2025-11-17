@@ -38,14 +38,21 @@
     </div>
   </section>
 } @else {
-  <app-navbar></app-navbar>
+  @if (!isAdminRoute) {
+    <app-navbar></app-navbar>
+  }
 
   <main id="main-content" class="main-shell">
     <router-outlet></router-outlet>
   </main>
 
-  <app-footer></app-footer>
+  @if (!isAdminRoute) {
+    <app-footer></app-footer>
+  }
 }
 
 <!-- Cookie Consent Banner (GDPR Compliant) -->
 <app-cookie-banner></app-cookie-banner>
+
+<!-- WhatsApp Floating Button -->
+<app-whatsapp-button></app-whatsapp-button>

@@ -69,7 +69,7 @@ export class AuthService {
   }
 
   // Register new user
-  async register(email: string, password: string, displayName: string, company?: string): Promise<User> {
+  async register(email: string, password: string, displayName: string, company?: string, phone?: string): Promise<User> {
     // Get security settings
     const settings = await this.settingsService.getSettings();
     
@@ -106,6 +106,7 @@ export class AuthService {
       email: email,
       displayName: displayName,
       company: company,
+      phone: phone,
       role: 'client',
       createdAt: new Date(),
       loginAttempts: 0

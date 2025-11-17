@@ -2,7 +2,9 @@
 @use 'tailwindcss/components';
 @use 'tailwindcss/utilities';
 @use './styles/theme' as theme;
+@use './styles/buttons';
 @use './styles/admin-mobile';
+@use './styles/admin-theme';
 
 @include theme.apply-theme(light);
 
@@ -16,29 +18,31 @@
 }
 
 :root {
-  --bitcoin-orange: #f7931a; /* Bitcoin Orange */
-  --bitcoin-gold: #ffb81c;
-  --luxury-gold: #d4af37;
-  --accent-warm: #c8a96b;
-  --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Inter", "Helvetica Neue", Arial, "Apple Color Emoji", "Segoe UI Emoji";
-  --font-display: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Inter", "Helvetica Neue", Arial, "Apple Color Emoji", "Segoe UI Emoji";
+  --bitcoin-orange: #a8c5a4; /* repurpose token as sage green */
+  --bitcoin-gold: #a8c5a4;
+  --luxury-gold: #a8c5a4;
+  --accent-warm: #e8b8c8; /* rose blush accent */
+  --forest-green: #3f5f47;
+  --font-sans: "Inter", "Source Sans 3", ui-sans-serif, system-ui, -apple-system, "Segoe UI", "Helvetica Neue", Arial, "Apple Color Emoji", "Segoe UI Emoji";
+  --font-display: "Playfair Display", "Cormorant Garamond", "Inter", "Times New Roman", serif;
   --font-mono: "JetBrains Mono", "SFMono-Regular", Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
 }
 
 :root {
-  --ts-bg: #0b0d10;
-  --ts-bg-soft: color-mix(in srgb, #111316 88%, #161b22 12%);
-  --ts-ink: #f5f6f8;
-  --ts-ink-soft: #caced4;
-  --ts-accent: var(--bitcoin-orange);
-  --ts-accent-soft: color-mix(in srgb, var(--ts-accent) 55%, var(--accent-warm) 45%);
-  --ts-line: color-mix(in srgb, #272a31 70%, transparent);
-  --ts-paper: color-mix(in srgb, #13151a 85%, #191e26 15%);
-  --surface-glass: color-mix(in srgb, var(--ts-paper) 90%, rgba(255, 255, 255, 0.04));
-  --surface-border: color-mix(in srgb, var(--ts-line) 65%, transparent);
-  --shadow-soft: 0 28px 60px -35px rgba(7, 9, 12, 0.82);
-  --shadow-hover: 0 18px 40px -30px rgba(10, 12, 15, 0.58);
-  --shadow-focus: 0 0 0 1px color-mix(in srgb, var(--ts-accent) 35%, transparent), 0 20px 48px -32px rgba(8, 10, 14, 0.65);
+  --ts-bg: #faf6f0; /* ivory */
+  --ts-bg-soft: #f3ede4;
+  --ts-ink: #1d2a39; /* midnight blue */
+  --ts-ink-soft: #3f5f47; /* forest green as secondary text */
+  --ts-accent: #a8c5a4; /* sage green */
+  --ts-accent-soft: #c1d5be;
+  --ts-accent-dark: #8aab85; /* darker sage for gradients */
+  --ts-line: color-mix(in srgb, #a8c5a4 45%, transparent);
+  --ts-paper: #ffffff;
+  --surface-glass: color-mix(in srgb, var(--ts-paper) 92%, rgba(0, 0, 0, 0.02));
+  --surface-border: color-mix(in srgb, #a8c5a4 35%, transparent);
+  --shadow-soft: 0 28px 60px -35px rgba(29, 42, 57, 0.25);
+  --shadow-hover: 0 18px 40px -30px rgba(29, 42, 57, 0.28);
+  --shadow-focus: 0 0 0 1px color-mix(in srgb, var(--ts-accent) 45%, transparent), 0 18px 42px -30px rgba(29, 42, 57, 0.32);
   --nav-height: 3.5rem;
   --content-offset: clamp(2.5rem, 6vw, 3.75rem);
   --section-spacing: clamp(3rem, 8vw, 5rem);
@@ -643,7 +647,7 @@ a:hover {
   .form-field {
     @apply w-full px-4 py-3 rounded-xl border border-gray-300
       bg-white text-gray-900 placeholder:text-gray-400
-      focus:border-ts-accent focus:ring-2 focus:ring-ts-accent/40
+      focus:border-ts-accent focus:ring-2 focus:ring-ts-accent
       focus-visible:outline-none transition-colors;
   }
 

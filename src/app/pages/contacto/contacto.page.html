@@ -1,185 +1,210 @@
-<div class="section-stack">
-<!-- Page Header Component -->
-<app-page-header
-  title="{{ 'contact.title' | translate }}"
-  subtitle="{{ 'contact.subtitle' | translate }}"
-  [breadcrumbs]="breadcrumbs"
-  icon="contact"
-  [compact]="true">
-</app-page-header>
-
-<!-- Contenido de Contacto -->
-<section class="section-gap bg-gradient-to-b from-[#13151a] to-[#0a0b0d]">
+﻿<section class="section-gap bg-ts-bg">
   <div class="page-container">
-    <div class="grid lg:grid-cols-2 gap-16">
-      
-      <!-- Formulario -->
-      <div>
-        <h2 class="font-serif text-3xl bitcoin-gradient-text mb-6">{{ 'contact.form_title' | translate }}</h2>
-        
-        <!-- Mensajes de estado -->
-        <div *ngIf="submitSuccess" 
-             class="mb-6 p-4 bg-green-500/20 border border-green-500/30 text-green-300 rounded-xl">
-          {{ 'contact.success_message' | translate }}
+    <div class="luxury-hero">
+      <div class="luxury-hero__content">
+        <span class="badge">Contact Us</span>
+        <h1 class="luxury-hero__title">{{ heroTitle }}</h1>
+        <p class="luxury-hero__subtitle">
+          {{ heroSubtitle }}
+        </p>
+        <div class="luxury-hero__actions">
+          <a routerLink="/servicios" class="btn-secondary">View services</a>
+          @if (whatsappNumber) {
+            <a [href]="getWhatsAppUrl()" target="_blank" class="btn-primary">WhatsApp our team</a>
+          }
         </div>
-        
-        <div *ngIf="submitError" 
-             class="mb-6 p-4 bg-red-500/20 border border-red-500/30 text-red-300 rounded-xl">
-          {{ 'contact.error_message' | translate }}
+      </div>
+      <div class="luxury-hero__media">
+        <div class="badge absolute top-3.5 right-3.5 shadow-soft">Miami & destinations</div>
+        <img [src]="heroImage" alt="Contact Creation Design & Events" loading="lazy" />
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section-gap bg-ts-bg-soft">
+  <div class="page-container">
+    <div class="grid lg:grid-cols-2 gap-12 items-start">
+
+      <!-- Form -->
+      <div class="bg-ts-paper border border-ts-line rounded-2xl shadow-soft p-8">
+        <div class="mb-8 space-y-2">
+          <h2 class="font-serif text-3xl text-ts-ink">Let's bring your vision to life</h2>
+          <p class="text-ts-ink-soft">Share a few details about your event. We respond within one business day.</p>
         </div>
 
-        <form [formGroup]="contactForm" (ngSubmit)="onSubmit()" class="space-y-6">
-          
-          <!-- Nombre -->
-          <div>
-            <label for="nombre" class="block text-sm font-medium text-bitcoin-gray mb-1">
-              {{ 'contact.full_name' | translate }} *
-            </label>
-            <input
-              type="text"
-              id="nombre"
-              formControlName="nombre"
-              class="w-full px-4 py-3 bg-bitcoin-dark/60 border border-bitcoin-gray/20 text-bitcoin-gray placeholder-bitcoin-gray/50 rounded-xl focus:ring-2 focus:ring-bitcoin-orange focus:border-bitcoin-orange transition-all"
-              [placeholder]="'contact.full_name_placeholder' | translate">
-            <p *ngIf="getFieldError('nombre')" class="mt-1 text-sm text-red-400">
-              {{getFieldError('nombre')}}
-            </p>
+        <div *ngIf="submitSuccess"
+             class="mb-6 p-4 bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-xl">
+          Thank you. Your message has been sent.
+        </div>
+
+        <div *ngIf="submitError"
+             class="mb-6 p-4 bg-rose-50 border border-rose-200 text-rose-800 rounded-xl">
+          {{ submitErrorMessage || 'Something went wrong. Please try again.' }}
+        </div>
+
+        <form [formGroup]="contactForm" (ngSubmit)="onSubmit()" class="space-y-5">
+          <div class="grid md:grid-cols-2 gap-5">
+            <div class="md:col-span-1">
+              <label for="nombre" class="block text-sm font-semibold text-ts-ink mb-1">Full name *</label>
+              <input type="text" id="nombre" formControlName="nombre"
+                class="w-full px-4 py-3 rounded-xl border border-ts-line bg-white text-ts-ink placeholder:text-ts-ink-soft focus:outline-none focus:ring-2 focus:ring-ts-accent focus:border-ts-accent-soft transition">
+              <p *ngIf="getFieldError('nombre')" class="mt-1 text-sm text-rose-700">{{getFieldError('nombre')}}</p>
+            </div>
+            <div class="md:col-span-1">
+              <label for="email" class="block text-sm font-semibold text-ts-ink mb-1">Email *</label>
+              <input type="email" id="email" formControlName="email"
+                class="w-full px-4 py-3 rounded-xl border border-ts-line bg-white text-ts-ink placeholder:text-ts-ink-soft focus:outline-none focus:ring-2 focus:ring-ts-accent focus:border-ts-accent-soft transition">
+              <p *ngIf="getFieldError('email')" class="mt-1 text-sm text-rose-700">{{getFieldError('email')}}</p>
+            </div>
+            <div class="md:col-span-1">
+              <label for="telefono" class="block text-sm font-semibold text-ts-ink mb-1">Phone *</label>
+              <input type="tel" id="telefono" formControlName="telefono" (input)="formatPhoneNumber($event)"
+                class="w-full px-4 py-3 rounded-xl border border-ts-line bg-white text-ts-ink placeholder:text-ts-ink-soft focus:outline-none focus:ring-2 focus:ring-ts-accent focus:border-ts-accent-soft transition">
+              <p *ngIf="getFieldError('telefono')" class="mt-1 text-sm text-rose-700">{{getFieldError('telefono')}}</p>
+            </div>
+            <div class="md:col-span-1">
+              <label for="empresa" class="block text-sm font-semibold text-ts-ink mb-1">Company (optional)</label>
+              <input type="text" id="empresa" formControlName="empresa"
+                class="w-full px-4 py-3 rounded-xl border border-ts-line bg-white text-ts-ink placeholder:text-ts-ink-soft focus:outline-none focus:ring-2 focus:ring-ts-accent focus:border-ts-accent-soft transition">
+            </div>
+            <div class="md:col-span-1">
+              <label for="eventDate" class="block text-sm font-semibold text-ts-ink mb-1">Event date</label>
+              <input type="text" id="eventDate" formControlName="eventDate" placeholder="MM / DD / YYYY"
+                class="w-full px-4 py-3 rounded-xl border border-ts-line bg-white text-ts-ink placeholder:text-ts-ink-soft focus:outline-none focus:ring-2 focus:ring-ts-accent focus:border-ts-accent-soft transition">
+            </div>
+            <div class="md:col-span-1">
+              <label for="location" class="block text-sm font-semibold text-ts-ink mb-1">Location</label>
+              <input type="text" id="location" formControlName="location" placeholder="Venue or city"
+                class="w-full px-4 py-3 rounded-xl border border-ts-line bg-white text-ts-ink placeholder:text-ts-ink-soft focus:outline-none focus:ring-2 focus:ring-ts-accent focus:border-ts-accent-soft transition">
+            </div>
+            <div class="md:col-span-1">
+              <label for="guestCount" class="block text-sm font-semibold text-ts-ink mb-1">Guest count</label>
+              <input type="text" id="guestCount" formControlName="guestCount" placeholder="Approx. number of guests"
+                class="w-full px-4 py-3 rounded-xl border border-ts-line bg-white text-ts-ink placeholder:text-ts-ink-soft focus:outline-none focus:ring-2 focus:ring-ts-accent focus:border-ts-accent-soft transition">
+            </div>
+            <div class="md:col-span-1">
+              <label for="budget" class="block text-sm font-semibold text-ts-ink mb-1">Budget range</label>
+              <input type="text" id="budget" formControlName="budget" placeholder="e.g., $5,000 - $15,000"
+                class="w-full px-4 py-3 rounded-xl border border-ts-line bg-white text-ts-ink placeholder:text-ts-ink-soft focus:outline-none focus:ring-2 focus:ring-ts-accent focus:border-ts-accent-soft transition">
+            </div>
           </div>
 
-          <!-- Email -->
           <div>
-            <label for="email" class="block text-sm font-medium text-bitcoin-gray mb-1">
-              {{ 'client.email' | translate }} *
-            </label>
-            <input
-              type="email"
-              id="email"
-              formControlName="email"
-              class="w-full px-4 py-3 bg-bitcoin-dark/60 border border-bitcoin-gray/20 text-bitcoin-gray placeholder-bitcoin-gray/50 rounded-xl focus:ring-2 focus:ring-bitcoin-orange focus:border-bitcoin-orange transition-all"
-              [placeholder]="'contact.email_placeholder' | translate">
-            <p *ngIf="getFieldError('email')" class="mt-1 text-sm text-red-400">
-              {{getFieldError('email')}}
-            </p>
+            <label for="mensaje" class="block text-sm font-semibold text-ts-ink mb-1">Tell us about your event *</label>
+            <textarea id="mensaje" formControlName="mensaje" rows="5"
+              class="w-full px-4 py-3 rounded-xl border border-ts-line bg-white text-ts-ink placeholder:text-ts-ink-soft focus:outline-none focus:ring-2 focus:ring-ts-accent focus:border-ts-accent-soft transition resize-none"></textarea>
+            <p *ngIf="getFieldError('mensaje')" class="mt-1 text-sm text-rose-700">{{getFieldError('mensaje')}}</p>
           </div>
 
-          <!-- Teléfono -->
-          <div>
-            <label for="telefono" class="block text-sm font-medium text-bitcoin-gray mb-1">
-              {{ 'client.phone' | translate }} *
-            </label>
-            <input
-              type="tel"
-              id="telefono"
-              formControlName="telefono"
-              class="w-full px-4 py-3 bg-bitcoin-dark/60 border border-bitcoin-gray/20 text-bitcoin-gray placeholder-bitcoin-gray/50 rounded-xl focus:ring-2 focus:ring-bitcoin-orange focus:border-bitcoin-orange transition-all"
-              [placeholder]="'contact.phone_placeholder' | translate">
-            <p *ngIf="getFieldError('telefono')" class="mt-1 text-sm text-red-400">
-              {{getFieldError('telefono')}}
-            </p>
-          </div>
-
-          <!-- Empresa (opcional) -->
-          <div>
-            <label for="empresa" class="block text-sm font-medium text-bitcoin-gray mb-1">
-              {{ 'client.company' | translate }}
-            </label>
-            <input
-              type="text"
-              id="empresa"
-              formControlName="empresa"
-              class="w-full px-4 py-3 bg-bitcoin-dark/60 border border-bitcoin-gray/20 text-bitcoin-gray placeholder-bitcoin-gray/50 rounded-xl focus:ring-2 focus:ring-bitcoin-orange focus:border-bitcoin-orange transition-all"
-              [placeholder]="'contact.company_placeholder' | translate">
-          </div>
-
-          <!-- Mensaje -->
-          <div>
-            <label for="mensaje" class="block text-sm font-medium text-bitcoin-gray mb-1">
-              {{ 'contact.message' | translate }} *
-            </label>
-            <textarea
-              id="mensaje"
-              formControlName="mensaje"
-              rows="5"
-              class="w-full px-4 py-3 bg-bitcoin-dark/60 border border-bitcoin-gray/20 text-bitcoin-gray placeholder-bitcoin-gray/50 rounded-xl focus:ring-2 focus:ring-bitcoin-orange focus:border-bitcoin-orange transition-all resize-none"
-              [placeholder]="'contact.message_placeholder' | translate"></textarea>
-            <p *ngIf="getFieldError('mensaje')" class="mt-1 text-sm text-red-400">
-              {{getFieldError('mensaje')}}
-            </p>
-          </div>
-
-          <!-- Checkbox privacidad -->
           <div class="flex items-start gap-3">
-            <input
-              type="checkbox"
-              id="privacidad"
-              formControlName="aceptarPrivacidad"
-              class="mt-1 w-4 h-4 text-bitcoin-orange border-bitcoin-gray/20 rounded focus:ring-bitcoin-orange bg-bitcoin-dark/60">
-            <label for="privacidad" class="text-sm text-bitcoin-gray">
-              {{ 'contact.accept_privacy' | translate }} *
+            <input type="checkbox" id="privacidad" formControlName="aceptarPrivacidad"
+              class="mt-1 w-4 h-4 text-ts-accent border-ts-line rounded focus:ring-ts-accent bg-ts-paper">
+            <label for="privacidad" class="text-sm text-ts-ink-soft">
+              I agree to the privacy policy.
             </label>
           </div>
-          <p *ngIf="contactForm.get('aceptarPrivacidad')?.errors?.['required'] && contactForm.get('aceptarPrivacidad')?.touched" 
-             class="text-sm text-red-400">
-            {{ 'contact.privacy_required' | translate }}
+          <p *ngIf="contactForm.get('aceptarPrivacidad')?.errors?.['required'] && contactForm.get('aceptarPrivacidad')?.touched"
+             class="text-sm text-rose-700">
+            Please confirm you accept the privacy policy.
           </p>
 
-          <!-- Botón enviar -->
-          <button
-            type="submit"
-            [disabled]="isSubmitting"
-            class="w-full py-4 px-6 bg-bitcoin-orange hover:bg-bitcoin-orange/90 text-white font-medium rounded-xl border border-bitcoin-orange shadow-bitcoin transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed">
-            <span *ngIf="!isSubmitting">{{ 'contact.send_message' | translate }}</span>
+          <button type="submit" [disabled]="isSubmitting"
+            class="btn-primary w-full disabled:opacity-50 disabled:cursor-not-allowed">
+            <span *ngIf="!isSubmitting">Send message</span>
             <span *ngIf="isSubmitting" class="flex items-center justify-center gap-2">
               <div class="app-spinner" style="--spinner-size: 72px;"><img src="/Logo Clear.png" alt="Loading" width="96" height="96"></div>
-              {{ 'contact.sending' | translate }}
+              Sending…
             </span>
           </button>
         </form>
       </div>
 
-      <!-- Información de contacto -->
-      <div>
-        <h2 class="font-serif text-3xl bitcoin-gradient-text mb-6">{{ 'contact.info_title' | translate }}</h2>
-        
-        <div class="space-y-8">
-          
-          <!-- Dirección -->
-          <div class="flex items-start gap-4">
-            <div class="w-12 h-12 bg-bitcoin-orange/20 border border-bitcoin-orange/30 rounded-full flex items-center justify-center flex-shrink-0">
-              <svg class="w-6 h-6 text-bitcoin-orange" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
-              </svg>
+      <!-- Contact details -->
+      <div class="space-y-6">
+        <div class="bg-ts-paper border border-ts-line rounded-2xl p-8 shadow-soft">
+          <h2 class="font-serif text-3xl text-ts-ink mb-2">How to reach us</h2>
+          <p class="text-ts-ink-soft mb-6">Prefer to chat directly? Call, email, or message us on WhatsApp.</p>
+
+          <div class="space-y-5">
+            <div class="flex gap-4 items-start">
+              <div class="w-12 h-12 rounded-full bg-ts-bg-soft border border-ts-line flex items-center justify-center">
+                <svg class="w-6 h-6 text-ts-ink" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17.657 16.657 13.414 20.9a2 2 0 0 1-2.828 0l-4.243-4.243a8 8 0 1 1 11.314 0Z"/>
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 11a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"/>
+                </svg>
+              </div>
+              <div>
+                <h3 class="font-semibold text-lg text-ts-ink">Miami & South Florida</h3>
+                <p class="text-ts-ink-soft">Available for events across South Florida and destination requests.</p>
+              </div>
             </div>
-            <div>
-              <h3 class="font-semibold text-lg text-bitcoin-gold mb-1">{{ 'contact.address_label' | translate }}</h3>
-              <p class="text-bitcoin-gray">
-                {{ 'contact.address_line1' | translate }}<br>
-                {{ 'contact.address_line2' | translate }}
-              </p>
+
+            <div class="flex gap-4 items-start">
+              <div class="w-12 h-12 rounded-full bg-ts-bg-soft border border-ts-line flex items-center justify-center">
+                <svg class="w-6 h-6 text-ts-ink" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M22 12q0 .861-.111 1.695a1.15 1.15 0 0 1-.809.95 20.23 20.23 0 0 1-3.105.68 1.15 1.15 0 0 1-1.205-.663l-.692-1.614a1.15 1.15 0 0 1 .153-1.164l.142-.184c.24-.312.317-.722.208-1.1a8.013 8.013 0 0 0-.493-1.215 8.05 8.05 0 0 0-4.16-3.913 8.23 8.23 0 0 0-1.236-.404 1.15 1.15 0 0 0-1.14.37l-.425.5a1.15 1.15 0 0 1-1.092.382l-1.742-.353a1.15 1.15 0 0 1-.905-1.06l-.133-1.836A1.15 1.15 0 0 1 5.52 2.12 19.91 19.91 0 0 1 11.684 2C17.522 2 22 7.373 22 12Z"/>
+                </svg>
+              </div>
+              <div>
+                <h3 class="font-semibold text-lg text-ts-ink">Phone & WhatsApp</h3>
+                @if (contactPhone) {
+                  <p class="text-ts-ink-soft">
+                    <a [href]="'tel:' + contactPhone" class="text-ts-ink hover:text-ts-accent transition-colors">{{ contactPhone }}</a>
+                    @if (whatsappNumber) {
+                      <br>
+                      <a [href]="getWhatsAppUrl()" target="_blank" class="text-ts-accent hover:text-ts-ink transition-colors">Message us on WhatsApp</a>
+                    }
+                  </p>
+                } @else {
+                  <p class="text-ts-ink-soft">Contact information not available</p>
+                }
+              </div>
+            </div>
+
+            <div class="flex gap-4 items-start">
+              <div class="w-12 h-12 rounded-full bg-ts-bg-soft border border-ts-line flex items-center justify-center">
+                <svg class="w-6 h-6 text-ts-ink" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="m4 4 16 16M4 20 20 4"/>
+                </svg>
+              </div>
+              <div>
+                <h3 class="font-semibold text-lg text-ts-ink">Email</h3>
+                @if (contactEmail) {
+                  <a [href]="'mailto:' + contactEmail" class="text-ts-accent hover:text-ts-ink transition-colors">{{ contactEmail }}</a>
+                } @else {
+                  <p class="text-ts-ink-soft">Email not available</p>
+                }
+              </div>
+            </div>
+
+            <div class="flex gap-4 items-start">
+              <div class="w-12 h-12 rounded-full bg-ts-bg-soft border border-ts-line flex items-center justify-center">
+                <svg class="w-6 h-6 text-ts-ink" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 7h18M3 12h18M3 17h18"/>
+                </svg>
+              </div>
+              <div>
+                <h3 class="font-semibold text-lg text-ts-ink">Hours</h3>
+                <p class="text-ts-ink-soft">Mon – Sat: 08:00 AM – 07:00 PM</p>
+              </div>
             </div>
           </div>
-
-          <!-- Email -->
-          <div class="flex items-start gap-4">
-            <div class="w-12 h-12 bg-bitcoin-orange/20 border border-bitcoin-orange/30 rounded-full flex items-center justify-center flex-shrink-0">
-              <svg class="w-6 h-6 text-bitcoin-orange" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 3.26a2 2 0 001.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
-              </svg>
-            </div>
-            <div>
-              <h3 class="font-semibold text-lg text-bitcoin-gold mb-1">{{ 'contact.email_label' | translate }}</h3>
-              <a href="mailto:luxmining1@gmail.com" class="text-bitcoin-gray hover:text-bitcoin-orange transition-colors">
-                luxmining1@gmail.com
-              </a>
-            </div>
-          </div>
-
         </div>
 
+        @if (whatsappNumber) {
+          <div class="bg-gradient-to-r from-ts-accent to-ts-accent-soft rounded-2xl p-8 text-ts-ink shadow-soft">
+            <h3 class="font-serif text-2xl mb-3">Prefer a quick chat?</h3>
+            <p class="text-ts-ink mb-4">Tap below to start a WhatsApp conversation with our design team.</p>
+            <a [href]="getWhatsAppUrl()" target="_blank" class="btn-primary">
+              Open WhatsApp
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 7l5 5-5 5M6 12h12"/>
+              </svg>
+            </a>
+          </div>
+        }
       </div>
     </div>
   </div>
 </section>
-</div>
-

@@ -52,25 +52,25 @@ export class DatosTecnicosPageComponent implements OnInit {
     fichasTecnicas: [
       {
         nombre: 'General Technical Specifications',
-        url: '/assets/docs/theluxmining-general-specs.pdf',
+        url: '/assets/docs/CreaDevents-general-specs.pdf',
         tamano: '1.8MB',
         descripcion: 'Complete specifications for all our mining hardware'
       },
       {
         nombre: 'ASIC Miners Datasheet',
-        url: '/assets/docs/theluxmining-asic-specs.pdf',
+        url: '/assets/docs/CreaDevents-asic-specs.pdf',
         tamano: '950KB',
         descripcion: 'Detailed specifications for ASIC mining hardware'
       },
       {
         nombre: 'Cooling Solutions Guide',
-        url: '/assets/docs/theluxmining-cooling-guide.pdf',
+        url: '/assets/docs/CreaDevents-cooling-guide.pdf',
         tamano: '1.1MB',
         descripcion: 'Specifications for cooling and ventilation systems'
       },
       {
         nombre: 'Power Supply Specifications',
-        url: '/assets/docs/theluxmining-psu-specs.pdf',
+        url: '/assets/docs/CreaDevents-psu-specs.pdf',
         tamano: '1.3MB',
         descripcion: 'Power requirements and PSU specifications'
       }

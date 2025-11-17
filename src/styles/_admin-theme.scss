@@ -1,0 +1,54 @@
+/* Admin theme overrides to map legacy "bitcoin" utility classes to the new ivory/gold palette */
+.bg-bitcoin-dark,
+.from-bitcoin-dark,
+.to-bitcoin-dark {
+  background-color: var(--ts-bg);
+}
+
+.bg-bitcoin-gray,
+.text-bitcoin-gray {
+  background-color: var(--ts-bg-soft);
+  color: var(--ts-ink-soft);
+}
+
+.text-bitcoin-orange,
+.border-bitcoin-orange,
+.from-bitcoin-orange,
+.to-bitcoin-orange,
+.bg-bitcoin-orange,
+.shadow-bitcoin,
+.shadow-bitcoin-lg,
+.shadow-bitcoin-sm {
+  color: var(--ts-ink);
+  border-color: var(--ts-accent);
+  background-color: var(--ts-accent);
+  box-shadow: 0 10px 24px -18px rgba(29, 42, 57, 0.35);
+}
+
+.bg-bitcoin-gold,
+.text-bitcoin-gold {
+  background-color: var(--ts-accent-soft);
+  color: var(--ts-ink);
+}
+
+.border-bitcoin-gray {
+  border-color: var(--ts-line);
+}
+
+.bg-bitcoin-orange\/10 { background-color: color-mix(in srgb, var(--ts-accent) 10%, transparent); }
+.bg-bitcoin-orange\/20 { background-color: color-mix(in srgb, var(--ts-accent) 20%, transparent); }
+.bg-bitcoin-orange\/30 { background-color: color-mix(in srgb, var(--ts-accent) 30%, transparent); }
+.border-bitcoin-orange\/20 { border-color: color-mix(in srgb, var(--ts-accent) 20%, transparent); }
+.border-bitcoin-orange\/30 { border-color: color-mix(in srgb, var(--ts-accent) 30%, transparent); }
+.bg-bitcoin-dark\/60 { background-color: color-mix(in srgb, var(--ts-bg) 60%, transparent); }
+.bg-bitcoin-dark\/80 { background-color: color-mix(in srgb, var(--ts-bg) 80%, transparent); }
+.text-bitcoin-gray\/70 { color: color-mix(in srgb, var(--ts-ink-soft) 70%, transparent); }
+.text-bitcoin-gray\/50 { color: color-mix(in srgb, var(--ts-ink-soft) 50%, transparent); }
+.border-bitcoin-gray\/30 { border-color: color-mix(in srgb, var(--ts-line) 70%, transparent); }
+.border-bitcoin-gray\/20 { border-color: color-mix(in srgb, var(--ts-line) 80%, transparent); }
+
+.bitcoin-gradient-text {
+  background: linear-gradient(135deg, var(--ts-accent), var(--ts-accent-soft));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}

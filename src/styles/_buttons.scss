@@ -1,0 +1,132 @@
+// Global Button Styles - Easy to update theme colors
+// All buttons use CSS variables from _theme.scss and styles.scss
+
+// Primary button (sage green gradient)
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem 1.5rem;
+  border-radius: 12px;
+  font-weight: 700;
+  text-decoration: none;
+  transition: transform 0.18s ease, box-shadow 0.18s ease, background-color 0.18s ease;
+  color: white !important; /* Force white text for better contrast on any gradient */
+  background: linear-gradient(135deg, var(--ts-accent) 0%, var(--ts-accent-soft) 100%);
+  box-shadow: 0 12px 30px -22px rgba(29, 42, 57, 0.35);
+  border: none;
+  cursor: pointer;
+
+  &:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 14px 32px -20px rgba(29, 42, 57, 0.4);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+  }
+}
+
+// Secondary button (subtle sage green)
+.btn-secondary {
+  @extend .btn-primary;
+  background: color-mix(in srgb, var(--ts-accent) 22%, transparent);
+  color: var(--ts-accent) !important; /* Use accent color for better contrast on light background */
+  box-shadow: none;
+
+  &:hover {
+    background: color-mix(in srgb, var(--ts-accent) 30%, transparent);
+  }
+}
+
+// Outline button
+.btn-outline {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem 1.5rem;
+  border-radius: 12px;
+  font-weight: 700;
+  text-decoration: none;
+  transition: all 0.18s ease;
+  color: var(--ts-accent);
+  background: transparent;
+  border: 2px solid var(--ts-accent);
+  cursor: pointer;
+
+  &:hover {
+    background: color-mix(in srgb, var(--ts-accent) 10%, transparent);
+    transform: translateY(-1px);
+  }
+}
+
+// Icon button
+.btn-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+  color: var(--ts-ink);
+  background: var(--ts-bg-soft);
+  border: 1px solid var(--ts-line);
+  cursor: pointer;
+
+  &:hover {
+    background: var(--ts-accent);
+    color: white;
+    transform: scale(1.05);
+  }
+}
+
+// Active/Selected state utility
+.btn-active,
+.is-active {
+  background: var(--ts-accent) !important;
+  color: white !important;
+}
+
+// Badge/Pill style
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  border-radius: 999px;
+  background: var(--ts-paper);
+  backdrop-filter: blur(12px);
+  color: var(--ts-ink) !important;
+  font-weight: 700;
+  font-size: 0.875rem;
+  letter-spacing: 0.02em;
+  border: 1px solid var(--ts-line);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+}
+
+// Tag pill
+.tag-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.5rem 1rem;
+  border-radius: 999px;
+  background: var(--ts-accent);
+  color: white;
+  font-weight: 600;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: var(--ts-accent-dark);
+    transform: scale(1.05);
+  }
+}

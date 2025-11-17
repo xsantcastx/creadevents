@@ -1,17 +1,21 @@
 {
   "notifications": {
     "newUser": {
-      "subject": "🎉 New User Registration - The Lux Mining",
-      "preheader": "A new profile was created on the storefront."
+      "subject": "🎉 New Inquiry - Creation Design & Events",
+      "preheader": "A new contact request was submitted on the website."
     },
     "cartShare": {
-      "subject": "The Lux Mining · Cart Selection"
+      "subject": "Creation Design & Events · Service Inquiry"
     },
     "contact": {
-      "subject": "The Lux Mining · Contact Message"
+      "subject": "Creation Design & Events · Contact Message"
     },
     "inventoryAlert": {
-      "subject": "Inventory Alert - The Lux Mining"
+      "subject": "Booking Alert - Creation Design & Events"
+    },
+    "eventInquiry": {
+      "subject": "New Event Consultation Request",
+      "preheader": "Someone is interested in your event design services."
     }
   }
 }

@@ -34,6 +34,11 @@ export const routes: Routes = [
     title: routeTitle('page_titles.gallery')
   },
   {
+    path: 'servicios',
+    loadComponent: () => import('./pages/servicios/servicios.page').then(m => m.ServiciosPageComponent),
+    title: routeTitle('Services')
+  },
+  {
     path: 'contacto',
     loadComponent: () => import('./pages/contacto/contacto.page').then(m => m.ContactoPageComponent),
     title: routeTitle('page_titles.contact')
@@ -109,6 +114,12 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/admin/gallery/gallery-admin.page').then(m => m.GalleryAdminComponent),
     canActivate: [adminGuard],
     title: routeTitle('page_titles.gallery_management')
+  },
+  {
+    path: 'admin/services',
+    loadComponent: () => import('./pages/admin/services/services-admin.page').then(m => m.ServicesAdminPage),
+    canActivate: [adminGuard],
+    title: routeTitle('Services Management')
   },
   {
     path: 'admin/orders',

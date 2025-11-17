@@ -4,6 +4,7 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { TranslateModule } from '@ngx-translate/core';
 import { EmailService } from '../../services/email.service';
 import { AnalyticsService } from '../../services/analytics.service';
+import { SettingsService } from '../../services/settings.service';
 import { PageHeaderComponent, Breadcrumb } from '../../shared/components/page-header/page-header.component';
 import { MetaService } from '../../services/meta.service';
 
@@ -12,6 +13,10 @@ interface ContactFormData {
   email: string;
   telefono: string;
   empresa?: string;
+  eventDate?: string;
+  location?: string;
+  guestCount?: string;
+  budget?: string;
   mensaje: string;
   aceptarPrivacidad: boolean;
 }
@@ -19,7 +24,7 @@ interface ContactFormData {
 @Component({
   selector: 'app-contacto-page',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, TranslateModule, PageHeaderComponent],
+  imports: [CommonModule, ReactiveFormsModule, TranslateModule],
   templateUrl: './contacto.page.html',
   styleUrl: './contacto.page.scss'
 })
@@ -27,6 +32,7 @@ export class ContactoPageComponent {
   private platformId = inject(PLATFORM_ID);
   private analyticsService = inject(AnalyticsService);
   private metaService = inject(MetaService);
+  private settingsService = inject(SettingsService);
   
   // Breadcrumbs for navigation
   breadcrumbs: Breadcrumb[] = [
@@ -40,21 +46,39 @@ export class ContactoPageComponent {
   submitError = false;
   submitErrorMessage = '';
 
+  // Settings loaded from SettingsService
+  contactEmail = '';
+  contactPhone = '';
+  contactAddress = '';
+  whatsappNumber = '';
+
+  // Hero settings
+  heroImage = '/assets/contact/hero-contact.jpg';
+  heroTitle = 'Tell us about your celebration';
+  heroSubtitle = 'Share your date, location, and vision. We respond within one business day to craft a bespoke plan for your event.';
+
   constructor(
     private fb: FormBuilder,
     private emailService: EmailService
   ) {
     // Set page meta tags from settings
     this.metaService.setPageMeta({
-      title: 'CONTACT.TITLE',
-      description: 'CONTACT.DESCRIPTION'
+      title: 'Contact Creation Design & Events',
+      description: 'Tell us about your celebration and we will design a bespoke plan.'
     });
+
+    // Load settings
+    this.loadSettings();
 
     this.contactForm = this.fb.group({
       nombre: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(100)]],
       email: ['', [Validators.required, Validators.email, Validators.maxLength(150)]],
       telefono: ['', [Validators.required, Validators.pattern(/^[\+]?[0-9\s\-\(\)]{7,15}$/)]],
       empresa: ['', [Validators.maxLength(100)]],
+      eventDate: ['', [Validators.maxLength(50)]],
+      location: ['', [Validators.maxLength(150)]],
+      guestCount: ['', [Validators.maxLength(50)]],
+      budget: ['', [Validators.maxLength(50)]],
       mensaje: ['', [Validators.required, Validators.minLength(10), Validators.maxLength(1000)]],
       aceptarPrivacidad: [false, [Validators.requiredTrue]]
     });
@@ -102,7 +126,7 @@ export class ContactoPageComponent {
           
           this.isSubmitting = false;
           this.submitError = true;
-          this.submitErrorMessage = error.message || 'Hubo un error al enviar el mensaje. Por favor, inténtalo de nuevo.';
+          this.submitErrorMessage = error.message || 'There was an error sending your message. Please try again.';
           
           // Reset error message after 10 seconds
           setTimeout(() => {
@@ -142,19 +166,19 @@ export class ContactoPageComponent {
       
       if (errors['required']) {
         const fieldLabels: { [key: string]: string } = {
-          'nombre': 'El nombre',
-          'email': 'El email',
-          'telefono': 'El teléfono',
-          'mensaje': 'El mensaje',
-          'aceptarPrivacidad': 'La aceptación de la política de privacidad'
+          'nombre': 'Name',
+          'email': 'Email',
+          'telefono': 'Phone',
+          'mensaje': 'Message',
+          'aceptarPrivacidad': 'Privacy acceptance'
         };
-        return `${fieldLabels[fieldName] || fieldName} es requerido`;
+        return `${fieldLabels[fieldName] || fieldName} is required`;
       }
       
-      if (errors['email']) return 'Introduce un email válido';
-      if (errors['pattern'] && fieldName === 'telefono') return 'Introduce un teléfono válido';
-      if (errors['minlength']) return `Debe tener al menos ${errors['minlength'].requiredLength} caracteres`;
-      if (errors['maxlength']) return `No puede tener más de ${errors['maxlength'].requiredLength} caracteres`;
+      if (errors['email']) return 'Enter a valid email address';
+      if (errors['pattern'] && fieldName === 'telefono') return 'Enter a valid phone number';
+      if (errors['minlength']) return `Must be at least ${errors['minlength'].requiredLength} characters`;
+      if (errors['maxlength']) return `Cannot be more than ${errors['maxlength'].requiredLength} characters`;
     }
     return '';
   }
@@ -175,13 +199,37 @@ export class ContactoPageComponent {
     const input = event.target as HTMLInputElement;
     let value = input.value.replace(/\D/g, ''); // Remove non-digits
     
-    // Simple Spanish phone formatting
-    if (value.startsWith('34')) {
-      value = '+34 ' + value.substring(2);
+    // Simple US formatting with country code
+    if (value.startsWith('1')) {
+      value = '+1 ' + value.substring(1);
     } else if (value.length > 0 && !value.startsWith('+')) {
-      value = '+34 ' + value;
+      value = '+1 ' + value;
     }
     
     this.contactForm.patchValue({ telefono: value });
+  }
+
+  async loadSettings() {
+    try {
+      const settings = await this.settingsService.getSettings();
+      this.contactEmail = settings.contactEmail || '';
+      this.contactPhone = settings.contactPhone || '';
+      this.contactAddress = settings.contactAddress || '';
+      this.whatsappNumber = settings.whatsappNumber || '';
+      
+      // Load hero settings
+      this.heroImage = settings.contactoHeroImage || this.heroImage;
+      this.heroTitle = settings.contactoHeroTitle || this.heroTitle;
+      this.heroSubtitle = settings.contactoHeroSubtitle || this.heroSubtitle;
+    } catch (error) {
+      console.error('[Contacto] Error loading settings:', error);
+    }
+  }
+
+  getWhatsAppUrl(): string {
+    if (!this.whatsappNumber) return '#';
+    const cleanNumber = this.whatsappNumber.replace(/\D/g, '');
+    const message = encodeURIComponent('Hello! I would like to know more about your services.');
+    return `https://wa.me/${cleanNumber}?text=${message}`;
   }
 }

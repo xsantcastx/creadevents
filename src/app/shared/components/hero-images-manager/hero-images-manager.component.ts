@@ -161,13 +161,13 @@ export class HeroImagesManagerComponent implements OnInit {
         next: (progress: UploadProgress) => {
           if (progress.optimizing) {
             this.showMessage('Optimizing image...', 'info');
-          } else {
+          } else if (progress.state === 'progress') {
             this.uploadProgress = progress.progress;
-            
-            if (progress.downloadURL && this.editingImage) {
-              this.editingImage.url = progress.downloadURL;
-              if (progress.webpURL) {
-                this.editingImage.webpUrl = progress.webpURL;
+          } else if (progress.state === 'complete' && progress.urls) {
+            if (this.editingImage) {
+              this.editingImage.url = progress.urls.webp || progress.urls.original;
+              if (progress.urls.webp) {
+                this.editingImage.webpUrl = progress.urls.webp;
               }
               this.showMessage('Image uploaded successfully! Fill in details and click Save.', 'success');
             }

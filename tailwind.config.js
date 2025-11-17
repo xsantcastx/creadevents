@@ -28,8 +28,8 @@ module.exports = {
         }
       },
       fontFamily: {
-        serif: ['"Inter"', 'ui-serif', 'serif'],
-        sans: ['"Inter"', 'ui-sans-serif', 'system-ui']
+        serif: ['"Playfair Display"', '"Cormorant Garamond"', 'ui-serif', 'serif'],
+        sans: ['"Inter"', '"Source Sans 3"', 'ui-sans-serif', 'system-ui']
       },
       boxShadow: {
         soft: '0 10px 30px -12px rgba(0,0,0,.35)',

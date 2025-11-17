@@ -262,20 +262,20 @@ export class DetalleComponent implements OnInit, AfterViewInit {
 
     // 🎯 Generate Breadcrumb Schema
     const breadcrumbs = [
-      { name: 'Home', url: 'https://theluxmining.com/' },
-      { name: 'Products', url: 'https://theluxmining.com/productos' }
+      { name: 'Home', url: 'https://creadevents.com/' },
+      { name: 'Products', url: 'https://creadevents.com/productos' }
     ];
     
     if (this.category) {
       breadcrumbs.push({
         name: this.category.name,
-        url: `https://theluxmining.com/productos?category=${this.category.slug}`
+        url: `https://creadevents.com/productos?category=${this.category.slug}`
       });
     }
     
     breadcrumbs.push({
       name: this.producto.name,
-      url: `https://theluxmining.com/products/${this.producto.slug}`
+      url: `https://creadevents.com/products/${this.producto.slug}`
     });
 
     this.seoSchemaService.generateBreadcrumbSchema(breadcrumbs);

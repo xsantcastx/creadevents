@@ -2,11 +2,11 @@ import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
-import { AdminQuickActionsComponent } from '../../../shared/components/admin-quick-actions/admin-quick-actions.component';
+import { AdminSidebarComponent } from '../../../shared/components/admin-sidebar/admin-sidebar.component';
 import { ImagePickerComponent } from '../../../shared/components/image-picker/image-picker.component';
 import { HeroImagesManagerComponent } from '../../../shared/components/hero-images-manager/hero-images-manager.component';
 import { LoadingComponentBase } from '../../../core/classes/loading-component.base';
-import { SettingsService, AppSettings } from '../../../services/settings.service';
+import { SettingsService, AppSettings, ThemeProfile } from '../../../services/settings.service';
 import { StatsService, SiteStats } from '../../../services/stats.service';
 import { AdminDashboardService, AdminActivityItem } from '../../../services/admin-dashboard.service';
 import { firstValueFrom } from 'rxjs';
@@ -33,6 +33,7 @@ interface Setting {
   showValue?: boolean;
   storagePath?: string; // For image uploads
   helpText?: string; // For image picker help text
+  hidden?: boolean; // For system fields that shouldn't display in UI
 }
 
 type MessageType = 'success' | 'error' | 'info';
@@ -50,7 +51,7 @@ interface NotificationSummaryCard {
 @Component({
   selector: 'app-settings-admin-page',
   standalone: true,
-  imports: [CommonModule, FormsModule, TranslateModule, AdminQuickActionsComponent, ImagePickerComponent, HeroImagesManagerComponent],
+  imports: [CommonModule, FormsModule, TranslateModule, AdminSidebarComponent, ImagePickerComponent, HeroImagesManagerComponent],
   templateUrl: './settings-admin.page.html',
   styleUrl: './settings-admin.page.scss'
 })
@@ -87,8 +88,21 @@ export class SettingsAdminComponent extends LoadingComponentBase implements OnIn
   isLoadingActivity = false;
   activityError: string | null = null;
   
-  private currentSettings: AppSettings | null = null;
+  currentSettings: AppSettings | null = null;
   private messageTimeout: any = null;
+
+  // Theme Profiles
+  themeProfiles: { id: string; name: string; colors: ThemeProfile | null }[] = [
+    { id: 'profile1', name: 'Profile 1', colors: null },
+    { id: 'profile2', name: 'Profile 2', colors: null },
+    { id: 'profile3', name: 'Profile 3', colors: null },
+    { id: 'profile4', name: 'Profile 4', colors: null },
+    { id: 'profile5', name: 'Profile 5', colors: null }
+  ];
+  activeProfileId: string = 'custom';
+  editingProfileId: string | null = null;
+  editingProfileName: string = '';
+
   private readonly notificationDefinitions: Array<Omit<NotificationSummaryCard, 'enabled' | 'meta'>> = [
     {
       key: 'orderEmailEnabled',
@@ -150,6 +164,13 @@ export class SettingsAdminComponent extends LoadingComponentBase implements OnIn
   async loadSettings() {
     await this.withLoading(async () => {
       this.currentSettings = await this.settingsService.getSettings();
+      
+      // Apply theme variables to DOM on load
+      this.applyThemeVariables(this.currentSettings);
+      
+      // Load theme profiles
+      this.loadThemeProfiles();
+      
       this.buildSections();
       this.updateNotificationSummary();
     });
@@ -248,6 +269,22 @@ export class SettingsAdminComponent extends LoadingComponentBase implements OnIn
         color: 'blue',
         expanded: true,
         settings: [
+          { 
+            key: 'brandLogo', 
+            label: 'Brand Logo', 
+            type: 'image', 
+            value: this.currentSettings.brandLogo || '/Logo Clear.png', 
+            storagePath: 'settings/logos', 
+            helpText: 'Upload your brand logo. This will appear in the header, footer, and loading screens. Recommended: PNG with transparent background, 200x200px minimum.'
+          },
+          { 
+            key: 'brandLogoLight', 
+            label: 'Light Logo (Optional)', 
+            type: 'image', 
+            value: this.currentSettings.brandLogoLight || '', 
+            storagePath: 'settings/logos', 
+            helpText: 'Optional light version of your logo for dark backgrounds. Leave empty to use the main logo everywhere.'
+          },
           { key: 'siteName', label: 'Site Name', type: 'text', value: this.currentSettings.siteName, placeholder: 'Enter site name' },
           { key: 'siteDescription', label: 'Site Description', type: 'textarea', value: this.currentSettings.siteDescription, placeholder: 'Enter site description' },
           { key: 'contactEmail', label: 'Contact Email', type: 'text', value: this.currentSettings.contactEmail, placeholder: 'email@example.com' },
@@ -258,6 +295,34 @@ export class SettingsAdminComponent extends LoadingComponentBase implements OnIn
         ]
       },
       {
+        title: 'Theme Customization',
+        icon: 'M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01',
+        color: 'purple',
+        expanded: false,
+        settings: [
+          { key: 'themeAccentColor', label: 'Accent Color (--ts-accent)', type: 'text', value: this.currentSettings.themeAccentColor || '#a8c5a4', placeholder: '#a8c5a4', description: 'Primary brand color (sage green)' },
+          { key: 'themeAccentSoft', label: 'Accent Soft (--ts-accent-soft)', type: 'text', value: this.currentSettings.themeAccentSoft || '#c1d5be', placeholder: '#c1d5be', description: 'Lighter accent for hover states' },
+          { key: 'themeAccentDark', label: 'Accent Dark (--ts-accent-dark)', type: 'text', value: this.currentSettings.themeAccentDark || '#8aab85', placeholder: '#8aab85', description: 'Darker accent for active states' },
+          { key: 'themeInkColor', label: 'Ink Color (--ts-ink)', type: 'text', value: this.currentSettings.themeInkColor || '#1d2a39', placeholder: '#1d2a39', description: 'Primary text color (midnight blue)' },
+          { key: 'themeInkSoft', label: 'Ink Soft (--ts-ink-soft)', type: 'text', value: this.currentSettings.themeInkSoft || '#3f5f47', placeholder: '#3f5f47', description: 'Secondary text color (forest green)' },
+          { key: 'themeBgColor', label: 'Background (--ts-bg)', type: 'text', value: this.currentSettings.themeBgColor || '#f8f9fa', placeholder: '#f8f9fa', description: 'Main background color' },
+          { key: 'themePaperColor', label: 'Paper (--ts-paper)', type: 'text', value: this.currentSettings.themePaperColor || '#ffffff', placeholder: '#ffffff', description: 'Card/panel background' },
+          { key: 'themeLineColor', label: 'Line Color (--ts-line)', type: 'text', value: this.currentSettings.themeLineColor || '#e5e7eb', placeholder: '#e5e7eb', description: 'Border and divider color' },
+          // Theme Profile Settings (hidden system fields)
+          { key: 'activeThemeProfile', label: 'Active Theme Profile', type: 'text', value: this.currentSettings.activeThemeProfile || '', hidden: true },
+          { key: 'themeProfile1Name', label: 'Theme Profile 1 Name', type: 'text', value: this.currentSettings.themeProfile1Name || '', hidden: true },
+          { key: 'themeProfile1Data', label: 'Theme Profile 1 Data', type: 'textarea', value: this.currentSettings.themeProfile1Data || '', hidden: true },
+          { key: 'themeProfile2Name', label: 'Theme Profile 2 Name', type: 'text', value: this.currentSettings.themeProfile2Name || '', hidden: true },
+          { key: 'themeProfile2Data', label: 'Theme Profile 2 Data', type: 'textarea', value: this.currentSettings.themeProfile2Data || '', hidden: true },
+          { key: 'themeProfile3Name', label: 'Theme Profile 3 Name', type: 'text', value: this.currentSettings.themeProfile3Name || '', hidden: true },
+          { key: 'themeProfile3Data', label: 'Theme Profile 3 Data', type: 'textarea', value: this.currentSettings.themeProfile3Data || '', hidden: true },
+          { key: 'themeProfile4Name', label: 'Theme Profile 4 Name', type: 'text', value: this.currentSettings.themeProfile4Name || '', hidden: true },
+          { key: 'themeProfile4Data', label: 'Theme Profile 4 Data', type: 'textarea', value: this.currentSettings.themeProfile4Data || '', hidden: true },
+          { key: 'themeProfile5Name', label: 'Theme Profile 5 Name', type: 'text', value: this.currentSettings.themeProfile5Name || '', hidden: true },
+          { key: 'themeProfile5Data', label: 'Theme Profile 5 Data', type: 'textarea', value: this.currentSettings.themeProfile5Data || '', hidden: true }
+        ]
+      },
+      {
         title: 'Home Hero Images',
         icon: 'M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z',
         color: 'orange',
@@ -265,6 +330,24 @@ export class SettingsAdminComponent extends LoadingComponentBase implements OnIn
         settings: [],
         isCustomComponent: true
       },
+      {
+        title: 'Page Hero Settings',
+        icon: 'M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z',
+        color: 'indigo',
+        expanded: false,
+        settings: [
+          { key: 'serviciosHeroImage', label: 'Services Page - Hero Image', type: 'image', value: this.currentSettings.serviciosHeroImage, storagePath: 'settings/page-heroes', helpText: 'Recommended: 1200x600px or larger' },
+          { key: 'serviciosHeroTitle', label: 'Services Page - Title', type: 'text', value: this.currentSettings.serviciosHeroTitle, placeholder: 'Enter hero title' },
+          { key: 'serviciosHeroSubtitle', label: 'Services Page - Subtitle', type: 'textarea', value: this.currentSettings.serviciosHeroSubtitle, placeholder: 'Enter hero subtitle' },
+          { key: 'galeriaHeroImage', label: 'Gallery Page - Hero Image', type: 'image', value: this.currentSettings.galeriaHeroImage, storagePath: 'settings/page-heroes', helpText: 'Recommended: 1200x600px or larger' },
+          { key: 'galeriaHeroTitle', label: 'Gallery Page - Title', type: 'text', value: this.currentSettings.galeriaHeroTitle, placeholder: 'Enter hero title' },
+          { key: 'galeriaHeroSubtitle', label: 'Gallery Page - Subtitle', type: 'textarea', value: this.currentSettings.galeriaHeroSubtitle, placeholder: 'Enter hero subtitle' },
+          { key: 'contactoHeroImage', label: 'Contact Page - Hero Image', type: 'image', value: this.currentSettings.contactoHeroImage, storagePath: 'settings/page-heroes', helpText: 'Recommended: 1200x600px or larger' },
+          { key: 'contactoHeroTitle', label: 'Contact Page - Title', type: 'text', value: this.currentSettings.contactoHeroTitle, placeholder: 'Enter hero title' },
+          { key: 'contactoHeroSubtitle', label: 'Contact Page - Subtitle', type: 'textarea', value: this.currentSettings.contactoHeroSubtitle, placeholder: 'Enter hero subtitle' }
+        ]
+      },
+      /* HIDDEN - Stripe Configuration
       {
         title: 'Stripe Configuration',
         icon: 'M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z',
@@ -282,6 +365,7 @@ export class SettingsAdminComponent extends LoadingComponentBase implements OnIn
           { key: 'stripeTestMode', label: 'Test Mode', type: 'boolean', value: this.currentSettings.stripeTestMode, description: 'Use Stripe test keys instead of live keys' }
         ]
       },
+      */
       {
         title: 'Email Configuration',
         icon: 'M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z',
@@ -298,6 +382,7 @@ export class SettingsAdminComponent extends LoadingComponentBase implements OnIn
           { key: 'emailFromName', label: 'From Name', type: 'text', value: this.currentSettings.emailFromName, placeholder: 'Your Company Name' }
         ]
       },
+      /* HIDDEN - Shipping Settings
       {
         title: 'Shipping Settings',
         icon: 'M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4',
@@ -310,6 +395,7 @@ export class SettingsAdminComponent extends LoadingComponentBase implements OnIn
           { key: 'shippingEstimate', label: 'Shipping Estimate (days)', type: 'text', value: this.currentSettings.shippingEstimate, placeholder: 'e.g., 3-5 business days' }
         ]
       },
+      */
       {
         title: 'Analytics & Tracking',
         icon: 'M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z',
@@ -414,7 +500,8 @@ export class SettingsAdminComponent extends LoadingComponentBase implements OnIn
           { key: 'enableCompression', label: 'Enable Gzip Compression', type: 'boolean', value: this.currentSettings.enableCompression },
           { key: 'cdnUrl', label: 'CDN URL', type: 'text', value: this.currentSettings.cdnUrl, placeholder: 'https://cdn.example.com' }
         ]
-      },
+      }
+      /* HIDDEN - Inventory
       {
         title: 'Inventory',
         icon: 'M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4',
@@ -428,6 +515,7 @@ export class SettingsAdminComponent extends LoadingComponentBase implements OnIn
           { key: 'stockReserveTime', label: 'Cart Stock Reserve Time (min)', type: 'number', value: this.currentSettings.stockReserveTime, placeholder: '15' }
         ]
       }
+      */
     ];
   }
 
@@ -440,6 +528,9 @@ export class SettingsAdminComponent extends LoadingComponentBase implements OnIn
       const freshSettings = await this.settingsService.getSettings(true);
       
       const updatedSettings: AppSettings = {
+        // Brand & Logo
+        brandLogo: '',
+        brandLogoLight: '',
         // General
         siteName: '',
         siteDescription: '',
@@ -519,7 +610,83 @@ export class SettingsAdminComponent extends LoadingComponentBase implements OnIn
         hideOutOfStock: false,
         stockReserveTime: 15,
         // Hero Images - PRESERVE fresh value from Firestore
-        heroImagesJson: freshSettings.heroImagesJson || ''
+        heroImagesJson: freshSettings.heroImagesJson || '',
+        // Page Hero Settings
+        serviciosHeroImage: freshSettings.serviciosHeroImage || '/assets/services/hero-services.jpg',
+        serviciosHeroTitle: freshSettings.serviciosHeroTitle || 'Tailored event design and floral artistry',
+        serviciosHeroSubtitle: freshSettings.serviciosHeroSubtitle || 'Full-service planning, luxury florals, and seasonal decor crafted for weddings, brands, private celebrations, and interiors.',
+        galeriaHeroImage: freshSettings.galeriaHeroImage || '/assets/gallery/hero-gallery.jpg',
+        galeriaHeroTitle: freshSettings.galeriaHeroTitle || 'Event design, florals, and seasonal installs we love',
+        galeriaHeroSubtitle: freshSettings.galeriaHeroSubtitle || 'Explore weddings, brand activations, private celebrations, and botanical styling crafted with our ivory and gold aesthetic.',
+        contactoHeroImage: freshSettings.contactoHeroImage || '/assets/contact/hero-contact.jpg',
+        contactoHeroTitle: freshSettings.contactoHeroTitle || 'Tell us about your celebration',
+        contactoHeroSubtitle: freshSettings.contactoHeroSubtitle || 'Share your date, location, and vision. We respond within one business day to craft a bespoke plan for your event.',
+        // Theme Customization
+        themeAccentColor: '#a8c5a4',
+        themeAccentSoft: '#c1d5be',
+        themeAccentDark: '#8aab85',
+        themeInkColor: '#1d2a39',
+        themeInkSoft: '#3f5f47',
+        themeBgColor: '#f8f9fa',
+        themePaperColor: '#ffffff',
+        themeLineColor: '#e5e7eb',
+        // Theme Profiles
+        activeThemeProfile: 'custom',
+        themeProfile1Name: 'Spring Bloom',
+        themeProfile1Data: JSON.stringify({
+          themeAccentColor: '#ff69b4',
+          themeAccentSoft: '#ffb3d9',
+          themeAccentDark: '#d5578f',
+          themeInkColor: '#2d1b2e',
+          themeInkSoft: '#5a4a5e',
+          themeBgColor: '#fff5f8',
+          themePaperColor: '#ffffff',
+          themeLineColor: '#ffe0ec'
+        }),
+        themeProfile2Name: 'Summer Sunshine',
+        themeProfile2Data: JSON.stringify({
+          themeAccentColor: '#ffa500',
+          themeAccentSoft: '#ffc04d',
+          themeAccentDark: '#e69500',
+          themeInkColor: '#2c1810',
+          themeInkSoft: '#6b4423',
+          themeBgColor: '#fffbf0',
+          themePaperColor: '#ffffff',
+          themeLineColor: '#ffe8c5'
+        }),
+        themeProfile3Name: 'Autumn Harvest',
+        themeProfile3Data: JSON.stringify({
+          themeAccentColor: '#d2691e',
+          themeAccentSoft: '#e89b5e',
+          themeAccentDark: '#a0501a',
+          themeInkColor: '#3d2817',
+          themeInkSoft: '#6b4a2f',
+          themeBgColor: '#fdf8f3',
+          themePaperColor: '#ffffff',
+          themeLineColor: '#f0dcc8'
+        }),
+        themeProfile4Name: 'Winter Frost',
+        themeProfile4Data: JSON.stringify({
+          themeAccentColor: '#4a90e2',
+          themeAccentSoft: '#7eb2f5',
+          themeAccentDark: '#3a75c4',
+          themeInkColor: '#1a2f4a',
+          themeInkSoft: '#3d5a7a',
+          themeBgColor: '#f5f9ff',
+          themePaperColor: '#ffffff',
+          themeLineColor: '#d6e8ff'
+        }),
+        themeProfile5Name: 'Sage Garden (Default)',
+        themeProfile5Data: JSON.stringify({
+          themeAccentColor: '#a8c5a4',
+          themeAccentSoft: '#c1d5be',
+          themeAccentDark: '#8aab85',
+          themeInkColor: '#1d2a39',
+          themeInkSoft: '#3f5f47',
+          themeBgColor: '#f8f9fa',
+          themePaperColor: '#ffffff',
+          themeLineColor: '#e5e7eb'
+        })
       };
 
       this.sections.forEach(section => {
@@ -544,10 +711,22 @@ export class SettingsAdminComponent extends LoadingComponentBase implements OnIn
       if (!updatedSettings.recaptchaSiteKey && this.currentSettings?.recaptchaSiteKey) {
         updatedSettings.recaptchaSiteKey = this.currentSettings.recaptchaSiteKey;
       }
+
+      // Normalize social media URLs
+      updatedSettings.facebookUrl = this.normalizeSocialMediaUrl(updatedSettings.facebookUrl, 'facebook.com');
+      updatedSettings.twitterUrl = this.normalizeSocialMediaUrl(updatedSettings.twitterUrl, 'twitter.com', 'x.com');
+      updatedSettings.instagramUrl = this.normalizeSocialMediaUrl(updatedSettings.instagramUrl, 'instagram.com');
+      updatedSettings.linkedinUrl = this.normalizeSocialMediaUrl(updatedSettings.linkedinUrl, 'linkedin.com');
+      updatedSettings.youtubeUrl = this.normalizeSocialMediaUrl(updatedSettings.youtubeUrl, 'youtube.com');
       
       await this.settingsService.saveSettings(updatedSettings);
       this.currentSettings = updatedSettings;
+      
+      // Apply theme variables to DOM
+      this.applyThemeVariables(updatedSettings);
+      
       this.buildSections();
+      this.loadThemeProfiles(); // Reload theme profiles after save
       this.updateNotificationSummary();
       this.showMessage('admin.settings.feedback.success', 'success');
     } catch (error: any) {
@@ -558,6 +737,63 @@ export class SettingsAdminComponent extends LoadingComponentBase implements OnIn
     }
   }
 
+
+  /**
+   * Normalizes social media URLs by ensuring they start with https://
+   * Handles cases where users input:
+   * - instagram.com/username
+   * - www.instagram.com/username
+   * - http://instagram.com/username
+   * - https://instagram.com/username (already correct)
+   * - @username or username (adds full URL)
+   */
+  private normalizeSocialMediaUrl(url: string, ...domains: string[]): string {
+    if (!url || url.trim() === '') {
+      return '';
+    }
+
+    let normalized = url.trim();
+
+    // If it starts with @, remove it
+    if (normalized.startsWith('@')) {
+      normalized = normalized.substring(1);
+    }
+
+    // Check if it already has a protocol
+    const hasProtocol = /^https?:\/\//i.test(normalized);
+    
+    if (hasProtocol) {
+      // Ensure it's https, not http
+      return normalized.replace(/^http:\/\//i, 'https://');
+    }
+
+    // Check if it starts with any of the provided domains (with or without www.)
+    for (const domain of domains) {
+      const patterns = [
+        new RegExp(`^www\.${domain.replace('.', '\\.')}\/`, 'i'),
+        new RegExp(`^${domain.replace('.', '\\.')}\/`, 'i')
+      ];
+
+      for (const pattern of patterns) {
+        if (pattern.test(normalized)) {
+          // Add https:// prefix
+          return `https://${normalized.replace(/^www\./i, '')}`;
+        }
+      }
+    }
+
+    // If no domain prefix found, assume it's just a username and add the first domain
+    if (domains.length > 0 && !normalized.includes('/')) {
+      return `https://${domains[0]}/${normalized}`;
+    }
+
+    // If it contains a slash but no protocol, add https://
+    if (normalized.includes('/') && !hasProtocol) {
+      return `https://${normalized}`;
+    }
+
+    return normalized;
+  }
 
   getFieldId(sectionTitle: string, key: keyof AppSettings): string {
     const sanitized = sectionTitle.toLowerCase().replace(/[^a-z0-9]+/g, '-');
@@ -580,6 +816,14 @@ export class SettingsAdminComponent extends LoadingComponentBase implements OnIn
       'emerald': 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400'
     };
     return colorMap[color] || colorMap['blue'];
+  }
+
+  getSelectedOptionLabel(setting: Setting): string {
+    if (!setting.options || !setting.value) {
+      return String(setting.value || '');
+    }
+    const option = setting.options.find(opt => opt.value === setting.value);
+    return option?.label || String(setting.value);
   }
 
   private showMessage(key: string, type: MessageType, params: Record<string, unknown> = {}) {
@@ -753,6 +997,254 @@ export class SettingsAdminComponent extends LoadingComponentBase implements OnIn
 
   getActivityAccent(type: AdminActivityItem['type']): string {
     return this.activityAccentMap[type] ?? 'bg-white/10 border-white/20 text-white/70';
+  }
+
+  /**
+   * Apply theme CSS variables to the document root
+   */
+  applyThemeVariables(settings: AppSettings): void {
+    if (typeof document === 'undefined') {
+      return; // SSR safety
+    }
+
+    const root = document.documentElement;
+    
+    // Apply each theme variable if it exists
+    if (settings.themeAccentColor) {
+      root.style.setProperty('--ts-accent', settings.themeAccentColor);
+    }
+    if (settings.themeAccentSoft) {
+      root.style.setProperty('--ts-accent-soft', settings.themeAccentSoft);
+    }
+    if (settings.themeAccentDark) {
+      root.style.setProperty('--ts-accent-dark', settings.themeAccentDark);
+    }
+    if (settings.themeInkColor) {
+      root.style.setProperty('--ts-ink', settings.themeInkColor);
+    }
+    if (settings.themeInkSoft) {
+      root.style.setProperty('--ts-ink-soft', settings.themeInkSoft);
+    }
+    if (settings.themeBgColor) {
+      root.style.setProperty('--ts-bg', settings.themeBgColor);
+    }
+    if (settings.themePaperColor) {
+      root.style.setProperty('--ts-paper', settings.themePaperColor);
+    }
+    if (settings.themeLineColor) {
+      root.style.setProperty('--ts-line', settings.themeLineColor);
+    }
+
+    console.log('✅ Theme variables applied:', {
+      accent: settings.themeAccentColor,
+      accentSoft: settings.themeAccentSoft,
+      accentDark: settings.themeAccentDark,
+      ink: settings.themeInkColor,
+      inkSoft: settings.themeInkSoft,
+      bg: settings.themeBgColor,
+      paper: settings.themePaperColor,
+      line: settings.themeLineColor
+    });
+  }
+
+  // Theme Profile Management
+  loadThemeProfiles(): void {
+    if (!this.currentSettings) return;
+
+    this.activeProfileId = this.currentSettings.activeThemeProfile || 'custom';
+
+    for (let i = 1; i <= 5; i++) {
+      const profileId = `profile${i}`;
+      const nameKey = `themeProfile${i}Name` as keyof AppSettings;
+      const dataKey = `themeProfile${i}Data` as keyof AppSettings;
+      
+      const profile = this.themeProfiles[i - 1];
+      profile.name = (this.currentSettings[nameKey] as string) || `Theme ${i}`;
+      
+      const dataStr = this.currentSettings[dataKey] as string;
+      if (dataStr) {
+        try {
+          profile.colors = JSON.parse(dataStr);
+        } catch (e) {
+          profile.colors = null;
+        }
+      }
+    }
+  }
+
+  getCurrentThemeColors(): ThemeProfile {
+    if (!this.currentSettings) {
+      return this.getDefaultThemeColors();
+    }
+    return {
+      themeAccentColor: this.currentSettings.themeAccentColor,
+      themeAccentSoft: this.currentSettings.themeAccentSoft,
+      themeAccentDark: this.currentSettings.themeAccentDark,
+      themeInkColor: this.currentSettings.themeInkColor,
+      themeInkSoft: this.currentSettings.themeInkSoft,
+      themeBgColor: this.currentSettings.themeBgColor,
+      themePaperColor: this.currentSettings.themePaperColor,
+      themeLineColor: this.currentSettings.themeLineColor
+    };
+  }
+
+  getDefaultThemeColors(): ThemeProfile {
+    return {
+      themeAccentColor: '#a8c5a4',
+      themeAccentSoft: '#c1d5be',
+      themeAccentDark: '#8aab85',
+      themeInkColor: '#1d2a39',
+      themeInkSoft: '#3f5f47',
+      themeBgColor: '#f8f9fa',
+      themePaperColor: '#ffffff',
+      themeLineColor: '#e5e7eb'
+    };
+  }
+
+  async saveToProfile(profileId: string): Promise<void> {
+    if (!this.currentSettings) return;
+
+    const currentColors = this.getCurrentThemeColors();
+    const profileIndex = parseInt(profileId.replace('profile', '')) - 1;
+    
+    if (profileIndex < 0 || profileIndex >= 5) return;
+
+    const dataKey = `themeProfile${profileIndex + 1}Data` as keyof AppSettings;
+    (this.currentSettings[dataKey] as any) = JSON.stringify(currentColors);
+    
+    // Update local profile
+    this.themeProfiles[profileIndex].colors = currentColors;
+
+    // Update the section data
+    const section = this.sections.find(s => s.title === 'Theme Customization');
+    if (section) {
+      const setting = section.settings.find(s => s.key === dataKey);
+      if (setting) {
+        setting.value = JSON.stringify(currentColors);
+      }
+    }
+
+    this.onSettingValueChange();
+    this.showMessage('Theme saved to ' + this.themeProfiles[profileIndex].name, 'success');
+  }
+
+  async loadProfile(profileId: string): Promise<void> {
+    if (!this.currentSettings) return;
+
+    let colors: ThemeProfile;
+
+    if (profileId === 'custom') {
+      // Keep current colors
+      return;
+    } else {
+      const profileIndex = parseInt(profileId.replace('profile', '')) - 1;
+      if (profileIndex < 0 || profileIndex >= 5) return;
+
+      const profile = this.themeProfiles[profileIndex];
+      if (!profile.colors) {
+        this.showMessage('This profile is empty', 'error');
+        return;
+      }
+
+      colors = profile.colors;
+    }
+
+    // Apply colors to current settings
+    this.currentSettings.themeAccentColor = colors.themeAccentColor;
+    this.currentSettings.themeAccentSoft = colors.themeAccentSoft;
+    this.currentSettings.themeAccentDark = colors.themeAccentDark;
+    this.currentSettings.themeInkColor = colors.themeInkColor;
+    this.currentSettings.themeInkSoft = colors.themeInkSoft;
+    this.currentSettings.themeBgColor = colors.themeBgColor;
+    this.currentSettings.themePaperColor = colors.themePaperColor;
+    this.currentSettings.themeLineColor = colors.themeLineColor;
+    this.currentSettings.activeThemeProfile = profileId;
+
+    // Update sections
+    const section = this.sections.find(s => s.title === 'Theme Customization');
+    if (section) {
+      section.settings.forEach(setting => {
+        if (setting.key.toString().includes('theme') && !setting.key.toString().includes('Profile')) {
+          const colorKey = setting.key as keyof ThemeProfile;
+          if (colorKey in colors) {
+            setting.value = colors[colorKey];
+          }
+        }
+        if (setting.key === 'activeThemeProfile') {
+          setting.value = profileId;
+        }
+      });
+    }
+
+    this.activeProfileId = profileId;
+    this.applyThemeVariables(this.currentSettings);
+    this.onSettingValueChange();
+    
+    const profileName = profileId === 'custom' ? 'Custom' : this.themeProfiles[parseInt(profileId.replace('profile', '')) - 1].name;
+    this.showMessage(`Loaded ${profileName} theme`, 'success');
+  }
+
+  startEditingProfileName(profileId: string): void {
+    const profileIndex = parseInt(profileId.replace('profile', '')) - 1;
+    this.editingProfileId = profileId;
+    this.editingProfileName = this.themeProfiles[profileIndex].name;
+  }
+
+  async saveProfileName(profileId: string): Promise<void> {
+    if (!this.currentSettings || !this.editingProfileName.trim()) return;
+
+    const profileIndex = parseInt(profileId.replace('profile', '')) - 1;
+    const nameKey = `themeProfile${profileIndex + 1}Name` as keyof AppSettings;
+    
+    (this.currentSettings[nameKey] as any) = this.editingProfileName.trim();
+    this.themeProfiles[profileIndex].name = this.editingProfileName.trim();
+
+    // Update the section data
+    const section = this.sections.find(s => s.title === 'Theme Customization');
+    if (section) {
+      const setting = section.settings.find(s => s.key === nameKey);
+      if (setting) {
+        setting.value = this.editingProfileName.trim();
+      }
+    }
+
+    this.editingProfileId = null;
+    this.editingProfileName = '';
+    this.onSettingValueChange();
+  }
+
+  cancelEditingProfileName(): void {
+    this.editingProfileId = null;
+    this.editingProfileName = '';
+  }
+
+  async clearProfile(profileId: string): Promise<void> {
+    if (!this.currentSettings) return;
+    
+    const profileIndex = parseInt(profileId.replace('profile', '')) - 1;
+    if (profileIndex < 0 || profileIndex >= 5) return;
+
+    const dataKey = `themeProfile${profileIndex + 1}Data` as keyof AppSettings;
+    (this.currentSettings[dataKey] as any) = '';
+    
+    this.themeProfiles[profileIndex].colors = null;
+
+    // Update the section data
+    const section = this.sections.find(s => s.title === 'Theme Customization');
+    if (section) {
+      const setting = section.settings.find(s => s.key === dataKey);
+      if (setting) {
+        setting.value = '';
+      }
+    }
+
+    if (this.activeProfileId === profileId) {
+      this.activeProfileId = 'custom';
+      this.currentSettings.activeThemeProfile = 'custom';
+    }
+
+    this.onSettingValueChange();
+    this.showMessage('Profile cleared', 'info');
   }
 }
 

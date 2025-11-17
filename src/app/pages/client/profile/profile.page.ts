@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
-import { PageHeaderComponent, Breadcrumb } from '../../../shared/components/page-header/page-header.component';
 
 interface ProfileHighlight {
   icon: 'calendar' | 'clock' | 'shield' | 'user';
@@ -16,7 +15,7 @@ import { AuthService, UserProfile } from '../../../services/auth.service';
 @Component({
   selector: 'app-profile-page',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterLink, TranslateModule, PageHeaderComponent],
+  imports: [CommonModule, ReactiveFormsModule, RouterLink, TranslateModule],
   templateUrl: './profile.page.html',
   styleUrl: './profile.page.scss'
 })
@@ -26,11 +25,6 @@ export class ProfilePageComponent implements OnInit {
   private router = inject(Router);
   private translate = inject(TranslateService);
   private cdr = inject(ChangeDetectorRef);
-
-  breadcrumbs: Breadcrumb[] = [
-    { label: 'nav.home', url: '/', icon: 'home' },
-    { label: 'nav.profile', icon: 'user' }
-  ];
 
   profileForm: FormGroup;
   userProfile: UserProfile | null = null;

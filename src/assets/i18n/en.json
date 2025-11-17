@@ -1,0 +1,74 @@
+{
+  "nav": {
+    "home": "Home",
+    "profile": "My Profile"
+  },
+  "client": {
+    "profile": "My Profile",
+    "profile_subtitle": "Manage your account settings and preferences",
+    "logout": "Logout",
+    "name": "Name",
+    "email": "Email",
+    "phone": "Phone",
+    "company": "Company",
+    "not_provided": "Not provided",
+    "profile_metrics": {
+      "member_since": "Member Since",
+      "last_login": "Last Login",
+      "last_login_never": "Never",
+      "account_status": "Account Status",
+      "account_type": "Account Type",
+      "not_available": "Not available"
+    },
+    "profile_status": {
+      "active": "Active",
+      "disabled": "Disabled",
+      "locked": "Locked"
+    },
+    "profile_role": {
+      "admin": "Administrator",
+      "client": "Client"
+    },
+    "profile_sections": {
+      "account_overview": "Account Overview",
+      "account_overview_hint": "Your account summary and key metrics",
+      "contact_information": "Contact Information",
+      "contact_information_hint": "Manage your contact details",
+      "security": "Security & Access",
+      "security_hint": "Monitor your account security and login activity",
+      "support": "Need Help?"
+    },
+    "profile_support_description": "Our support team is here to help with any questions or concerns",
+    "email_cannot_change": "Email address cannot be changed",
+    "security": {
+      "email_verified": "Email Verification",
+      "verified": "Verified",
+      "not_verified": "Not Verified",
+      "login_attempts": "Login Attempts",
+      "last_failed_login": "Last Failed Login",
+      "session_status": "Session Status"
+    },
+    "profile_actions": {
+      "view_orders": "View Orders",
+      "contact_support": "Contact Support",
+      "edit_profile": "Edit Profile",
+      "save_changes": "Save Changes",
+      "cancel": "Cancel"
+    },
+    "errors": {
+      "email_in_use": "This email is already registered",
+      "weak_password": "Password is too weak",
+      "registration_failed": "Registration failed. Please try again.",
+      "login_failed": "Login failed. Please check your credentials.",
+      "name_required": "Name is required and must be at least 3 characters"
+    }
+  },
+  "common": {
+    "loading": "Loading...",
+    "back": "Back to Home"
+  },
+  "footer": {
+    "description": "Professional event planning and design services to make your special moments unforgettable. From intimate gatherings to grand celebrations, we bring your vision to life.",
+    "business_hours": "Business Hours"
+  }
+}

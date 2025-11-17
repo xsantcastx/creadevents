@@ -1,102 +1,105 @@
 {
   "brand": {
     "key": "default",
-    "name": "The Lux Mining",
-    "shortName": "TheLuxMining",
-    "tagline": "Premium Bitcoin Mining Equipment",
-    "description": "Specialized e-commerce storefront for high-performance Bitcoin miners, accessories, and white-glove fulfillment.",
-    "domain": "theluxmining.com",
+    "name": "Creation Design & Events",
+    "shortName": "CreaDevents",
+    "tagline": "Elevating Your Events with Elegance and Expertise",
+    "description": "Family-owned event design and décor company specializing in weddings, corporate events, and custom floral arrangements in Miami, Florida.",
+    "domain": "creadevents.com",
     "logo": "/Logo Clear.png",
-    "logoAlt": "The Lux Mining mark",
+    "logoAlt": "Creation Design & Events",
     "favicon": "/assets/brand/favicon.png"
   },
   "contact": {
-    "email": "support@theluxmining.com",
-    "phone": "+1 (800) 555 0199",
-    "address": "100 Greyrock Pl F119\nStamford, CT 06901",
-    "supportHours": "Mon-Fri 9AM-5PM EST"
+    "email": "carlos@creadevents.com",
+    "phone": "+1 (786) 356-2958",
+    "phone2": "+1 (786) 356-2219",
+    "address": "Miami, Florida\nUnited States",
+    "supportHours": "Mon-Sat 8AM-7PM EST",
+    "whatsapp": "https://wa.me/17863562958"
   },
   "theme": {
     "tokens": {
-      "ts-bg": "#0b0d10",
-      "ts-bg-soft": "#111316",
-      "ts-paper": "#13151a",
-      "ts-ink": "#f5f6f8",
-      "ts-ink-soft": "#caced4",
-      "ts-accent": "#f7931a",
-      "ts-accent-soft": "#ffb81c",
-      "ts-line": "#272a31",
-      "surface-glass": "rgba(255,255,255,0.04)",
-      "surface-border": "rgba(255,255,255,0.12)"
+      "ts-bg": "#FAF6F0",
+      "ts-bg-soft": "#FFFFFF",
+      "ts-paper": "#FFFFFF",
+      "ts-ink": "#1D2A39",
+      "ts-ink-soft": "#3F5F47",
+      "ts-accent": "#D8C9A6",
+      "ts-accent-soft": "#E8B8C8",
+      "ts-line": "#F1EFEA",
+      "surface-glass": "rgba(216,201,166,0.1)",
+      "surface-border": "rgba(29,42,57,0.12)"
     },
     "fonts": {
-      "sans": "Inter, 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif",
-      "display": "'Space Grotesk', 'Clash Display', Inter, 'Segoe UI', system-ui, sans-serif",
-      "mono": "'JetBrains Mono', Menlo, Monaco, Consolas, 'Liberation Mono', monospace"
+      "sans": "'Lato', 'Inter', 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, sans-serif",
+      "display": "'Playfair Display', 'Georgia', serif",
+      "mono": "'JetBrains Mono', Menlo, Monaco, Consolas, monospace"
     }
   },
   "hero": {
-    "eyebrow": "Flagship Bitcoin hardware studio",
-    "title": "Hand-built Bitcoin miners & premium crypto gear",
-    "subtitle": "Numbered, signed, and battle-tested. Built by humans with obsessive QA.",
+    "eyebrow": "Miami's Premier Event Design Studio",
+    "title": "Modern Design & Décor to Make Every Celebration Unforgettable",
+    "subtitle": "Family-owned with 15+ years of experience creating elegant weddings, corporate events, and custom floral arrangements.",
     "primaryCta": {
-      "label": "Shop miners",
-      "href": "/productos"
+      "label": "View Our Services",
+      "href": "/servicios"
     },
     "secondaryCta": {
-      "label": "Talk to a specialist",
+      "label": "Contact Us",
       "href": "/contacto"
     },
-    "badge": "2,400+ ASICs deployed"
+    "badge": "15+ years in Miami"
   },
   "navigation": {
     "header": [
-      { "label": "nav.home", "href": "/", "exact": true },
-      { "label": "nav.products", "href": "/productos" },
-      { "label": "nav.gallery", "href": "/galeria" },
-      { "label": "nav.contact", "href": "/contacto" }
+      { "label": "Home", "href": "/", "exact": true },
+      { "label": "Services", "href": "/servicios" },
+      { "label": "Gallery", "href": "/galeria" },
+      { "label": "Contact", "href": "/contacto" }
     ],
     "footer": [
-      { "label": "Products", "href": "/productos" },
+      { "label": "Services", "href": "/servicios" },
       { "label": "About", "href": "/about" },
-      { "label": "FAQ", "href": "/faq" },
+      { "label": "Gallery", "href": "/galeria" },
+      { "label": "Contact", "href": "/contacto" },
       { "label": "Terms", "href": "/legal/terms" },
-      { "label": "Privacy", "href": "/legal/privacy" },
-      { "label": "Refunds", "href": "/legal/refund" }
+      { "label": "Privacy", "href": "/legal/privacy" }
     ],
     "social": [
-      { "platform": "instagram", "href": "https://instagram.com/theluxmining" },
-      { "platform": "linkedin", "href": "https://linkedin.com/company/theluxmining" }
+      { "platform": "instagram", "href": "https://instagram.com/creadevents" },
+      { "platform": "facebook", "href": "https://facebook.com/creadevents" }
     ]
   },
   "seo": {
-    "siteName": "The Lux Mining",
-    "titleTemplate": "%s • The Lux Mining",
-    "defaultTitle": "Bitcoin Solo Miners & Mining Equipment",
-    "defaultDescription": "Buy premium ASIC miners, immersion-ready rigs, and curated solo mining bundles with concierge support.",
+    "siteName": "Creation Design & Events",
+    "titleTemplate": "%s • CreaDevents",
+    "defaultTitle": "Event Design & Floral Décor in Miami",
+    "defaultDescription": "Family-owned event design company specializing in weddings, corporate events, and custom floral arrangements. Serving Miami with elegance and expertise.",
     "defaultKeywords": [
-      "bitcoin mining hardware",
-      "solo miners",
-      "asic miners",
-      "immersion mining",
-      "luxury mining gear"
+      "event planning miami",
+      "wedding design miami",
+      "floral arrangements",
+      "corporate events",
+      "event décor",
+      "miami event planner"
     ],
     "socialImage": "/assets/brand/og-default.jpg"
   },
   "legal": {
-    "businessName": "TheLuxMining LLC",
+    "businessName": "Creation Design & Events",
     "taxId": "",
-    "supportEmail": "support@theluxmining.com",
+    "supportEmail": "carlos@creadevents.com",
     "returnPolicyUrl": "/return-policy",
     "privacyPolicyUrl": "/privacy-policy",
     "termsUrl": "/terms"
   },
   "maintenance": {
     "title": "Scheduled maintenance",
-    "description": "We are upgrading the storefront and will return shortly. Reach us at support@theluxmining.com for urgent orders."
+    "description": "We are updating our website and will return shortly. Reach us at carlos@creadevents.com or call (786) 356-2958 for urgent inquiries."
   },
   "notifications": {
-    "emailFromName": "The Lux Mining",
-    "emailFrom": "noreply@theluxmining.com"
+    "emailFromName": "Creation Design & Events",
+    "emailFrom": "noreply@creadevents.com"
   }
 }

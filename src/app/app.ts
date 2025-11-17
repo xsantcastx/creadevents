@@ -7,14 +7,16 @@ import { filter } from 'rxjs/operators';
 import { NavbarComponent } from './core/components/navbar/navbar.component';
 import { FooterComponent } from './core/components/footer/footer.component';
 import { CookieBannerComponent } from './shared/components/cookie-banner/cookie-banner.component';
+import { WhatsappButtonComponent } from './shared/components/whatsapp-button/whatsapp-button.component';
 import { AnalyticsService } from './services/analytics.service';
 import { SettingsService, AppSettings } from './services/settings.service';
 import { AuthService } from './services/auth.service';
+import { ThemeService } from './services/theme.service';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, NavbarComponent, FooterComponent, CookieBannerComponent, TranslateModule],
+  imports: [RouterOutlet, NavbarComponent, FooterComponent, CookieBannerComponent, WhatsappButtonComponent, TranslateModule],
   templateUrl: './app.html',
   styleUrl: './app.scss'
 })
@@ -24,6 +26,7 @@ export class AppComponent implements OnInit {
   private platformId = inject(PLATFORM_ID);
   private settingsService = inject(SettingsService);
   private authService = inject(AuthService);
+  private themeService = inject(ThemeService);
   private cdr = inject(ChangeDetectorRef);
   private router = inject(Router);
 
@@ -36,6 +39,7 @@ export class AppComponent implements OnInit {
   isAdmin = false;
   isAuthenticated = false;
   currentUrl = '';
+  isAdminRoute = false;
   
   // Routes that should be accessible during maintenance mode (even for non-authenticated users)
   private maintenanceExemptRoutes = [
@@ -68,6 +72,7 @@ export class AppComponent implements OnInit {
       )
       .subscribe((event) => {
         this.currentUrl = (event as NavigationEnd).url;
+        this.isAdminRoute = this.currentUrl.startsWith('/admin');
         this.cdr.markForCheck();
       });
   }
@@ -78,6 +83,9 @@ export class AppComponent implements OnInit {
       const savedLang = localStorage.getItem('selectedLanguage') || 'en';
       this.translate.setDefaultLang('en');
       this.translate.use(savedLang);
+      
+      // Initialize theme from settings
+      this.themeService.initializeTheme();
     } else {
       // Server-side: just use default English
       this.translate.setDefaultLang('en');

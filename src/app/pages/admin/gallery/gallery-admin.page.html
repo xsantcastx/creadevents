@@ -1,22 +1,13 @@
-<div class="section-stack admin-gallery-page min-h-screen bg-gradient-to-b from-[#0a0b0d] to-[#13151a]">
+<app-admin-sidebar />
+
+<div class="section-stack admin-gallery-page min-h-screen bg-gradient-to-b from-ts-bg via-ts-bg-soft to-ts-bg md:ml-64">
   
   <!-- Admin Header -->
-  <div class="bg-gradient-to-r from-bitcoin-dark via-[#13151a] to-bitcoin-dark border-b border-bitcoin-orange/20 shadow-bitcoin">
+  <div class="bg-ts-paper border-b border-ts-line shadow-sm">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
       <div class="flex items-center justify-between">
         <div class="flex items-center gap-4">
-          <a routerLink="/admin" class="hover:text-bitcoin-orange transition-colors">
-            <svg class="w-6 h-6 text-bitcoin-gray hover:text-bitcoin-orange" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
-            </svg>
-          </a>
-          <h1 class="text-xl font-bold bitcoin-gradient-text">{{ 'admin.gallery.title' | translate }}</h1>
-        </div>
-        <div class="flex items-center gap-4">
-          <a routerLink="/admin" class="text-sm text-bitcoin-gray hover:text-bitcoin-orange transition-colors">{{ 'admin.title' | translate }}</a>
-          <button (click)="logout()" class="px-4 py-2 bg-red-500/20 hover:bg-red-500/30 border border-red-500/30 text-red-100 rounded-xl transition-all">
-            {{ 'client.logout' | translate }}
-          </button>
+          <h1 class="text-xl font-bold heading-display text-ts-ink">{{ 'admin.gallery.title' | translate }}</h1>
         </div>
       </div>
     </div>
@@ -24,25 +15,22 @@
 
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
     
-    <!-- Quick Actions -->
-    <app-admin-quick-actions currentPage="/admin/gallery"></app-admin-quick-actions>
-    
     <!-- Success/Error Messages -->
     @if (successMessage) {
-      <div class="mb-6 p-4 bg-bitcoin-gold/20 border border-bitcoin-gold/30 rounded-xl flex items-start gap-3">
-        <svg class="w-5 h-5 text-bitcoin-gold mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <div class="mb-6 p-4 bg-green-500/10 border border-green-500/30 rounded-xl flex items-start gap-3">
+        <svg class="w-5 h-5 text-green-600 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
         </svg>
-        <p class="text-sm text-bitcoin-gold">{{ successMessage | translate }}</p>
+        <p class="text-sm text-green-700">{{ successMessage | translate }}</p>
       </div>
     }
 
     @if (errorMessage) {
-      <div class="mb-6 p-4 bg-red-500/20 border border-red-500/30 rounded-xl flex items-start gap-3">
-        <svg class="w-5 h-5 text-red-400 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <div class="mb-6 p-4 bg-red-500/10 border border-red-500/30 rounded-xl flex items-start gap-3">
+        <svg class="w-5 h-5 text-red-600 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
         </svg>
-        <p class="text-sm text-red-400">{{ errorMessage | translate }}</p>
+        <p class="text-sm text-red-700">{{ errorMessage | translate }}</p>
       </div>
     }
 
@@ -52,25 +40,31 @@
       <div class="flex items-center gap-3 overflow-x-auto pb-2">
         <button
           (click)="selectedTag = 'all'"
-          [class.bg-bitcoin-orange]="selectedTag === 'all'"
-          [class.text-white]="selectedTag === 'all'"
-          [class.border-bitcoin-orange]="selectedTag === 'all'"
-          [class.bg-bitcoin-dark/40]="selectedTag !== 'all'"
-          [class.text-bitcoin-gray]="selectedTag !== 'all'"
-          [class.border-bitcoin-gray/20]="selectedTag !== 'all'"
-          class="px-4 py-2 rounded-xl font-medium transition-all whitespace-nowrap border">
+          [class.bg-gradient-to-r]="selectedTag === 'all'"
+          [class.from-ts-accent]="selectedTag === 'all'"
+          [class.to-ts-accent-soft]="selectedTag === 'all'"
+          [class.text-ts-ink]="selectedTag === 'all'"
+          [class.shadow-md]="selectedTag === 'all'"
+          [class.bg-ts-paper]="selectedTag !== 'all'"
+          [class.text-ts-ink]="selectedTag !== 'all'"
+          [class.opacity-70]="selectedTag !== 'all'"
+          [class.border-ts-line]="selectedTag !== 'all'"
+          class="px-4 py-2 rounded-xl font-medium transition-all whitespace-nowrap border hover:opacity-100">
           All Media ({{ getTagCount('all') }})
         </button>
         @for (tag of availableTags; track tag.id) {
           <button
             (click)="selectedTag = tag.slug"
-            [class.bg-bitcoin-orange]="selectedTag === tag.slug"
-            [class.text-white]="selectedTag === tag.slug"
-            [class.border-bitcoin-orange]="selectedTag === tag.slug"
-            [class.bg-bitcoin-dark/40]="selectedTag !== tag.slug"
-            [class.text-bitcoin-gray]="selectedTag !== tag.slug"
-            [class.border-bitcoin-gray/20]="selectedTag !== tag.slug"
-            class="px-4 py-2 rounded-xl font-medium transition-all whitespace-nowrap border flex items-center gap-2"
+            [class.bg-gradient-to-r]="selectedTag === tag.slug"
+            [class.from-ts-accent]="selectedTag === tag.slug"
+            [class.to-ts-accent-soft]="selectedTag === tag.slug"
+            [class.text-ts-ink]="selectedTag === tag.slug"
+            [class.shadow-md]="selectedTag === tag.slug"
+            [class.bg-ts-paper]="selectedTag !== tag.slug"
+            [class.text-ts-ink]="selectedTag !== tag.slug"
+            [class.opacity-70]="selectedTag !== tag.slug"
+            [class.border-ts-line]="selectedTag !== tag.slug"
+            class="px-4 py-2 rounded-xl font-medium transition-all whitespace-nowrap border flex items-center gap-2 hover:opacity-100"
             [style.border-color]="selectedTag === tag.slug && tag.color ? tag.color : null">
             @if (tag.icon) {
               <span>{{ tag.icon }}</span>
@@ -88,15 +82,15 @@
             type="text"
             [(ngModel)]="searchTerm"
             placeholder="Search media by alt text or tags..."
-            class="w-full px-4 py-3 pl-10 bg-bitcoin-dark/40 border border-bitcoin-gray/20 rounded-xl focus:ring-2 focus:ring-bitcoin-orange focus:border-bitcoin-orange placeholder:text-bitcoin-gray/50 text-bitcoin-gray">
-          <svg class="w-5 h-5 text-bitcoin-gray/50 absolute left-3 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            class="w-full px-4 py-3 pl-10 bg-ts-bg-soft border border-ts-line rounded-xl focus:ring-2 focus:ring-ts-accent focus:border-ts-accent placeholder:text-ts-ink/50 text-ts-ink">
+          <svg class="w-5 h-5 text-ts-ink opacity-50 absolute left-3 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
           </svg>
         </div>
         
         <button
           (click)="openUploadModal()"
-          class="px-4 py-3 bg-bitcoin-orange/30 hover:bg-bitcoin-orange/40 text-bitcoin-orange border border-bitcoin-orange/30 font-semibold rounded-xl transition-all flex items-center gap-2 whitespace-nowrap">
+          class="px-4 py-3 bg-gradient-to-r from-ts-accent to-ts-accent-soft hover:shadow-lg text-ts-ink border border-ts-accent/30 font-semibold rounded-xl transition-all flex items-center gap-2 whitespace-nowrap">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
           </svg>
@@ -107,10 +101,10 @@
 
     @if (isLoading) {
       <!-- Loading State -->
-      <div class="bg-bitcoin-dark/40 backdrop-blur-sm rounded-2xl shadow-bitcoin p-12 border border-bitcoin-gray/20">
+      <div class="bg-ts-paper rounded-2xl shadow-sm p-12 border border-ts-line">
         <div class="flex flex-col items-center justify-center gap-4">
           <div class="app-spinner" style="--spinner-size: 72px;"><img src="/Logo Clear.png" alt="Loading" width="96" height="96"></div>
-          <p class="text-bitcoin-gray">{{ 'common.loading' | translate }}</p>
+          <p class="text-ts-ink">{{ 'common.loading' | translate }}</p>
         </div>
       </div>
     } @else {
@@ -119,38 +113,38 @@
       <div class="mb-10 space-y-6">
         <div class="flex items-center justify-between flex-wrap gap-3">
           <div>
-            <h2 class="text-2xl font-serif text-white font-bold">Gallery Projects</h2>
-            <p class="text-sm text-bitcoin-gray/70">Manage grouped images by project name and metadata</p>
+            <h2 class="text-2xl font-serif text-ts-ink font-bold">Gallery Projects</h2>
+            <p class="text-sm text-ts-ink opacity-70">Manage grouped images by project name and metadata</p>
           </div>
-          <div class="text-sm text-bitcoin-gray/70">
+          <div class="text-sm text-ts-ink opacity-70">
             {{ filteredProjects.length }} project{{ filteredProjects.length === 1 ? '' : 's' }}
           </div>
         </div>
 
         @if (filteredProjects.length === 0) {
-          <div class="p-10 text-center bg-bitcoin-dark/40 border border-bitcoin-gray/20 rounded-2xl backdrop-blur-sm">
-            <p class="text-bitcoin-gray">No projects found with the current filters. Try uploading new images or adjusting your search.</p>
+          <div class="p-10 text-center bg-ts-paper border border-ts-line rounded-2xl">
+            <p class="text-ts-ink">No projects found with the current filters. Try uploading new images or adjusting your search.</p>
           </div>
         } @else {
           <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
             @for (project of filteredProjects; track project.id) {
-              <article class="bg-bitcoin-dark/40 border border-bitcoin-gray/20 rounded-2xl shadow-bitcoin hover:border-bitcoin-orange/30 transition-all overflow-hidden flex flex-col">
-                <div class="relative aspect-video bg-bitcoin-dark/60">
+              <article class="bg-ts-paper border border-ts-line rounded-2xl shadow-sm hover:border-ts-accent/50 hover:shadow-lg transition-all overflow-hidden flex flex-col">
+                <div class="relative aspect-video bg-ts-bg-soft">
                   <img
                     [src]="project.featuredImage.thumbnailUrl || project.featuredImage.url"
                     [alt]="project.name"
                     class="w-full h-full object-cover">
-                  <div class="absolute top-3 left-3 px-3 py-1 bg-black/60 text-xs font-medium text-white rounded-full border border-white/10 backdrop-blur-sm">
+                  <div class="absolute top-3 left-3 px-3 py-1 bg-ts-ink/70 text-xs font-medium text-white rounded-full border border-white/20 backdrop-blur-sm">
                     {{ project.photoCount }} photo{{ project.photoCount === 1 ? '' : 's' }}
                   </div>
                 </div>
                 <div class="p-5 flex-1 flex flex-col gap-4">
                   <div class="flex items-start justify-between gap-3">
                     <div>
-                      <h3 class="text-lg font-semibold text-white mb-1">{{ project.name }}</h3>
+                      <h3 class="text-lg font-semibold text-ts-ink mb-1">{{ project.name }}</h3>
                       @if (project.location) {
-                        <p class="text-sm text-bitcoin-gray/70 flex items-center gap-1">
-                          <svg class="w-4 h-4 text-bitcoin-orange" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <p class="text-sm text-ts-ink opacity-70 flex items-center gap-1">
+                          <svg class="w-4 h-4 text-ts-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 11c1.657 0 3-1.567 3-3.5S13.657 4 12 4 9 5.567 9 7.5 10.343 11 12 11zm0 0c-3.038 0-5.5 2.462-5.5 5.5S8.962 22 12 22s5.5-2.462 5.5-5.5S15.038 11 12 11z"/>
                           </svg>
                           {{ project.location }}
@@ -160,32 +154,32 @@
                     <button
                       type="button"
                       (click)="openProjectManager(project)"
-                      class="px-3 py-2 bg-bitcoin-orange/20 hover:bg-bitcoin-orange/30 border border-bitcoin-orange/30 text-bitcoin-orange rounded-xl text-sm font-semibold transition-colors">
+                      class="px-3 py-2 bg-ts-accent/10 hover:bg-ts-accent/20 border border-ts-accent/30 text-ts-accent rounded-xl text-sm font-semibold transition-colors">
                       Manage
                     </button>
                   </div>
 
                   @if (project.caption) {
-                    <p class="text-sm text-bitcoin-gray/80 line-clamp-3">{{ project.caption }}</p>
+                    <p class="text-sm text-ts-ink-soft line-clamp-3">{{ project.caption }}</p>
                   }
 
                   @if (project.tags.length > 0) {
                     <div class="flex flex-wrap gap-2">
                       @for (tag of project.tags; track tag) {
-                        <span class="px-2 py-1 text-xs font-medium bg-bitcoin-gold/20 text-bitcoin-gold border border-bitcoin-gold/30 rounded-full capitalize">
+                        <span class="px-2 py-1 text-xs font-medium bg-ts-accent text-white border border-ts-accent rounded-full capitalize shadow-sm">
                           {{ tag }}
                         </span>
                       }
                     </div>
                   }
 
-                  @if (getProjectRelatedProducts(project).length > 0) {
+                  @if (getProjectRelatedServices(project).length > 0) {
                     <div class="space-y-1">
-                      <p class="text-xs font-medium text-bitcoin-gray/70 uppercase tracking-wide">Linked Products</p>
+                      <p class="text-xs font-medium text-ts-ink-soft uppercase tracking-wide">Linked Services</p>
                       <div class="flex flex-wrap gap-1.5">
-                        @for (product of getProjectRelatedProducts(project); track product.id) {
+                        @for (service of getProjectRelatedServices(project); track service.id) {
                           <span class="px-2 py-1 text-xs bg-bitcoin-orange/15 border border-bitcoin-orange/20 text-bitcoin-orange rounded-full">
-                            {{ product.name }}
+                            {{ service.title }}
                           </span>
                         }
                       </div>
@@ -202,60 +196,92 @@
 
   <!-- Project Manager Modal -->
   @if (showProjectManager && projectToManage) {
-    <div class="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center p-2 sm:p-4 z-50" (click)="closeProjectManager()">
-      <div class="bg-bitcoin-dark/95 backdrop-blur-md border border-bitcoin-orange/20 rounded-2xl shadow-bitcoin-lg max-w-5xl w-full max-h-[95vh] sm:max-h-[90vh] overflow-y-auto" (click)="$event.stopPropagation()">
-        <div class="p-4 sm:p-6 border-b border-bitcoin-orange/20 flex items-center justify-between sticky top-0 bg-bitcoin-dark/95 backdrop-blur-md z-10">
-          <div class="flex-1 min-w-0 pr-2">
-            <p class="text-xs uppercase tracking-widest text-bitcoin-gray/60 mb-1">Project</p>
-            <h2 class="text-xl sm:text-2xl font-serif font-bold bitcoin-gradient-text truncate">{{ projectToManage.name }}</h2>
-            <p class="text-xs sm:text-sm text-bitcoin-gray/70 mt-1">
-              {{ projectToManage.photoCount }} photo{{ projectToManage.photoCount === 1 ? '' : 's' }}
+    <div class="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center p-2 sm:p-4 z-50" (click)="closeProjectManagerWithConfirm()">
+      <div class="bg-white rounded-3xl shadow-luxury max-w-5xl w-full max-h-[95vh] sm:max-h-[90vh] overflow-hidden flex flex-col" (click)="$event.stopPropagation()">
+        <!-- Luxury Header -->
+        <div class="relative bg-gradient-to-br from-ts-accent via-ts-accent-dark to-ts-ink p-8 border-b border-ts-line/10">
+          <div class="relative z-10">
+            <p class="text-xs uppercase tracking-widest text-white/70 mb-2 font-medium">Manage Project</p>
+            <h2 class="text-3xl font-serif font-bold text-white mb-2">{{ projectToManage.name }}</h2>
+            <div class="flex items-center gap-4 text-sm text-white/80">
+              <span class="flex items-center gap-1.5">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                </svg>
+                {{ projectToManage.photoCount }} photo{{ projectToManage.photoCount === 1 ? '' : 's' }}
+              </span>
               @if (projectToManage.location) {
-                <span class="mx-2 text-bitcoin-gray/40">&bull;</span>
-                <span class="hidden sm:inline">{{ projectToManage.location }}</span>
+                <span class="flex items-center gap-1.5">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                  </svg>
+                  {{ projectToManage.location }}
+                </span>
               }
-            </p>
+            </div>
           </div>
-          <button (click)="closeProjectManager()" class="p-2 hover:bg-bitcoin-dark/60 text-bitcoin-gray hover:text-bitcoin-orange rounded-lg transition-colors flex-shrink-0">
-            <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <button (click)="closeProjectManagerWithConfirm()" class="absolute top-6 right-6 p-2 bg-white/10 hover:bg-white/20 text-white rounded-full transition-all hover:rotate-90 duration-300">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
             </svg>
           </button>
         </div>
 
-        <div class="p-4 sm:p-6 space-y-4 sm:space-y-6">
+        <!-- Scrollable Content -->
+        <div class="flex-1 overflow-y-auto p-8">
           <!-- Project Settings Form -->
-          <form [formGroup]="projectForm" (ngSubmit)="saveProjectSettings()" class="p-5 bg-bitcoin-dark/60 border border-bitcoin-gray/20 rounded-2xl space-y-6">
+          <form [formGroup]="projectForm" (ngSubmit)="saveProjectSettings()" class="space-y-8">
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
               <!-- Project Name (from individual photo form) -->
               @if (mediaToEdit) {
                 <div class="lg:col-span-2">
-                  <label for="editAltText" class="block text-sm font-semibold text-bitcoin-gray mb-2">
-                    Project Name *
+                  <label for="editAltText" class="block text-sm font-semibold text-ts-ink mb-3">
+                    <span class="flex items-center gap-2">
+                      <svg class="w-4 h-4 text-ts-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"></path>
+                      </svg>
+                      Project Name *
+                    </span>
                   </label>
                   <input
                     type="text"
                     id="editAltText"
                     [value]="mediaToEdit.altText"
                     (input)="onAltTextChange($event)"
-                    placeholder="e.g., Bitcoin Mining Farm Setup"
-                    class="w-full px-4 py-3 bg-bitcoin-dark/40 border border-bitcoin-gray/20 rounded-xl focus:ring-2 focus:ring-bitcoin-orange focus:border-bitcoin-orange text-bitcoin-gray placeholder-bitcoin-gray/50">
-                  <p class="mt-2 text-xs text-bitcoin-gray">Project name (will be displayed as the title)</p>
+                    placeholder="e.g., Luxury Wedding Décor"
+                    class="w-full px-4 py-3.5 bg-ts-bg-soft border-2 border-ts-line rounded-xl focus:ring-2 focus:ring-ts-accent/20 focus:border-ts-accent text-ts-ink placeholder-ts-ink-soft/50 transition-all">
+                  <p class="mt-2 text-xs text-ts-ink-soft flex items-center gap-1.5">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    Project name will be displayed as the title
+                  </p>
                 </div>
               }
 
               <!-- Project Description -->
               <div class="lg:col-span-2">
-                <label for="projectDescription" class="block text-sm font-semibold text-bitcoin-gray mb-2">
-                  Project Description
+                <label for="projectDescription" class="block text-sm font-semibold text-ts-ink mb-3">
+                  <span class="flex items-center gap-2">
+                    <svg class="w-4 h-4 text-ts-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7"></path>
+                    </svg>
+                    Project Description
+                  </span>
                 </label>
                 <textarea
                   id="projectDescription"
                   formControlName="caption"
-                  rows="3"
+                  rows="4"
                   placeholder="Describe this project or location..."
-                  class="w-full px-4 py-3 bg-bitcoin-dark/40 border border-bitcoin-gray/20 rounded-xl focus:ring-2 focus:ring-bitcoin-orange focus:border-bitcoin-orange placeholder:text-bitcoin-gray/50 text-bitcoin-gray text-sm resize-none"></textarea>
-                <p class="mt-2 text-xs text-bitcoin-gray">Location or project description (optional)</p>
+                  class="w-full px-4 py-3.5 bg-ts-bg-soft border-2 border-ts-line rounded-xl focus:ring-2 focus:ring-ts-accent/20 focus:border-ts-accent placeholder:text-ts-ink-soft/50 text-ts-ink text-sm resize-none transition-all"></textarea>
+                <p class="mt-2 text-xs text-ts-ink-soft flex items-center gap-1.5">
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                  </svg>
+                  Location or project description (optional)
+                </p>
               </div>
 
               <!-- Project Tags -->
@@ -286,50 +312,86 @@
                     }
                   </button>
                 </div>
-                <div class="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                <!-- Tag Selection Grid -->
+                <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
                   @for (tag of availableTags; track tag.id) {
-                    <label class="flex items-center gap-2 p-3 bg-bitcoin-dark/40 border-2 border-bitcoin-gray/20 rounded-xl hover:bg-bitcoin-dark/60 hover:border-bitcoin-orange/30 cursor-pointer transition-all"
-                           [class.border-bitcoin-orange]="isTagSelected(tag.slug, 'project')"
-                           [style.border-color]="isTagSelected(tag.slug, 'project') ? tag.color : ''">
+                    <label class="relative flex items-center gap-3 p-4 bg-white border-2 border-ts-line rounded-xl hover:border-ts-accent/50 hover:shadow-md cursor-pointer transition-all group"
+                           [class.border-ts-accent]="isTagSelected(tag.slug, 'project')"
+                           [class.bg-ts-accent/5]="isTagSelected(tag.slug, 'project')">
                       <input
                         type="checkbox"
                         [checked]="isTagSelected(tag.slug, 'project')"
                         (change)="toggleTag(tag.slug, $any($event.target).checked, 'project')"
-                        class="w-5 h-5 rounded border-bitcoin-gray/30 text-bitcoin-orange focus:ring-bitcoin-orange bg-bitcoin-dark/60">
+                        class="w-5 h-5 rounded border-ts-line text-ts-accent focus:ring-2 focus:ring-ts-accent/20">
                       @if (tag.icon) {
-                        <span class="text-lg">{{ tag.icon }}</span>
+                        <span class="text-xl" [style.color]="tag.color">{{ tag.icon }}</span>
                       }
-                      <span class="text-sm text-bitcoin-gray font-medium">{{ tag.name }}</span>
+                      <span class="text-sm text-ts-ink font-medium flex-1">{{ tag.name }}</span>
+                      @if (isTagSelected(tag.slug, 'project')) {
+                        <svg class="w-5 h-5 text-ts-accent absolute top-2 right-2" fill="currentColor" viewBox="0 0 20 20">
+                          <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                        </svg>
+                      }
                     </label>
                   }
                 </div>
-                <p class="text-xs text-bitcoin-gray mt-2">Selected: {{ projectForm.value.tags?.length || 0 }} tag(s)</p>
+                <div class="mt-3 flex items-center gap-2">
+                  <span class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-ts-accent/10 text-ts-accent text-xs font-semibold rounded-full">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"></path>
+                    </svg>
+                    {{ projectForm.value.tags?.length || 0 }} Selected
+                  </span>
+                </div>
               </div>
 
-              <!-- Related Products -->
+              <!-- Related Services -->
               <div class="lg:col-span-2">
-                <label class="block text-sm font-semibold text-bitcoin-gray mb-2">
-                  Project Related Products
+                <label class="block text-sm font-semibold text-ts-ink mb-3">
+                  <span class="flex items-center gap-2">
+                    <svg class="w-4 h-4 text-ts-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                    </svg>
+                    Related Services
+                  </span>
                 </label>
-                <div class="max-h-60 overflow-y-auto border-2 border-bitcoin-gray/20 rounded-xl bg-bitcoin-dark/40 p-3 space-y-2">
-                  @if (products.length === 0) {
-                    <p class="text-sm text-bitcoin-gray">No products available</p>
+                <div class="max-h-72 overflow-y-auto border-2 border-ts-line rounded-xl bg-ts-bg-soft/30 p-4 space-y-2 shadow-soft">
+                  @if (services.length === 0) {
+                    <div class="text-center py-8">
+                      <svg class="w-12 h-12 mx-auto text-ts-ink-soft/30 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"></path>
+                      </svg>
+                      <p class="text-sm text-ts-ink-soft">No services available</p>
+                    </div>
                   } @else {
-                    @for (product of products; track product.id) {
-                      <label class="flex items-center gap-2 p-2 hover:bg-bitcoin-dark/60 rounded-lg cursor-pointer transition-colors">
+                    @for (service of services; track service.id) {
+                      <label class="flex items-center gap-3 p-3 bg-white hover:bg-ts-accent/5 rounded-lg cursor-pointer transition-all group border border-transparent hover:border-ts-accent/20">
                         <input
                           type="checkbox"
-                          [checked]="isProductSelected(product.id || '', 'project')"
-                          (change)="toggleRelatedProduct(product.id || '', $any($event.target).checked, 'project')"
-                          class="w-5 h-5 rounded border-bitcoin-gray/30 text-bitcoin-orange focus:ring-bitcoin-orange">
-                        <span class="text-sm truncate text-bitcoin-gray">{{ product.name }}</span>
+                          [checked]="isProductSelected(service.id || '', 'project')"
+                          (change)="toggleRelatedProduct(service.id || '', $any($event.target).checked, 'project')"
+                          class="w-5 h-5 rounded border-ts-line text-ts-accent focus:ring-2 focus:ring-ts-accent/20">
+                        <div class="flex-1 min-w-0">
+                          <p class="text-sm font-medium text-ts-ink truncate">{{ service.title }}</p>
+                          @if (service.subtitle) {
+                            <p class="text-xs text-ts-ink-soft truncate">{{ service.subtitle }}</p>
+                          }
+                        </div>
+                        @if (isProductSelected(service.id || '', 'project')) {
+                          <svg class="w-5 h-5 text-ts-accent" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                          </svg>
+                        }
                       </label>
                     }
                   }
                 </div>
-                <p class="text-xs text-bitcoin-gray mt-2">
+                <p class="text-xs text-ts-ink-soft mt-3 flex items-center gap-1.5">
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                  </svg>
                   @if (mediaToEdit) {
-                    <span>Link this photo to specific products</span>
+                    <span>Link this photo to specific services</span>
                   } @else {
                     <span>Applied to every photo in this project</span>
                   }
@@ -338,22 +400,25 @@
             </div>
 
             <!-- Save Actions -->
-            <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 pt-3 border-t border-bitcoin-gray/20">
-              <p class="text-xs text-bitcoin-gray/70 hidden sm:block">
+            <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pt-6 mt-8 border-t-2 border-ts-line">
+              <p class="text-xs text-ts-ink-soft/70 hidden sm:block max-w-md">
                 @if (mediaToEdit) {
-                  <span>Saving updates this photo's project name, description, tags, and related products.</span>
+                  <span>💡 Saving will update this photo's project name, description, tags, and related services.</span>
                 } @else {
-                  <span>Saving updates the description, tags, and related products on every photo in this project.</span>
+                  <span>💡 Saving will update the description, tags, and related services for every photo in this project.</span>
                 }
               </p>
               <button
                 type="submit"
                 [disabled]="isProjectSaving || (projectForm.pristine && !mediaToEdit)"
-                class="w-full sm:w-auto px-5 py-2.5 bg-bitcoin-orange/30 hover:bg-bitcoin-orange/40 border border-bitcoin-orange/30 text-bitcoin-orange font-semibold rounded-xl transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 whitespace-nowrap">
+                class="w-full sm:w-auto px-8 py-3.5 bg-gradient-to-r from-ts-accent to-ts-accent-dark hover:shadow-luxury text-white font-semibold rounded-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:shadow-none flex items-center justify-center gap-2.5 whitespace-nowrap">
                 @if (isProjectSaving) {
-                  <div class="app-spinner" style="--spinner-size: 32px;"><img src="/Logo Clear.png" alt="Saving" width="48" height="48"></div>
-                  <span>Saving...</span>
+                  <div class="app-spinner" style="--spinner-size: 24px;"><img src="/Logo Clear.png" alt="Saving" width="32" height="32"></div>
+                  <span>Saving Changes...</span>
                 } @else {
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                  </svg>
                   @if (mediaToEdit) {
                     <span>Save Photo Changes</span>
                   } @else {
@@ -364,27 +429,29 @@
             </div>
           </form>
 
-          <!-- Current Tags & Products Display -->
-          <div class="flex flex-wrap items-center gap-3">
-            @if ((projectForm.value.tags || []).length > 0) {
-              <div class="flex flex-wrap gap-2">
-                @for (tag of projectForm.value.tags; track tag) {
-                  <span class="px-2 py-1 text-xs font-semibold bg-bitcoin-gold/20 text-bitcoin-gold border border-bitcoin-gold/30 rounded-full capitalize">
-                    {{ tag }}
-                  </span>
-                }
-              </div>
-            }
+          <!-- Current Tags & Services Display -->
+          <div class="p-6 bg-gradient-to-br from-ts-bg-soft to-white rounded-2xl border border-ts-line/50 shadow-sm">
+            <div class="flex flex-wrap items-center gap-3">
+              @if ((projectForm.value.tags || []).length > 0) {
+                <div class="flex flex-wrap gap-2">
+                  @for (tag of projectForm.value.tags; track tag) {
+                    <span class="px-3 py-1.5 text-xs font-semibold bg-ts-accent text-white border border-ts-accent rounded-full capitalize shadow-sm">
+                      {{ tag }}
+                    </span>
+                  }
+                </div>
+              }
 
-            @if ((projectForm.value.relatedProductIds || []).length > 0) {
-              <div class="flex flex-wrap gap-2">
-                @for (productId of projectForm.value.relatedProductIds; track productId) {
-                  <span class="px-2 py-1 text-xs bg-bitcoin-orange/15 border border-bitcoin-orange/20 text-bitcoin-orange rounded-full">
-                    {{ getProductName(productId) }}
-                  </span>
-                }
-              </div>
-            }
+              @if ((projectForm.value.relatedProductIds || []).length > 0) {
+                <div class="flex flex-wrap gap-2">
+                  @for (productId of projectForm.value.relatedProductIds; track productId) {
+                    <span class="px-3 py-1.5 text-xs font-medium bg-ts-accent-dark/10 border border-ts-accent-dark/20 text-ts-accent-dark rounded-full">
+                      {{ getServiceName(productId) }}
+                    </span>
+                  }
+                </div>
+              }
+            </div>
           </div>
 
           <!-- Action Buttons -->
@@ -392,7 +459,7 @@
             <button
               type="button"
               (click)="addPhotosToProject(projectToManage)"
-              class="w-full sm:w-auto px-4 py-3 bg-bitcoin-orange/30 hover:bg-bitcoin-orange/40 text-bitcoin-orange border border-bitcoin-orange/30 font-semibold rounded-xl transition-all flex items-center justify-center gap-2">
+              class="w-full sm:w-auto px-5 py-3 bg-gradient-to-r from-ts-accent to-ts-accent-dark hover:shadow-lg text-white font-semibold rounded-xl transition-all flex items-center justify-center gap-2">
               <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
               </svg>
@@ -400,8 +467,17 @@
             </button>
             <button
               type="button"
-              (click)="closeProjectManager()"
-              class="w-full sm:w-auto px-4 py-3 bg-bitcoin-dark/40 hover:bg-bitcoin-dark/60 border border-bitcoin-gray/20 text-bitcoin-gray/80 rounded-xl transition-all">
+              (click)="deleteProject(projectToManage)"
+              class="w-full sm:w-auto px-5 py-3 bg-red-50 hover:bg-red-100 border-2 border-red-200 hover:border-red-300 text-red-600 font-semibold rounded-xl transition-all flex items-center justify-center gap-2">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+              </svg>
+              Delete Project
+            </button>
+            <button
+              type="button"
+              (click)="closeProjectManagerWithConfirm()"
+              class="w-full sm:w-auto px-5 py-3 bg-ts-bg-soft hover:bg-gray-100 border-2 border-ts-line text-ts-ink-soft rounded-xl transition-all">
               Close
             </button>
           </div>
@@ -499,222 +575,395 @@
 
   <!-- Upload Modal -->
   @if (showUploadModal) {
-    <div class="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4 z-50" (click)="closeUploadModal()">
-      <div class="bg-bitcoin-dark/95 backdrop-blur-md border border-bitcoin-orange/20 rounded-2xl shadow-bitcoin-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto" (click)="$event.stopPropagation()">
-        <div class="p-6 border-b border-bitcoin-orange/20 flex items-center justify-between sticky top-0 bg-bitcoin-dark/95 backdrop-blur-md">
-          <h2 class="text-2xl font-serif font-bold bitcoin-gradient-text">{{ 'admin.upload_image' | translate }}</h2>
-          <button (click)="closeUploadModal()" class="p-2 hover:bg-bitcoin-dark/60 text-bitcoin-gray hover:text-bitcoin-orange rounded-lg transition-colors">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <div class="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+      <div class="bg-gradient-to-br from-ts-paper via-white to-ts-bg-soft border-2 border-ts-accent/20 rounded-3xl shadow-2xl max-w-4xl w-full max-h-[92vh] overflow-hidden flex flex-col" (click)="$event.stopPropagation()">
+        
+        <!-- Header -->
+        <div class="px-8 py-6 border-b-2 border-ts-line bg-gradient-to-r from-ts-bg-soft to-ts-paper flex items-center justify-between">
+          <div>
+            <h2 class="text-3xl font-serif font-bold text-ts-ink mb-1">{{ 'admin.upload_image' | translate }}</h2>
+            <p class="text-sm text-ts-ink-soft">Add new images to your gallery collection</p>
+          </div>
+          <button 
+            (click)="closeUploadModal()" 
+            class="p-3 hover:bg-ts-accent/10 text-ts-ink-soft hover:text-ts-accent rounded-xl transition-all duration-200 group">
+            <svg class="w-6 h-6 group-hover:rotate-90 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
             </svg>
           </button>
         </div>
 
-        <form [formGroup]="uploadForm" (ngSubmit)="onSubmit()" class="p-6 space-y-6">
+        <form [formGroup]="uploadForm" (ngSubmit)="onSubmit()" class="flex-1 overflow-y-auto">
+          <div class="p-8 space-y-8">
           
-          <!-- Warning Message -->
-          @if (warningMessage) {
-            <div class="p-4 bg-bitcoin-orange/20 border border-bitcoin-orange/30 rounded-xl flex items-start gap-3">
-              <svg class="w-5 h-5 text-bitcoin-orange mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
-              </svg>
-              <p class="text-sm text-bitcoin-orange">{{ warningMessage }}</p>
-            </div>
-          }
-
-          <!-- Preview Grid -->
-          @if (previewUrls.length > 0) {
-            <div>
-              <div class="flex items-center justify-between mb-3">
-                <label class="block text-base font-semibold text-bitcoin-gray">
-                  Selected Images ({{ previewUrls.length }})
-                </label>
-                @if (!isUploading) {
-                  <button
-                    type="button"
-                    (click)="selectedFiles = []; revokeAllPreviewUrls()"
-                    class="text-sm text-red-400 hover:text-red-300 transition-colors">
-                    Clear All
-                  </button>
-                }
+            <!-- Warning Message -->
+            @if (warningMessage) {
+              <div class="p-4 bg-amber-50 border-l-4 border-amber-500 rounded-r-xl flex items-start gap-3 shadow-soft">
+                <svg class="w-5 h-5 text-amber-600 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                </svg>
+                <p class="text-sm text-amber-800 font-medium">{{ warningMessage }}</p>
               </div>
-              <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
-                @for (url of previewUrls; track $index) {
-                  <div class="relative group rounded-xl overflow-hidden border-2 border-bitcoin-gray/20 hover:border-bitcoin-orange/30 transition-all">
-                    <img [src]="url" alt="Preview {{ $index + 1 }}" class="w-full h-32 object-cover">
-                    @if (!isUploading) {
-                      <button
-                        type="button"
-                        (click)="removeImage($index)"
-                        class="absolute top-1 right-1 p-1 bg-red-500/90 hover:bg-red-600 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity">
-                        <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                        </svg>
-                      </button>
-                    }
-                    <div class="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/70 to-transparent p-2">
-                      <p class="text-xs text-white truncate">{{ selectedFiles[$index]?.name }}</p>
+            }
+
+            <!-- Preview Grid -->
+            @if (previewUrls.length > 0) {
+              <div class="bg-ts-bg-soft/50 rounded-2xl p-6 space-y-4 border border-ts-line">
+                <div class="flex items-center justify-between">
+                  <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-full bg-ts-accent/10 flex items-center justify-center">
+                      <svg class="w-5 h-5 text-ts-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                      </svg>
+                    </div>
+                    <div>
+                      <h3 class="text-sm font-semibold text-ts-ink">Selected Images</h3>
+                      <p class="text-xs text-ts-ink-soft">{{ previewUrls.length }} file{{ previewUrls.length !== 1 ? 's' : '' }} ready to upload</p>
                     </div>
                   </div>
-                }
-              </div>
-            </div>
-          }
-
-          <!-- File Upload -->
-          <div>
-            <label for="imageFile" class="block text-base font-semibold text-bitcoin-gray mb-3">
-              {{ 'admin.image_file' | translate }} *
-            </label>
-            <input
-              type="file"
-              id="imageFile"
-              (change)="onCoverSelected($event)"
-              accept="image/*"
-              multiple
-              [disabled]="isUploading"
-              class="w-full px-4 py-3 border-2 border-dashed border-bitcoin-orange/30 rounded-xl focus:ring-2 focus:ring-bitcoin-orange focus:border-bitcoin-orange bg-bitcoin-dark/40 text-bitcoin-gray text-base file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-bitcoin-orange/30 file:text-bitcoin-orange hover:file:bg-bitcoin-orange/40 file:cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed">
-            <p class="mt-2 text-sm text-bitcoin-gray">
-              Select multiple images for bulk upload. Max 10MB per file. Images smaller than 1600x1200px may appear pixelated.
-            </p>
-          </div>
-
-          <!-- Alt Text -->
-          <div>
-            <label for="altText" class="block text-base font-semibold text-bitcoin-gray mb-3">
-              Project Name *
-            </label>
-            <input
-              type="text"
-              id="altText"
-              formControlName="altText"
-              placeholder="e.g., Bitcoin Mining Farm Setup"
-              [disabled]="isUploading"
-              class="w-full px-4 py-3 bg-bitcoin-dark/40 border-2 border-bitcoin-gray/20 rounded-xl focus:ring-2 focus:ring-bitcoin-orange focus:border-bitcoin-orange placeholder:text-bitcoin-gray/50 text-bitcoin-gray text-base disabled:opacity-50 disabled:cursor-not-allowed">
-            <p class="mt-2 text-sm text-bitcoin-gray">
-              @if (selectedFiles.length > 1) {
-                <span>Shared project name for all images (numbering will be added automatically)</span>
-              } @else {
-                <span>Project name (will be displayed as the title)</span>
-              }
-            </p>
-          </div>
-
-          <!-- Caption/Description -->
-          <div>
-            <label for="caption" class="block text-base font-semibold text-bitcoin-gray mb-3">
-              Description
-            </label>
-            <textarea
-              id="caption"
-              formControlName="caption"
-              rows="3"
-              placeholder="e.g., Texas, USA - High-efficiency cooling system"
-              [disabled]="isUploading"
-              class="w-full px-4 py-3 bg-bitcoin-dark/40 border-2 border-bitcoin-gray/20 rounded-xl focus:ring-2 focus:ring-bitcoin-orange focus:border-bitcoin-orange placeholder:text-bitcoin-gray/50 text-bitcoin-gray text-base resize-none disabled:opacity-50 disabled:cursor-not-allowed"></textarea>
-            <p class="mt-2 text-sm text-bitcoin-gray">
-              @if (selectedFiles.length > 1) {
-                <span>Shared description for all images (location or project details)</span>
-              } @else {
-                <span>Location or project description (optional)</span>
-              }
-            </p>
-          </div>
-
-          <!-- Tags -->
-          <div>
-            <label class="block text-base font-semibold text-bitcoin-gray mb-3">
-              Tags *
-            </label>
-            <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
-              @for (tag of availableTags; track tag.id) {
-                <label class="flex items-center gap-2 p-3 bg-bitcoin-dark/40 border-2 border-bitcoin-gray/20 rounded-xl hover:bg-bitcoin-dark/60 hover:border-bitcoin-orange/30 cursor-pointer transition-all"
-                       [style.border-color]="isTagSelected(tag.slug, 'upload') ? tag.color : ''">
-                  <input
-                    type="checkbox"
-                    [checked]="isTagSelected(tag.slug, 'upload')"
-                    (change)="toggleTag(tag.slug, $any($event.target).checked, 'upload')"
-                    class="w-5 h-5 rounded border-bitcoin-gray/30 text-bitcoin-orange focus:ring-bitcoin-orange bg-bitcoin-dark/60">
-                  @if (tag.icon) {
-                    <span class="text-lg">{{ tag.icon }}</span>
+                  @if (!isUploading) {
+                    <button
+                      type="button"
+                      (click)="selectedFiles = []; revokeAllPreviewUrls()"
+                      class="px-4 py-2 text-sm font-medium text-red-600 hover:text-red-700 hover:bg-red-50 rounded-lg transition-all">
+                      Clear All
+                    </button>
                   }
-                  <span class="text-base text-bitcoin-gray font-medium">{{ tag.name }}</span>
-                </label>
-              }
-            </div>
-            <p class="mt-2 text-sm text-bitcoin-gray">Select at least one tag to categorize the media</p>
-          </div>
-
-          <!-- Related Products -->
-          <div>
-            <label class="block text-base font-semibold text-bitcoin-gray mb-3">
-              Related Products
-            </label>
-            <div class="max-h-64 overflow-y-auto border-2 border-bitcoin-gray/20 rounded-xl bg-bitcoin-dark/40 p-3 space-y-2">
-              @if (products.length === 0) {
-                <p class="text-sm text-bitcoin-gray">No products available</p>
-              } @else {
-                @for (product of products; track product.id) {
-                  <label class="flex items-center gap-2 p-2 hover:bg-bitcoin-dark/60 rounded-lg cursor-pointer transition-colors">
-                    <input
-                      type="checkbox"
-                      [checked]="isProductSelected(product.id || '', 'upload')"
-                      (change)="toggleRelatedProduct(product.id || '', $any($event.target).checked, 'upload')"
-                      class="w-5 h-5 rounded border-bitcoin-gray/30 text-bitcoin-orange focus:ring-bitcoin-orange bg-bitcoin-dark/60">
-                    <span class="text-base truncate text-bitcoin-gray">{{ product.name }}</span>
-                  </label>
-                }
-              }
-            </div>
-            <p class="mt-2 text-sm text-bitcoin-gray">Link this media to specific products (optional)</p>
-          </div>
-
-          <!-- Upload Progress -->
-          @if (isUploading && uploadProgress > 0) {
-            <div class="space-y-2">
-              <div class="flex items-center justify-between text-sm">
-                <span class="text-bitcoin-gray font-medium">
-                  Uploading {{ uploadedCount }}/{{ totalToUpload }} images...
-                </span>
-                <span class="text-bitcoin-orange font-semibold">{{ uploadProgress }}%</span>
+                </div>
+                <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+                  @for (url of previewUrls; track $index) {
+                    <div class="relative group rounded-xl overflow-hidden border-2 border-ts-line hover:border-ts-accent/40 transition-all shadow-soft hover:shadow-hover">
+                      <div class="aspect-square">
+                        <img [src]="url" alt="Preview {{ $index + 1 }}" class="w-full h-full object-cover">
+                      </div>
+                      @if (!isUploading) {
+                        <button
+                          type="button"
+                          (click)="removeImage($index)"
+                          class="absolute top-2 right-2 p-2 bg-white/95 hover:bg-red-500 text-red-600 hover:text-white rounded-lg opacity-0 group-hover:opacity-100 transition-all shadow-soft">
+                          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                          </svg>
+                        </button>
+                      }
+                      <div class="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent p-3">
+                        <p class="text-xs text-white font-medium truncate">{{ selectedFiles[$index]?.name }}</p>
+                        @if (selectedFiles[$index]?.size) {
+                          <p class="text-[10px] text-white/70">{{ (selectedFiles[$index].size / 1024 / 1024).toFixed(2) }} MB</p>
+                        }
+                      </div>
+                    </div>
+                  }
+                </div>
               </div>
-              <div class="w-full bg-bitcoin-dark/60 rounded-full h-2.5 overflow-hidden border border-bitcoin-gray/20">
-                <div 
-                  class="bg-gradient-to-r from-bitcoin-orange to-bitcoin-gold h-2.5 rounded-full transition-all duration-300 ease-out"
-                  [style.width.%]="uploadProgress">
+            }
+
+            <!-- File Upload Area -->
+            <div class="space-y-3">
+              <label class="block text-sm font-semibold uppercase tracking-wider text-ts-ink-soft">
+                {{ 'admin.image_file' | translate }}
+                <span class="text-ts-accent ml-1">*</span>
+              </label>
+              <div class="relative group">
+                <input
+                  type="file"
+                  id="imageFile"
+                  (change)="onCoverSelected($event)"
+                  accept="image/*"
+                  multiple
+                  [disabled]="isUploading"
+                  class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10 disabled:cursor-not-allowed">
+                <div class="border-3 border-dashed border-ts-accent/30 rounded-2xl p-12 text-center bg-gradient-to-br from-ts-bg-soft to-white hover:border-ts-accent/60 hover:bg-ts-accent/5 transition-all duration-300 group-hover:shadow-soft">
+                  <div class="w-16 h-16 mx-auto mb-4 rounded-full bg-ts-accent/10 flex items-center justify-center group-hover:bg-ts-accent/20 transition-colors">
+                    <svg class="w-8 h-8 text-ts-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                    </svg>
+                  </div>
+                  <p class="text-base font-medium text-ts-ink mb-2">Click or drag files here to upload</p>
+                  <p class="text-sm text-ts-ink-soft">
+                    Select multiple images for bulk upload • Max 10MB per file
+                  </p>
+                  <p class="text-xs text-ts-ink-soft mt-1">
+                    Recommended: 1600x1200px or higher for best quality
+                  </p>
                 </div>
               </div>
             </div>
-          }
 
-          <!-- Actions -->
-          <div class="flex gap-4 pt-4">
-            <button
-              type="submit"
-              [disabled]="isSaving || selectedFiles.length === 0"
-              class="flex-1 py-4 px-6 bg-bitcoin-orange/30 hover:bg-bitcoin-orange/40 text-bitcoin-orange border-2 border-bitcoin-orange/30 rounded-xl font-bold text-base transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2">
-              @if (isSaving) {
-                <div class="app-spinner" style="--spinner-size: 72px;"><img src="/Logo Clear.png" alt="Loading" width="96" height="96"></div>
-                <span>Uploading {{ uploadedCount }}/{{ totalToUpload }}...</span>
-              } @else {
-                @if (selectedFiles.length > 1) {
-                  <span>Upload {{ selectedFiles.length }} Images</span>
-                } @else if (selectedFiles.length === 1) {
-                  <span>Upload Image</span>
-                } @else {
-                  <span>Select Images First</span>
+            <!-- Project Details Section -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <!-- Project Name -->
+              <div class="space-y-3">
+                <label for="altText" class="block text-sm font-semibold uppercase tracking-wider text-ts-ink-soft">
+                  Project Name
+                  <span class="text-ts-accent ml-1">*</span>
+                </label>
+                <input
+                  type="text"
+                  id="altText"
+                  formControlName="altText"
+                  placeholder="e.g., Enchanted Garden Wedding"
+                  [disabled]="isUploading"
+                  class="w-full px-5 py-4 bg-white border-2 border-ts-line rounded-xl focus:ring-2 focus:ring-ts-accent/20 focus:border-ts-accent placeholder:text-ts-ink-soft/50 text-ts-ink text-base transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-soft">
+                <p class="text-xs text-ts-ink-soft flex items-start gap-2">
+                  <svg class="w-4 h-4 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                  </svg>
+                  <span>
+                    @if (selectedFiles.length > 1) {
+                      <span>Shared name for {{ selectedFiles.length }} images (auto-numbered)</span>
+                    } @else {
+                      <span>Display name for this project</span>
+                    }
+                  </span>
+                </p>
+              </div>
+
+              <!-- Description -->
+              <div class="space-y-3">
+                <label for="caption" class="block text-sm font-semibold uppercase tracking-wider text-ts-ink-soft">
+                  Description
+                </label>
+                <textarea
+                  id="caption"
+                  formControlName="caption"
+                  rows="3"
+                  placeholder="e.g., Newport Beach, CA - Luxury waterfront ceremony"
+                  [disabled]="isUploading"
+                  class="w-full px-5 py-4 bg-white border-2 border-ts-line rounded-xl focus:ring-2 focus:ring-ts-accent/20 focus:border-ts-accent placeholder:text-ts-ink-soft/50 text-ts-ink text-base resize-none transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-soft"></textarea>
+                <p class="text-xs text-ts-ink-soft flex items-start gap-2">
+                  <svg class="w-4 h-4 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a2 2 0 01-2.828 0l-4.243-4.243a8 8 0 1111.314 0z"></path>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                  </svg>
+                  <span>Location and event details (optional)</span>
+                </p>
+              </div>
+            </div>
+
+            <!-- Tags Section -->
+            <div class="space-y-4">
+              <div class="flex items-center justify-between">
+                <label class="block text-sm font-semibold uppercase tracking-wider text-ts-ink-soft">
+                  Event Categories
+                  <span class="text-ts-accent ml-1">*</span>
+                </label>
+                <span class="text-xs font-medium text-ts-accent px-3 py-1 bg-ts-accent/10 rounded-full">
+                  {{ getSelectedTagsCount('upload') }} selected
+                </span>
+              </div>
+
+              <!-- Custom Tag Input -->
+              <div class="bg-gradient-to-br from-ts-accent/5 to-ts-bg-soft/50 border-2 border-ts-accent/20 rounded-xl p-4 space-y-3">
+                <div class="flex items-center gap-2">
+                  <svg class="w-5 h-5 text-ts-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                  </svg>
+                  <h4 class="text-sm font-semibold text-ts-ink">Add Custom Categories</h4>
+                </div>
+                <div class="flex gap-2">
+                  <input
+                    type="text"
+                    [(ngModel)]="quickTagInputs.upload"
+                    [ngModelOptions]="{standalone: true}"
+                    placeholder="Type custom category (e.g., Spring Wedding, Corporate Event)"
+                    (keydown.enter)="addQuickTags('upload'); $event.preventDefault()"
+                    [disabled]="isUploading"
+                    class="flex-1 px-4 py-3 bg-white border-2 border-ts-line rounded-xl focus:ring-2 focus:ring-ts-accent/20 focus:border-ts-accent placeholder:text-ts-ink-soft/50 text-ts-ink text-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-soft">
+                  <button
+                    type="button"
+                    (click)="addQuickTags('upload')"
+                    [disabled]="isUploading || !quickTagInputs.upload.trim()"
+                    class="px-5 py-3 bg-gradient-to-r from-ts-accent to-[#C9A868] hover:from-[#C9A868] hover:to-ts-accent text-ts-ink font-semibold text-sm rounded-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:grayscale shadow-soft hover:shadow-hover">
+                    Add
+                  </button>
+                </div>
+                <p class="text-xs text-ts-ink-soft flex items-start gap-2">
+                  <svg class="w-4 h-4 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                  </svg>
+                  <span>Separate multiple categories with commas (e.g., "Outdoor, Rustic, Boho")</span>
+                </p>
+              </div>
+
+              <!-- Existing Tags Grid -->
+              <div>
+                <p class="text-xs font-semibold uppercase tracking-wider text-ts-ink-soft mb-3">Or select from existing:</p>
+                <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                @for (tag of availableTags; track tag.id) {
+                  <label class="relative flex items-center gap-3 p-4 bg-white border-2 rounded-xl cursor-pointer transition-all group hover:shadow-soft"
+                         [class.border-ts-accent]="isTagSelected(tag.slug, 'upload')"
+                         [class.bg-ts-accent/5]="isTagSelected(tag.slug, 'upload')"
+                         [class.border-ts-line]="!isTagSelected(tag.slug, 'upload')"
+                         [class.hover:border-ts-accent/40]="!isTagSelected(tag.slug, 'upload')">
+                    <input
+                      type="checkbox"
+                      [checked]="isTagSelected(tag.slug, 'upload')"
+                      (change)="toggleTag(tag.slug, $any($event.target).checked, 'upload')"
+                      class="w-5 h-5 rounded border-ts-line text-ts-accent focus:ring-2 focus:ring-ts-accent/20">
+                    @if (tag.icon) {
+                      <span class="text-2xl">{{ tag.icon }}</span>
+                    }
+                    <span class="text-sm font-medium text-ts-ink flex-1">{{ tag.name }}</span>
+                    @if (isTagSelected(tag.slug, 'upload')) {
+                      <svg class="w-5 h-5 text-ts-accent" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                      </svg>
+                    }
+                  </label>
                 }
-              }
-            </button>
-            <button
-              type="button"
-              (click)="closeUploadModal()"
-              [disabled]="isSaving"
-              class="flex-1 py-4 px-6 bg-bitcoin-dark/40 hover:bg-bitcoin-dark/60 border-2 border-bitcoin-gray/20 text-bitcoin-gray font-bold text-base rounded-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed">
-              <span>Cancel</span>
-            </button>
+              </div>
+              </div>
+              <p class="text-xs text-ts-ink-soft flex items-start gap-2">
+                <svg class="w-4 h-4 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"></path>
+                </svg>
+                <span>Select at least one category to help organize your gallery</span>
+              </p>
+            </div>
+
+            <!-- Related Services Section -->
+            <div class="space-y-4">
+              <div class="flex items-center justify-between">
+                <label class="block text-sm font-semibold uppercase tracking-wider text-ts-ink-soft">
+                  Related Services
+                </label>
+                @if (uploadForm.value.relatedProductIds && uploadForm.value.relatedProductIds.length > 0) {
+                  <span class="text-xs font-medium text-ts-accent px-3 py-1 bg-ts-accent/10 rounded-full">
+                    {{ uploadForm.value.relatedProductIds.length }} linked
+                  </span>
+                }
+              </div>
+              <div class="max-h-72 overflow-y-auto border-2 border-ts-line rounded-xl bg-ts-bg-soft/30 p-4 space-y-2 shadow-soft">
+                @if (services.length === 0) {
+                  <div class="text-center py-8">
+                    <svg class="w-12 h-12 mx-auto text-ts-ink-soft/30 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"></path>
+                    </svg>
+                    <p class="text-sm text-ts-ink-soft">No services available</p>
+                  </div>
+                } @else {
+                  @for (service of services; track service.id) {
+                    <label class="flex items-center gap-3 p-3 bg-white hover:bg-ts-accent/5 rounded-lg cursor-pointer transition-all group border border-transparent hover:border-ts-accent/20">
+                      <input
+                        type="checkbox"
+                        [checked]="isProductSelected(service.id || '', 'upload')"
+                        (change)="toggleRelatedProduct(service.id || '', $any($event.target).checked, 'upload')"
+                        class="w-5 h-5 rounded border-ts-line text-ts-accent focus:ring-2 focus:ring-ts-accent/20">
+                      <div class="flex-1 min-w-0">
+                        <p class="text-sm font-medium text-ts-ink truncate">{{ service.title }}</p>
+                        @if (service.subtitle) {
+                          <p class="text-xs text-ts-ink-soft truncate">{{ service.subtitle }}</p>
+                        }
+                      </div>
+                      @if (isProductSelected(service.id || '', 'upload')) {
+                        <svg class="w-5 h-5 text-ts-accent" fill="currentColor" viewBox="0 0 20 20">
+                          <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                        </svg>
+                      }
+                    </label>
+                  }
+                }
+              </div>
+              <p class="text-xs text-ts-ink-soft flex items-start gap-2">
+                <svg class="w-4 h-4 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path>
+                </svg>
+                <span>Connect this gallery to specific services you offer (optional)</span>
+              </p>
+            </div>
+
+            <!-- Upload Progress -->
+            @if (isUploading && uploadProgress > 0) {
+              <div class="bg-gradient-to-br from-ts-accent/5 to-ts-bg-soft border-2 border-ts-accent/20 rounded-2xl p-6 space-y-4 shadow-soft">
+                <div class="flex items-center justify-between">
+                  <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-full bg-ts-accent/10 flex items-center justify-center animate-pulse">
+                      <svg class="w-5 h-5 text-ts-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
+                      </svg>
+                    </div>
+                    <div>
+                      <p class="text-sm font-semibold text-ts-ink">Uploading images...</p>
+                      <p class="text-xs text-ts-ink-soft">{{ uploadedCount }} of {{ totalToUpload }} complete</p>
+                    </div>
+                  </div>
+                  <span class="text-2xl font-bold text-ts-accent">{{ uploadProgress }}%</span>
+                </div>
+                <div class="w-full bg-ts-bg-soft rounded-full h-3 overflow-hidden border-2 border-ts-line shadow-inner">
+                  <div 
+                    class="bg-gradient-to-r from-ts-accent via-[#E5D4B8] to-ts-accent h-full rounded-full transition-all duration-500 ease-out shadow-soft"
+                    [style.width.%]="uploadProgress">
+                  </div>
+                </div>
+              </div>
+            }
+          </div>
+
+          <!-- Footer Actions -->
+          <div class="sticky bottom-0 px-8 py-6 bg-gradient-to-t from-ts-paper via-ts-bg-soft to-transparent border-t-2 border-ts-line">
+            <div class="flex flex-col sm:flex-row gap-4">
+              <button
+                type="submit"
+                [disabled]="isSaving || selectedFiles.length === 0"
+                class="flex-1 py-4 px-8 bg-gradient-to-r from-ts-accent to-[#C9A868] hover:from-[#C9A868] hover:to-ts-accent text-ts-ink font-bold text-base rounded-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:grayscale flex items-center justify-center gap-3 shadow-hover hover:shadow-xl transform hover:-translate-y-0.5">
+                @if (isSaving) {
+                  <div class="w-5 h-5 border-2 border-ts-ink/20 border-t-ts-ink rounded-full animate-spin"></div>
+                  <span>Uploading {{ uploadedCount }}/{{ totalToUpload }}...</span>
+                } @else {
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
+                  </svg>
+                  @if (selectedFiles.length > 1) {
+                    <span>Upload {{ selectedFiles.length }} Images</span>
+                  } @else if (selectedFiles.length === 1) {
+                    <span>Upload Image</span>
+                  } @else {
+                    <span>Select Images First</span>
+                  }
+                }
+              </button>
+              <button
+                type="button"
+                (click)="closeUploadModal()"
+                [disabled]="isSaving"
+                class="flex-1 sm:flex-none sm:px-8 py-4 bg-white hover:bg-ts-bg-soft border-2 border-ts-line text-ts-ink font-semibold text-base rounded-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed shadow-soft hover:shadow-hover">
+                <span>Cancel</span>
+              </button>
+            </div>
           </div>
         </form>
+      </div>
+    </div>
+  }
+
+  <!-- Close Confirmation Dialog -->
+  @if (showCloseConfirmation) {
+    <div class="fixed inset-0 bg-black/90 backdrop-blur-sm flex items-center justify-center p-4 z-[60]" (click)="cancelCloseModal()">
+      <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full overflow-hidden" (click)="$event.stopPropagation()">
+        <div class="p-8 text-center">
+          <div class="w-16 h-16 mx-auto mb-4 rounded-full bg-amber-100 flex items-center justify-center">
+            <svg class="w-8 h-8 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+            </svg>
+          </div>
+          <h3 class="text-xl font-serif font-bold text-ts-ink mb-3">Unsaved Changes</h3>
+          <p class="text-sm text-ts-ink-soft mb-6">
+            You have unsaved changes. Are you sure you want to close this window? All your progress will be lost.
+          </p>
+          <div class="flex gap-3">
+            <button
+              (click)="cancelCloseModal()"
+              class="flex-1 py-3 px-6 bg-gradient-to-r from-ts-accent to-[#C9A868] hover:from-[#C9A868] hover:to-ts-accent text-ts-ink font-bold text-sm rounded-xl transition-all shadow-soft hover:shadow-hover">
+              Continue Editing
+            </button>
+            <button
+              (click)="confirmCloseModal()"
+              class="flex-1 py-3 px-6 bg-white hover:bg-red-50 border-2 border-red-200 hover:border-red-300 text-red-600 font-semibold text-sm rounded-xl transition-all">
+              Discard Changes
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   }

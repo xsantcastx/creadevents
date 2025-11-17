@@ -8,6 +8,10 @@ export interface ContactFormData {
   email: string;
   telefono: string;
   empresa?: string;
+  eventDate?: string;
+  location?: string;
+  guestCount?: string;
+  budget?: string;
   mensaje: string;
   aceptarPrivacidad: boolean;
 }
@@ -48,7 +52,7 @@ export class EmailService {
 
     const html = `
       <div style="font-family:Inter,Segoe UI,Arial,sans-serif">
-        <h2 style="margin:0 0 8px">Nueva selección de productos - ${this.brandName}</h2>
+        <h2 style="margin:0 0 8px">New cart selection - ${this.brandName}</h2>
         <p><b>Nombre:</b> ${String(contact.name).replace(/</g, '&lt;')}<br>
            <b>Email:</b> ${String(contact.email).replace(/</g, '&lt;')}<br>
            <b>Tel:</b> ${String(contact.phone || 'No proporcionado').replace(/</g, '&lt;')}</p>
@@ -75,7 +79,7 @@ export class EmailService {
       const docRef = await addDoc(collection(this.db, 'mail'), {
         to: [recipientEmail], // Use recipient from settings
         message: { 
-          subject: this.brandConfig.emails.notifications?.['cartShare']?.subject || `${this.brandName} · Selección de carrito`, 
+          subject: this.brandConfig.emails.notifications?.['cartShare']?.subject || `${this.brandName} | Cart selection`, 
           html 
         }
       });
@@ -84,11 +88,11 @@ export class EmailService {
       return docRef;
     } catch (error) {
       console.error('Failed to queue email:', error);
-      throw new Error('No se pudo enviar el correo. Por favor, intenta más tarde.');
+      throw new Error('Unable to send the email. Please try again later.');
     }
   }
 
-  async sendContactForm(formData: ContactFormData) {
+    async sendContactForm(formData: ContactFormData) {
     // Validate required fields
     if (!formData?.nombre || !formData?.email || !formData?.mensaje) {
       throw new Error('Missing required fields: nombre, email, or mensaje');
@@ -100,17 +104,21 @@ export class EmailService {
     console.log(`[EmailService] Sending contact form to: ${recipientEmail}`);
 
     const html = `
-      <div style="font-family:Inter,Segoe UI,Arial,sans-serif">
-        <h2 style="margin:0 0 8px">Nuevo mensaje de contacto - ${this.brandName}</h2>
+      <div style="font-family:Inter,Segoe UI,Arial,sans-serif;color:#111827;line-height:1.6">
+        <h2 style="margin:0 0 12px;font-size:20px">New contact request - ${this.brandName}</h2>
         <div style="background-color:#f9fafb;padding:16px;border-radius:8px;margin-bottom:16px">
-          <p style="margin:0 0 8px"><b>Nombre:</b> ${String(formData.nombre).replace(/</g, '&lt;')}</p>
+          <p style="margin:0 0 8px"><b>Name:</b> ${String(formData.nombre).replace(/</g, '&lt;')}</p>
           <p style="margin:0 0 8px"><b>Email:</b> ${String(formData.email).replace(/</g, '&lt;')}</p>
-          <p style="margin:0 0 8px"><b>Teléfono:</b> ${String(formData.telefono || 'No proporcionado').replace(/</g, '&lt;')}</p>
-          ${formData.empresa ? `<p style="margin:0 0 8px"><b>Empresa:</b> ${String(formData.empresa).replace(/</g, '&lt;')}</p>` : ''}
+          <p style="margin:0 0 8px"><b>Phone:</b> ${String(formData.telefono || 'Not provided').replace(/</g, '&lt;')}</p>
+          ${formData.empresa ? `<p style="margin:0 0 8px"><b>Company:</b> ${String(formData.empresa).replace(/</g, '&lt;')}</p>` : ''}
+          ${formData.eventDate ? `<p style="margin:0 0 8px"><b>Event date:</b> ${String(formData.eventDate).replace(/</g, '&lt;')}</p>` : ''}
+          ${formData.location ? `<p style="margin:0 0 8px"><b>Location:</b> ${String(formData.location).replace(/</g, '&lt;')}</p>` : ''}
+          ${formData.guestCount ? `<p style="margin:0 0 8px"><b>Guest count:</b> ${String(formData.guestCount).replace(/</g, '&lt;')}</p>` : ''}
+          ${formData.budget ? `<p style="margin:0 0 8px"><b>Budget:</b> ${String(formData.budget).replace(/</g, '&lt;')}</p>` : ''}
         </div>
         
         <div style="margin:16px 0">
-          <h3 style="margin:0 0 8px;color:#374151">Mensaje:</h3>
+          <h3 style="margin:0 0 8px;color:#374151">Message</h3>
           <div style="background-color:white;padding:16px;border:1px solid #e5e7eb;border-radius:8px">
             ${String(formData.mensaje).replace(/</g, '&lt;').replace(/\n/g,'<br>')}
           </div>
@@ -118,7 +126,7 @@ export class EmailService {
         
         <hr style="margin:24px 0;border:none;border-top:1px solid #e5e7eb">
         <p style="font-size:12px;color:#6b7280">
-          Enviado desde el formulario de contacto de ${this.brandName} - ${new Date().toLocaleString('es-ES')}
+          Sent from the contact form on ${this.brandName} - ${new Date().toLocaleString()}
         </p>
       </div>`;
 
@@ -127,7 +135,7 @@ export class EmailService {
       const docRef = await addDoc(collection(this.db, 'mail'), {
         to: [recipientEmail], // Use recipient from settings
         message: { 
-          subject: this.brandConfig.emails.notifications?.['contact']?.subject?.replace('{name}', formData.nombre) || `${this.brandName} · Contacto de ${formData.nombre}`, 
+          subject: this.brandConfig.emails.notifications?.['contact']?.subject?.replace('{name}', formData.nombre) || `${this.brandName} | Contact from ${formData.nombre}`, 
           html 
         }
       });
@@ -136,10 +144,9 @@ export class EmailService {
       return docRef;
     } catch (error) {
       console.error('Failed to queue contact email:', error);
-      throw new Error('No se pudo enviar el mensaje. Por favor, intenta más tarde.');
+      throw new Error('Unable to send your message right now. Please try again later.');
     }
   }
-
   /**
    * Queue a custom email to the mail collection for Trigger Email extension
    */
@@ -161,3 +168,6 @@ export class EmailService {
     }
   }
 }
+
+
+

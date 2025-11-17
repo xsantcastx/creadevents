@@ -61,19 +61,23 @@
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "1MB",
+                  "maximumWarning": "1.5MB",
                   "maximumError": "2MB"
                 },
                 {
                   "type": "anyComponentStyle",
-                  "maximumWarning": "8kB",
-                  "maximumError": "12kB"
+                  "maximumWarning": "12kB",
+                  "maximumError": "16kB"
                 }
               ],
               "outputHashing": "all",
               "allowedCommonJsDependencies": [
                 "@grpc/grpc-js",
-                "@grpc/proto-loader"
+                "@grpc/proto-loader",
+                "core-js",
+                "@babel/runtime",
+                "raf",
+                "rgbcolor"
               ]
             },
             "development": {

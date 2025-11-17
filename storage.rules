@@ -49,6 +49,13 @@ service firebase.storage {
       allow delete: if isAdmin();
     }
     
+    // Service images - Admin can write, everyone can read
+    match /services/{imageName} {
+      allow read: if true;
+      allow write: if isAdmin() && isValidImage();
+      allow delete: if isAdmin();
+    }
+    
     // Settings images (OG images, logos, etc.) - Admin can write, everyone can read
     match /settings/{allPaths=**} {
       allow read: if true;

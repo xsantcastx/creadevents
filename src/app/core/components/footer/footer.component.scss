@@ -1,0 +1,35 @@
+.footer__heading {
+  @apply text-ts-ink font-semibold text-base mb-3;
+}
+
+.footer__links {
+  @apply flex flex-col gap-2;
+}
+
+.footer__link {
+  @apply text-ts-ink-soft hover:text-ts-ink transition-colors text-sm;
+}
+
+.footer__text {
+  @apply text-ts-ink-soft text-sm;
+}
+
+.footer__social {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--ts-accent, #d8c9a6) 18%, transparent);
+  border: 1px solid color-mix(in srgb, var(--ts-line, rgba(0, 0, 0, 0.08)) 60%, transparent);
+  color: var(--ts-ink, #1d2a39);
+  transition: all 0.18s ease;
+  box-shadow: 0 10px 26px -20px rgba(29, 42, 57, 0.35);
+
+  &:hover {
+    background: color-mix(in srgb, var(--ts-accent, #d8c9a6) 28%, transparent);
+    transform: translateY(-2px);
+    box-shadow: 0 14px 30px -18px rgba(29, 42, 57, 0.38);
+  }
+}

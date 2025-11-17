@@ -7,14 +7,16 @@ import { CartService } from '../../../services/cart.service';
 import { AuthService } from '../../../services/auth.service';
 import { SettingsService, AppSettings } from '../../../services/settings.service';
 import { LanguageSelectorComponent } from '../../../shared/components/language-selector/language-selector.component';
-import { CartButtonComponent } from '../../../shared/components/cart-button/cart-button.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { BrandConfigService } from '../../services/brand-config.service';
+
+type NavChild = { label: string; href: string; description?: string };
+type NavLink = { label: string; href: string; exact?: boolean; children?: NavChild[]; ctaLabel?: string; ctaHref?: string };
 
 @Component({
   selector: 'app-navbar',
   standalone: true,
-  imports: [CommonModule, RouterLink, RouterLinkActive, LanguageSelectorComponent, CartButtonComponent, TranslateModule],
+  imports: [CommonModule, RouterLink, RouterLinkActive, LanguageSelectorComponent, TranslateModule],
   templateUrl: './navbar.component.html',
   styleUrls: ['./navbar.component.scss']
 })
@@ -32,8 +34,11 @@ export class NavbarComponent implements OnInit {
   showUserMenu = false;
   
   // Social media URLs from settings
-  linkedinUrl = '';
+  facebookUrl = '';
+  twitterUrl = '';
   instagramUrl = '';
+  linkedinUrl = '';
+  youtubeUrl = '';
   
   // Auth state
   user$ = this.authService.user$;
@@ -42,7 +47,7 @@ export class NavbarComponent implements OnInit {
   readonly brandName = this.brandConfig.siteName;
   readonly logoSrc = this.brandConfig.site.brand.logo;
   readonly logoAlt = this.brandConfig.site.brand.logoAlt || this.brandName;
-  readonly headerLinks = this.brandConfig.nav.header;
+  readonly headerLinks = this.brandConfig.nav.header as NavLink[];
   readonly exactMatchOption = { exact: true };
   readonly partialMatchOption = { exact: false };
   private readonly socialLinks = this.brandConfig.nav.social as Array<{ platform: string; href: string }>;
@@ -70,8 +75,11 @@ export class NavbarComponent implements OnInit {
   }
 
   private applySettings(settings: AppSettings): void {
-    this.linkedinUrl = settings.linkedinUrl || this.getSocialUrl('linkedin');
+    this.facebookUrl = settings.facebookUrl || this.getSocialUrl('facebook');
+    this.twitterUrl = settings.twitterUrl || this.getSocialUrl('twitter') || this.getSocialUrl('x');
     this.instagramUrl = settings.instagramUrl || this.getSocialUrl('instagram');
+    this.linkedinUrl = settings.linkedinUrl || this.getSocialUrl('linkedin');
+    this.youtubeUrl = settings.youtubeUrl || this.getSocialUrl('youtube');
   }
 
   @HostListener('window:scroll')
@@ -85,7 +93,11 @@ export class NavbarComponent implements OnInit {
   // Close user menu when clicking outside
   @HostListener('document:click', ['$event'])
   onDocClick(e: MouseEvent) {
-    this.showUserMenu = false;
+    const target = e.target as HTMLElement;
+    // Don't close if clicking on the profile button or its children
+    if (!target.closest('.app-navbar__profile')) {
+      this.showUserMenu = false;
+    }
   }
 
   // ESC to close user menu
