@@ -1,5 +1,5 @@
 {
-  "name": "tstone-web",
+  "name": "commerce-template",
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
@@ -8,7 +8,7 @@
     "watch": "ng build --watch --configuration development",
     "test": "npm run template:sync && ng test",
     "test:guards": "ng test --watch=false --include=\"src/app/guards/**/*.spec.ts\"",
-    "serve:ssr:tstone-web": "node dist/tstone-web/server/server.mjs",
+    "serve:ssr:commerce-template": "node dist/commerce-template/server/server.mjs",
     "deploy": "npm run build && npx firebase deploy --only hosting",
     "lint:styles": "stylelint \"src/**/*.{css,scss}\"",
     "seed:templates": "tsx scripts/seed-templates.ts",

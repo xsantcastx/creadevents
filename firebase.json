@@ -13,7 +13,7 @@
     "rules": "storage.rules"
   },
   "hosting": {
-    "public": "dist/tstone-web/browser",
+    "public": "dist/commerce-template/browser",
     "ignore": [
       "firebase.json",
       "**/.*",

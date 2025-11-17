@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "tstone-web": {
+    "commerce-template": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -89,10 +89,10 @@
           "builder": "@angular/build:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "tstone-web:build:production"
+              "buildTarget": "commerce-template:build:production"
             },
             "development": {
-              "buildTarget": "tstone-web:build:development"
+              "buildTarget": "commerce-template:build:development"
             }
           },
           "defaultConfiguration": "development"
