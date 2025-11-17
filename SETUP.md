@@ -76,26 +76,28 @@ Edit `.env` and fill in your values:
 - `APP_BRAND_KEY` - Brand folder name (e.g., "default")
 - `FUNCTIONS_NAMESPACE` - Unique namespace for your cloud functions
 
-### 4. Update Firebase Project
+### 4. Configure Firebase Project
 
-Edit `.firebaserc` and replace `your-firebase-project-id` with your actual Firebase project ID:
-
-```json
-{
-  "projects": {
-    "default": "your-actual-firebase-project-id"
-  }
-}
-```
-
-### 5. Initialize Firebase
+**Important:** The `.firebaserc` file is gitignored to prevent accidentally committing your real project ID.
 
 ```bash
+# Copy the example file
+cp .firebaserc.example .firebaserc
+
+# Login to Firebase (if not already logged in)
 firebase login
-firebase use --add  # Select your Firebase project
+
+# Add your Firebase project
+firebase use --add
+# Select your project from the list
+
+# Verify the correct project is set
+firebase use default
 ```
 
-### 6. Deploy Firestore Rules and Indexes
+Alternatively, manually edit `.firebaserc` and replace `your-firebase-project-id` with your actual Firebase project ID.
+
+### 5. Deploy Firestore Rules and Indexes
 
 ```bash
 firebase deploy --only firestore:rules
@@ -103,7 +105,7 @@ firebase deploy --only firestore:indexes
 firebase deploy --only storage
 ```
 
-### 7. Set Up Cloud Functions (Optional)
+### 6. Set Up Cloud Functions (Optional)
 
 If using backend features:
 

@@ -48,6 +48,10 @@ Thumbs.db
 .env.development
 .env.production
 .env.test
+
+# Firebase project configuration (users should copy .firebaserc.example)
+.firebaserc
+
 # Template-generated config
 src/config-loader/generated/
 src/environments/environment.generated.ts
