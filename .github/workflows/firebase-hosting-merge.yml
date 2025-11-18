@@ -18,7 +18,8 @@ jobs:
       - name: Write .env for build
         run: |
           cat <<'EOF' > .env
-          FIREBASE_API_KEY=${{ secrets.FIREBASE_API_KEY }}
+          # Firebase config (public values)
+          FIREBASE_API_KEY=AIzaSyBEqQhkbBnUVb2xHHCLRJEYCH-I8yPnDmo
           FIREBASE_AUTH_DOMAIN=creadevents-b29b9.firebaseapp.com
           FIREBASE_PROJECT_ID=creadevents-b29b9
           FIREBASE_STORAGE_BUCKET=creadevents-b29b9.firebasestorage.app
