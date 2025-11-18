@@ -182,7 +182,51 @@
       "button": "Abrir WhatsApp"
     }
   },
+  "profile": {
+    "account_settings": "Configuración de Cuenta",
+    "user_profile_badge": "Perfil de Usuario"
+  },
+  "register": {
+    "hero_description": "Desbloquea acceso premium al inventario de Lux Mining, despliegue de conserjería y monitoreo avanzado diseñado para operaciones de alto rendimiento.",
+    "priority_allocation": "Asignación Prioritaria",
+    "priority_allocation_desc": "Reserva los últimos mineros ASIC, kits de inmersión y equipos optimizados energéticamente antes de lanzamientos públicos.",
+    "deployment_concierge": "Conserjería de Despliegue",
+    "deployment_concierge_desc": "Planificación de instalaciones guiada, ajuste de firmware y monitoreo remoto diseñado para escala.",
+    "dedicated_partner": "Socio de cuenta dedicado",
+    "provisioning_alerts": "Alertas de aprovisionamiento de hardware",
+    "secure_payments": "Pagos seguros y depósito en garantía",
+    "create_access_badge": "Crear Acceso",
+    "form_description": "Todos los campos marcados con * son obligatorios. Las contraseñas deben tener al menos 6 caracteres.",
+    "name_placeholder": "Juan Pérez",
+    "company_placeholder": "Grupo Lux Mining",
+    "email_placeholder": "operaciones@creadevents.com",
+    "phone_placeholder": "+1 203 555 0198"
+  },
+  "login": {
+    "hero_description": "Potencia tu experiencia de Lux Mining con una consola segura diseñada para mineros, inversores y entusiastas serios.",
+    "unified_dashboard": "Panel Unificado",
+    "unified_dashboard_desc": "Rastrea pedidos, administra dispositivos y desbloquea recursos premium en una consola organizada.",
+    "enterprise_security": "Seguridad Empresarial",
+    "enterprise_security_desc": "Autenticación multicapa, reCAPTCHA e infraestructura monitoreada mantienen tus activos protegidos.",
+    "support_24_7": "Soporte 24/7",
+    "realtime_inventory": "Inventario en Tiempo Real",
+    "exclusive_drops": "Lanzamientos Exclusivos",
+    "access_badge": "Acceso",
+    "access_description": "Inicia sesión para continuar comprando, rastreando y administrando hardware de Lux Mining.",
+    "email_placeholder": "tu@creadevents.com",
+    "password_placeholder": "••••••••"
+  },
   "client": {
+    "login": "Iniciar Sesión",
+    "login_subtitle": "Accede a tu cuenta de Lux Mining",
+    "register": "Registrarse",
+    "register_subtitle": "Crea tu cuenta de Lux Mining",
+    "create_account": "Crear Cuenta",
+    "password": "Contraseña",
+    "confirm_password": "Confirmar Contraseña",
+    "or": "O",
+    "no_account": "¿No tienes una cuenta?",
+    "already_have_account": "¿Ya tienes una cuenta?",
     "profile": "Mi Perfil",
     "profile_subtitle": "Administra la configuración y preferencias de tu cuenta",
     "logout": "Cerrar Sesión",
@@ -235,11 +279,20 @@
       "cancel": "Cancelar"
     },
     "errors": {
+      "email_required": "El correo electrónico es requerido",
+      "email_invalid": "Por favor ingresa un correo electrónico válido",
+      "password_required": "La contraseña es requerida",
+      "password_min_length": "La contraseña debe tener al menos 6 caracteres",
+      "passwords_dont_match": "Las contraseñas no coinciden",
+      "name_required": "El nombre es requerido",
+      "name_min_length": "El nombre debe tener al menos 3 caracteres",
       "email_in_use": "Este correo ya está registrado",
       "weak_password": "La contraseña es muy débil",
       "registration_failed": "Registro fallido. Por favor intenta de nuevo.",
       "login_failed": "Inicio de sesión fallido. Por favor verifica tus credenciales.",
-      "name_required": "El nombre es requerido y debe tener al menos 3 caracteres"
+      "user_not_found": "No se encontró ninguna cuenta con este correo",
+      "wrong_password": "Contraseña incorrecta",
+      "invalid_credentials": "Correo o contraseña inválidos"
     }
   },
   "common": {

@@ -182,7 +182,51 @@
       "button": "Open WhatsApp"
     }
   },
+  "profile": {
+    "account_settings": "Account Settings",
+    "user_profile_badge": "User Profile"
+  },
+  "register": {
+    "hero_description": "Unlock premium access to Lux Mining inventory, concierge deployment, and advanced monitoring built for high-performance operations.",
+    "priority_allocation": "Priority Allocation",
+    "priority_allocation_desc": "Reserve the latest ASIC miners, immersion kits, and energy-optimized rigs before public releases.",
+    "deployment_concierge": "Deployment Concierge",
+    "deployment_concierge_desc": "Guided facility planning, firmware tuning, and remote monitoring designed for scale.",
+    "dedicated_partner": "Dedicated account partner",
+    "provisioning_alerts": "Hardware provisioning alerts",
+    "secure_payments": "Secure payments & escrow",
+    "create_access_badge": "Create Access",
+    "form_description": "All fields marked * are required. Passwords must be at least 6 characters.",
+    "name_placeholder": "Juan Perez",
+    "company_placeholder": "Lux Mining Group",
+    "email_placeholder": "operations@creadevents.com",
+    "phone_placeholder": "+1 203 555 0198"
+  },
+  "login": {
+    "hero_description": "Power up your Lux Mining experience with a secure console crafted for serious miners, investors, and enthusiasts.",
+    "unified_dashboard": "Unified Dashboard",
+    "unified_dashboard_desc": "Track orders, manage devices, and unlock premium resources in one beautifully organized console.",
+    "enterprise_security": "Enterprise Security",
+    "enterprise_security_desc": "Multi-layer authentication, reCAPTCHA, and monitored infrastructure keep your assets protected.",
+    "support_24_7": "24/7 Support",
+    "realtime_inventory": "Real-time Inventory",
+    "exclusive_drops": "Exclusive Drops",
+    "access_badge": "Access",
+    "access_description": "Sign in to continue purchasing, tracking, and managing Lux Mining hardware.",
+    "email_placeholder": "you@creadevents.com",
+    "password_placeholder": "••••••••"
+  },
   "client": {
+    "login": "Login",
+    "login_subtitle": "Access your Lux Mining account",
+    "register": "Register",
+    "register_subtitle": "Create your Lux Mining account",
+    "create_account": "Create Account",
+    "password": "Password",
+    "confirm_password": "Confirm Password",
+    "or": "OR",
+    "no_account": "Don't have an account?",
+    "already_have_account": "Already have an account?",
     "profile": "My Profile",
     "profile_subtitle": "Manage your account settings and preferences",
     "logout": "Logout",
@@ -235,11 +279,20 @@
       "cancel": "Cancel"
     },
     "errors": {
+      "email_required": "Email is required",
+      "email_invalid": "Please enter a valid email address",
+      "password_required": "Password is required",
+      "password_min_length": "Password must be at least 6 characters",
+      "passwords_dont_match": "Passwords do not match",
+      "name_required": "Name is required",
+      "name_min_length": "Name must be at least 3 characters",
       "email_in_use": "This email is already registered",
       "weak_password": "Password is too weak",
       "registration_failed": "Registration failed. Please try again.",
       "login_failed": "Login failed. Please check your credentials.",
-      "name_required": "Name is required and must be at least 3 characters"
+      "user_not_found": "No account found with this email",
+      "wrong_password": "Incorrect password",
+      "invalid_credentials": "Invalid email or password"
     }
   },
   "common": {
