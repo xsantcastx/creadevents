@@ -1,12 +1,13 @@
 import { Component, OnInit, OnDestroy, PLATFORM_ID, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { TranslateModule } from '@ngx-translate/core';
 import { SettingsService, HeroImage } from '../../../services/settings.service';
 
 @Component({
   selector: 'app-home-hero',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, TranslateModule],
   templateUrl: './home-hero.html',
   styleUrl: './home-hero.scss',
   styles: [`

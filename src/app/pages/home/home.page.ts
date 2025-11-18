@@ -15,7 +15,7 @@ import { take } from 'rxjs/operators';
 @Component({
   selector: 'app-home-page',
   standalone: true,
-  imports: [CommonModule, RouterModule, HomeHeroComponent, HomeReviewsComponent],
+  imports: [CommonModule, RouterModule, TranslateModule, HomeHeroComponent, HomeReviewsComponent],
   templateUrl: './home.page.html',
   styleUrl: './home.page.scss'
 })

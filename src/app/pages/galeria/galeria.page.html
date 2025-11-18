@@ -2,18 +2,18 @@
   <div class="page-container">
     <div class="luxury-hero">
       <div class="luxury-hero__content">
-        <span class="badge">Our Portfolio</span>
+        <span class="badge">{{ 'gallery.hero.badge' | translate }}</span>
         <h1 class="luxury-hero__title">{{ heroTitle }}</h1>
         <p class="luxury-hero__subtitle">
           {{ heroSubtitle }}
         </p>
         <div class="luxury-hero__actions">
-          <a routerLink="/contacto" class="btn-primary">Book a consultation</a>
-          <a routerLink="/servicios" class="btn-secondary">View services</a>
+          <a routerLink="/contacto" class="btn-primary">{{ 'gallery.hero.book_consultation' | translate }}</a>
+          <a routerLink="/servicios" class="btn-secondary">{{ 'gallery.hero.view_services' | translate }}</a>
         </div>
       </div>
       <div class="luxury-hero__media">
-        <div class="badge absolute top-3.5 right-3.5 shadow-soft">Curated gallery</div>
+        <div class="badge absolute top-3.5 right-3.5 shadow-soft">{{ 'gallery.hero.curated_gallery' | translate }}</div>
         <img [src]="heroImage" alt="Event gallery highlights" loading="lazy" />
       </div>
     </div>

@@ -1,0 +1,264 @@
+{
+  "nav": {
+    "home": "Inicio",
+    "services": "Servicios",
+    "gallery": "Galería",
+    "contact": "Contacto",
+    "products": "Productos",
+    "cart": "Carrito",
+    "profile": "Mi Perfil"
+  },
+  "home": {
+    "hero": {
+      "badge": "Diseño Premium de Eventos",
+      "fallback_title": "Diseño y Decoración Moderna para Hacer Cada Celebración Inolvidable",
+      "fallback_subtitle": "Empresa familiar con más de 15 años de experiencia creando bodas elegantes, eventos corporativos y arreglos florales personalizados.",
+      "trust_badges": {
+        "family_owned": "Empresa Familiar",
+        "years_experience": "Más de 15 Años"
+      }
+    },
+    "about": {
+      "badge": "Nuestra Historia",
+      "heading": "Empresa Familiar. Impulsados por la Pasión.",
+      "paragraph1": "Durante más de 15 años hemos transformado eventos privados y corporativos en Miami con diseños florales únicos, decoración elegante y una profunda pasión por crear momentos inolvidables.",
+      "paragraph2": "Como empresa familiar, cada detalle que entregamos viene del corazón.",
+      "cta": "Conocer Más",
+      "gallery_link": "Ver Galería"
+    },
+    "services": {
+      "badge": "Lo Que Ofrecemos",
+      "heading": "Nuestros Servicios",
+      "subtitle": "Desde planificación de eventos hasta arreglos florales personalizados, aportamos creatividad y elegancia a cada proyecto",
+      "view_service": "Ver Servicio",
+      "cta_heading": "¿Listo para Planificar tu Evento Perfecto?",
+      "cta_description": "Hablemos de tu visión y creemos una experiencia inolvidable juntos.",
+      "cta_button": "Contáctanos"
+    },
+    "gallery_preview": {
+      "heading": "Nuestro Trabajo Habla por Sí Mismo",
+      "subtitle": "Explora eventos pasados creados con intención y arte",
+      "cta": "Ver Galería Completa"
+    },
+    "why_choose": {
+      "heading": "Por Qué Elegir Creation Design & Events",
+      "family": {
+        "title": "Empresa Familiar",
+        "description": "Servicio personalizado con un toque familiar y cálido. Tratamos cada evento como si fuera nuestro."
+      },
+      "experience": {
+        "title": "Más de 15 Años de Experiencia",
+        "description": "Más de una década de experiencia creando eventos memorables en todo Miami."
+      },
+      "custom": {
+        "title": "Diseños Personalizados",
+        "description": "Cada evento es único. Creamos diseños a medida adaptados a tu visión y estilo."
+      }
+    },
+    "cta_sections": {
+      "gallery": {
+        "heading": "Ver Nuestro Portafolio",
+        "button": "Ver Galería"
+      },
+      "contact": {
+        "heading": "Hablemos",
+        "button": "Contáctanos"
+      }
+    },
+    "reviews": {
+      "badge": "Testimonios de Clientes",
+      "heading": "Lo Que Dicen Nuestros Clientes",
+      "subtitle": "No solo confíes en nuestra palabra. Escucha las experiencias de nuestros clientes satisfechos con Creation Design & Events.",
+      "average_rating": "Calificación Promedio",
+      "published_reviews": "Reseñas Publicadas",
+      "rate_experience": "Califica Tu Experiencia",
+      "share_testimonial": "Comparte Tu Testimonio",
+      "textarea_placeholder": "Cuéntanos sobre tu experiencia con Creation Design & Events...",
+      "review_help_text": "Tu reseña ayuda a otros a tomar decisiones informadas",
+      "saving": "Guardando Reseña...",
+      "update_review": "Actualizar Reseña",
+      "publish_review": "Publicar Reseña",
+      "delete_review": "Eliminar Reseña",
+      "sign_in_heading": "Inicia Sesión para Dejar una Reseña",
+      "sign_in_description": "Por favor inicia sesión en tu cuenta para compartir tu experiencia con nosotros.",
+      "sign_in_button": "Iniciar Sesión",
+      "no_account": "¿No tienes una cuenta?",
+      "create_account": "Créala aquí",
+      "no_reviews_heading": "Aún No Hay Reseñas",
+      "no_reviews_description": "¡Sé el primero en compartir tu experiencia con Creation Design & Events!",
+      "errors": {
+        "sign_in_required": "Por favor inicia sesión para compartir tu experiencia.",
+        "rating_required": "Por favor selecciona una calificación antes de enviar.",
+        "comment_too_short": "Por favor comparte un poco más de detalle (mínimo 10 caracteres).",
+        "save_failed": "No se pudo guardar tu reseña en este momento.",
+        "delete_failed": "No se pudo eliminar tu reseña en este momento."
+      },
+      "success": {
+        "saved": "¡Gracias! Tu reseña ha sido guardada.",
+        "deleted": "Tu reseña ha sido eliminada."
+      },
+      "delete_confirm": "¿Eliminar tu reseña? Esta acción no se puede deshacer."
+    }
+  },
+  "servicios": {
+    "hero": {
+      "badge": "Nuestros Servicios",
+      "title": "Diseño de eventos personalizado y arte floral",
+      "subtitle": "Planificación integral, florales de lujo y decoración de temporada para bodas, marcas, celebraciones privadas e interiores.",
+      "plan_event": "Planificar mi evento",
+      "view_gallery": "Ver galería",
+      "years_badge": "Más de 15 años en Miami"
+    },
+    "learn_more": "Saber más"
+  },
+  "gallery": {
+    "hero": {
+      "badge": "Nuestro Portafolio",
+      "title": "Diseño de eventos, florales e instalaciones de temporada que amamos",
+      "subtitle": "Explora bodas, activaciones de marca, celebraciones privadas y diseño botánico elaborado con nuestra estética marfil y dorado.",
+      "book_consultation": "Reservar una consulta",
+      "view_services": "Ver servicios",
+      "curated_gallery": "Galería curada"
+    },
+    "all_projects": "Todos los Proyectos",
+    "showing_all": "Mostrando todos los proyectos",
+    "showing": "Mostrando",
+    "projects": "proyectos",
+    "view": "Ver",
+    "of": "de",
+    "project": "Proyecto",
+    "global": "Global",
+    "no_projects": "No Se Encontraron Proyectos",
+    "no_projects_message": "Intenta ajustar tus filtros para ver m\u00e1s resultados"
+  },
+  "contact": {
+    "hero": {
+      "badge": "Cont\u00e1ctanos",
+      "title": "Cu\u00e9ntanos sobre tu celebraci\u00f3n",
+      "subtitle": "Comparte tu fecha, ubicaci\u00f3n y visi\u00f3n. Respondemos en un d\u00eda h\u00e1bil para crear un plan personalizado para tu evento.",
+      "view_services": "Ver servicios",
+      "whatsapp_team": "WhatsApp a nuestro equipo",
+      "location_badge": "Miami y destinos"
+    },
+    "form": {
+      "title": "Hagamos realidad tu visi\u00f3n",
+      "subtitle": "Comparte algunos detalles sobre tu evento. Respondemos en un d\u00eda h\u00e1bil.",
+      "success": "Gracias. Tu mensaje ha sido enviado.",
+      "error": "Algo sali\u00f3 mal. Por favor int\u00e9ntalo de nuevo.",
+      "name": "Nombre completo",
+      "email": "Correo electr\u00f3nico",
+      "phone": "Tel\u00e9fono",
+      "company": "Empresa (opcional)",
+      "event_date": "Fecha del evento",
+      "location": "Ubicaci\u00f3n",
+      "location_placeholder": "Lugar o ciudad",
+      "guest_count": "N\u00famero de invitados",
+      "guest_count_placeholder": "N\u00famero aproximado de invitados",
+      "budget": "Rango de presupuesto",
+      "budget_placeholder": "ej., $5,000 - $15,000",
+      "message": "Cu\u00e9ntanos sobre tu evento",
+      "privacy": "Acepto la pol\u00edtica de privacidad.",
+      "privacy_required": "Por favor confirma que aceptas la pol\u00edtica de privacidad.",
+      "submit": "Enviar mensaje",
+      "submitting": "Enviando\u2026",
+      "required": "*"
+    },
+    "info": {
+      "title": "C\u00f3mo contactarnos",
+      "subtitle": "¿Prefieres chatear directamente? Llámanos, envíanos un correo o escríbenos por WhatsApp.",
+      "location_title": "Miami y Sur de Florida",
+      "location_text": "Disponibles para eventos en todo el sur de Florida y solicitudes de destino.",
+      "phone_title": "Tel\u00e9fono y WhatsApp",
+      "whatsapp_link": "Escríbenos por WhatsApp",
+      "contact_unavailable": "Informaci\u00f3n de contacto no disponible",
+      "email_title": "Correo electr\u00f3nico",
+      "email_unavailable": "Correo no disponible",
+      "hours_title": "Horario",
+      "hours_text": "Lun \u2013 S\u00e1b: 08:00 AM \u2013 07:00 PM"
+    },
+    "whatsapp_cta": {
+      "title": "\u00bfPrefieres una charla r\u00e1pida?",
+      "subtitle": "Toca abajo para iniciar una conversación de WhatsApp con nuestro equipo de diseño.",
+      "button": "Abrir WhatsApp"
+    }
+  },
+  "client": {
+    "profile": "Mi Perfil",
+    "profile_subtitle": "Administra la configuración y preferencias de tu cuenta",
+    "logout": "Cerrar Sesión",
+    "name": "Nombre",
+    "email": "Correo Electrónico",
+    "phone": "Teléfono",
+    "company": "Empresa",
+    "not_provided": "No proporcionado",
+    "profile_metrics": {
+      "member_since": "Miembro Desde",
+      "last_login": "Último Inicio de Sesión",
+      "last_login_never": "Nunca",
+      "account_status": "Estado de la Cuenta",
+      "account_type": "Tipo de Cuenta",
+      "not_available": "No disponible"
+    },
+    "profile_status": {
+      "active": "Activo",
+      "disabled": "Deshabilitado",
+      "locked": "Bloqueado"
+    },
+    "profile_role": {
+      "admin": "Administrador",
+      "client": "Cliente"
+    },
+    "profile_sections": {
+      "account_overview": "Resumen de la Cuenta",
+      "account_overview_hint": "Tu resumen de cuenta y métricas clave",
+      "contact_information": "Información de Contacto",
+      "contact_information_hint": "Administra tus datos de contacto",
+      "security": "Seguridad y Acceso",
+      "security_hint": "Monitorea la seguridad de tu cuenta y actividad de inicio de sesión",
+      "support": "¿Necesitas Ayuda?"
+    },
+    "profile_support_description": "Nuestro equipo de soporte está aquí para ayudarte con cualquier pregunta o inquietud",
+    "email_cannot_change": "La dirección de correo electrónico no se puede cambiar",
+    "security": {
+      "email_verified": "Verificación de Correo",
+      "verified": "Verificado",
+      "not_verified": "No Verificado",
+      "login_attempts": "Intentos de Inicio de Sesión",
+      "last_failed_login": "Último Inicio Fallido",
+      "session_status": "Estado de la Sesión"
+    },
+    "profile_actions": {
+      "view_orders": "Ver Pedidos",
+      "contact_support": "Contactar Soporte",
+      "edit_profile": "Editar Perfil",
+      "save_changes": "Guardar Cambios",
+      "cancel": "Cancelar"
+    },
+    "errors": {
+      "email_in_use": "Este correo ya está registrado",
+      "weak_password": "La contraseña es muy débil",
+      "registration_failed": "Registro fallido. Por favor intenta de nuevo.",
+      "login_failed": "Inicio de sesión fallido. Por favor verifica tus credenciales.",
+      "name_required": "El nombre es requerido y debe tener al menos 3 caracteres"
+    }
+  },
+  "common": {
+    "loading": "Cargando...",
+    "back": "Volver al Inicio"
+  },
+  "footer": {
+    "description": "Servicios profesionales de planificación y diseño de eventos para hacer inolvidables tus momentos especiales. Desde reuniones íntimas hasta grandes celebraciones, damos vida a tu visión.",
+    "business_hours": "Horario de Atención",
+    "links": {
+      "services": "Servicios",
+      "gallery": "Galería",
+      "contact": "Contacto",
+      "privacy": "Política de Privacidad",
+      "terms": "Términos de Servicio"
+    },
+    "social": {
+      "follow": "Síguenos"
+    },
+    "copyright": "© {{year}} Creation Design & Events. Todos los derechos reservados."
+  }
+}

@@ -2,18 +2,18 @@
   <div class="page-container">
     <div class="luxury-hero">
       <div class="luxury-hero__content">
-        <span class="badge">Our Services</span>
+        <span class="badge">{{ 'servicios.hero.badge' | translate }}</span>
         <h1 class="luxury-hero__title">{{ heroTitle }}</h1>
         <p class="luxury-hero__subtitle">
           {{ heroSubtitle }}
         </p>
         <div class="luxury-hero__actions">
-          <a routerLink="/contacto" class="btn-primary">Plan my event</a>
-          <a routerLink="/galeria" class="btn-secondary">View gallery</a>
+          <a routerLink="/contacto" class="btn-primary">{{ 'servicios.hero.plan_event' | translate }}</a>
+          <a routerLink="/galeria" class="btn-secondary">{{ 'servicios.hero.view_gallery' | translate }}</a>
         </div>
       </div>
       <div class="luxury-hero__media">
-        <div class="badge absolute top-3.5 right-3.5 shadow-soft">15+ years in Miami</div>
+        <div class="badge absolute top-3.5 right-3.5 shadow-soft">{{ 'servicios.hero.years_badge' | translate }}</div>
         <img [src]="heroImage" alt="Event design and florals" loading="lazy" />
       </div>
     </div>
@@ -47,7 +47,7 @@
             @if (section.ctaLabel || section.ctaHref) {
               <a [routerLink]="section.ctaHref || '/contacto'"
                  class="btn-outline !text-sm">
-                {{ section.ctaLabel || 'Learn more' }}
+                {{ section.ctaLabel || ('servicios.learn_more' | translate) }}
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 7l5 5-5 5M6 12h12"/>
                 </svg>

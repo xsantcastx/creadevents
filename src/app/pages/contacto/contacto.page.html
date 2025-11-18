@@ -2,20 +2,20 @@
   <div class="page-container">
     <div class="luxury-hero">
       <div class="luxury-hero__content">
-        <span class="badge">Contact Us</span>
+        <span class="badge">{{ 'contact.hero.badge' | translate }}</span>
         <h1 class="luxury-hero__title">{{ heroTitle }}</h1>
         <p class="luxury-hero__subtitle">
           {{ heroSubtitle }}
         </p>
         <div class="luxury-hero__actions">
-          <a routerLink="/servicios" class="btn-secondary">View services</a>
+          <a routerLink="/servicios" class="btn-secondary">{{ 'contact.hero.view_services' | translate }}</a>
           @if (whatsappNumber) {
-            <a [href]="getWhatsAppUrl()" target="_blank" class="btn-primary">WhatsApp our team</a>
+            <a [href]="getWhatsAppUrl()" target="_blank" class="btn-primary">{{ 'contact.hero.whatsapp_team' | translate }}</a>
           }
         </div>
       </div>
       <div class="luxury-hero__media">
-        <div class="badge absolute top-3.5 right-3.5 shadow-soft">Miami & destinations</div>
+        <div class="badge absolute top-3.5 right-3.5 shadow-soft">{{ 'contact.hero.location_badge' | translate }}</div>
         <img [src]="heroImage" alt="Contact Creation Design & Events" loading="lazy" />
       </div>
     </div>
@@ -29,69 +29,69 @@
       <!-- Form -->
       <div class="bg-ts-paper border border-ts-line rounded-2xl shadow-soft p-8">
         <div class="mb-8 space-y-2">
-          <h2 class="font-serif text-3xl text-ts-ink">Let's bring your vision to life</h2>
-          <p class="text-ts-ink-soft">Share a few details about your event. We respond within one business day.</p>
+          <h2 class="font-serif text-3xl text-ts-ink">{{ 'contact.form.title' | translate }}</h2>
+          <p class="text-ts-ink-soft">{{ 'contact.form.subtitle' | translate }}</p>
         </div>
 
         <div *ngIf="submitSuccess"
              class="mb-6 p-4 bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-xl">
-          Thank you. Your message has been sent.
+          {{ 'contact.form.success' | translate }}
         </div>
 
         <div *ngIf="submitError"
              class="mb-6 p-4 bg-rose-50 border border-rose-200 text-rose-800 rounded-xl">
-          {{ submitErrorMessage || 'Something went wrong. Please try again.' }}
+          {{ submitErrorMessage || ('contact.form.error' | translate) }}
         </div>
 
         <form [formGroup]="contactForm" (ngSubmit)="onSubmit()" class="space-y-5">
           <div class="grid md:grid-cols-2 gap-5">
             <div class="md:col-span-1">
-              <label for="nombre" class="block text-sm font-semibold text-ts-ink mb-1">Full name *</label>
+              <label for="nombre" class="block text-sm font-semibold text-ts-ink mb-1">{{ 'contact.form.name' | translate }} {{ 'contact.form.required' | translate }}</label>
               <input type="text" id="nombre" formControlName="nombre"
                 class="w-full px-4 py-3 rounded-xl border border-ts-line bg-white text-ts-ink placeholder:text-ts-ink-soft focus:outline-none focus:ring-2 focus:ring-ts-accent focus:border-ts-accent-soft transition">
               <p *ngIf="getFieldError('nombre')" class="mt-1 text-sm text-rose-700">{{getFieldError('nombre')}}</p>
             </div>
             <div class="md:col-span-1">
-              <label for="email" class="block text-sm font-semibold text-ts-ink mb-1">Email *</label>
+              <label for="email" class="block text-sm font-semibold text-ts-ink mb-1">{{ 'contact.form.email' | translate }} {{ 'contact.form.required' | translate }}</label>
               <input type="email" id="email" formControlName="email"
                 class="w-full px-4 py-3 rounded-xl border border-ts-line bg-white text-ts-ink placeholder:text-ts-ink-soft focus:outline-none focus:ring-2 focus:ring-ts-accent focus:border-ts-accent-soft transition">
               <p *ngIf="getFieldError('email')" class="mt-1 text-sm text-rose-700">{{getFieldError('email')}}</p>
             </div>
             <div class="md:col-span-1">
-              <label for="telefono" class="block text-sm font-semibold text-ts-ink mb-1">Phone *</label>
+              <label for="telefono" class="block text-sm font-semibold text-ts-ink mb-1">{{ 'contact.form.phone' | translate }} {{ 'contact.form.required' | translate }}</label>
               <input type="tel" id="telefono" formControlName="telefono" (input)="formatPhoneNumber($event)"
                 class="w-full px-4 py-3 rounded-xl border border-ts-line bg-white text-ts-ink placeholder:text-ts-ink-soft focus:outline-none focus:ring-2 focus:ring-ts-accent focus:border-ts-accent-soft transition">
               <p *ngIf="getFieldError('telefono')" class="mt-1 text-sm text-rose-700">{{getFieldError('telefono')}}</p>
             </div>
             <div class="md:col-span-1">
-              <label for="empresa" class="block text-sm font-semibold text-ts-ink mb-1">Company (optional)</label>
+              <label for="empresa" class="block text-sm font-semibold text-ts-ink mb-1">{{ 'contact.form.company' | translate }}</label>
               <input type="text" id="empresa" formControlName="empresa"
                 class="w-full px-4 py-3 rounded-xl border border-ts-line bg-white text-ts-ink placeholder:text-ts-ink-soft focus:outline-none focus:ring-2 focus:ring-ts-accent focus:border-ts-accent-soft transition">
             </div>
             <div class="md:col-span-1">
-              <label for="eventDate" class="block text-sm font-semibold text-ts-ink mb-1">Event date</label>
+              <label for="eventDate" class="block text-sm font-semibold text-ts-ink mb-1">{{ 'contact.form.event_date' | translate }}</label>
               <input type="text" id="eventDate" formControlName="eventDate" placeholder="MM / DD / YYYY"
                 class="w-full px-4 py-3 rounded-xl border border-ts-line bg-white text-ts-ink placeholder:text-ts-ink-soft focus:outline-none focus:ring-2 focus:ring-ts-accent focus:border-ts-accent-soft transition">
             </div>
             <div class="md:col-span-1">
-              <label for="location" class="block text-sm font-semibold text-ts-ink mb-1">Location</label>
-              <input type="text" id="location" formControlName="location" placeholder="Venue or city"
+              <label for="location" class="block text-sm font-semibold text-ts-ink mb-1">{{ 'contact.form.location' | translate }}</label>
+              <input type="text" id="location" formControlName="location" [placeholder]="'contact.form.location_placeholder' | translate"
                 class="w-full px-4 py-3 rounded-xl border border-ts-line bg-white text-ts-ink placeholder:text-ts-ink-soft focus:outline-none focus:ring-2 focus:ring-ts-accent focus:border-ts-accent-soft transition">
             </div>
             <div class="md:col-span-1">
-              <label for="guestCount" class="block text-sm font-semibold text-ts-ink mb-1">Guest count</label>
-              <input type="text" id="guestCount" formControlName="guestCount" placeholder="Approx. number of guests"
+              <label for="guestCount" class="block text-sm font-semibold text-ts-ink mb-1">{{ 'contact.form.guest_count' | translate }}</label>
+              <input type="text" id="guestCount" formControlName="guestCount" [placeholder]="'contact.form.guest_count_placeholder' | translate"
                 class="w-full px-4 py-3 rounded-xl border border-ts-line bg-white text-ts-ink placeholder:text-ts-ink-soft focus:outline-none focus:ring-2 focus:ring-ts-accent focus:border-ts-accent-soft transition">
             </div>
             <div class="md:col-span-1">
-              <label for="budget" class="block text-sm font-semibold text-ts-ink mb-1">Budget range</label>
-              <input type="text" id="budget" formControlName="budget" placeholder="e.g., $5,000 - $15,000"
+              <label for="budget" class="block text-sm font-semibold text-ts-ink mb-1">{{ 'contact.form.budget' | translate }}</label>
+              <input type="text" id="budget" formControlName="budget" [placeholder]="'contact.form.budget_placeholder' | translate"
                 class="w-full px-4 py-3 rounded-xl border border-ts-line bg-white text-ts-ink placeholder:text-ts-ink-soft focus:outline-none focus:ring-2 focus:ring-ts-accent focus:border-ts-accent-soft transition">
             </div>
           </div>
 
           <div>
-            <label for="mensaje" class="block text-sm font-semibold text-ts-ink mb-1">Tell us about your event *</label>
+            <label for="mensaje" class="block text-sm font-semibold text-ts-ink mb-1">{{ 'contact.form.message' | translate }} {{ 'contact.form.required' | translate }}</label>
             <textarea id="mensaje" formControlName="mensaje" rows="5"
               class="w-full px-4 py-3 rounded-xl border border-ts-line bg-white text-ts-ink placeholder:text-ts-ink-soft focus:outline-none focus:ring-2 focus:ring-ts-accent focus:border-ts-accent-soft transition resize-none"></textarea>
             <p *ngIf="getFieldError('mensaje')" class="mt-1 text-sm text-rose-700">{{getFieldError('mensaje')}}</p>
@@ -101,20 +101,20 @@
             <input type="checkbox" id="privacidad" formControlName="aceptarPrivacidad"
               class="mt-1 w-4 h-4 text-ts-accent border-ts-line rounded focus:ring-ts-accent bg-ts-paper">
             <label for="privacidad" class="text-sm text-ts-ink-soft">
-              I agree to the privacy policy.
+              {{ 'contact.form.privacy' | translate }}
             </label>
           </div>
           <p *ngIf="contactForm.get('aceptarPrivacidad')?.errors?.['required'] && contactForm.get('aceptarPrivacidad')?.touched"
              class="text-sm text-rose-700">
-            Please confirm you accept the privacy policy.
+            {{ 'contact.form.privacy_required' | translate }}
           </p>
 
           <button type="submit" [disabled]="isSubmitting"
             class="btn-primary w-full disabled:opacity-50 disabled:cursor-not-allowed">
-            <span *ngIf="!isSubmitting">Send message</span>
+            <span *ngIf="!isSubmitting">{{ 'contact.form.submit' | translate }}</span>
             <span *ngIf="isSubmitting" class="flex items-center justify-center gap-2">
               <div class="app-spinner" style="--spinner-size: 72px;"><img src="/Logo Clear.png" alt="Loading" width="96" height="96"></div>
-              Sending…
+              {{ 'contact.form.submitting' | translate }}
             </span>
           </button>
         </form>
@@ -123,8 +123,8 @@
       <!-- Contact details -->
       <div class="space-y-6">
         <div class="bg-ts-paper border border-ts-line rounded-2xl p-8 shadow-soft">
-          <h2 class="font-serif text-3xl text-ts-ink mb-2">How to reach us</h2>
-          <p class="text-ts-ink-soft mb-6">Prefer to chat directly? Call, email, or message us on WhatsApp.</p>
+          <h2 class="font-serif text-3xl text-ts-ink mb-2">{{ 'contact.info.title' | translate }}</h2>
+          <p class="text-ts-ink-soft mb-6">{{ 'contact.info.subtitle' | translate }}</p>
 
           <div class="space-y-5">
             <div class="flex gap-4 items-start">
@@ -135,8 +135,8 @@
                 </svg>
               </div>
               <div>
-                <h3 class="font-semibold text-lg text-ts-ink">Miami & South Florida</h3>
-                <p class="text-ts-ink-soft">Available for events across South Florida and destination requests.</p>
+                <h3 class="font-semibold text-lg text-ts-ink">{{ 'contact.info.location_title' | translate }}</h3>
+                <p class="text-ts-ink-soft">{{ 'contact.info.location_text' | translate }}</p>
               </div>
             </div>
 
@@ -147,17 +147,17 @@
                 </svg>
               </div>
               <div>
-                <h3 class="font-semibold text-lg text-ts-ink">Phone & WhatsApp</h3>
+                <h3 class="font-semibold text-lg text-ts-ink">{{ 'contact.info.phone_title' | translate }}</h3>
                 @if (contactPhone) {
                   <p class="text-ts-ink-soft">
                     <a [href]="'tel:' + contactPhone" class="text-ts-ink hover:text-ts-accent transition-colors">{{ contactPhone }}</a>
                     @if (whatsappNumber) {
                       <br>
-                      <a [href]="getWhatsAppUrl()" target="_blank" class="text-ts-accent hover:text-ts-ink transition-colors">Message us on WhatsApp</a>
+                      <a [href]="getWhatsAppUrl()" target="_blank" class="text-ts-accent hover:text-ts-ink transition-colors">{{ 'contact.info.whatsapp_link' | translate }}</a>
                     }
                   </p>
                 } @else {
-                  <p class="text-ts-ink-soft">Contact information not available</p>
+                  <p class="text-ts-ink-soft">{{ 'contact.info.contact_unavailable' | translate }}</p>
                 }
               </div>
             </div>
@@ -169,11 +169,11 @@
                 </svg>
               </div>
               <div>
-                <h3 class="font-semibold text-lg text-ts-ink">Email</h3>
+                <h3 class="font-semibold text-lg text-ts-ink">{{ 'contact.info.email_title' | translate }}</h3>
                 @if (contactEmail) {
                   <a [href]="'mailto:' + contactEmail" class="text-ts-accent hover:text-ts-ink transition-colors">{{ contactEmail }}</a>
                 } @else {
-                  <p class="text-ts-ink-soft">Email not available</p>
+                  <p class="text-ts-ink-soft">{{ 'contact.info.email_unavailable' | translate }}</p>
                 }
               </div>
             </div>
@@ -185,8 +185,8 @@
                 </svg>
               </div>
               <div>
-                <h3 class="font-semibold text-lg text-ts-ink">Hours</h3>
-                <p class="text-ts-ink-soft">Mon – Sat: 08:00 AM – 07:00 PM</p>
+                <h3 class="font-semibold text-lg text-ts-ink">{{ 'contact.info.hours_title' | translate }}</h3>
+                <p class="text-ts-ink-soft">{{ 'contact.info.hours_text' | translate }}</p>
               </div>
             </div>
           </div>
@@ -194,10 +194,10 @@
 
         @if (whatsappNumber) {
           <div class="bg-gradient-to-r from-ts-accent to-ts-accent-soft rounded-2xl p-8 text-ts-ink shadow-soft">
-            <h3 class="font-serif text-2xl mb-3">Prefer a quick chat?</h3>
-            <p class="text-ts-ink mb-4">Tap below to start a WhatsApp conversation with our design team.</p>
+            <h3 class="font-serif text-2xl mb-3">{{ 'contact.whatsapp_cta.title' | translate }}</h3>
+            <p class="text-ts-ink mb-4">{{ 'contact.whatsapp_cta.subtitle' | translate }}</p>
             <a [href]="getWhatsAppUrl()" target="_blank" class="btn-primary">
-              Open WhatsApp
+              {{ 'contact.whatsapp_cta.button' | translate }}
               <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 7l5 5-5 5M6 12h12"/>
               </svg>

@@ -1,7 +1,186 @@
 {
   "nav": {
     "home": "Home",
+    "services": "Services",
+    "gallery": "Gallery",
+    "contact": "Contact",
+    "products": "Products",
+    "cart": "Cart",
     "profile": "My Profile"
+  },
+  "home": {
+    "hero": {
+      "badge": "Premium Event Design",
+      "fallback_title": "Modern Design & Décor to Make Every Celebration Unforgettable",
+      "fallback_subtitle": "Family-owned with 15+ years of experience creating elegant weddings, corporate events, and custom floral arrangements.",
+      "trust_badges": {
+        "family_owned": "Family-Owned",
+        "years_experience": "15+ Years"
+      }
+    },
+    "about": {
+      "badge": "Our Story",
+      "heading": "Family-Owned. Passion-Driven.",
+      "paragraph1": "For more than 15 years we've been transforming private and corporate events in Miami with unique floral designs, elegant decor, and a deep passion for crafting unforgettable moments.",
+      "paragraph2": "As a family-owned business, every detail we deliver comes from the heart.",
+      "cta": "Learn More",
+      "gallery_link": "View Gallery"
+    },
+    "services": {
+      "badge": "What We Offer",
+      "heading": "Our Services",
+      "subtitle": "From event planning to bespoke floral arrangements, we bring creativity and elegance to every project",
+      "view_service": "View Service",
+      "cta_heading": "Ready to Plan Your Perfect Event?",
+      "cta_description": "Let's discuss your vision and create an unforgettable experience together.",
+      "cta_button": "Get in Touch"
+    },
+    "gallery_preview": {
+      "heading": "Our Work Speaks for Itself",
+      "subtitle": "Explore past events brought to life with intention and artistry",
+      "cta": "View Full Gallery"
+    },
+    "why_choose": {
+      "heading": "Why Choose Creation Design & Events",
+      "family": {
+        "title": "Family-Owned Business",
+        "description": "Personalized service with a warm, family touch. We treat every event like it's our own."
+      },
+      "experience": {
+        "title": "15+ Years Experience",
+        "description": "Over a decade of expertise in creating memorable events across Miami."
+      },
+      "custom": {
+        "title": "Custom Designs",
+        "description": "Every event is unique. We create bespoke designs tailored to your vision and style."
+      }
+    },
+    "cta_sections": {
+      "gallery": {
+        "heading": "View Our Portfolio",
+        "button": "Browse Gallery"
+      },
+      "contact": {
+        "heading": "Let's Talk",
+        "button": "Contact Us"
+      }
+    },
+    "reviews": {
+      "badge": "Client Testimonials",
+      "heading": "What Our Clients Say",
+      "subtitle": "Don't just take our word for it. Hear from our satisfied clients about their experience with Creation Design & Events.",
+      "average_rating": "Average Rating",
+      "published_reviews": "Published Reviews",
+      "rate_experience": "Rate Your Experience",
+      "share_testimonial": "Share Your Testimonial",
+      "textarea_placeholder": "Tell us about your experience with Creation Design & Events...",
+      "review_help_text": "Your review helps others make informed decisions",
+      "saving": "Saving Review...",
+      "update_review": "Update Review",
+      "publish_review": "Publish Review",
+      "delete_review": "Delete Review",
+      "sign_in_heading": "Sign In to Leave a Review",
+      "sign_in_description": "Please sign in to your account to share your experience with us.",
+      "sign_in_button": "Sign In",
+      "no_account": "Don't have an account?",
+      "create_account": "Create one here",
+      "no_reviews_heading": "No Reviews Yet",
+      "no_reviews_description": "Be the first to share your experience with Creation Design & Events!",
+      "errors": {
+        "sign_in_required": "Please sign in to share your experience.",
+        "rating_required": "Please select a rating before submitting.",
+        "comment_too_short": "Please share a bit more detail (minimum 10 characters).",
+        "save_failed": "Unable to save your review right now.",
+        "delete_failed": "Unable to delete your review right now."
+      },
+      "success": {
+        "saved": "Thanks! Your review has been saved.",
+        "deleted": "Your review has been removed."
+      },
+      "delete_confirm": "Remove your review? This action cannot be undone."
+    }
+  },
+  "servicios": {
+    "hero": {
+      "badge": "Our Services",
+      "title": "Tailored event design and floral artistry",
+      "subtitle": "Full-service planning, luxury florals, and seasonal decor crafted for weddings, brands, private celebrations, and interiors.",
+      "plan_event": "Plan my event",
+      "view_gallery": "View gallery",
+      "years_badge": "15+ years in Miami"
+    },
+    "learn_more": "Learn more"
+  },
+  "gallery": {
+    "hero": {
+      "badge": "Our Portfolio",
+      "title": "Event design, florals, and seasonal installs we love",
+      "subtitle": "Explore weddings, brand activations, private celebrations, and botanical styling crafted with our ivory and gold aesthetic.",
+      "book_consultation": "Book a consultation",
+      "view_services": "View services",
+      "curated_gallery": "Curated gallery"
+    },
+    "all_projects": "All Projects",
+    "showing_all": "Showing all projects",
+    "showing": "Showing",
+    "projects": "projects",
+    "view": "View",
+    "of": "of",
+    "project": "Project",
+    "global": "Global",
+    "no_projects": "No Projects Found",
+    "no_projects_message": "Try adjusting your filters to see more results"
+  },
+  "contact": {
+    "hero": {
+      "badge": "Contact Us",
+      "title": "Tell us about your celebration",
+      "subtitle": "Share your date, location, and vision. We respond within one business day to craft a bespoke plan for your event.",
+      "view_services": "View services",
+      "whatsapp_team": "WhatsApp our team",
+      "location_badge": "Miami & destinations"
+    },
+    "form": {
+      "title": "Let's bring your vision to life",
+      "subtitle": "Share a few details about your event. We respond within one business day.",
+      "success": "Thank you. Your message has been sent.",
+      "error": "Something went wrong. Please try again.",
+      "name": "Full name",
+      "email": "Email",
+      "phone": "Phone",
+      "company": "Company (optional)",
+      "event_date": "Event date",
+      "location": "Location",
+      "location_placeholder": "Venue or city",
+      "guest_count": "Guest count",
+      "guest_count_placeholder": "Approx. number of guests",
+      "budget": "Budget range",
+      "budget_placeholder": "e.g., $5,000 - $15,000",
+      "message": "Tell us about your event",
+      "privacy": "I agree to the privacy policy.",
+      "privacy_required": "Please confirm you accept the privacy policy.",
+      "submit": "Send message",
+      "submitting": "Sending\u2026",
+      "required": "*"
+    },
+    "info": {
+      "title": "How to reach us",
+      "subtitle": "Prefer to chat directly? Call, email, or message us on WhatsApp.",
+      "location_title": "Miami & South Florida",
+      "location_text": "Available for events across South Florida and destination requests.",
+      "phone_title": "Phone & WhatsApp",
+      "whatsapp_link": "Message us on WhatsApp",
+      "contact_unavailable": "Contact information not available",
+      "email_title": "Email",
+      "email_unavailable": "Email not available",
+      "hours_title": "Hours",
+      "hours_text": "Mon \u2013 Sat: 08:00 AM \u2013 07:00 PM"
+    },
+    "whatsapp_cta": {
+      "title": "Prefer a quick chat?",
+      "subtitle": "Tap below to start a WhatsApp conversation with our design team.",
+      "button": "Open WhatsApp"
+    }
   },
   "client": {
     "profile": "My Profile",
@@ -69,6 +248,17 @@
   },
   "footer": {
     "description": "Professional event planning and design services to make your special moments unforgettable. From intimate gatherings to grand celebrations, we bring your vision to life.",
-    "business_hours": "Business Hours"
+    "business_hours": "Business Hours",
+    "links": {
+      "services": "Services",
+      "gallery": "Gallery",
+      "contact": "Contact",
+      "privacy": "Privacy Policy",
+      "terms": "Terms of Service"
+    },
+    "social": {
+      "follow": "Follow Us"
+    },
+    "copyright": "© {{year}} Creation Design & Events. All rights reserved."
   }
 }

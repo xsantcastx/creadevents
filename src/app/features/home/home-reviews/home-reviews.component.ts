@@ -2,7 +2,7 @@ import { Component, DestroyRef, computed, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { switchMap, of } from 'rxjs';
 import { ReviewService } from '../../../services/review.service';
@@ -19,6 +19,7 @@ import { AuthService, UserProfile } from '../../../services/auth.service';
 export class HomeReviewsComponent {
   private reviewService = inject(ReviewService);
   private authService = inject(AuthService);
+  private translateService = inject(TranslateService);
   private destroyRef = inject(DestroyRef);
 
   readonly stars = [1, 2, 3, 4, 5];
@@ -93,7 +94,7 @@ export class HomeReviewsComponent {
   async submitReview() {
     const user = this.currentUser();
     if (!user) {
-      this.submissionError.set('Please sign in to share your experience.');
+      this.submissionError.set(this.translateService.instant('home.reviews.errors.sign_in_required'));
       return;
     }
 
@@ -101,12 +102,12 @@ export class HomeReviewsComponent {
     const comment = this.commentInput().trim();
 
     if (!rating || rating < 1) {
-      this.submissionError.set('Please select a rating before submitting.');
+      this.submissionError.set(this.translateService.instant('home.reviews.errors.rating_required'));
       return;
     }
 
     if (comment.length < 10) {
-      this.submissionError.set('Please share a bit more detail (minimum 10 characters).');
+      this.submissionError.set(this.translateService.instant('home.reviews.errors.comment_too_short'));
       return;
     }
 
@@ -148,10 +149,10 @@ export class HomeReviewsComponent {
         this.reviews.set([updatedReview, ...currentList].slice(0, 16));
       }
 
-      this.submissionMessage.set('Thanks! Your review has been saved.');
+      this.submissionMessage.set(this.translateService.instant('home.reviews.success.saved'));
     } catch (error: any) {
       console.error('Error saving review:', error);
-      this.submissionError.set(error?.message || 'Unable to save your review right now.');
+      this.submissionError.set(error?.message || this.translateService.instant('home.reviews.errors.save_failed'));
     } finally {
       this.isSubmitting.set(false);
     }
@@ -164,7 +165,7 @@ export class HomeReviewsComponent {
     }
 
     const confirmed = typeof window !== 'undefined'
-      ? window.confirm('Remove your review? This action cannot be undone.')
+      ? window.confirm(this.translateService.instant('home.reviews.delete_confirm'))
       : true;
 
     if (!confirmed) {
@@ -181,10 +182,10 @@ export class HomeReviewsComponent {
       this.reviews.set(filtered);
       this.userReview.set(null);
       this.resetForm();
-      this.submissionMessage.set('Your review has been removed.');
+      this.submissionMessage.set(this.translateService.instant('home.reviews.success.deleted'));
     } catch (error: any) {
       console.error('Error deleting review:', error);
-      this.submissionError.set(error?.message || 'Unable to delete your review right now.');
+      this.submissionError.set(error?.message || this.translateService.instant('home.reviews.errors.delete_failed'));
     } finally {
       this.isSubmitting.set(false);
     }

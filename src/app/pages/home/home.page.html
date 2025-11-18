@@ -25,19 +25,19 @@
       <!-- Text on right -->
       <div>
         <span class="badge">
-          Our Story
+          {{ 'home.about.badge' | translate }}
         </span>
         <h2 class="heading-display text-4xl lg:text-5xl mb-6 text-ts-ink">
-          Family-Owned. Passion-Driven.
+          {{ 'home.about.heading' | translate }}
         </h2>
         <p class="text-lg text-ts-ink-soft leading-relaxed mb-6">
-          For more than 15 years we've been transforming private and corporate events in Miami with unique floral designs, elegant decor, and a deep passion for crafting unforgettable moments.
+          {{ 'home.about.paragraph1' | translate }}
         </p>
         <p class="text-lg text-ts-ink-soft leading-relaxed mb-8">
-          As a family-owned business, every detail we deliver comes from the heart.
+          {{ 'home.about.paragraph2' | translate }}
         </p>
         <a routerLink="/contacto" class="btn-primary">
-          Learn More
+          {{ 'home.about.cta' | translate }}
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
           </svg>
@@ -53,13 +53,13 @@
   <div class="page-container relative z-10">
     <div class="text-center mb-16">
       <span class="badge">
-        What We Offer
+        {{ 'home.services.badge' | translate }}
       </span>
       <h2 class="heading-display text-4xl lg:text-5xl mb-4">
-        Our Services
+        {{ 'home.services.heading' | translate }}
       </h2>
       <p class="text-xl text-ts-ink-soft max-w-2xl mx-auto">
-        From event planning to bespoke floral arrangements, we bring creativity and elegance to every project
+        {{ 'home.services.subtitle' | translate }}
       </p>
     </div>
 
@@ -80,7 +80,7 @@
             <p class="text-ts-ink-soft leading-relaxed">{{service.description}}</p>
             <a [routerLink]="'/servicios'" [fragment]="service.anchor || service.id"
                class="btn-outline !px-4 !py-2 !text-sm">
-              View Service
+              {{ 'home.services.view_service' | translate }}
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
               </svg>
@@ -94,13 +94,13 @@
     <div class="text-center">
       <div class="inline-block bg-ts-paper border border-ts-line rounded-2xl p-8 max-w-3xl shadow-lg">
         <h3 class="heading-display text-2xl mb-4">
-          Ready to Plan Your Perfect Event?
+          {{ 'home.services.cta_heading' | translate }}
         </h3>
         <p class="text-ts-ink-soft mb-6">
-          Let's discuss your vision and create an unforgettable experience together.
+          {{ 'home.services.cta_description' | translate }}
         </p>
         <a routerLink="/contacto" class="btn-primary">
-          Get in Touch
+          {{ 'home.services.cta_button' | translate }}
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
           </svg>
@@ -117,10 +117,10 @@
     <div class="page-container relative z-10">
       <div class="text-center mb-16">
         <h2 class="heading-display text-4xl lg:text-5xl mb-4">
-          Our Work Speaks for Itself
+          {{ 'home.gallery_preview.heading' | translate }}
         </h2>
         <p class="text-xl text-ts-ink-soft max-w-2xl mx-auto">
-          Explore past events brought to life with intention and artistry
+          {{ 'home.gallery_preview.subtitle' | translate }}
         </p>
       </div>
 
@@ -147,7 +147,7 @@
 
       <div class="text-center">
         <a routerLink="/galeria" class="btn-primary">
-          View Full Gallery
+          {{ 'home.gallery_preview.cta' | translate }}
         </a>
       </div>
     </div>
@@ -160,7 +160,7 @@
   <div class="page-container relative z-10">
     <div class="text-center mb-16">
       <h2 class="heading-display text-4xl lg:text-5xl mb-4">
-        Why Choose Creation Design & Events
+        {{ 'home.why_choose.heading' | translate }}
       </h2>
     </div>
     
@@ -172,9 +172,9 @@
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
           </svg>
         </div>
-        <h3 class="heading-display text-2xl mb-4 text-ts-ink">Family-Owned Business</h3>
+        <h3 class="heading-display text-2xl mb-4 text-ts-ink">{{ 'home.why_choose.family.title' | translate }}</h3>
         <p class="text-ts-ink-soft leading-relaxed">
-          Personalized service with a warm, family touch. We treat every event like it's our own.
+          {{ 'home.why_choose.family.description' | translate }}
         </p>
       </div>
       
@@ -185,9 +185,9 @@
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
           </svg>
         </div>
-        <h3 class="heading-display text-2xl mb-4 text-ts-ink">15+ Years Experience</h3>
+        <h3 class="heading-display text-2xl mb-4 text-ts-ink">{{ 'home.why_choose.experience.title' | translate }}</h3>
         <p class="text-ts-ink-soft leading-relaxed">
-          Over a decade of expertise in creating memorable events across Miami.
+          {{ 'home.why_choose.experience.description' | translate }}
         </p>
       </div>
       
@@ -198,9 +198,9 @@
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01"></path>
           </svg>
         </div>
-        <h3 class="heading-display text-2xl mb-4 text-ts-ink">Custom Designs</h3>
+        <h3 class="heading-display text-2xl mb-4 text-ts-ink">{{ 'home.why_choose.custom.title' | translate }}</h3>
         <p class="text-ts-ink-soft leading-relaxed">
-          Every event is unique. We create bespoke designs tailored to your vision and style.
+          {{ 'home.why_choose.custom.description' | translate }}
         </p>
       </div>
     </div>
@@ -225,9 +225,9 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
               </svg>
             </div>
-            <h3 class="heading-display text-3xl mb-4 text-ts-ink">View Our Portfolio</h3>
+            <h3 class="heading-display text-3xl mb-4 text-ts-ink">{{ 'home.cta_sections.gallery.heading' | translate }}</h3>
             <a routerLink="/galeria" class="btn-primary">
-              Browse Gallery
+              {{ 'home.cta_sections.gallery.button' | translate }}
             </a>
           </div>
         </div>
@@ -243,9 +243,9 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"></path>
               </svg>
             </div>
-            <h3 class="heading-display text-3xl mb-4 text-ts-ink">Let's Talk</h3>
+            <h3 class="heading-display text-3xl mb-4 text-ts-ink">{{ 'home.cta_sections.contact.heading' | translate }}</h3>
             <a routerLink="/contacto" class="btn-primary">
-              Contact Us
+              {{ 'home.cta_sections.contact.button' | translate }}
             </a>
           </div>
         </div>

@@ -46,7 +46,7 @@
         <!-- Logo Badge -->
         <div class="inline-flex items-center gap-2 mb-3 px-3 py-1.5 rounded-full bg-ts-accent/10 border border-ts-accent/30 hover:bg-ts-accent/20 transition-colors duration-300">
           <img src="/Logo Clear.png" alt="Brand Logo" width="24" height="24" class="h-6 w-6 rounded" />
-          <span class="text-xs text-ts-ink font-semibold">Premium Event Design</span>
+          <span class="text-xs text-ts-ink font-semibold">{{ 'home.hero.badge' | translate }}</span>
         </div>
         
         @if (rotatingImages.length > 0 && rotatingImages[currentImageIndex]) {
@@ -61,11 +61,11 @@
         } @else {
           <!-- Static fallback content -->
           <h1 class="text-2xl md:text-3xl font-serif font-bold mb-2 leading-tight text-ts-ink">
-            Modern Design & Décor to Make Every Celebration Unforgettable
+            {{ 'home.hero.fallback_title' | translate }}
           </h1>
           
           <p class="text-sm md:text-base text-ts-ink/80 mb-3 leading-relaxed">
-            Family-owned with 15+ years of experience creating elegant weddings, corporate events, and custom floral arrangements.
+            {{ 'home.hero.fallback_subtitle' | translate }}
           </p>
         }
         
@@ -91,14 +91,14 @@
             <svg class="w-4 h-4 text-ts-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
             </svg>
-            <span class="text-xs font-semibold text-ts-ink">Family-Owned</span>
+            <span class="text-xs font-semibold text-ts-ink">{{ 'home.hero.trust_badges.family_owned' | translate }}</span>
           </div>
           
           <div class="flex items-center gap-1.5">
             <svg class="w-4 h-4 text-ts-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
             </svg>
-            <span class="text-xs font-semibold text-ts-ink">15+ Years</span>
+            <span class="text-xs font-semibold text-ts-ink">{{ 'home.hero.trust_badges.years_experience' | translate }}</span>
           </div>
         </div>
       </div>

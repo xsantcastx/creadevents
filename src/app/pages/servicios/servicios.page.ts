@@ -1,13 +1,14 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
+import { TranslateModule } from '@ngx-translate/core';
 import { ServiceService, ServiceItem } from '../../services/service.service';
 import { SettingsService } from '../../services/settings.service';
 
 @Component({
   selector: 'app-servicios-page',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, TranslateModule],
   templateUrl: './servicios.page.html',
   styleUrl: './servicios.page.scss'
 })
