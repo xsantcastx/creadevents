@@ -1,27 +1,28 @@
-﻿<section class="section-gap bg-ts-bg">
+﻿<!-- Gallery Hero (matches Servicios/Contacto style) -->
+<section class="section-gap relative overflow-hidden bg-ts-bg">
   <div class="page-container">
     <div class="luxury-hero">
       <div class="luxury-hero__content">
-        <span class="badge">{{ 'gallery.hero.badge' | translate }}</span>
+        <span class="badge">{{ 'galeria.hero.badge' | translate }}</span>
         <h1 class="luxury-hero__title">{{ heroTitle }}</h1>
         <p class="luxury-hero__subtitle">
           {{ heroSubtitle }}
         </p>
         <div class="luxury-hero__actions">
-          <a routerLink="/contacto" class="btn-primary">{{ 'gallery.hero.book_consultation' | translate }}</a>
-          <a routerLink="/servicios" class="btn-secondary">{{ 'gallery.hero.view_services' | translate }}</a>
+          <a routerLink="/servicios" class="btn-secondary">{{ 'galeria.hero.view_services' | translate }}</a>
+          <a routerLink="/contacto" class="btn-primary">{{ 'galeria.hero.contact_cta' | translate }}</a>
         </div>
       </div>
       <div class="luxury-hero__media">
-        <div class="badge absolute top-3.5 right-3.5 shadow-soft">{{ 'gallery.hero.curated_gallery' | translate }}</div>
-        <img [src]="heroImage" alt="Event gallery highlights" loading="lazy" />
+        <div class="badge absolute top-3.5 right-3.5 shadow-soft">{{ 'galeria.hero.badge_secondary' | translate }}</div>
+        <img [src]="heroImage" alt="Gallery hero image" loading="lazy" />
       </div>
     </div>
   </div>
 </section>
 
 <!-- Enhanced Category Filters with Tag Icons & Colors -->
-<section class="py-6 bg-ts-bg-soft border-b border-ts-line">
+<section class="section-gap pt-6 pb-4 bg-ts-bg-soft border-b border-ts-line">
   <div class="page-container">
     <!-- Filter Toggle Bar -->
     <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-4">

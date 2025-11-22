@@ -102,6 +102,30 @@ export class SettingsAdminComponent extends LoadingComponentBase implements OnIn
   activeProfileId: string = 'custom';
   editingProfileId: string | null = null;
   editingProfileName: string = '';
+  readonly backgroundEffectLabels: Record<string, string> = {
+    none: 'None',
+    'falling-petals': 'Falling Petals (Spring)',
+    'watercolor-wash': 'Watercolor Bloom Wash',
+    'vine-frame': 'Vine Frame Corners',
+    'falling-snow': 'Falling Snow (Winter)',
+    'falling-leaves': 'Falling Leaves (Autumn)',
+    'floating-hearts': 'Floating Hearts (Romance)',
+    'floral-garden': 'Floral Garden',
+    'grass-borders': 'Grass Borders',
+    'elegant-vines': 'Elegant Vines',
+    'botanical-pattern': 'Botanical Pattern',
+    'subtle-leaves': 'Subtle Leaves'
+  };
+  readonly themePalettes = [
+    { name: 'Sage Garden', accent: '#a8c5a4', ink: '#1d2a39', bg: '#f8f9fa', paper: '#ffffff', useCase: 'light' },
+    { name: 'Blush Rose', accent: '#f45e9f', ink: '#2b1221', bg: '#fff7fb', paper: '#ffffff', useCase: 'floral' },
+    { name: 'Midnight Blue', accent: '#3b82f6', ink: '#e5e7eb', bg: '#0f172a', paper: '#111827', useCase: 'dark' },
+    { name: 'Earth Clay', accent: '#d97757', ink: '#2c1a12', bg: '#fbf6ef', paper: '#ffffff', useCase: 'earthy' },
+    { name: 'Minimal Cool', accent: '#6bc9ff', ink: '#1c2c3a', bg: '#f9fcff', paper: '#ffffff', useCase: 'tech' },
+    { name: 'Luxury Gold', accent: '#d4af37', ink: '#1b1b1b', bg: '#fdf8ef', paper: '#ffffff', useCase: 'luxury' },
+    { name: 'Forest Night', accent: '#5fb58c', ink: '#e6f5ef', bg: '#0f1b1a', paper: '#13211f', useCase: 'dark' }
+  ];
+  paletteUseCase: string = 'all';
 
   private readonly notificationDefinitions: Array<Omit<NotificationSummaryCard, 'enabled' | 'meta'>> = [
     {
@@ -308,6 +332,25 @@ export class SettingsAdminComponent extends LoadingComponentBase implements OnIn
           { key: 'themeBgColor', label: 'Background (--ts-bg)', type: 'text', value: this.currentSettings.themeBgColor || '#f8f9fa', placeholder: '#f8f9fa', description: 'Main background color' },
           { key: 'themePaperColor', label: 'Paper (--ts-paper)', type: 'text', value: this.currentSettings.themePaperColor || '#ffffff', placeholder: '#ffffff', description: 'Card/panel background' },
           { key: 'themeLineColor', label: 'Line Color (--ts-line)', type: 'text', value: this.currentSettings.themeLineColor || '#e5e7eb', placeholder: '#e5e7eb', description: 'Border and divider color' },
+          { key: 'themeHighContrast', label: 'High Contrast Mode', type: 'boolean', value: this.currentSettings.themeHighContrast || false, description: 'Boost text contrast and outlines for readability' },
+          { key: 'themePremiumCards', label: 'Premium Card Surfaces', type: 'boolean', value: this.currentSettings.themePremiumCards || false, description: 'Apply glassy premium styling to cards and panels' },
+          { key: 'themeCardTexture', label: 'Card Texture Overlay', type: 'boolean', value: this.currentSettings.themeCardTexture || false, description: 'Add subtle paper texture to cards/panels' },
+          { key: 'themeButtonGlow', label: 'Button Glow Hover', type: 'boolean', value: this.currentSettings.themeButtonGlow || false, description: 'Add a soft glow and lift on buttons when hovered' },
+          { 
+            key: 'themeBackgroundEffect', 
+            label: 'Background Effect', 
+            type: 'select', 
+            value: this.currentSettings.themeBackgroundEffect || 'none', 
+            description: 'Decorative background pattern or animation for the entire site',
+            options: [
+              { label: 'None', value: 'none' },
+              { label: 'Falling Petals (Spring)', value: 'falling-petals' },
+              { label: 'Watercolor Bloom Wash (All Seasons)', value: 'watercolor-wash' },
+              { label: 'Vine Frame Corners (Elegant)', value: 'vine-frame' },
+              { label: 'Falling Snow (Winter)', value: 'falling-snow' },
+              { label: 'Subtle Leaves (Static)', value: 'subtle-leaves' }
+            ]
+          },
           // Theme Profile Settings (hidden system fields)
           { key: 'activeThemeProfile', label: 'Active Theme Profile', type: 'text', value: this.currentSettings.activeThemeProfile || '', hidden: true },
           { key: 'themeProfile1Name', label: 'Theme Profile 1 Name', type: 'text', value: this.currentSettings.themeProfile1Name || '', hidden: true },
@@ -323,19 +366,14 @@ export class SettingsAdminComponent extends LoadingComponentBase implements OnIn
         ]
       },
       {
-        title: 'Home Hero Images',
+        title: 'Hero Page Settings',
         icon: 'M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z',
-        color: 'orange',
-        expanded: false,
-        settings: [],
-        isCustomComponent: true
-      },
-      {
-        title: 'Page Hero Settings',
-        icon: 'M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z',
         color: 'indigo',
         expanded: false,
         settings: [
+          { key: 'homeHeroImage', label: 'Home Page - Hero Image', type: 'image', value: this.currentSettings.homeHeroImage, storagePath: 'settings/page-heroes', helpText: 'Recommended: 1200x600px or larger. Used as fallback when no rotating images are set.' },
+          { key: 'homeHeroTitle', label: 'Home Page - Hero Title', type: 'text', value: this.currentSettings.homeHeroTitle, placeholder: 'Leave empty to use translation default' },
+          { key: 'homeHeroSubtitle', label: 'Home Page - Hero Subtitle', type: 'textarea', value: this.currentSettings.homeHeroSubtitle, placeholder: 'Leave empty to use translation default', helpText: 'Override the default home hero text with custom content' },
           { key: 'serviciosHeroImage', label: 'Services Page - Hero Image', type: 'image', value: this.currentSettings.serviciosHeroImage, storagePath: 'settings/page-heroes', helpText: 'Recommended: 1200x600px or larger' },
           { key: 'serviciosHeroTitle', label: 'Services Page - Title', type: 'text', value: this.currentSettings.serviciosHeroTitle, placeholder: 'Enter hero title' },
           { key: 'serviciosHeroSubtitle', label: 'Services Page - Subtitle', type: 'textarea', value: this.currentSettings.serviciosHeroSubtitle, placeholder: 'Enter hero subtitle' },
@@ -345,7 +383,8 @@ export class SettingsAdminComponent extends LoadingComponentBase implements OnIn
           { key: 'contactoHeroImage', label: 'Contact Page - Hero Image', type: 'image', value: this.currentSettings.contactoHeroImage, storagePath: 'settings/page-heroes', helpText: 'Recommended: 1200x600px or larger' },
           { key: 'contactoHeroTitle', label: 'Contact Page - Title', type: 'text', value: this.currentSettings.contactoHeroTitle, placeholder: 'Enter hero title' },
           { key: 'contactoHeroSubtitle', label: 'Contact Page - Subtitle', type: 'textarea', value: this.currentSettings.contactoHeroSubtitle, placeholder: 'Enter hero subtitle' }
-        ]
+        ],
+        isCustomComponent: true  // Shows hero images manager at the end
       },
       /* HIDDEN - Stripe Configuration
       {
@@ -611,6 +650,9 @@ export class SettingsAdminComponent extends LoadingComponentBase implements OnIn
         stockReserveTime: 15,
         // Hero Images - PRESERVE fresh value from Firestore
         heroImagesJson: freshSettings.heroImagesJson || '',
+        homeHeroImage: freshSettings.homeHeroImage || '',
+        homeHeroTitle: freshSettings.homeHeroTitle || '',
+        homeHeroSubtitle: freshSettings.homeHeroSubtitle || '',
         // Page Hero Settings
         serviciosHeroImage: freshSettings.serviciosHeroImage || '/assets/services/hero-services.jpg',
         serviciosHeroTitle: freshSettings.serviciosHeroTitle || 'Tailored event design and floral artistry',
@@ -625,11 +667,14 @@ export class SettingsAdminComponent extends LoadingComponentBase implements OnIn
         themeAccentColor: '#a8c5a4',
         themeAccentSoft: '#c1d5be',
         themeAccentDark: '#8aab85',
-        themeInkColor: '#1d2a39',
-        themeInkSoft: '#3f5f47',
-        themeBgColor: '#f8f9fa',
-        themePaperColor: '#ffffff',
-        themeLineColor: '#e5e7eb',
+      themeInkColor: '#1d2a39',
+      themeInkSoft: '#3f5f47',
+      themeBgColor: '#f8f9fa',
+      themePaperColor: '#ffffff',
+      themeLineColor: '#e5e7eb',
+      themeHighContrast: false,
+      themePremiumCards: false,
+      themeBackgroundEffect: 'none',
         // Theme Profiles
         activeThemeProfile: 'custom',
         themeProfile1Name: 'Spring Bloom',
@@ -1054,7 +1099,6 @@ export class SettingsAdminComponent extends LoadingComponentBase implements OnIn
     this.activeProfileId = this.currentSettings.activeThemeProfile || 'custom';
 
     for (let i = 1; i <= 5; i++) {
-      const profileId = `profile${i}`;
       const nameKey = `themeProfile${i}Name` as keyof AppSettings;
       const dataKey = `themeProfile${i}Data` as keyof AppSettings;
       
@@ -1064,7 +1108,8 @@ export class SettingsAdminComponent extends LoadingComponentBase implements OnIn
       const dataStr = this.currentSettings[dataKey] as string;
       if (dataStr) {
         try {
-          profile.colors = JSON.parse(dataStr);
+          const parsed = JSON.parse(dataStr);
+          profile.colors = this.validateThemeProfile(parsed);
         } catch (e) {
           profile.colors = null;
         }
@@ -1099,6 +1144,224 @@ export class SettingsAdminComponent extends LoadingComponentBase implements OnIn
       themePaperColor: '#ffffff',
       themeLineColor: '#e5e7eb'
     };
+  }
+
+  getThemePreviewColors(): ThemeProfile {
+    const base = this.getDefaultThemeColors();
+    return {
+      themeAccentColor: this.getLiveThemeValue('themeAccentColor') || base.themeAccentColor,
+      themeAccentSoft: this.getLiveThemeValue('themeAccentSoft') || base.themeAccentSoft,
+      themeAccentDark: this.getLiveThemeValue('themeAccentDark') || base.themeAccentDark,
+      themeInkColor: this.getLiveThemeValue('themeInkColor') || base.themeInkColor,
+      themeInkSoft: this.getLiveThemeValue('themeInkSoft') || base.themeInkSoft,
+      themeBgColor: this.getLiveThemeValue('themeBgColor') || base.themeBgColor,
+      themePaperColor: this.getLiveThemeValue('themePaperColor') || base.themePaperColor,
+      themeLineColor: this.getLiveThemeValue('themeLineColor') || base.themeLineColor
+    };
+  }
+
+  getBackgroundEffectLabel(effect?: string): string {
+    if (!effect) return 'None';
+    return this.backgroundEffectLabels[effect] || 'None';
+  }
+
+  isPremiumCardsEnabled(): boolean {
+    return !!this.currentSettings?.themePremiumCards;
+  }
+
+  isHighContrastEnabled(): boolean {
+    return !!this.currentSettings?.themeHighContrast;
+  }
+
+  isCardTextureEnabled(): boolean {
+    return !!this.currentSettings?.themeCardTexture;
+  }
+
+  isButtonGlowEnabled(): boolean {
+    return !!this.currentSettings?.themeButtonGlow;
+  }
+
+  previewFocusKey: string | null = null;
+
+  setPreviewFocus(key: string): void {
+    this.previewFocusKey = key;
+  }
+
+  clearPreviewFocus(): void {
+    this.previewFocusKey = null;
+  }
+
+  isPreviewFocused(key: string): boolean {
+    return this.previewFocusKey === key;
+  }
+
+  /**
+   * Prefer the in-memory setting.value from the form for live preview;
+   * fallback to currentSettings or defaults.
+   */
+  private getLiveThemeValue(key: keyof ThemeProfile): string | undefined {
+    const themeSection = this.sections.find(s => s.title === 'Theme Customization');
+    const setting = themeSection?.settings.find(s => s.key === key);
+    if (setting && typeof setting.value === 'string' && setting.value) {
+      return setting.value;
+    }
+    if (this.currentSettings && typeof this.currentSettings[key] === 'string') {
+      return this.currentSettings[key] as string;
+    }
+    return undefined;
+  }
+
+  /**
+   * Compute readable text against a background color (white/near-black)
+   */
+  getReadableText(hexColor: string | null | undefined): string {
+    const hex = (hexColor || '').replace('#', '');
+    if (!hex || (hex.length !== 6 && hex.length !== 3)) {
+      return '#ffffff';
+    }
+    const normalized = hex.length === 3 ? hex.split('').map(c => c + c).join('') : hex;
+    const r = parseInt(normalized.substring(0, 2), 16) / 255;
+    const g = parseInt(normalized.substring(2, 4), 16) / 255;
+    const b = parseInt(normalized.substring(4, 6), 16) / 255;
+    const srgb = [r, g, b].map(v => v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4));
+    const luminance = 0.2126 * srgb[0] + 0.7152 * srgb[1] + 0.0722 * srgb[2];
+    return luminance > 0.55 ? '#111827' : '#ffffff';
+  }
+
+  getSecondaryPreviewBg(): string {
+    const accentSoft = this.getThemePreviewColors().themeAccentSoft || this.getThemePreviewColors().themeAccentColor;
+    return this.adjustColor(accentSoft, 0.18);
+  }
+
+  getEffectTag(effect: string): string {
+    switch (effect) {
+      case 'falling-petals':
+      case 'falling-snow':
+        return 'Animated';
+      case 'watercolor-wash':
+        return 'Overlay';
+      case 'vine-frame':
+        return 'Framed';
+      case 'subtle-leaves':
+      default:
+        return 'Static';
+    }
+  }
+
+  isEffectAnimated(effect: string): boolean {
+    return ['falling-petals', 'falling-snow'].includes(effect);
+  }
+
+  private ensureContrast(baseColor: string, bg: string, paper: string, minRatio = 4.5): string {
+    const candidates = [baseColor, '#0f172a', '#111827', '#f8fafc', '#ffffff'];
+    for (const candidate of candidates) {
+      if (this.contrastRatio(candidate, bg) >= minRatio && this.contrastRatio(candidate, paper) >= minRatio) {
+        return candidate;
+      }
+    }
+    return baseColor;
+  }
+
+  private contrastRatio(c1: string, c2: string): number {
+    const L1 = this.relativeLuminance(c1);
+    const L2 = this.relativeLuminance(c2);
+    const [lighter, darker] = L1 > L2 ? [L1, L2] : [L2, L1];
+    return (lighter + 0.05) / (darker + 0.05);
+  }
+
+  private relativeLuminance(hexColor: string): number {
+    const hex = (hexColor || '').replace('#', '');
+    const normalized = hex.length === 3 ? hex.split('').map(c => c + c).join('') : hex.padEnd(6, '0').slice(0, 6);
+    const [r, g, b] = [0, 2, 4].map(i => parseInt(normalized.substring(i, i + 2), 16) / 255);
+    const srgb = [r, g, b].map(v => v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4));
+    return 0.2126 * srgb[0] + 0.7152 * srgb[1] + 0.0722 * srgb[2];
+  }
+
+  getFilteredPalettes(): typeof this.themePalettes {
+    if (this.paletteUseCase === 'all') return this.themePalettes;
+    return this.themePalettes.filter(p => p.useCase === this.paletteUseCase);
+  }
+
+  /**
+   * Apply a predefined palette to theme colors (accent, ink, bg, paper) and derive soft/dark.
+   */
+  applyPalette(paletteName: string): void {
+    if (!this.currentSettings) return;
+    const palette = this.themePalettes.find(p => p.name === paletteName);
+    if (!palette) return;
+
+    const apply = (key: keyof AppSettings, value: string) => {
+      (this.currentSettings as any)[key] = value;
+      const themeSection = this.sections.find(s => s.title === 'Theme Customization');
+      const setting = themeSection?.settings.find(s => s.key === key);
+      if (setting) {
+        setting.value = value;
+      }
+    };
+
+    const accentSoft = this.adjustColor(palette.accent, 0.12);
+    const accentDark = this.adjustColor(palette.accent, -0.12);
+    // Ensure ink is readable on both bg and paper
+    const inkCandidate = this.ensureContrast(palette.ink, palette.bg, palette.paper);
+    const inkSoft = this.adjustColor(inkCandidate, 0.15);
+    const line = this.adjustColor(palette.paper, -0.15);
+
+    apply('themeAccentColor', palette.accent);
+    apply('themeAccentSoft', accentSoft);
+    apply('themeAccentDark', accentDark);
+    apply('themeInkColor', inkCandidate);
+    apply('themeInkSoft', inkSoft);
+    apply('themeBgColor', palette.bg);
+    apply('themePaperColor', palette.paper);
+    apply('themeLineColor', line);
+
+    this.applyThemeVariables(this.currentSettings);
+    this.onSettingValueChange();
+  }
+
+  private adjustColor(hex: string, delta: number): string {
+    const normalized = hex.replace('#', '');
+    if (!normalized || (normalized.length !== 6 && normalized.length !== 3)) {
+      return hex;
+    }
+    const full = normalized.length === 3 ? normalized.split('').map(c => c + c).join('') : normalized;
+    let [r, g, b] = [0, 2, 4].map(i => parseInt(full.substring(i, i + 2), 16));
+    const factor = delta;
+    r = Math.max(0, Math.min(255, Math.round(r + 255 * factor)));
+    g = Math.max(0, Math.min(255, Math.round(g + 255 * factor)));
+    b = Math.max(0, Math.min(255, Math.round(b + 255 * factor)));
+    return `#${[r, g, b].map(v => v.toString(16).padStart(2, '0')).join('')}`;
+  }
+
+  getThemeHint(key: string): string {
+    if (key.includes('Accent')) return 'Accent: buttons, links, highlights';
+    if (key.includes('Ink')) return 'Ink: primary text color';
+    if (key.includes('Bg')) return 'Background: page canvas';
+    if (key.includes('Paper')) return 'Paper: cards, panels, modals';
+    if (key.includes('Line')) return 'Line: borders and dividers';
+    return '';
+  }
+
+  private validateThemeProfile(data: any): ThemeProfile | null {
+    const required: (keyof ThemeProfile)[] = [
+      'themeAccentColor',
+      'themeAccentSoft',
+      'themeAccentDark',
+      'themeInkColor',
+      'themeInkSoft',
+      'themeBgColor',
+      'themePaperColor',
+      'themeLineColor'
+    ];
+    if (!data || typeof data !== 'object') {
+      return null;
+    }
+    for (const key of required) {
+      if (typeof data[key] !== 'string' || !data[key]) {
+        return null;
+      }
+    }
+    return data as ThemeProfile;
   }
 
   async saveToProfile(profileId: string): Promise<void> {
@@ -1218,6 +1481,18 @@ export class SettingsAdminComponent extends LoadingComponentBase implements OnIn
     this.editingProfileName = '';
   }
 
+  /**
+   * Save current theme into the first empty profile slot; if none empty, overwrite Profile 1.
+   */
+  saveCurrentToProfile(): void {
+    if (!this.currentSettings) return;
+    let targetIndex = this.themeProfiles.findIndex(p => p.colors === null);
+    if (targetIndex === -1) targetIndex = 0;
+    const profileId = `profile${targetIndex + 1}`;
+    this.saveToProfile(profileId);
+    this.showMessage(`Saved current theme to ${this.themeProfiles[targetIndex].name}`, 'success');
+  }
+
   async clearProfile(profileId: string): Promise<void> {
     if (!this.currentSettings) return;
     
@@ -1245,6 +1520,49 @@ export class SettingsAdminComponent extends LoadingComponentBase implements OnIn
 
     this.onSettingValueChange();
     this.showMessage('Profile cleared', 'info');
+  }
+
+  /**
+   * Preview background effect temporarily without saving
+   */
+  previewBackgroundEffect(effect: string): void {
+    if (typeof document === 'undefined') return;
+
+    const body = document.body;
+    
+    // Remove all existing background effect classes
+    const effectClasses = [
+      'bg-effect-floral-garden',
+      'bg-effect-grass-borders',
+      'bg-effect-elegant-vines',
+      'bg-effect-botanical-pattern',
+      'bg-effect-subtle-leaves',
+      'bg-effect-falling-snow',
+      'bg-effect-falling-petals',
+      'bg-effect-falling-leaves',
+      'bg-effect-floating-hearts',
+      'bg-effect-watercolor-wash',
+      'bg-effect-vine-frame'
+    ];
+    
+    effectClasses.forEach(className => body.classList.remove(className));
+
+    // Add new effect class if not 'none'
+    if (effect && effect !== 'none') {
+      body.classList.add(`bg-effect-${effect}`);
+    }
+
+    // Apply feature toggles live
+    this.toggleBodyClass(body, 'use-premium-cards', !!this.currentSettings?.themePremiumCards);
+    this.toggleBodyClass(body, 'use-high-contrast', !!this.currentSettings?.themeHighContrast);
+  }
+
+  private toggleBodyClass(body: HTMLElement, className: string, enabled: boolean): void {
+    if (enabled) {
+      body.classList.add(className);
+    } else {
+      body.classList.remove(className);
+    }
   }
 }
 

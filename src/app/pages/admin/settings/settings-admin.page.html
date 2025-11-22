@@ -72,6 +72,10 @@
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01"></path>
                     </svg>
                     <h3 class="text-lg font-semibold text-ts-ink">Theme Profiles</h3>
+                    <button class="ml-auto px-3 py-1.5 text-xs font-semibold bg-ts-accent/10 text-ts-accent border border-ts-accent/30 rounded-lg hover:bg-ts-accent/20 transition"
+                            (click)="saveCurrentToProfile()">
+                      Save current as new
+                    </button>
                   </div>
                   <p class="text-sm text-ts-ink/70 mb-4">Save and switch between different color themes</p>
                   
@@ -165,13 +169,169 @@
                       </div>
                     }
                   </div>
-                  
                   <div class="mt-4 text-sm text-ts-ink/70">
-                    <p class="mb-2">💡 <strong>Tip:</strong> Make changes to the color fields below, then click "Save Current" on any profile card to save your custom theme.</p>
+                    <p class="mb-2"><strong>Tip:</strong> Tweak the colors below, then click "Save Current" on a profile card to keep your custom theme.</p>
+                  </div>
+
+                  <div class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <div class="p-4 bg-ts-bg border border-ts-line rounded-lg">
+                      <div class="text-sm font-semibold text-ts-ink mb-2">Current palette</div>
+                      <div class="space-y-2">
+                        <div class="flex items-center gap-2">
+                          <span class="w-6 h-6 rounded border border-ts-line" [style.background]="getThemePreviewColors().themeAccentColor"></span>
+                          <div class="text-xs text-ts-ink/80">Accent</div>
+                        </div>
+                        <div class="flex items-center gap-2">
+                          <span class="w-6 h-6 rounded border border-ts-line" [style.background]="getThemePreviewColors().themeInkColor"></span>
+                          <div class="text-xs text-ts-ink/80">Ink (text)</div>
+                        </div>
+                        <div class="flex items-center gap-2">
+                          <span class="w-6 h-6 rounded border border-ts-line" [style.background]="getThemePreviewColors().themeBgColor"></span>
+                          <div class="text-xs text-ts-ink/80">Background</div>
+                        </div>
+                        <div class="flex items-center gap-2">
+                          <span class="w-6 h-6 rounded border border-ts-line" [style.background]="getThemePreviewColors().themePaperColor"></span>
+                          <div class="text-xs text-ts-ink/80">Paper / cards</div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="p-4 bg-ts-bg border border-ts-line rounded-lg space-y-3">
+                      <div class="text-sm font-semibold text-ts-ink">Status</div>
+                      <div class="flex flex-wrap gap-2">
+                        <span class="inline-flex items-center gap-1 px-3 py-1 text-xs font-medium rounded-lg border"
+                              [class.bg-green-50]="isPremiumCardsEnabled()"
+                              [class.border-green-300]="isPremiumCardsEnabled()"
+                              [class.text-green-700]="isPremiumCardsEnabled()"
+                              [class.bg-ts-bg-soft]="!isPremiumCardsEnabled()"
+                              [class.border-ts-line]="!isPremiumCardsEnabled()"
+                              [class.text-ts-ink/80]="!isPremiumCardsEnabled()">
+                          <span class="w-2.5 h-2.5 rounded-full" [class.bg-green-500]="isPremiumCardsEnabled()" [class.bg-gray-400]="!isPremiumCardsEnabled()"></span>
+                          Premium cards
+                        </span>
+                        <span class="inline-flex items-center gap-1 px-3 py-1 text-xs font-medium rounded-lg border"
+                              [class.bg-green-50]="isHighContrastEnabled()"
+                              [class.border-green-300]="isHighContrastEnabled()"
+                              [class.text-green-700]="isHighContrastEnabled()"
+                              [class.bg-ts-bg-soft]="!isHighContrastEnabled()"
+                              [class.border-ts-line]="!isHighContrastEnabled()"
+                              [class.text-ts-ink/80]="!isHighContrastEnabled()">
+                          <span class="w-2.5 h-2.5 rounded-full" [class.bg-green-500]="isHighContrastEnabled()" [class.bg-gray-400]="!isHighContrastEnabled()"></span>
+                          High contrast
+                        </span>
+                        <span class="inline-flex items-center gap-1 px-3 py-1 text-xs font-medium rounded-lg border"
+                              [class.bg-green-50]="isCardTextureEnabled()"
+                              [class.border-green-300]="isCardTextureEnabled()"
+                              [class.text-green-700]="isCardTextureEnabled()"
+                              [class.bg-ts-bg-soft]="!isCardTextureEnabled()"
+                              [class.border-ts-line]="!isCardTextureEnabled()"
+                              [class.text-ts-ink/80]="!isCardTextureEnabled()">
+                          <span class="w-2.5 h-2.5 rounded-full" [class.bg-green-500]="isCardTextureEnabled()" [class.bg-gray-400]="!isCardTextureEnabled()"></span>
+                          Card texture
+                        </span>
+                        <span class="inline-flex items-center gap-1 px-3 py-1 text-xs font-medium rounded-lg border"
+                              [class.bg-green-50]="isButtonGlowEnabled()"
+                              [class.border-green-300]="isButtonGlowEnabled()"
+                              [class.text-green-700]="isButtonGlowEnabled()"
+                              [class.bg-ts-bg-soft]="!isButtonGlowEnabled()"
+                              [class.border-ts-line]="!isButtonGlowEnabled()"
+                              [class.text-ts-ink/80]="!isButtonGlowEnabled()">
+                          <span class="w-2.5 h-2.5 rounded-full" [class.bg-green-500]="isButtonGlowEnabled()" [class.bg-gray-400]="!isButtonGlowEnabled()"></span>
+                          Button glow
+                        </span>
+                      </div>
+                      <div class="text-xs text-ts-ink/70">
+                        Background: <span class="font-semibold text-ts-ink">{{ getBackgroundEffectLabel(currentSettings?.themeBackgroundEffect || 'none') }}</span>
+                      </div>
+                      <div class="mt-2">
+                        <div class="text-xxs font-semibold text-ts-ink/70 mb-1">Quick palettes</div>
+                        <div class="flex items-center gap-2 mb-2">
+                          <span class="text-xxs text-ts-ink/70">Recommend by:</span>
+                          <select
+                            [(ngModel)]="paletteUseCase"
+                            [ngModelOptions]="{ standalone: true }"
+                            class="px-2 py-1 text-xs border border-ts-line rounded">
+                            <option value="all">All</option>
+                            <option value="light">Light & airy</option>
+                            <option value="floral">Floral & romantic</option>
+                            <option value="earthy">Earthy & warm</option>
+                            <option value="luxury">Luxury</option>
+                            <option value="tech">Tech & cool</option>
+                            <option value="dark">Dark & moody</option>
+                          </select>
+                        </div>
+                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                          @for (palette of getFilteredPalettes(); track palette.name) {
+                            <button
+                              type="button"
+                              class="p-2 rounded-lg border text-left transition hover:border-ts-accent"
+                              (click)="applyPalette(palette.name)">
+                              <div class="text-xxs font-semibold text-ts-ink mb-1">{{ palette.name }}</div>
+                              <div class="flex gap-1">
+                                <span class="w-4 h-4 rounded border border-ts-line" [style.background]="palette.accent"></span>
+                                <span class="w-4 h-4 rounded border border-ts-line" [style.background]="palette.ink"></span>
+                                <span class="w-4 h-4 rounded border border-ts-line" [style.background]="palette.bg"></span>
+                                <span class="w-4 h-4 rounded border border-ts-line" [style.background]="palette.paper"></span>
+                              </div>
+                            </button>
+                          }
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="mt-4 p-5 bg-ts-bg border border-ts-line rounded-lg">
+                        <div class="text-sm font-semibold text-ts-ink mb-3">Live component preview</div>
+                        <div class="flex flex-col gap-3">
+                          <div class="p-4 rounded-lg border border-ts-line shadow-sm" [style.background]="getThemePreviewColors().themePaperColor">
+                            <h4 class="text-lg font-semibold" [style.color]="getReadableText(getThemePreviewColors().themePaperColor)">Sample title</h4>
+                            <p class="text-sm opacity-80" [style.color]="getReadableText(getThemePreviewColors().themePaperColor)">Body text preview for readability.</p>
+                            <div class="mt-3 flex gap-2">
+                              <button class="px-3 py-1.5 rounded-lg transition"
+                                      [style.background]="getThemePreviewColors().themeAccentColor"
+                                      [style.color]="getReadableText(getThemePreviewColors().themeAccentColor)">
+                                Primary
+                              </button>
+                              <button class="px-3 py-1.5 rounded-lg border transition"
+                                      [style.background]="getSecondaryPreviewBg()"
+                                      [style.color]="getReadableText(getSecondaryPreviewBg())"
+                                      [style.border-color]="getThemePreviewColors().themeAccentSoft ? getThemePreviewColors().themeAccentSoft + '55' : getThemePreviewColors().themeAccentColor + '55'">
+                                Secondary
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                  </div>
+
+                  <div class="mt-4 p-5 bg-ts-bg border border-ts-line rounded-lg space-y-4">
+                    <div class="flex items-center justify-between">
+                      <div class="text-sm font-semibold text-ts-ink">Mini site preview</div>
+                      <div class="text-xxs text-ts-ink/60">Highlights respond to focused inputs</div>
+                    </div>
+                    <div class="space-y-4">
+                      <div class="rounded-xl p-5 border" [class.ring-2]="isPreviewFocused('accent')" [class.ring-ts-accent]="isPreviewFocused('accent')" [style.background]="getThemePreviewColors().themeBgColor">
+                        <div class="mb-3 text-xs font-semibold" [style.color]="getReadableText(getThemePreviewColors().themeBgColor)">Hero</div>
+                        <h3 class="text-xl font-bold" [style.color]="getReadableText(getThemePreviewColors().themeBgColor)">Headline example</h3>
+                        <p class="text-sm opacity-80" [style.color]="getReadableText(getThemePreviewColors().themeBgColor)">Subtle supporting copy goes here.</p>
+                        <div class="mt-3 flex gap-2">
+                          <button class="px-3 py-1.5 rounded text-white transition" [class.ring-2]="isPreviewFocused('accent')" [class.ring-ts-accent]="isPreviewFocused('accent')" [style.background]="getThemePreviewColors().themeAccentColor">Primary</button>
+                          <button class="px-3 py-1.5 rounded border transition" [class.ring-2]="isPreviewFocused('accentSoft')" [class.ring-ts-accent]="isPreviewFocused('accentSoft')" [style.color]="getThemePreviewColors().themeAccentSoft || getThemePreviewColors().themeAccentColor" [style.border-color]="(getThemePreviewColors().themeAccentSoft || getThemePreviewColors().themeAccentColor) + '55'">Secondary</button>
+                        </div>
+                      </div>
+                      <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        <div class="rounded-lg p-4 border shadow-sm transition" [class.ring-2]="isPreviewFocused('paper')" [class.ring-ts-accent]="isPreviewFocused('paper')" [style.background]="getThemePreviewColors().themePaperColor">
+                          <div class="text-xs font-semibold" [style.color]="getThemePreviewColors().themeInkColor">Card title</div>
+                          <p class="text-xs opacity-80" [style.color]="getThemePreviewColors().themeInkSoft || getThemePreviewColors().themeInkColor">Card body content preview.</p>
+                        </div>
+                        <div class="p-4 border rounded-lg transition" [class.ring-2]="isPreviewFocused('line')" [class.ring-ts-accent]="isPreviewFocused('line')" [style.border-color]="getThemePreviewColors().themeLineColor">
+                          <div class="h-px mb-2" [style.background]="getThemePreviewColors().themeLineColor"></div>
+                          <div class="text-xs text-ts-ink/70">Divider / border preview</div>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
               }
-              
+
               @for (setting of section.settings; track setting.key) {
               @if (!setting.hidden) {
               <div>
@@ -211,60 +371,45 @@
                     } @else {
                       <!-- Check if this is a theme color field -->
                       @if (setting.key.toString().includes('theme')) {
-                        <div class="space-y-3">
-                          <div class="flex gap-2 items-center">
-                            <input
-                              type="color"
-                              [(ngModel)]="setting.value"
-                              (ngModelChange)="onSettingValueChange(); applyThemeVariables(currentSettings!)"
-                              [ngModelOptions]="{ standalone: true }"
-                              class="h-10 w-16 rounded border border-ts-line cursor-pointer">
-                            <input
-                              type="text"
-                              [(ngModel)]="setting.value"
-                              (ngModelChange)="onSettingValueChange(); applyThemeVariables(currentSettings!)"
-                              [ngModelOptions]="{ standalone: true }"
-                              [attr.id]="getFieldId(section.title, setting.key)"
-                              [attr.name]="getFieldId(section.title, setting.key)"
-                              [disabled]="isDisabled(setting)"
-                              [placeholder]="setting.placeholder || ''"
-                              class="flex-1 px-4 py-2 bg-ts-bg-soft border border-ts-line rounded-lg text-ts-ink placeholder-ts-ink/50 focus:border-ts-accent focus:ring-2 focus:ring-ts-accent/50 transition-all disabled:opacity-60 disabled:cursor-not-allowed font-mono text-sm">
+                        <div class="space-y-2">
+                          <div class="grid grid-cols-1 md:grid-cols-2 gap-3 items-center">
+                            <div class="flex gap-2 items-center">
+                              <input
+                                type="color"
+                                [(ngModel)]="setting.value"
+                                (ngModelChange)="onSettingValueChange(); applyThemeVariables(currentSettings!)"
+                                [ngModelOptions]="{ standalone: true }"
+                                class="h-10 w-16 rounded border border-ts-line cursor-pointer"
+                                (focusin)="setPreviewFocus('accent')"
+                                (focusout)="clearPreviewFocus()">
+                              <input
+                                type="text"
+                                [(ngModel)]="setting.value"
+                                (ngModelChange)="onSettingValueChange(); applyThemeVariables(currentSettings!)"
+                                [ngModelOptions]="{ standalone: true }"
+                                [attr.id]="getFieldId(section.title, setting.key)"
+                                [attr.name]="getFieldId(section.title, setting.key)"
+                                [disabled]="isDisabled(setting)"
+                                [placeholder]="setting.placeholder || ''"
+                                class="flex-1 px-4 py-2 bg-ts-bg-soft border border-ts-line rounded-lg text-ts-ink placeholder-ts-ink/50 focus:border-ts-accent focus:ring-2 focus:ring-ts-accent/50 transition-all disabled:opacity-60 disabled:cursor-not-allowed font-mono text-sm">
+                            </div>
+                            <div class="flex flex-wrap gap-2 text-xs">
+                              @if (setting.key.toString().includes('Accent')) {
+                                <button class="px-3 py-1.5 rounded text-white" [style.background-color]="setting.value" [style.border-color]="setting.value">Primary</button>
+                                <button class="px-3 py-1.5 rounded border" [style.color]="setting.value" [style.border-color]="setting.value + '55'">Secondary</button>
+                                <span class="px-3 py-1 rounded border" [style.color]="setting.value" [style.border-color]="setting.value + '55'">Badge</span>
+                              } @else if (setting.key.toString().includes('Ink')) {
+                                <span class="px-3 py-1 rounded border bg-white" [style.color]="setting.value">Text sample</span>
+                              } @else if (setting.key.toString().includes('Bg')) {
+                                <span class="px-3 py-1 rounded border" [style.background-color]="setting.value">Background swatch</span>
+                              } @else if (setting.key.toString().includes('Paper')) {
+                                <span class="px-3 py-1 rounded border" [style.background-color]="setting.value">Paper swatch</span>
+                              } @else if (setting.key.toString().includes('Line')) {
+                                <span class="px-3 py-1 rounded border" [style.border-color]="setting.value">Line swatch</span>
+                              }
+                            </div>
                           </div>
-                          <!-- Color Preview -->
-                          <div class="p-4 bg-ts-bg border border-ts-line rounded-lg">
-                            <div class="text-xs font-medium text-ts-ink/70 mb-3">Preview:</div>
-                            @if (setting.key.toString().includes('Accent')) {
-                              <div class="flex flex-wrap gap-2">
-                                <button class="btn-primary text-white" [style.background-color]="setting.value" [style.border-color]="setting.value">
-                                  Primary Button
-                                </button>
-                                <button class="btn-secondary" [style.background-color]="setting.value + '20'" [style.border-color]="setting.value + '40'" [style.color]="setting.value">
-                                  Secondary Button
-                                </button>
-                                <span class="badge" [style.background-color]="setting.value + '20'" [style.color]="setting.value">Badge</span>
-                              </div>
-                            } @else if (setting.key.toString().includes('Ink')) {
-                              <div class="space-y-2 p-3 bg-white rounded">
-                                <h4 class="text-lg font-semibold" [style.color]="setting.value">Heading Text</h4>
-                                <p class="text-sm" [style.color]="setting.value">Body text example</p>
-                              </div>
-                            } @else if (setting.key.toString().includes('Bg')) {
-                              <div class="p-3 rounded border border-ts-line" [style.background-color]="setting.value">
-                                <div class="text-ts-ink text-sm font-medium">Background color preview</div>
-                              </div>
-                            } @else if (setting.key.toString().includes('Paper')) {
-                              <div class="p-3 rounded border-2 border-ts-accent/30" [style.background-color]="setting.value">
-                                <div class="text-ts-ink text-sm font-medium">Card/Paper background</div>
-                              </div>
-                            } @else if (setting.key.toString().includes('Line')) {
-                              <div class="space-y-2">
-                                <div class="h-px" [style.background-color]="setting.value"></div>
-                                <div class="p-3 rounded border-2 bg-white" [style.border-color]="setting.value">
-                                  <div class="text-ts-ink text-sm font-medium">Border color preview</div>
-                                </div>
-                              </div>
-                            }
-                          </div>
+                          <div class="text-xxs text-ts-ink/60">{{ getThemeHint(setting.key.toString()) }}</div>
                         </div>
                       } @else {
                         <input
@@ -351,29 +496,39 @@
                     </div>
                   }
                   @case ('select') {
-                    <select
-                      [(ngModel)]="setting.value"
-                      (ngModelChange)="onSettingValueChange()"
-                      [ngModelOptions]="{ standalone: true }"
-                      [attr.id]="getFieldId(section.title, setting.key)"
-                      [attr.name]="getFieldId(section.title, setting.key)"
-                      [disabled]="isDisabled(setting)"
-                      class="w-full px-4 py-2 bg-ts-bg-soft border border-ts-line rounded-lg text-ts-ink focus:border-ts-accent focus:ring-2 focus:ring-ts-accent/50 transition-all">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                       @for (option of setting.options; track option.value) {
-                        <option [value]="option.value">{{ option.label }}</option>
+                        <button
+                          type="button"
+                          class="text-left p-3 rounded-lg border transition-all"
+                          [class.border-ts-accent]="setting.value === option.value"
+                          [class.bg-ts-accent/10]="setting.value === option.value"
+                          [class.border-ts-line]="setting.value !== option.value"
+                          [class.bg-ts-bg-soft]="setting.value !== option.value"
+                          (click)="setting.value = option.value; setting.key === 'themeBackgroundEffect' ? previewBackgroundEffect(option.value) : null; onSettingValueChange()">
+                          <div class="flex items-center justify-between">
+                            <div>
+                              <div class="text-sm font-semibold text-ts-ink">{{ option.label }}</div>
+                              <div class="mt-1 inline-flex items-center gap-1 px-2 py-0.5 text-xxs rounded border"
+                                   [class.bg-green-50]="isEffectAnimated(option.value)"
+                                   [class.border-green-300]="isEffectAnimated(option.value)"
+                                   [class.text-green-700]="isEffectAnimated(option.value)"
+                                   [class.bg-ts-bg]="!isEffectAnimated(option.value)"
+                                   [class.border-ts-line]="!isEffectAnimated(option.value)"
+                                   [class.text-ts-ink/80]="!isEffectAnimated(option.value)">
+                                {{ getEffectTag(option.value) }}
+                              </div>
+                            </div>
+                            <div class="w-4 h-4 rounded-full border"
+                                 [class.bg-ts-accent]="setting.value === option.value"
+                                 [class.border-ts-accent]="setting.value === option.value"
+                                 [class.border-ts-line]="setting.value !== option.value"></div>
+                          </div>
+                          @if (setting.key === 'themeBackgroundEffect') {
+                            <div class="mt-2 h-8 rounded-md bg-gradient-to-r from-ts-accent/12 to-transparent"></div>
+                          }
+                        </button>
                       }
-                    </select>
-                    <!-- Preview for select -->
-                    <div class="mt-3 p-4 bg-ts-bg border border-ts-line rounded-lg">
-                      <div class="text-xs font-medium text-ts-ink/70 mb-2">Selected Option:</div>
-                      <div class="inline-flex items-center gap-2 px-3 py-1.5 bg-ts-accent/10 border border-ts-accent/30 rounded-lg">
-                        <svg class="w-4 h-4 text-ts-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                        </svg>
-                        <span class="text-sm font-medium text-ts-accent">
-                          {{ getSelectedOptionLabel(setting) }}
-                        </span>
-                      </div>
                     </div>
                   }
                   @case ('image') {
@@ -381,268 +536,33 @@
                       [(imageUrl)]="setting.value"
                       [label]="setting.label"
                       [storagePath]="setting.storagePath || 'settings'"
-                      [disabled]="isDisabled(setting)"
-                      [helpText]="setting.helpText || 'Upload an image'">
+                      [disabled]="isDisabled(setting)">
                     </app-image-picker>
                   }
                 }
               </div>
               }
             }
-            }
-          </div>
+              }
+            </div>
           }
         </div>
       }
-    </div>
 
-        <div class="grid grid-cols-1 xl:grid-cols-3 gap-6 mb-8">
-      <section class="xl:col-span-2 bg-ts-paper border border-ts-line rounded-2xl p-6 space-y-6">
-        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-          <div>
-            <h3 class="text-lg font-semibold text-ts-accent">Notification center</h3>
-            <p class="text-sm text-ts-ink opacity-60">Review automated alerts and customer-facing emails.</p>
-          </div>
-          <div class="text-sm text-right md:text-left">
-            <div class="text-ts-ink opacity-70">Primary email</div>
-            <div class="font-semibold text-ts-ink">
-              @if (notificationEmail) {
-                {{ notificationEmail }}
-              } @else {
-                <span class="text-ts-ink opacity-40">Not configured</span>
-              }
-            </div>
-            <div class="text-xs text-ts-ink opacity-50 mt-1">
-              @switch (notificationEmailSource) {
-                @case ('custom') { Uses dedicated notification address. }
-                @case ('contact') { Falling back to the contact email until a notification email is provided. }
-                @default { Add a notification email to make sure operational alerts reach the right inbox. }
-              }
-            </div>
-          </div>
-        </div>
-
-        <div class="grid sm:grid-cols-2 xl:grid-cols-3 gap-4">
-          @for (card of notificationCards; track card.key) {
-            <div class="bg-ts-bg-soft border border-ts-line rounded-xl p-4 h-full flex flex-col gap-3">
-              <div class="flex items-start gap-3">
-                <div class="w-10 h-10 flex items-center justify-center rounded-lg border"
-                     [ngClass]="card.enabled ? card.accentClass : 'bg-ts-bg border-ts-line text-ts-ink opacity-40'">
-                  <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" [attr.d]="card.iconPath"></path>
-                  </svg>
-                </div>
-                <div class="flex-1 min-w-0">
-                  <div class="flex items-center gap-2 flex-wrap">
-                    <h4 class="text-ts-ink font-semibold">{{ card.title }}</h4>
-                    <span class="px-2 py-0.5 text-xs rounded-full border"
-                          [ngClass]="card.enabled ? 'border-green-500/40 bg-green-500/10 text-green-700' : 'border-ts-line text-ts-ink opacity-50'">
-                      {{ card.enabled ? 'Enabled' : 'Disabled' }}
-                    </span>
-                  </div>
-                  <p class="text-sm text-ts-ink opacity-60 mt-1 leading-snug">{{ card.description }}</p>
-                  @if (card.meta) {
-                    <div class="text-xs text-ts-ink opacity-40 mt-2">
-                      {{ card.meta }}
-                    </div>
-                  }
-                </div>
-              </div>
-            </div>
-          }
-        </div>
-      </section>
-
-      <section class="bg-ts-paper border border-ts-line rounded-2xl p-6 flex flex-col gap-4">
-        <div class="flex items-center justify-between">
-          <div>
-            <h3 class="text-lg font-semibold text-ts-ink">Recent activity</h3>
-            <p class="text-sm text-ts-ink opacity-60">Latest customer and catalog updates.</p>
-          </div>
-          <button type="button"
-                  class="px-3 py-1.5 text-xs font-medium rounded-lg border border-ts-line text-ts-ink opacity-70 hover:opacity-100 hover:border-ts-accent transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                  (click)="loadRecentActivity()"
-                  [disabled]="isLoadingActivity">
-            @if (isLoadingActivity) { Refreshing... } @else { Refresh }
-          </button>
-        </div>
-
-        @if (isLoadingActivity) {
-          <div class="flex items-center justify-center py-6 text-ts-ink opacity-60 text-sm">
+      <!-- Save Button -->
+      <div class="mt-8 flex justify-end">
+        <button
+          (click)="saveSettings()"
+          [disabled]="isSaving"
+          class="px-8 py-3 bg-ts-accent text-white rounded-xl font-semibold hover:bg-ts-accent-dark transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2">
+          @if (isSaving) {
             <div class="app-spinner" style="--spinner-size: 72px;"><img src="/Logo Clear.png" alt="Loading" width="96" height="96"></div>
-            Loading activity...
-          </div>
-        } @else if (activityError) {
-          <div class="p-4 border border-red-500/40 bg-red-500/10 rounded-xl text-red-700 text-sm">
-            {{ activityError }}
-          </div>
-        } @else if (!recentActivity.length) {
-          <div class="text-sm text-ts-ink opacity-50">
-            No recent events detected in the last few days.
-          </div>
-        } @else {
-          <ul class="space-y-3">
-            @for (activity of recentActivity; track activity.id) {
-              <li class="flex items-start gap-3">
-                <div class="w-10 h-10 rounded-lg border flex items-center justify-center"
-                     [ngClass]="getActivityAccent(activity.type)">
-                  <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" [attr.d]="getActivityIcon(activity.type)"></path>
-                  </svg>
-                </div>
-                <div class="flex-1 min-w-0">
-                  <div class="text-sm text-ts-ink leading-snug">{{ activity.description }}</div>
-                  <div class="text-xs text-ts-ink opacity-50 mt-1">
-                    {{ activity.timestamp | date:'medium' }}
-                  </div>
-                </div>
-              </li>
-            }
-          </ul>
-        }
-      </section>
-    </div>
-    <!-- Site Statistics Management - HIDDEN
-    <div class="mb-8 p-6 bg-ts-paper rounded-xl border border-ts-line">
-      <div class="flex flex-col xl:flex-row xl:items-center xl:justify-between gap-4 mb-6">
-        <div>
-          <h3 class="text-lg font-semibold text-ts-accent flex items-center gap-2">
-            Site Statistics
-          </h3>
-          <p class="text-sm text-ts-ink mt-1">Adjust the metrics displayed on the homepage.</p>
-        </div>
-        <div class="flex flex-wrap gap-3">
-          <button
-            type="button"
-            (click)="resetStatsForm()"
-            [disabled]="!currentStats || isSavingStats || isUpdatingStats"
-            class="px-4 py-2 bg-ts-bg-soft text-ts-ink rounded-lg border border-ts-line hover:border-ts-accent transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed">
-            Reset to current
-          </button>
-          <button
-            type="button"
-            (click)="updateSiteStats()"
-            [disabled]="isUpdatingStats"
-            class="px-6 py-2 bg-ts-accent/20 text-ts-accent rounded-lg font-semibold hover:bg-ts-accent/30 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2">
-            @if (isUpdatingStats) {
-              <div class="app-spinner" style="--spinner-size: 72px;"><img src="/Logo Clear.png" alt="Loading" width="96" height="96"></div>
-              Refreshing...
-            } @else {
-              Refresh from data
-            }
-          </button>
-        </div>
+            {{ 'admin.settings.actions.saving' | translate }}
+          } @else {
+            Save All Settings
+          }
+        </button>
       </div>
-
-      @if (!currentStats) {
-        <div class="text-sm text-bitcoin-gray">
-          Statistics will be available once the current values load.
-        </div>
-      } @else {
-        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
-          <div class="p-4 bg-bitcoin-dark/50 rounded-lg border border-bitcoin-orange/10">
-            <label class="block text-sm font-medium text-white/70 mb-2" for="stats-total-sales">
-              Total Deployments
-            </label>
-            <input
-              id="stats-total-sales"
-              name="stats-total-sales"
-              type="number"
-              min="0"
-              step="1"
-              [(ngModel)]="statsForm.totalSales"
-              [ngModelOptions]="{ standalone: true }"
-              [disabled]="isSavingStats"
-              class="w-full px-4 py-2 bg-gray-900/50 border border-white/10 rounded-lg text-white focus:border-bitcoin-orange focus:ring-1 focus:ring-bitcoin-orange transition-all">
-          </div>
-
-          <div class="p-4 bg-bitcoin-dark/50 rounded-lg border border-bitcoin-orange/10">
-            <label class="block text-sm font-medium text-white/70 mb-2" for="stats-satisfaction">
-              Customer Satisfaction (%)
-            </label>
-            <input
-              id="stats-satisfaction"
-              name="stats-satisfaction"
-              type="number"
-              min="0"
-              max="100"
-              step="1"
-              [(ngModel)]="statsForm.customerSatisfaction"
-              [ngModelOptions]="{ standalone: true }"
-              [disabled]="isSavingStats"
-              class="w-full px-4 py-2 bg-gray-900/50 border border-white/10 rounded-lg text-white focus:border-bitcoin-orange focus:ring-1 focus:ring-bitcoin-orange transition-all">
-          </div>
-
-          <div class="p-4 bg-bitcoin-dark/50 rounded-lg border border-bitcoin-orange/10">
-            <label class="block text-sm font-medium text-white/70 mb-2" for="stats-uptime">
-              Uptime Guarantee (%)
-            </label>
-            <input
-              id="stats-uptime"
-              name="stats-uptime"
-              type="number"
-              min="0"
-              max="100"
-              step="0.1"
-              [(ngModel)]="statsForm.uptimeGuarantee"
-              [ngModelOptions]="{ standalone: true }"
-              [disabled]="isSavingStats"
-              class="w-full px-4 py-2 bg-gray-900/50 border border-white/10 rounded-lg text-white focus:border-bitcoin-orange focus:ring-1 focus:ring-bitcoin-orange transition-all">
-          </div>
-
-          <div class="p-4 bg-bitcoin-dark/50 rounded-lg border border-bitcoin-orange/10">
-            <label class="block text-sm font-medium text-white/70 mb-2" for="stats-experience">
-              Years of Experience
-            </label>
-            <input
-              id="stats-experience"
-              name="stats-experience"
-              type="number"
-              min="0"
-              step="0.1"
-              [(ngModel)]="statsForm.yearsExperience"
-              [ngModelOptions]="{ standalone: true }"
-              [disabled]="isSavingStats"
-              class="w-full px-4 py-2 bg-gray-900/50 border border-white/10 rounded-lg text-white focus:border-bitcoin-orange focus:ring-1 focus:ring-bitcoin-orange transition-all">
-          </div>
-        </div>
-
-        <div class="mt-6 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-          <div class="text-xs text-bitcoin-gray">
-            Last updated: {{ statsLastUpdated || 'Never' }}
-          </div>
-          <button
-            type="button"
-            (click)="saveSiteStats()"
-            [disabled]="isSavingStats"
-            class="px-6 py-2 bg-bitcoin-orange text-white rounded-lg font-semibold hover:bg-bitcoin-orange/90 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2">
-            @if (isSavingStats) {
-              <div class="app-spinner" style="--spinner-size: 72px;"><img src="/Logo Clear.png" alt="Loading" width="96" height="96"></div>
-              Saving stats...
-            } @else {
-              Save statistics
-            }
-          </button>
-        </div>
-      }
-    </div>
-    -->
-
-    <!-- Save Button -->
-    <div class="mt-8 flex justify-end">
-      <button
-        (click)="saveSettings()"
-        [disabled]="isSaving"
-        class="px-8 py-3 bg-bitcoin-orange text-white rounded-xl font-semibold hover:bg-bitcoin-orange/90 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2">
-        @if (isSaving) {
-          <div class="app-spinner" style="--spinner-size: 72px;"><img src="/Logo Clear.png" alt="Loading" width="96" height="96"></div>
-          {{ 'admin.settings.actions.saving' | translate }}
-        } @else {
-          Save All Settings
-        }
-      </button>
     </div>
   </div>
 </div>
-
-

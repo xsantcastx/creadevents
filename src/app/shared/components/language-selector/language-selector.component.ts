@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, HostListener, ElementRef, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { LanguageService, Language } from '../../../core/services/language.service';
 
@@ -207,6 +207,7 @@ export class LanguageSelectorComponent {
   languageService = inject(LanguageService);
   isOpen = false;
   currentLanguage: { code: Language; label: string; name: string; flag: string };
+  private host = inject(ElementRef<HTMLElement>);
 
   constructor() {
     // Initialize with current language from service
@@ -227,6 +228,18 @@ export class LanguageSelectorComponent {
 
   selectLanguage(code: Language): void {
     this.languageService.setLanguage(code);
+    this.isOpen = false;
+  }
+
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: Event): void {
+    if (!this.host.nativeElement.contains(event.target as Node)) {
+      this.isOpen = false;
+    }
+  }
+
+  @HostListener('document:keydown.escape')
+  onEscape(): void {
     this.isOpen = false;
   }
 }

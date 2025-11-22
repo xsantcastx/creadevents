@@ -108,6 +108,11 @@ export interface AppSettings {
   themeBgColor: string;
   themePaperColor: string;
   themeLineColor: string;
+  themeHighContrast?: boolean;
+  themePremiumCards?: boolean;
+  themeButtonGlow?: boolean;
+  themeCardTexture?: boolean;
+  themeBackgroundEffect: string; // 'none' | 'falling-petals' | 'watercolor-wash' | 'vine-frame' | 'falling-snow' | 'falling-leaves' | 'floating-hearts' | 'floral-garden' | 'grass-borders' | 'elegant-vines' | 'botanical-pattern' | 'subtle-leaves'
 
   // Theme Profiles
   activeThemeProfile: string; // 'profile1' | 'profile2' | 'profile3' | 'profile4' | 'profile5' | 'custom'
@@ -124,6 +129,9 @@ export interface AppSettings {
 
   // Home Hero Images
   heroImagesJson: string; // JSON string of HeroImage[]
+  homeHeroImage: string;
+  homeHeroTitle: string;
+  homeHeroSubtitle: string;
 
   // Page Hero Settings
   serviciosHeroImage: string;
@@ -497,6 +505,9 @@ export class SettingsService {
 
       // Home Hero Images - empty by default, managed from admin
       heroImagesJson: '',
+      homeHeroImage: '',
+      homeHeroTitle: '',
+      homeHeroSubtitle: '',
 
       // Page Hero Settings
       serviciosHeroImage: '/assets/services/hero-services.jpg',
@@ -518,6 +529,11 @@ export class SettingsService {
       themeBgColor: '#f8f9fa',
       themePaperColor: '#ffffff',
       themeLineColor: '#e5e7eb',
+      themeHighContrast: false,
+      themePremiumCards: false,
+      themeButtonGlow: false,
+      themeCardTexture: false,
+      themeBackgroundEffect: 'none',
 
       // Theme Profiles
       activeThemeProfile: 'custom',

@@ -12,12 +12,14 @@ module.exports = {
           ink: "var(--ts-ink)",
           'ink-soft': "var(--ts-ink-soft)",
           accent: "var(--ts-accent)",
+          'accent-dark': "var(--ts-accent-dark)",
+          'accent-soft': "var(--ts-accent-soft)",
           line: "var(--ts-line)",
           paper: "var(--ts-paper)"
         },
         bitcoin: {
-          orange: '#f7931a',
-          gold: '#ffb81c',
+          orange: "var(--ts-accent)",
+          gold: "var(--ts-accent-soft)",
           'dark': '#0a0b0d',
           'gray': '#13151a',
         },
@@ -33,8 +35,6 @@ module.exports = {
       },
       boxShadow: {
         soft: '0 10px 30px -12px rgba(0,0,0,.35)',
-        bitcoin: '0 0 20px rgba(247, 147, 26, 0.3), 0 0 40px rgba(247, 147, 26, 0.2)',
-        'bitcoin-lg': '0 0 30px rgba(247, 147, 26, 0.4), 0 0 60px rgba(247, 147, 26, 0.3)',
       },
       backgroundImage: {
         'bitcoin-gradient': 'linear-gradient(135deg, #f7931a 0%, #ffb81c 50%, #d4af37 100%)',

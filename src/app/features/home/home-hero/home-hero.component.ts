@@ -9,61 +9,7 @@ import { BrandConfigService } from '../../../core/services/brand-config.service'
   standalone: true,
   imports: [CommonModule, TranslateModule],
   templateUrl: './home-hero.html',
-  styles: [`
-    @keyframes ken-burns {
-      0% {
-        transform: scale(1);
-      }
-      100% {
-        transform: scale(1.1);
-      }
-    }
-
-    @keyframes fade-in-up {
-      from {
-        opacity: 0;
-        transform: translateY(20px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    .animate-ken-burns {
-      animation: ken-burns 20s ease-in-out infinite alternate;
-    }
-
-    .animate-fade-in-up {
-      animation: fade-in-up 0.8s ease-out forwards;
-      opacity: 0;
-    }
-
-    .animation-delay-200 {
-      animation-delay: 0.2s;
-    }
-
-    .animation-delay-400 {
-      animation-delay: 0.4s;
-    }
-
-    /* High-quality image rendering */
-    .image-rendering-crisp {
-      image-rendering: -webkit-optimize-contrast;
-      image-rendering: crisp-edges;
-      backface-visibility: hidden;
-      -webkit-backface-visibility: hidden;
-      transform: translateZ(0);
-      -webkit-transform: translateZ(0);
-      will-change: transform;
-    }
-
-    /* Prevent blur during animations */
-    img {
-      -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
-    }
-  `]
+  styleUrls: ['./home-hero.scss']
 })
 export class HomeHeroComponent implements OnInit, OnDestroy {
   private platformId = inject(PLATFORM_ID);
@@ -77,9 +23,15 @@ export class HomeHeroComponent implements OnInit, OnDestroy {
   readonly heroContent = this.brandConfig.site.hero;
   readonly brandName = this.brandConfig.siteName;
   readonly brandLogo = this.brandConfig.site.brand.logo;
+  
+  // Custom hero text and image from settings
+  customImage = '';
+  customTitle = '';
+  customSubtitle = '';
 
   async ngOnInit(): Promise<void> {
     await this.loadHeroImages();
+    await this.loadCustomHeroText();
     
     if (isPlatformBrowser(this.platformId)) {
       setTimeout(() => {
@@ -95,6 +47,17 @@ export class HomeHeroComponent implements OnInit, OnDestroy {
     } catch (error) {
       console.error('Error loading hero images:', error);
       this.rotatingImages = [];
+    }
+  }
+
+  async loadCustomHeroText(): Promise<void> {
+    try {
+      const settings = await this.settingsService.getSettings();
+      this.customImage = settings.homeHeroImage || '';
+      this.customTitle = settings.homeHeroTitle || '';
+      this.customSubtitle = settings.homeHeroSubtitle || '';
+    } catch (error) {
+      console.error('Error loading custom hero text:', error);
     }
   }
 

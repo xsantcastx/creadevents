@@ -1,117 +1,110 @@
-<section class="home-hero section-stack relative overflow-hidden flex items-center h-[85vh]">
-  @if (rotatingImages.length > 0) {
-    <!-- Image Carousel Background -->
-    @for (image of rotatingImages; track image.id; let i = $index) {
-      <div 
-        class="absolute inset-0 transition-opacity duration-1000"
-        [class.opacity-100]="currentImageIndex === i"
-        [class.opacity-0]="currentImageIndex !== i">
-        <!-- Background Image with Overlay -->
-        <div class="absolute inset-0">
-          @if (image.webpUrl) {
-            <picture>
-              <source [srcset]="image.webpUrl" type="image/webp">
-              <img 
-                [src]="image.url" 
-                [alt]="image.alt"
-                class="w-full h-full object-cover animate-ken-burns"
-                loading="lazy">
-            </picture>
-          } @else {
-            <img 
-              [src]="image.url" 
-              [alt]="image.alt"
-              class="w-full h-full object-cover animate-ken-burns"
-              loading="lazy">
-          }
-          <!-- Lighter overlay to show images better -->
-          <div class="absolute inset-0 bg-gradient-to-b from-black/40 via-black/20 to-black/50"></div>
-        </div>
-      </div>
-    }
-  } @else {
-    <!-- Fallback gradient background when no images -->
-    <div class="absolute inset-0 bg-gradient-to-b from-[#0a0b0d] via-[#13151a] to-[#0a0b0d]"></div>
-  }
-  
-  <!-- Subtle animated gradient overlay -->
-  <div class="absolute inset-0 opacity-10">
-    <div class="absolute inset-0" style="background: radial-gradient(circle at 30% 50%, rgba(216, 201, 166, 0.1) 0%, transparent 50%), radial-gradient(circle at 70% 50%, rgba(216, 201, 166, 0.08) 0%, transparent 50%);"></div>
+<!-- Home Hero - Warm & Inviting -->
+<section class="section-gap relative overflow-hidden bg-ts-bg">
+  <!-- Subtle background decoration -->
+  <div class="absolute inset-0 opacity-30 pointer-events-none">
+    <div class="absolute top-10 left-10 w-64 h-64 bg-ts-accent/10 rounded-full blur-3xl"></div>
+    <div class="absolute bottom-10 right-10 w-80 h-80 bg-ts-accent-soft/15 rounded-full blur-3xl"></div>
   </div>
-  
+
   <div class="page-container relative z-10">
-    <div class="max-w-xl mx-auto">
-      <!-- Compact Card Container -->
-      <div class="bg-white/90 backdrop-blur-md rounded-2xl shadow-xl p-5 md:p-7 border border-ts-accent/20 animate-fade-in-up hover:shadow-2xl hover:scale-105 transition-all duration-500 hover:bg-white/95">
-        <!-- Logo Badge -->
-        <div class="inline-flex items-center gap-2 mb-3 px-3 py-1.5 rounded-full bg-ts-accent/10 border border-ts-accent/30 hover:bg-ts-accent/20 transition-colors duration-300">
-          <img src="/Logo Clear.png" alt="Brand Logo" width="24" height="24" class="h-6 w-6 rounded" />
-          <span class="text-xs text-ts-ink font-semibold">{{ 'home.hero.badge' | translate }}</span>
-        </div>
-        
-        @if (rotatingImages.length > 0 && rotatingImages[currentImageIndex]) {
-          <!-- Dynamic content from hero images -->
-          <h1 class="text-2xl md:text-3xl font-serif font-bold mb-2 leading-tight text-ts-ink">
-            {{ rotatingImages[currentImageIndex].title }}
-          </h1>
-          
-          <p class="text-sm md:text-base text-ts-ink/80 mb-3 leading-relaxed">
+    <div class="luxury-hero luxury-hero--home">
+      <div class="luxury-hero__content">
+        <span class="badge badge--pulse">{{ 'home.hero.badge' | translate }}</span>
+        @if (customTitle.trim() && customSubtitle.trim()) {
+          <!-- Custom admin-defined text -->
+          <h1 class="luxury-hero__title animate-fade-in">{{ customTitle }}</h1>
+          <p class="luxury-hero__subtitle animate-fade-in-delay">{{ customSubtitle }}</p>
+        } @else if (rotatingImages.length > 0 && rotatingImages[currentImageIndex]) {
+          <!-- Image rotation text -->
+          <h1 class="luxury-hero__title animate-fade-in">{{ rotatingImages[currentImageIndex].title }}</h1>
+          <p class="luxury-hero__subtitle animate-fade-in-delay">
             {{ rotatingImages[currentImageIndex].description }}
           </p>
         } @else {
-          <!-- Static fallback content -->
-          <h1 class="text-2xl md:text-3xl font-serif font-bold mb-2 leading-tight text-ts-ink">
-            {{ 'home.hero.fallback_title' | translate }}
-          </h1>
-          
-          <p class="text-sm md:text-base text-ts-ink/80 mb-3 leading-relaxed">
+          <!-- Fallback translation text -->
+          <h1 class="luxury-hero__title animate-fade-in">{{ 'home.hero.fallback_title' | translate }}</h1>
+          <p class="luxury-hero__subtitle animate-fade-in-delay">
             {{ 'home.hero.fallback_subtitle' | translate }}
           </p>
         }
-        
-        <!-- Image Navigation Dots (only show if multiple images) -->
+
+        <!-- Trust Indicators -->
+        <div class="flex flex-wrap gap-4 my-5 animate-fade-in-delay-2">
+          <div class="flex items-center gap-2 text-sm text-ts-ink-soft">
+            <svg class="w-5 h-5 text-ts-accent" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+            </svg>
+            <span class="font-medium">{{ 'home.hero.trust_badges.family_owned' | translate }}</span>
+          </div>
+          <div class="flex items-center gap-2 text-sm text-ts-ink-soft">
+            <svg class="w-5 h-5 text-ts-accent" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd"/>
+            </svg>
+            <span class="font-medium">{{ 'home.hero.trust_badges.years_experience' | translate }}</span>
+          </div>
+          <div class="flex items-center gap-2 text-sm text-ts-ink-soft">
+            <svg class="w-5 h-5 text-ts-accent" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd"/>
+            </svg>
+            <span class="font-medium">100% Satisfaction Guaranteed</span>
+          </div>
+        </div>
+
+        <div class="luxury-hero__actions">
+          <a routerLink="/contacto" class="btn-primary group">
+            {{ 'servicios.hero.plan_event' | translate }}
+            <svg class="w-4 h-4 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
+            </svg>
+          </a>
+          <a routerLink="/galeria" class="btn-secondary">{{ 'servicios.hero.view_gallery' | translate }}</a>
+        </div>
+
+        <!-- Image Navigation Dots -->
         @if (rotatingImages.length > 1) {
-          <div class="flex items-center justify-center gap-2 mb-3">
+          <div class="flex items-center gap-3 mt-4">
             @for (image of rotatingImages; track image.id; let i = $index) {
               <button
                 (click)="goToImage(i)"
-                class="w-1.5 h-1.5 rounded-full transition-all hover:scale-125"
+                class="h-2 rounded-full transition-all hover:scale-125 bg-ts-ink/20 hover:bg-ts-ink/40"
                 [class.bg-ts-accent]="currentImageIndex === i"
-                [class.w-5]="currentImageIndex === i"
-                [class.bg-ts-ink/30]="currentImageIndex !== i"
+                [class.w-8]="currentImageIndex === i"
+                [class.w-2]="currentImageIndex !== i"
                 [attr.aria-label]="'Image ' + (i + 1)">
               </button>
             }
           </div>
         }
-        
-        <!-- Compact Trust Badges -->
-        <div class="flex items-center justify-center gap-4 pt-3 border-t border-ts-accent/20">
-          <div class="flex items-center gap-1.5">
-            <svg class="w-4 h-4 text-ts-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
-            </svg>
-            <span class="text-xs font-semibold text-ts-ink">{{ 'home.hero.trust_badges.family_owned' | translate }}</span>
-          </div>
-          
-          <div class="flex items-center gap-1.5">
-            <svg class="w-4 h-4 text-ts-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
-            </svg>
-            <span class="text-xs font-semibold text-ts-ink">{{ 'home.hero.trust_badges.years_experience' | translate }}</span>
-          </div>
-        </div>
+      </div>
+      <div class="luxury-hero__media luxury-hero__media--elevated">
+        @if (rotatingImages.length > 0 && rotatingImages[currentImageIndex]) {
+          <!-- Rotating images -->
+          <img 
+            [src]="rotatingImages[currentImageIndex].url" 
+            [alt]="rotatingImages[currentImageIndex].title"
+            loading="lazy"
+            class="luxury-hero__image"
+          />
+        } @else if (customImage.trim()) {
+          <!-- Custom static image -->
+          <img 
+            [src]="customImage" 
+            [alt]="'home.hero.fallback_title' | translate"
+            loading="lazy"
+            class="luxury-hero__image"
+          />
+        } @else {
+          <!-- Default fallback image -->
+          <img 
+            src="/assets/home/hero-default.jpg" 
+            alt="Event design and florals" 
+            loading="lazy" 
+            class="luxury-hero__image" 
+          />
+        }
+        <!-- Image overlay for warmth -->
+        <div class="absolute inset-0 bg-gradient-to-t from-ts-accent/5 to-transparent pointer-events-none"></div>
       </div>
     </div>
   </div>
-  
-  <!-- Scroll indicator with click to scroll -->
-  <button 
-    (click)="scrollToNextSection()"
-    class="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce cursor-pointer bg-transparent border-none p-2 hover:scale-110 transition-transform"
-    aria-label="Scroll to next section">
-    <svg class="w-6 h-6 text-white/70 hover:text-white/90 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
-    </svg>
-  </button>
 </section>
